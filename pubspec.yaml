@@ -1,0 +1,48 @@
+name: myvitals_healthtracker_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  go_router: ^17.1.0
+  google_fonts: ^8.0.2
+  provider: ^6.1.2
+  shared_preferences: ^2.5.2
+  image_picker: ^1.2.1
+  fl_chart: ^1.2.0
+  screenshot: ^3.0.0
+  pdf: ^3.12.0
+  printing: ^5.14.3
+  csv: ^8.0.0
+  share_plus: ^12.0.2
+  cross_file: ^0.3.5+2
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  sqflite_common_ffi_web: ^1.1.1
+  local_auth: ^3.0.1
+  url_launcher: ^6.3.2
+  file_picker: ^8.1.7
+  flutter_local_notifications: ^21.0.0
+  timezone: ^0.11.0
+  flutter_timezone: ^5.0.2
+  uuid: ^4.5.3
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/data/

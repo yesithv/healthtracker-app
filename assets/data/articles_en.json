@@ -1,0 +1,162 @@
+[
+  {
+    "id": "daily_1",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Drink a glass of water right after waking up to kickstart your metabolism.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_2",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Take a 5-minute stretching break every hour if you sit for long periods.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_3",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Aim for 7-8 hours of quality sleep to support cardiovascular recovery.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_4",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Eat a handful of nuts daily; they are rich in healthy fats for your heart.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_5",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Incorporate a 15-minute brisk walk after lunch to aid digestion.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_6",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Practice deep breathing exercises to lower your heart rate and stress.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_7",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Substitute simple carbs with whole grains to maintain steady blood sugar.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_8",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Limit your screen time 30 minutes before bed for better sleep quality.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_9",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Eat at least one serving of dark leafy greens today.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_10",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Stay mindful of your sodium intake to manage your blood pressure.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_11",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Stand up and move around while taking phone calls.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_12",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Try meditating for 5 minutes today to promote emotional health.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_13",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Opt for a piece of whole fruit instead of fruit juice.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_14",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Ensure your sleeping environment is cool and dark.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_15",
+    "categoryId": "daily",
+    "title": "Tip of the Day",
+    "subtitle": "Remember that consistency beats intensity in building healthy habits.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_1",
+    "categoryId": "heart",
+    "title": "Understanding your LDL levels",
+    "subtitle": "How cholesterol impacts your arterial health and longevity.",
+    "readTime": "3",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_2",
+    "categoryId": "nutrition",
+    "title": "Good fats vs. bad fats",
+    "subtitle": "Learn to differentiate fats that support your heart.",
+    "readTime": "4",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_3",
+    "categoryId": "emotional",
+    "title": "Mindfulness for everyday",
+    "subtitle": "Reducing cortisol levels to improve overall wellness.",
+    "readTime": "2",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_4",
+    "categoryId": "sports",
+    "title": "The rhythm of cardio",
+    "subtitle": "Finding the perfect BPM to burn fat vs. resistance.",
+    "readTime": "5",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_5",
+    "categoryId": "sleep",
+    "title": "Better Sleep, Better Heart",
+    "subtitle": "Why deep sleep cycles are crucial for recovery.",
+    "readTime": "4",
+    "imageAssetName": ""
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "daily_1",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Bebe un vaso de agua al despertar para acelerar tu metabolismo.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_2",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Haz 5 minutos de estiramientos por cada hora que pases sentado.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_3",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Apunta a 7-8 horas de sueño de calidad para favorecer la recuperación.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_4",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Come un puñado de nueces al día; son ricas en grasas saludables.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_5",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Realiza una caminata ligera de 15 minutos tras el almuerzo.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_6",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Practica ejercicios de respiración profunda para reducir el estrés.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_7",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Sustituye carbohidratos simples por cereales integrales.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_8",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Limita el tiempo de pantalla 30 minutos antes de dormir.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_9",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Consume al menos una ración de hojas verdes oscuras hoy.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_10",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Controla tu consumo de sodio para ayudar a tu presión arterial.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_11",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Levántate y camina un poco mientras hablas por teléfono.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_12",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Intenta meditar durante 5 minutos para tu salud emocional.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_13",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Opta por fruta entera en lugar de jugo de fruta.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_14",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Asegúrate de que tu habitación esté fresca y oscura al dormir.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_15",
+    "categoryId": "daily",
+    "title": "Consejo del Día",
+    "subtitle": "Recuerda que la constancia supera a la intensidad en tu salud.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_1",
+    "categoryId": "heart",
+    "title": "Comprendiendo tus niveles de LDL",
+    "subtitle": "Cómo el colesterol impacta tu salud arterial y longevidad.",
+    "readTime": "3",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_2",
+    "categoryId": "nutrition",
+    "title": "Grasas buenas vs. grasas malas",
+    "subtitle": "Aprende a diferenciar las grasas que cuidan tu corazón.",
+    "readTime": "4",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_3",
+    "categoryId": "emotional",
+    "title": "Mindfulness cotidiano",
+    "subtitle": "Reduciendo los niveles de cortisol para mejorar el bienestar.",
+    "readTime": "2",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_4",
+    "categoryId": "sports",
+    "title": "El ritmo del cardio",
+    "subtitle": "Encontrando los BPM perfectos para quemar grasa o resistencia.",
+    "readTime": "5",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_5",
+    "categoryId": "sleep",
+    "title": "Mejor Sueño, Mejor Corazón",
+    "subtitle": "Por qué el sueño profundo es vital para la recuperación.",
+    "readTime": "4",
+    "imageAssetName": ""
+  }
+]

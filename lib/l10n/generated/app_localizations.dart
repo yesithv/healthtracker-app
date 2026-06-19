@@ -1,0 +1,2720 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_de.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_it.dart';
+import 'app_localizations_pt.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('it'),
+    Locale('pt'),
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Vitals'**
+  String get appTitle;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @record.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get record;
+
+  /// No description provided for @discover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get discover;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @savePreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Preferences'**
+  String get savePreferences;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your preferred language'**
+  String get selectLanguage;
+
+  /// No description provided for @personalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Info'**
+  String get personalInfo;
+
+  /// No description provided for @measurementUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement Units'**
+  String get measurementUnits;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @logOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get logOut;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {value}'**
+  String level(int value);
+
+  /// No description provided for @newUserInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'New User'**
+  String get newUserInfo;
+
+  /// No description provided for @xpForNextLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} XP for next level'**
+  String xpForNextLevel(int current, int total);
+
+  /// No description provided for @levelProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Level Progress'**
+  String get levelProgress;
+
+  /// No description provided for @vitalSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Signs'**
+  String get vitalSigns;
+
+  /// No description provided for @vitalsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood pressure & Heart rate'**
+  String get vitalsSubtitle;
+
+  /// No description provided for @noDataYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No data recorded yet.'**
+  String get noDataYet;
+
+  /// No description provided for @recordVitalsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Record your pressure and rate ›'**
+  String get recordVitalsAction;
+
+  /// No description provided for @bodyComposition.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Composition'**
+  String get bodyComposition;
+
+  /// No description provided for @compositionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat, muscle, water and bone mass.'**
+  String get compositionSubtitle;
+
+  /// No description provided for @completeBodyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your body profile ›'**
+  String get completeBodyProfile;
+
+  /// No description provided for @anthropometricHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropometric History'**
+  String get anthropometricHistory;
+
+  /// No description provided for @anthroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure your weight, height and physical progress.'**
+  String get anthroSubtitle;
+
+  /// No description provided for @recordFirstMeasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Record your first measurement ›'**
+  String get recordFirstMeasure;
+
+  /// No description provided for @lipidProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Lipid Profile'**
+  String get lipidProfile;
+
+  /// No description provided for @lipidSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor your cholesterol and triglycerides.'**
+  String get lipidSubtitle;
+
+  /// No description provided for @recordLabResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Record your lab results ›'**
+  String get recordLabResults;
+
+  /// No description provided for @medicalDisclaimerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Disclaimer'**
+  String get medicalDisclaimerTitle;
+
+  /// No description provided for @medicalDisclaimerText.
+  ///
+  /// In en, this message translates to:
+  /// **'This application is for informational and personal tracking purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions.'**
+  String get medicalDisclaimerText;
+
+  /// No description provided for @selfCareProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-care Progress'**
+  String get selfCareProgress;
+
+  /// No description provided for @myHealthAchievements.
+  ///
+  /// In en, this message translates to:
+  /// **'My Health Achievements'**
+  String get myHealthAchievements;
+
+  /// No description provided for @badgeFirstStep.
+  ///
+  /// In en, this message translates to:
+  /// **'First Step'**
+  String get badgeFirstStep;
+
+  /// No description provided for @badgeFirstStepDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginning of the journey'**
+  String get badgeFirstStepDesc;
+
+  /// No description provided for @badgeStrongHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong Heart'**
+  String get badgeStrongHeart;
+
+  /// No description provided for @badgeStrongHeartDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardio Health'**
+  String get badgeStrongHeartDesc;
+
+  /// No description provided for @badgeVitalHabit.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Habit'**
+  String get badgeVitalHabit;
+
+  /// No description provided for @badgeVitalHabitDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days in a row'**
+  String get badgeVitalHabitDesc;
+
+  /// No description provided for @badgeAwareness.
+  ///
+  /// In en, this message translates to:
+  /// **'Awareness'**
+  String get badgeAwareness;
+
+  /// No description provided for @badgeAwarenessDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Picture'**
+  String get badgeAwarenessDesc;
+
+  /// No description provided for @badgeBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get badgeBalance;
+
+  /// No description provided for @badgeBalanceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Body goal'**
+  String get badgeBalanceDesc;
+
+  /// No description provided for @badgeGuardian.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian'**
+  String get badgeGuardian;
+
+  /// No description provided for @badgeGuardianDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Commitment'**
+  String get badgeGuardianDesc;
+
+  /// No description provided for @metricSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Metric (kg, cm, °C)'**
+  String get metricSystem;
+
+  /// No description provided for @historyComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'History — Coming Soon'**
+  String get historyComingSoon;
+
+  /// No description provided for @discoverComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Education and tips — Coming Soon'**
+  String get discoverComingSoon;
+
+  /// No description provided for @registerIndicators.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Indicators'**
+  String get registerIndicators;
+
+  /// No description provided for @anthropometry.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropometry'**
+  String get anthropometry;
+
+  /// No description provided for @unitOfMeasureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit of Measure'**
+  String get unitOfMeasureTitle;
+
+  /// No description provided for @unitOfMeasureDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you prefer to see your measurements? Select the system that best suits you for accurate health tracking.'**
+  String get unitOfMeasureDescription;
+
+  /// No description provided for @metricOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Metric (kg, cm)'**
+  String get metricOption;
+
+  /// No description provided for @metricSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kilograms and centimeters'**
+  String get metricSubtitle;
+
+  /// No description provided for @imperialOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Imperial (lb, ft/in)'**
+  String get imperialOption;
+
+  /// No description provided for @imperialSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pounds and feet/inches'**
+  String get imperialSubtitle;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueAction;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Selection'**
+  String get languageTitle;
+
+  /// No description provided for @languageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your preferred language to adapt the application to your needs. You can change it at any time from this screen.'**
+  String get languageDescription;
+
+  /// No description provided for @profileImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Image'**
+  String get profileImageTitle;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// No description provided for @deletePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete photo'**
+  String get deletePhoto;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @personalInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personalInfoTitle;
+
+  /// No description provided for @personalInfoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your details up to date to receive more accurate and personalized health recommendations.'**
+  String get personalInfoDescription;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get birthDate;
+
+  /// No description provided for @emailOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (Optional)'**
+  String get emailOptional;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @activityLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Level'**
+  String get activityLevel;
+
+  /// No description provided for @activitySedentary.
+  ///
+  /// In en, this message translates to:
+  /// **'Sedentary'**
+  String get activitySedentary;
+
+  /// No description provided for @activityLightlyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Lightly Active'**
+  String get activityLightlyActive;
+
+  /// No description provided for @activityModeratelyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderately Active'**
+  String get activityModeratelyActive;
+
+  /// No description provided for @activityVeryActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Active'**
+  String get activityVeryActive;
+
+  /// No description provided for @activityExtraActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra Active'**
+  String get activityExtraActive;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @recordAnthropometricTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ANTHROPOMETRIC MEASURES'**
+  String get recordAnthropometricTitle;
+
+  /// No description provided for @dateTimeOfMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'DATE AND TIME OF MEASUREMENT'**
+  String get dateTimeOfMeasurement;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
+
+  /// No description provided for @timeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get timeLabel;
+
+  /// No description provided for @bodyMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'BODY MEASUREMENTS'**
+  String get bodyMeasurements;
+
+  /// No description provided for @weightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weightLabel;
+
+  /// No description provided for @heightLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get heightLabel;
+
+  /// No description provided for @bmiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Mass Index (BMI)'**
+  String get bmiTitle;
+
+  /// No description provided for @manual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get manual;
+
+  /// No description provided for @bmiLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get bmiLow;
+
+  /// No description provided for @bmiNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get bmiNormal;
+
+  /// No description provided for @bmiOverweight.
+  ///
+  /// In en, this message translates to:
+  /// **'OVERWEIGHT'**
+  String get bmiOverweight;
+
+  /// No description provided for @bmiObesity.
+  ///
+  /// In en, this message translates to:
+  /// **'OBESITY'**
+  String get bmiObesity;
+
+  /// No description provided for @commentOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'COMMENT (OPTIONAL)'**
+  String get commentOptional;
+
+  /// No description provided for @commentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Any observations about this measurement?'**
+  String get commentHint;
+
+  /// No description provided for @saveAndEarnXp.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and earn +10 XP ✦'**
+  String get saveAndEarnXp;
+
+  /// No description provided for @historyGoodJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Good job!'**
+  String get historyGoodJob;
+
+  /// No description provided for @historyGoalProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'You have recorded a new measurement this month, staying on your wellness track.'**
+  String get historyGoalProgress;
+
+  /// No description provided for @historyWeightLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'You lost {weight}kg this month, getting closer to your wellness goal.'**
+  String historyWeightLoss(String weight);
+
+  /// No description provided for @historyBmiTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI TREND'**
+  String get historyBmiTrend;
+
+  /// No description provided for @historyLast6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 6 months'**
+  String get historyLast6Months;
+
+  /// No description provided for @historyTargetZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Zone'**
+  String get historyTargetZone;
+
+  /// No description provided for @historyBmiUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI'**
+  String get historyBmiUnit;
+
+  /// No description provided for @historyExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to PDF'**
+  String get historyExportPdf;
+
+  /// No description provided for @historyExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Excel (CSV)'**
+  String get historyExportCsv;
+
+  /// No description provided for @historyMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASUREMENT HISTORY'**
+  String get historyMeasurements;
+
+  /// No description provided for @historyNoMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'No measurements yet. Record your first one to start your history.'**
+  String get historyNoMeasurements;
+
+  /// No description provided for @historyColDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get historyColDate;
+
+  /// No description provided for @historyColWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get historyColWeight;
+
+  /// No description provided for @historyColBmi.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI'**
+  String get historyColBmi;
+
+  /// No description provided for @historyColCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get historyColCategory;
+
+  /// No description provided for @historyUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get historyUnknown;
+
+  /// No description provided for @historyPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropometric History'**
+  String get historyPdfTitle;
+
+  /// No description provided for @historyShareCsvSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement History CSV'**
+  String get historyShareCsvSubject;
+
+  /// No description provided for @historyBmiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI'**
+  String get historyBmiLabel;
+
+  /// No description provided for @recordVitalSignsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VITAL SIGNS'**
+  String get recordVitalSignsTitle;
+
+  /// No description provided for @bloodPressureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BLOOD PRESSURE (MMHG)'**
+  String get bloodPressureTitle;
+
+  /// No description provided for @systolicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SYSTOLIC'**
+  String get systolicLabel;
+
+  /// No description provided for @diastolicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DIASTOLIC'**
+  String get diastolicLabel;
+
+  /// No description provided for @heartRateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HEART RATE (BPM)'**
+  String get heartRateTitle;
+
+  /// No description provided for @contextAndSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTEXT & SYMPTOMS'**
+  String get contextAndSymptoms;
+
+  /// No description provided for @activityState.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVITY STATE'**
+  String get activityState;
+
+  /// No description provided for @activityRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest'**
+  String get activityRest;
+
+  /// No description provided for @activityExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get activityExercise;
+
+  /// No description provided for @activityPostOp.
+  ///
+  /// In en, this message translates to:
+  /// **'Post-op'**
+  String get activityPostOp;
+
+  /// No description provided for @howDoYouFeel.
+  ///
+  /// In en, this message translates to:
+  /// **'HOW DO YOU FEEL?'**
+  String get howDoYouFeel;
+
+  /// No description provided for @symptomNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get symptomNormal;
+
+  /// No description provided for @symptomDizziness.
+  ///
+  /// In en, this message translates to:
+  /// **'Dizziness'**
+  String get symptomDizziness;
+
+  /// No description provided for @symptomPain.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain'**
+  String get symptomPain;
+
+  /// No description provided for @symptomFatigue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fatigue'**
+  String get symptomFatigue;
+
+  /// No description provided for @bpLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get bpLow;
+
+  /// No description provided for @bpNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get bpNormal;
+
+  /// No description provided for @bpElevated.
+  ///
+  /// In en, this message translates to:
+  /// **'ELEVATED'**
+  String get bpElevated;
+
+  /// No description provided for @bpHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get bpHigh;
+
+  /// No description provided for @hrLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get hrLow;
+
+  /// No description provided for @hrNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get hrNormal;
+
+  /// No description provided for @hrHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get hrHigh;
+
+  /// No description provided for @vitalsSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital signs saved successfully.'**
+  String get vitalsSavedSuccess;
+
+  /// No description provided for @lipidProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LIPID PROFILE'**
+  String get lipidProfileTitle;
+
+  /// No description provided for @lipidInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the values from your latest lab test. All fields are optional, but filling them all in gives a more complete picture of your cardiovascular health.'**
+  String get lipidInfoBanner;
+
+  /// No description provided for @lipidLabInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'LABORATORY INFORMATION'**
+  String get lipidLabInfo;
+
+  /// No description provided for @lipidLabName.
+  ///
+  /// In en, this message translates to:
+  /// **'Laboratory Name'**
+  String get lipidLabName;
+
+  /// No description provided for @lipidLabNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. City Clinical Lab'**
+  String get lipidLabNameHint;
+
+  /// No description provided for @lipidResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ANALYSIS RESULTS (mg/dL)'**
+  String get lipidResultsTitle;
+
+  /// No description provided for @lipidTotalCholesterol.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cholesterol'**
+  String get lipidTotalCholesterol;
+
+  /// No description provided for @lipidTcRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: < 200 mg/dL'**
+  String get lipidTcRef;
+
+  /// No description provided for @lipidLdl.
+  ///
+  /// In en, this message translates to:
+  /// **'LDL (\"Bad\" Cholesterol)'**
+  String get lipidLdl;
+
+  /// No description provided for @lipidLdlRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: < 100 mg/dL'**
+  String get lipidLdlRef;
+
+  /// No description provided for @lipidHdl.
+  ///
+  /// In en, this message translates to:
+  /// **'HDL (\"Good\" Cholesterol)'**
+  String get lipidHdl;
+
+  /// No description provided for @lipidHdlRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: ≥ 60 mg/dL'**
+  String get lipidHdlRef;
+
+  /// No description provided for @lipidVldl.
+  ///
+  /// In en, this message translates to:
+  /// **'VLDL'**
+  String get lipidVldl;
+
+  /// No description provided for @lipidVldlRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: 2 – 30 mg/dL'**
+  String get lipidVldlRef;
+
+  /// No description provided for @lipidTriglycerides.
+  ///
+  /// In en, this message translates to:
+  /// **'Triglycerides'**
+  String get lipidTriglycerides;
+
+  /// No description provided for @lipidTrigsRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: < 150 mg/dL'**
+  String get lipidTrigsRef;
+
+  /// No description provided for @lipidStatusOptimal.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIMAL'**
+  String get lipidStatusOptimal;
+
+  /// No description provided for @lipidStatusNearOptimal.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCEPTABLE'**
+  String get lipidStatusNearOptimal;
+
+  /// No description provided for @lipidStatusBorderline.
+  ///
+  /// In en, this message translates to:
+  /// **'BORDERLINE'**
+  String get lipidStatusBorderline;
+
+  /// No description provided for @lipidStatusHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get lipidStatusHigh;
+
+  /// No description provided for @lipidStatusLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get lipidStatusLow;
+
+  /// No description provided for @lipidStatusProtective.
+  ///
+  /// In en, this message translates to:
+  /// **'PROTECTIVE'**
+  String get lipidStatusProtective;
+
+  /// No description provided for @lipidStatusAcceptable.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCEPTABLE'**
+  String get lipidStatusAcceptable;
+
+  /// No description provided for @lipidOverallRisk.
+  ///
+  /// In en, this message translates to:
+  /// **'OVERALL ASSESSMENT'**
+  String get lipidOverallRisk;
+
+  /// No description provided for @lipidOverallDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on the values entered. Always consult your doctor.'**
+  String get lipidOverallDesc;
+
+  /// No description provided for @lipidAtLeastOneValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least one value to save the record.'**
+  String get lipidAtLeastOneValue;
+
+  /// No description provided for @lipidSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Lipid profile saved successfully.'**
+  String get lipidSavedSuccess;
+
+  /// No description provided for @compositionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'BODY PROFILE'**
+  String get compositionTitle;
+
+  /// No description provided for @compositionInfoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the values from your body composition analyzer (e.g. bioimpedance scale). All fields are optional — record whatever your device provides.'**
+  String get compositionInfoBanner;
+
+  /// No description provided for @compositionDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASUREMENT DEVICE'**
+  String get compositionDevice;
+
+  /// No description provided for @compositionDeviceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. OMRON HBF-514C scale'**
+  String get compositionDeviceHint;
+
+  /// No description provided for @compositionBodyFat.
+  ///
+  /// In en, this message translates to:
+  /// **'BODY FAT PERCENTAGE (%)'**
+  String get compositionBodyFat;
+
+  /// No description provided for @compositionMuscleMass.
+  ///
+  /// In en, this message translates to:
+  /// **'MUSCLE MASS (KG)'**
+  String get compositionMuscleMass;
+
+  /// No description provided for @compositionVisceralAndAge.
+  ///
+  /// In en, this message translates to:
+  /// **'VISCERAL FAT & METABOLIC AGE'**
+  String get compositionVisceralAndAge;
+
+  /// No description provided for @compositionVisceralFat.
+  ///
+  /// In en, this message translates to:
+  /// **'VISCERAL FAT'**
+  String get compositionVisceralFat;
+
+  /// No description provided for @compositionLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get compositionLevel;
+
+  /// No description provided for @compositionMetabolicAge.
+  ///
+  /// In en, this message translates to:
+  /// **'METABOLIC AGE'**
+  String get compositionMetabolicAge;
+
+  /// No description provided for @compositionYears.
+  ///
+  /// In en, this message translates to:
+  /// **'Years'**
+  String get compositionYears;
+
+  /// No description provided for @compositionOptionalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIONAL (BODY WATER & BONE MASS)'**
+  String get compositionOptionalSection;
+
+  /// No description provided for @compositionBodyWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Water'**
+  String get compositionBodyWater;
+
+  /// No description provided for @compositionBodyWaterRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: 50–65 %'**
+  String get compositionBodyWaterRef;
+
+  /// No description provided for @compositionBoneMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Bone Mass'**
+  String get compositionBoneMass;
+
+  /// No description provided for @compositionBoneMassRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: 2–4 kg'**
+  String get compositionBoneMassRef;
+
+  /// No description provided for @compositionBmr.
+  ///
+  /// In en, this message translates to:
+  /// **'BASAL METABOLIC RATE (KCAL)'**
+  String get compositionBmr;
+
+  /// No description provided for @compositionBmrSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ESTIMATE BASED ON YOUR CURRENT BODY COMPOSITION'**
+  String get compositionBmrSubtitle;
+
+  /// No description provided for @fatVeryLow.
+  ///
+  /// In en, this message translates to:
+  /// **'VERY LOW'**
+  String get fatVeryLow;
+
+  /// No description provided for @fatLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get fatLow;
+
+  /// No description provided for @fatNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get fatNormal;
+
+  /// No description provided for @fatElevated.
+  ///
+  /// In en, this message translates to:
+  /// **'ELEVATED'**
+  String get fatElevated;
+
+  /// No description provided for @fatHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get fatHigh;
+
+  /// No description provided for @infoBannerAnthro.
+  ///
+  /// In en, this message translates to:
+  /// **'Try to take the measurement every time under the same conditions, for example: every morning after waking up, going to the bathroom, and before breakfast.'**
+  String get infoBannerAnthro;
+
+  /// No description provided for @infoBannerVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Try to take your vital signs after resting for half an hour.'**
+  String get infoBannerVitals;
+
+  /// No description provided for @compositionSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Body profile saved successfully.'**
+  String get compositionSavedSuccess;
+
+  /// No description provided for @discoverGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String discoverGreeting(String name);
+
+  /// No description provided for @discoverSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for tips...'**
+  String get discoverSearchHint;
+
+  /// No description provided for @discoverDailyTip.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY HEALTH TIP'**
+  String get discoverDailyTip;
+
+  /// No description provided for @discoverReadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Read more'**
+  String get discoverReadMore;
+
+  /// No description provided for @discoverRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get discoverRecommended;
+
+  /// No description provided for @discoverCategoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get discoverCategoryAll;
+
+  /// No description provided for @discoverCategoryHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Health'**
+  String get discoverCategoryHeart;
+
+  /// No description provided for @discoverCategoryNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get discoverCategoryNutrition;
+
+  /// No description provided for @discoverCategoryEmotional.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotional Health'**
+  String get discoverCategoryEmotional;
+
+  /// No description provided for @discoverCategorySports.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports'**
+  String get discoverCategorySports;
+
+  /// No description provided for @discoverCategorySleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get discoverCategorySleep;
+
+  /// No description provided for @discoverMinRead.
+  ///
+  /// In en, this message translates to:
+  /// **'MIN READ'**
+  String get discoverMinRead;
+
+  /// No description provided for @privacySecurityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage how your medical and personal information is protected.'**
+  String get privacySecurityDescription;
+
+  /// No description provided for @biometricLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric Lock'**
+  String get biometricLockTitle;
+
+  /// No description provided for @biometricLockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires Fingerprint or FaceID on app startup'**
+  String get biometricLockSubtitle;
+
+  /// No description provided for @biometricReasoning.
+  ///
+  /// In en, this message translates to:
+  /// **'Your medical records are highly sensitive information. Enabling biometric lock ensures only you can access your health data, protecting your privacy.'**
+  String get biometricReasoning;
+
+  /// No description provided for @unlockAppToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to continue'**
+  String get unlockAppToContinue;
+
+  /// No description provided for @biometricNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics not available on this device.'**
+  String get biometricNotAvailable;
+
+  /// No description provided for @healthGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Goals'**
+  String get healthGoalsTitle;
+
+  /// No description provided for @healthGoalsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your medical objectives to track your progress.'**
+  String get healthGoalsDescription;
+
+  /// No description provided for @medicalGoalsToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Medical Goals'**
+  String get medicalGoalsToggle;
+
+  /// No description provided for @medicalGoalsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable to set weight and body composition goals'**
+  String get medicalGoalsSubtitle;
+
+  /// No description provided for @targetWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Weight'**
+  String get targetWeight;
+
+  /// No description provided for @targetBodyFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Body Fat'**
+  String get targetBodyFat;
+
+  /// No description provided for @targetMuscleMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Muscle Mass'**
+  String get targetMuscleMass;
+
+  /// No description provided for @targetVisceralFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Visceral Fat'**
+  String get targetVisceralFat;
+
+  /// No description provided for @goalsSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals saved successfully.'**
+  String get goalsSavedSuccess;
+
+  /// No description provided for @helpSupportPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupportPageTitle;
+
+  /// No description provided for @helpSupportPageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you need to know about My Vitals.'**
+  String get helpSupportPageDescription;
+
+  /// No description provided for @helpFaqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get helpFaqTitle;
+
+  /// No description provided for @helpFaqDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick answers to the most common questions.'**
+  String get helpFaqDescription;
+
+  /// No description provided for @helpGlossaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Glossary'**
+  String get helpGlossaryTitle;
+
+  /// No description provided for @helpGlossaryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand every health indicator.'**
+  String get helpGlossaryDescription;
+
+  /// No description provided for @helpLegalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Notice'**
+  String get helpLegalTitle;
+
+  /// No description provided for @helpLegalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use and data privacy.'**
+  String get helpLegalDescription;
+
+  /// No description provided for @helpContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact & Feedback'**
+  String get helpContactTitle;
+
+  /// No description provided for @helpContactDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Write to us, we improve together.'**
+  String get helpContactDescription;
+
+  /// No description provided for @helpSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get helpSearchHint;
+
+  /// No description provided for @helpNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results for your search.'**
+  String get helpNoResults;
+
+  /// No description provided for @helpFaqCatGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get helpFaqCatGeneral;
+
+  /// No description provided for @helpFaqCatData.
+  ///
+  /// In en, this message translates to:
+  /// **'My Data'**
+  String get helpFaqCatData;
+
+  /// No description provided for @helpFaqCatBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics'**
+  String get helpFaqCatBiometrics;
+
+  /// No description provided for @helpFaqCatExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get helpFaqCatExport;
+
+  /// No description provided for @helpFaqQ1.
+  ///
+  /// In en, this message translates to:
+  /// **'What is My Vitals?'**
+  String get helpFaqQ1;
+
+  /// No description provided for @helpFaqA1.
+  ///
+  /// In en, this message translates to:
+  /// **'My Vitals is a personal health tracking app that lets you record and monitor your wellness indicators: anthropometric measurements, vital signs, lipid profile, and body composition.'**
+  String get helpFaqA1;
+
+  /// No description provided for @helpFaqQ2.
+  ///
+  /// In en, this message translates to:
+  /// **'Is my data saved to the cloud?'**
+  String get helpFaqQ2;
+
+  /// No description provided for @helpFaqA2.
+  ///
+  /// In en, this message translates to:
+  /// **'No. All your data is stored exclusively on your device. My Vitals does not send any information to external servers, ensuring complete privacy.'**
+  String get helpFaqA2;
+
+  /// No description provided for @helpFaqQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I use the app without internet?'**
+  String get helpFaqQ3;
+
+  /// No description provided for @helpFaqA3.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. My Vitals works completely offline. You only need connectivity for app updates.'**
+  String get helpFaqA3;
+
+  /// No description provided for @helpFaqQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I enable biometric lock?'**
+  String get helpFaqQ4;
+
+  /// No description provided for @helpFaqA4.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Profile → Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.'**
+  String get helpFaqA4;
+
+  /// No description provided for @helpFaqQ5.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I export my history?'**
+  String get helpFaqQ5;
+
+  /// No description provided for @helpFaqA5.
+  ///
+  /// In en, this message translates to:
+  /// **'In each history screen (Anthropometric, Vital Signs, etc.) you will find \'Export PDF\' and \'Excel (CSV)\' buttons at the top.'**
+  String get helpFaqA5;
+
+  /// No description provided for @helpFaqQ6.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I change the measurement units?'**
+  String get helpFaqQ6;
+
+  /// No description provided for @helpFaqA6.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. Go to Profile → Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.'**
+  String get helpFaqA6;
+
+  /// No description provided for @helpFaqQ7.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens if I delete the app?'**
+  String get helpFaqQ7;
+
+  /// No description provided for @helpFaqA7.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstalling the app will permanently delete all locally stored data. We recommend exporting your history to PDF or CSV before uninstalling.'**
+  String get helpFaqA7;
+
+  /// No description provided for @helpFaqQ8.
+  ///
+  /// In en, this message translates to:
+  /// **'Does this app replace my doctor?'**
+  String get helpFaqQ8;
+
+  /// No description provided for @helpFaqA8.
+  ///
+  /// In en, this message translates to:
+  /// **'No. My Vitals is a personal tracking tool to help you keep an organized record. Always consult a healthcare professional for medical interpretation and diagnosis.'**
+  String get helpFaqA8;
+
+  /// No description provided for @helpGlossarySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search term...'**
+  String get helpGlossarySearchHint;
+
+  /// No description provided for @helpGlossaryGroupAnthropo.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropometric Measurements'**
+  String get helpGlossaryGroupAnthropo;
+
+  /// No description provided for @helpGlossaryGroupVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Signs'**
+  String get helpGlossaryGroupVitals;
+
+  /// No description provided for @helpGlossaryGroupLipid.
+  ///
+  /// In en, this message translates to:
+  /// **'Lipid Profile'**
+  String get helpGlossaryGroupLipid;
+
+  /// No description provided for @helpGlossaryGroupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Composition'**
+  String get helpGlossaryGroupBody;
+
+  /// No description provided for @helpGlossaryNormalRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal range'**
+  String get helpGlossaryNormalRange;
+
+  /// No description provided for @helpLegalPurposeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purpose of the application'**
+  String get helpLegalPurposeTitle;
+
+  /// No description provided for @helpLegalPurposeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.'**
+  String get helpLegalPurposeBody;
+
+  /// No description provided for @helpLegalNotMedicalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a medical device'**
+  String get helpLegalNotMedicalTitle;
+
+  /// No description provided for @helpLegalNotMedicalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The information displayed in this application is for reference purposes only. It does not replace the diagnosis, advice, or treatment of a health professional. If you have any medical symptoms or concerns, consult your doctor.'**
+  String get helpLegalNotMedicalBody;
+
+  /// No description provided for @helpLegalResponsibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'User responsibility'**
+  String get helpLegalResponsibilityTitle;
+
+  /// No description provided for @helpLegalResponsibilityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The user is responsible for the accuracy of the data entered. My Vitals is not responsible for health decisions made based on information recorded in the app.'**
+  String get helpLegalResponsibilityBody;
+
+  /// No description provided for @helpLegalPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy and data'**
+  String get helpLegalPrivacyTitle;
+
+  /// No description provided for @helpLegalPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All data is stored locally on the user\'s device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.'**
+  String get helpLegalPrivacyBody;
+
+  /// No description provided for @helpLegalContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer contact'**
+  String get helpLegalContactTitle;
+
+  /// No description provided for @helpLegalContactBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com'**
+  String get helpLegalContactBody;
+
+  /// No description provided for @helpContactReportBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a bug'**
+  String get helpContactReportBug;
+
+  /// No description provided for @helpContactReportBugDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Found something that\'s not working? Tell us.'**
+  String get helpContactReportBugDesc;
+
+  /// No description provided for @helpContactSuggest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a suggestion'**
+  String get helpContactSuggest;
+
+  /// No description provided for @helpContactSuggestDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Have an idea to improve the app? We want to hear it.'**
+  String get helpContactSuggestDesc;
+
+  /// No description provided for @helpContactSendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send email'**
+  String get helpContactSendEmail;
+
+  /// No description provided for @helpContactAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App version'**
+  String get helpContactAppVersion;
+
+  /// No description provided for @helpContactWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get helpContactWhatsNew;
+
+  /// No description provided for @helpContactV110.
+  ///
+  /// In en, this message translates to:
+  /// **'v1.1.0 — Current'**
+  String get helpContactV110;
+
+  /// No description provided for @helpContactV110Changes.
+  ///
+  /// In en, this message translates to:
+  /// **'• Biometric lock (fingerprint / FaceID)\n• Personalized health goals\n• Italian language support\n• Improved activity level selector'**
+  String get helpContactV110Changes;
+
+  /// No description provided for @helpContactV100.
+  ///
+  /// In en, this message translates to:
+  /// **'v1.0.0 — Initial release'**
+  String get helpContactV100;
+
+  /// No description provided for @helpContactV100Changes.
+  ///
+  /// In en, this message translates to:
+  /// **'• Anthropometric measurements tracking\n• Vital signs and lipid profile\n• Body composition\n• PDF and CSV export\n• Multilanguage support (es, en, de, pt)'**
+  String get helpContactV100Changes;
+
+  /// No description provided for @myDataBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'My Data'**
+  String get myDataBackup;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Restore'**
+  String get backupTitle;
+
+  /// No description provided for @backupDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Export or restore all your data and preferences.'**
+  String get backupDescription;
+
+  /// No description provided for @backupPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is yours. And yours only.'**
+  String get backupPrivacyTitle;
+
+  /// No description provided for @backupPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All of our health features are built with privacy at the core. Your data never leaves your device — My Vitals does not use cloud servers, external accounts, or third-party services. Everything is stored locally in an encrypted database, accessible only to you.'**
+  String get backupPrivacyBody;
+
+  /// No description provided for @backupPrivacyHighlight.
+  ///
+  /// In en, this message translates to:
+  /// **'If you enable biometric lock, your health data is further protected by your fingerprint or Face ID — no one else can access your information, not even us.'**
+  String get backupPrivacyHighlight;
+
+  /// No description provided for @backupExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export my data'**
+  String get backupExportTitle;
+
+  /// No description provided for @backupExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate a secure file with all your history and settings'**
+  String get backupExportSubtitle;
+
+  /// No description provided for @backupExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Backup'**
+  String get backupExportButton;
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore my data'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a previous My Vitals backup'**
+  String get backupImportSubtitle;
+
+  /// No description provided for @backupImportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Backup'**
+  String get backupImportButton;
+
+  /// No description provided for @backupWhatIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s included in the backup?'**
+  String get backupWhatIncluded;
+
+  /// No description provided for @backupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup exported successfully!'**
+  String get backupSuccess;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Data restored successfully!'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import error. Verify that the file is valid.'**
+  String get backupImportError;
+
+  /// No description provided for @backupImportConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore data?'**
+  String get backupImportConfirmTitle;
+
+  /// No description provided for @backupImportConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will replace your current records with the ones from the backup. Do you want to continue?'**
+  String get backupImportConfirmBody;
+
+  /// No description provided for @backupIncludesVitalSigns.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Signs History'**
+  String get backupIncludesVitalSigns;
+
+  /// No description provided for @backupIncludesAnthropo.
+  ///
+  /// In en, this message translates to:
+  /// **'Anthropometric History'**
+  String get backupIncludesAnthropo;
+
+  /// No description provided for @backupIncludesLipid.
+  ///
+  /// In en, this message translates to:
+  /// **'Lipid Profile'**
+  String get backupIncludesLipid;
+
+  /// No description provided for @backupIncludesBodyComp.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Composition'**
+  String get backupIncludesBodyComp;
+
+  /// No description provided for @backupIncludesPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get backupIncludesPersonalInfo;
+
+  /// No description provided for @backupIncludesGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Goals'**
+  String get backupIncludesGoals;
+
+  /// No description provided for @backupIncludesPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Photo'**
+  String get backupIncludesPhoto;
+
+  /// No description provided for @backupIncludesPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences (language, units)'**
+  String get backupIncludesPreferences;
+
+  /// No description provided for @backupCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get backupCancel;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to My Vitals'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal health companion'**
+  String get onboardingWelcomeSubtitle;
+
+  /// No description provided for @onboardingWelcomeFeature1.
+  ///
+  /// In en, this message translates to:
+  /// **'Record your vital signs and body measurements'**
+  String get onboardingWelcomeFeature1;
+
+  /// No description provided for @onboardingWelcomeFeature2.
+  ///
+  /// In en, this message translates to:
+  /// **'Visualize your progress with charts and stats'**
+  String get onboardingWelcomeFeature2;
+
+  /// No description provided for @onboardingWelcomeFeature3.
+  ///
+  /// In en, this message translates to:
+  /// **'100% private, everything stays on your device'**
+  String get onboardingWelcomeFeature3;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started!'**
+  String get onboardingFinish;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onboardingStep(int current, int total);
+
+  /// No description provided for @onboardingAvatarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile picture'**
+  String get onboardingAvatarTitle;
+
+  /// No description provided for @onboardingAvatarSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Put a face to your health journey (optional)'**
+  String get onboardingAvatarSubtitle;
+
+  /// No description provided for @remindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders & Alerts'**
+  String get remindersTitle;
+
+  /// No description provided for @remindersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set daily alerts to remember your routine medical checkups.'**
+  String get remindersDescription;
+
+  /// No description provided for @remindersNote.
+  ///
+  /// In en, this message translates to:
+  /// **'* Notifications will arrive on your device daily at the scheduled time.'**
+  String get remindersNote;
+
+  /// No description provided for @reminderVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Vital Signs'**
+  String get reminderVitals;
+
+  /// No description provided for @reminderMeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Medication'**
+  String get reminderMeds;
+
+  /// No description provided for @reminderWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Activity'**
+  String get reminderWorkout;
+
+  /// No description provided for @reminderWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink Water'**
+  String get reminderWater;
+
+  /// No description provided for @reminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Reminder'**
+  String get reminderTitle;
+
+  /// No description provided for @filterLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get filterLast7Days;
+
+  /// No description provided for @filterLast30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get filterLast30Days;
+
+  /// No description provided for @filterLast6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 6 months'**
+  String get filterLast6Months;
+
+  /// No description provided for @filterAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get filterAllTime;
+
+  /// No description provided for @goalRemainingWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'{weight}kg remaining for target'**
+  String goalRemainingWeight(String weight);
+
+  /// No description provided for @goalAchieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal achieved!'**
+  String get goalAchieved;
+
+  /// No description provided for @noGoalDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'No goal defined'**
+  String get noGoalDefined;
+
+  /// No description provided for @validationRequiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Required fields'**
+  String get validationRequiredFields;
+
+  /// No description provided for @validationCompleteBeforeContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete these fields before continuing:'**
+  String get validationCompleteBeforeContinue;
+
+  /// No description provided for @validationSelectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a language'**
+  String get validationSelectLanguage;
+
+  /// No description provided for @validationEnterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get validationEnterName;
+
+  /// No description provided for @validationSelectBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your date of birth'**
+  String get validationSelectBirthDate;
+
+  /// No description provided for @validationSelectGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your gender'**
+  String get validationSelectGender;
+
+  /// No description provided for @dashboardCompositionFat.
+  ///
+  /// In en, this message translates to:
+  /// **'FAT'**
+  String get dashboardCompositionFat;
+
+  /// No description provided for @dashboardCompositionMuscle.
+  ///
+  /// In en, this message translates to:
+  /// **'MUSCLE'**
+  String get dashboardCompositionMuscle;
+
+  /// No description provided for @dashboardCompositionVisceral.
+  ///
+  /// In en, this message translates to:
+  /// **'VISCERAL'**
+  String get dashboardCompositionVisceral;
+
+  /// No description provided for @dashboardCompositionBmr.
+  ///
+  /// In en, this message translates to:
+  /// **'BMR'**
+  String get dashboardCompositionBmr;
+
+  /// No description provided for @dashboardCompositionLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lv. {level}'**
+  String dashboardCompositionLevel(int level);
+
+  /// No description provided for @vitalsPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Signs History'**
+  String get vitalsPdfTitle;
+
+  /// No description provided for @vitalsShareCsvSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Signs CSV'**
+  String get vitalsShareCsvSubject;
+
+  /// No description provided for @lipidPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lipid Profile History'**
+  String get lipidPdfTitle;
+
+  /// No description provided for @lipidShareCsvSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab Results CSV'**
+  String get lipidShareCsvSubject;
+
+  /// No description provided for @compositionPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Composition History'**
+  String get compositionPdfTitle;
+
+  /// No description provided for @compositionShareCsvSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Composition CSV'**
+  String get compositionShareCsvSubject;
+
+  /// No description provided for @reminderDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical Reminder'**
+  String get reminderDefaultTitle;
+
+  /// No description provided for @exportColComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get exportColComment;
+
+  /// No description provided for @exportColHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (m)'**
+  String get exportColHeight;
+
+  /// No description provided for @exportColSysDia.
+  ///
+  /// In en, this message translates to:
+  /// **'Sys/Dia'**
+  String get exportColSysDia;
+
+  /// No description provided for @exportColHrShort.
+  ///
+  /// In en, this message translates to:
+  /// **'HR'**
+  String get exportColHrShort;
+
+  /// No description provided for @exportColStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get exportColStatus;
+
+  /// No description provided for @exportColSystolic.
+  ///
+  /// In en, this message translates to:
+  /// **'Systolic'**
+  String get exportColSystolic;
+
+  /// No description provided for @exportColDiastolic.
+  ///
+  /// In en, this message translates to:
+  /// **'Diastolic'**
+  String get exportColDiastolic;
+
+  /// No description provided for @exportColHeartRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get exportColHeartRate;
+
+  /// No description provided for @exportColActivityState.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity State'**
+  String get exportColActivityState;
+
+  /// No description provided for @exportColSymptom.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptom'**
+  String get exportColSymptom;
+
+  /// No description provided for @exportColTotalCholShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Chol.'**
+  String get exportColTotalCholShort;
+
+  /// No description provided for @exportColTrigsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Trigs'**
+  String get exportColTrigsShort;
+
+  /// No description provided for @exportColTotalCholesterol.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cholesterol'**
+  String get exportColTotalCholesterol;
+
+  /// No description provided for @exportColTriglycerides.
+  ///
+  /// In en, this message translates to:
+  /// **'Triglycerides'**
+  String get exportColTriglycerides;
+
+  /// No description provided for @exportColLabName.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab Name'**
+  String get exportColLabName;
+
+  /// No description provided for @exportColBodyFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Fat'**
+  String get exportColBodyFat;
+
+  /// No description provided for @exportColMuscleMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscle Mass'**
+  String get exportColMuscleMass;
+
+  /// No description provided for @exportColVisceralFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Visceral Fat'**
+  String get exportColVisceralFat;
+
+  /// No description provided for @exportColMetabolicAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Metabolic Age'**
+  String get exportColMetabolicAge;
+
+  /// No description provided for @exportColBodyWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Water'**
+  String get exportColBodyWater;
+
+  /// No description provided for @exportColBoneMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Bone Mass'**
+  String get exportColBoneMass;
+
+  /// No description provided for @exportColBmr.
+  ///
+  /// In en, this message translates to:
+  /// **'BMR'**
+  String get exportColBmr;
+
+  /// No description provided for @glossaryImcName.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI (Body Mass Index)'**
+  String get glossaryImcName;
+
+  /// No description provided for @glossaryImcDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'A measure relating weight and height to assess whether a person\'s weight is healthy. Calculated by dividing weight (kg) by height squared (m²).'**
+  String get glossaryImcDefinition;
+
+  /// No description provided for @glossaryImcRange.
+  ///
+  /// In en, this message translates to:
+  /// **'18.5 – 24.9 kg/m²'**
+  String get glossaryImcRange;
+
+  /// No description provided for @glossaryPesoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Weight'**
+  String get glossaryPesoName;
+
+  /// No description provided for @glossaryPesoDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Total mass of the body expressed in kilograms or pounds. Includes muscles, bones, organs, fat, and water.'**
+  String get glossaryPesoDefinition;
+
+  /// No description provided for @glossaryPesoRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Depends on height and build'**
+  String get glossaryPesoRange;
+
+  /// No description provided for @glossaryTallaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (Stature)'**
+  String get glossaryTallaName;
+
+  /// No description provided for @glossaryTallaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement of a person\'s height from feet to the top of the head, expressed in centimeters or meters.'**
+  String get glossaryTallaDefinition;
+
+  /// No description provided for @glossarySistolicaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Systolic Pressure'**
+  String get glossarySistolicaName;
+
+  /// No description provided for @glossarySistolicaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'The maximum pressure exerted by blood on the arteries when the heart contracts (beats). It is the upper number in a blood pressure reading.'**
+  String get glossarySistolicaDefinition;
+
+  /// No description provided for @glossarySistolicaRange.
+  ///
+  /// In en, this message translates to:
+  /// **'< 120 mmHg'**
+  String get glossarySistolicaRange;
+
+  /// No description provided for @glossaryDiastolicaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Diastolic Pressure'**
+  String get glossaryDiastolicaName;
+
+  /// No description provided for @glossaryDiastolicaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'The minimum pressure exerted by blood on the arteries between heartbeats, when the heart is at rest. It is the lower number in a blood pressure reading.'**
+  String get glossaryDiastolicaDefinition;
+
+  /// No description provided for @glossaryDiastolicaRange.
+  ///
+  /// In en, this message translates to:
+  /// **'< 80 mmHg'**
+  String get glossaryDiastolicaRange;
+
+  /// No description provided for @glossaryFcName.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get glossaryFcName;
+
+  /// No description provided for @glossaryFcDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of times the heart beats per minute (bpm). At rest, a healthy heart beats regularly within a specific range.'**
+  String get glossaryFcDefinition;
+
+  /// No description provided for @glossaryFcRange.
+  ///
+  /// In en, this message translates to:
+  /// **'60 – 100 bpm at rest'**
+  String get glossaryFcRange;
+
+  /// No description provided for @glossaryColesterolTotalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cholesterol'**
+  String get glossaryColesterolTotalName;
+
+  /// No description provided for @glossaryColesterolTotalDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Sum of all cholesterol in the blood, including LDL, HDL, and other lipids. It is a general marker of cardiovascular risk.'**
+  String get glossaryColesterolTotalDefinition;
+
+  /// No description provided for @glossaryColesterolTotalRange.
+  ///
+  /// In en, this message translates to:
+  /// **'< 200 mg/dL'**
+  String get glossaryColesterolTotalRange;
+
+  /// No description provided for @glossaryLdlName.
+  ///
+  /// In en, this message translates to:
+  /// **'LDL (\"Bad\" Cholesterol)'**
+  String get glossaryLdlName;
+
+  /// No description provided for @glossaryLdlDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-density lipoprotein. It carries cholesterol into the arteries and can accumulate in their walls, increasing cardiovascular disease risk.'**
+  String get glossaryLdlDefinition;
+
+  /// No description provided for @glossaryLdlRange.
+  ///
+  /// In en, this message translates to:
+  /// **'< 100 mg/dL'**
+  String get glossaryLdlRange;
+
+  /// No description provided for @glossaryHdlName.
+  ///
+  /// In en, this message translates to:
+  /// **'HDL (\"Good\" Cholesterol)'**
+  String get glossaryHdlName;
+
+  /// No description provided for @glossaryHdlDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'High-density lipoprotein. It collects excess cholesterol from the arteries and carries it to the liver for elimination. High levels are protective.'**
+  String get glossaryHdlDefinition;
+
+  /// No description provided for @glossaryHdlRange.
+  ///
+  /// In en, this message translates to:
+  /// **'≥ 60 mg/dL'**
+  String get glossaryHdlRange;
+
+  /// No description provided for @glossaryVldlName.
+  ///
+  /// In en, this message translates to:
+  /// **'VLDL'**
+  String get glossaryVldlName;
+
+  /// No description provided for @glossaryVldlDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Very low-density lipoprotein. It transports triglycerides from the liver to tissues. Elevated levels are associated with higher cardiovascular risk.'**
+  String get glossaryVldlDefinition;
+
+  /// No description provided for @glossaryVldlRange.
+  ///
+  /// In en, this message translates to:
+  /// **'2 – 30 mg/dL'**
+  String get glossaryVldlRange;
+
+  /// No description provided for @glossaryTrigliceridosName.
+  ///
+  /// In en, this message translates to:
+  /// **'Triglycerides'**
+  String get glossaryTrigliceridosName;
+
+  /// No description provided for @glossaryTrigliceridosDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'A type of fat (lipid) in the blood. The body uses them as an energy source, but high levels increase the risk of heart and pancreatic disease.'**
+  String get glossaryTrigliceridosDefinition;
+
+  /// No description provided for @glossaryTrigliceridosRange.
+  ///
+  /// In en, this message translates to:
+  /// **'< 150 mg/dL'**
+  String get glossaryTrigliceridosRange;
+
+  /// No description provided for @glossaryGrasaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Fat Percentage'**
+  String get glossaryGrasaName;
+
+  /// No description provided for @glossaryGrasaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Proportion of fat mass relative to total body weight. Includes essential fat (needed for vital functions) and storage fat.'**
+  String get glossaryGrasaDefinition;
+
+  /// No description provided for @glossaryGrasaRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Men: 8–19% / Women: 21–33%'**
+  String get glossaryGrasaRange;
+
+  /// No description provided for @glossaryMusculoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscle Mass'**
+  String get glossaryMusculoName;
+
+  /// No description provided for @glossaryMusculoDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Total weight of muscle tissue in the body, expressed in kilograms. A higher muscle percentage is associated with a more active metabolism.'**
+  String get glossaryMusculoDefinition;
+
+  /// No description provided for @glossaryGrasaVisceralName.
+  ///
+  /// In en, this message translates to:
+  /// **'Visceral Fat'**
+  String get glossaryGrasaVisceralName;
+
+  /// No description provided for @glossaryGrasaVisceralDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat accumulated around the internal organs of the abdomen (liver, intestines, pancreas). High levels are associated with higher metabolic and cardiovascular risk.'**
+  String get glossaryGrasaVisceralDefinition;
+
+  /// No description provided for @glossaryGrasaVisceralRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1–9 (healthy)'**
+  String get glossaryGrasaVisceralRange;
+
+  /// No description provided for @glossaryEdadMetabolicaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Metabolic Age'**
+  String get glossaryEdadMetabolicaName;
+
+  /// No description provided for @glossaryEdadMetabolicaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated age of basal metabolism compared to the population average. A metabolic age lower than chronological age indicates an efficient metabolism.'**
+  String get glossaryEdadMetabolicaDefinition;
+
+  /// No description provided for @glossaryBmrName.
+  ///
+  /// In en, this message translates to:
+  /// **'BMR / Basal Metabolism (kcal)'**
+  String get glossaryBmrName;
+
+  /// No description provided for @glossaryBmrDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum amount of energy (calories) the body needs at complete rest to maintain vital functions: breathing, circulation, temperature, etc.'**
+  String get glossaryBmrDefinition;
+
+  /// No description provided for @glossaryAguaName.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Water'**
+  String get glossaryAguaName;
+
+  /// No description provided for @glossaryAguaDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentage of body weight that corresponds to water. Water is essential for all cellular functions, temperature regulation, and nutrient transport.'**
+  String get glossaryAguaDefinition;
+
+  /// No description provided for @glossaryAguaRange.
+  ///
+  /// In en, this message translates to:
+  /// **'50 – 65%'**
+  String get glossaryAguaRange;
+
+  /// No description provided for @glossaryHuesoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bone Mass'**
+  String get glossaryHuesoName;
+
+  /// No description provided for @glossaryHuesoDefinition.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated weight of bone tissue in the body. Maintaining adequate bone mass is essential to prevent osteoporosis.'**
+  String get glossaryHuesoDefinition;
+
+  /// No description provided for @glossaryHuesoRange.
+  ///
+  /// In en, this message translates to:
+  /// **'2 – 4 kg (average adult)'**
+  String get glossaryHuesoRange;
+
+  /// No description provided for @deleteRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete record?'**
+  String get deleteRecordTitle;
+
+  /// No description provided for @deleteRecordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This action can\'t be undone.'**
+  String get deleteRecordBody;
+
+  /// No description provided for @deleteRecordConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteRecordConfirm;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Record deleted'**
+  String get recordDeleted;
+
+  /// No description provided for @anthropoSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement saved successfully.'**
+  String get anthropoSavedSuccess;
+
+  /// No description provided for @historyShowMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count} more'**
+  String historyShowMore(int count);
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['de', 'en', 'es', 'it', 'pt'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'it':
+      return AppLocalizationsIt();
+    case 'pt':
+      return AppLocalizationsPt();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

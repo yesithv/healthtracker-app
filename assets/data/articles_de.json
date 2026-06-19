@@ -1,0 +1,162 @@
+[
+  {
+    "id": "daily_1",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Trinken Sie gleich nach dem Aufwachen ein Glas Wasser.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_2",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Machen Sie jede Stunde 5 Minuten Dehnübungen beim Sitzen.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_3",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Achten Sie auf 7-8 Stunden hochwertigen Schlaf.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_4",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Essen Sie täglich eine Handvoll Nüsse; reich an gesunden Fetten.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_5",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Machen Sie nach dem Mittagessen einen 15-minütigen flotten Spaziergang.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_6",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Machen Sie tiefe Atemübungen, um Stress abzubauen.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_7",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Ersetzen Sie einfache Kohlenhydrate durch Vollkornprodukte.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_8",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Begrenzen Sie Bildschirme 30 Minuten vor dem Schlafengehen.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_9",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Essen Sie heute mindestens eine Portion dunkelgrünes Blattgemüse.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_10",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Achten Sie auf Ihre Natriumzufuhr, um den Blutdruck zu kontrollieren.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_11",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Stehen Sie auf und bewegen Sie sich beim Telefonieren.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_12",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Versuchen Sie heute 5 Minuten zu meditieren.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_13",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Wählen Sie ein ganzes Stück Obst anstelle von Fruchtsaft.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_14",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Stellen Sie sicher, dass Ihr Schlafzimmer kühl und dunkel ist.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_15",
+    "categoryId": "daily",
+    "title": "Tipp des Tages",
+    "subtitle": "Denken Sie daran: Beständigkeit schlägt Intensität bei Gewohnheiten.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_1",
+    "categoryId": "heart",
+    "title": "LDL-Werte verstehen",
+    "subtitle": "Wie sich Cholesterin auf Ihre arterielle Gesundheit auswirkt.",
+    "readTime": "3",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_2",
+    "categoryId": "nutrition",
+    "title": "Gute und schlechte Fette",
+    "subtitle": "Lernen Sie die Fette kennen, die das Herz unterstützen.",
+    "readTime": "4",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_3",
+    "categoryId": "emotional",
+    "title": "Achtsamkeit für jeden Tag",
+    "subtitle": "Cortisol senken, um das allgemeine Wohlbefinden zu fördern.",
+    "readTime": "2",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_4",
+    "categoryId": "sports",
+    "title": "Der Rhythmus von Cardio",
+    "subtitle": "Die perfekten BPM für Ausdauer und Fettverbrennung finden.",
+    "readTime": "5",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_5",
+    "categoryId": "sleep",
+    "title": "Besserer Schlaf, besseres Herz",
+    "subtitle": "Warum Tiefschlafphasen für die Erholung entscheidend sind.",
+    "readTime": "4",
+    "imageAssetName": ""
+  }
+]

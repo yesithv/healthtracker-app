@@ -1,0 +1,162 @@
+[
+  {
+    "id": "daily_1",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Beba um copo de água ao acordar para acelerar o seu metabolismo.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_2",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Faça 5 minutos de alongamento a cada hora se trabalhar sentado.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_3",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Tenha 7-8 horas de sono de qualidade para a recuperação cardiovascular.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_4",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Coma um punhado de nozes por dia; ricas em gorduras saudáveis.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_5",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Faça uma caminhada de 15 minutos após o almoço para ajudar na digestão.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_6",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Pratique exercícios de respiração para baixar o estresse.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_7",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Substitua carboidratos simples por grãos integrais.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_8",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Limite o uso de telas 30 minutos antes de dormir para um sono melhor.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_9",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Coma pelo menos uma porção de folhas verdes escuras hoje.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_10",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Fique atento à ingestão de sódio para controlar a pressão arterial.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_11",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Levante-se e caminhe enquanto fala ao telefone.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_12",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Tente meditar por 5 minutos hoje para a sua saúde emocional.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_13",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Opte por uma fruta inteira em vez de suco de frutas.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_14",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Certifique-se de que o seu quarto está fresco e escuro para dormir.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "daily_15",
+    "categoryId": "daily",
+    "title": "Dica do Dia",
+    "subtitle": "Lembre-se de que a consistência supera a intensidade na saúde.",
+    "readTime": "1",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_1",
+    "categoryId": "heart",
+    "title": "Compreendendo seus níveis de LDL",
+    "subtitle": "Como o colesterol afeta a saúde arterial e a longevidade.",
+    "readTime": "3",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_2",
+    "categoryId": "nutrition",
+    "title": "Gorduras boas vs. ruins",
+    "subtitle": "Aprenda a diferenciar as gorduras que suportam seu coração.",
+    "readTime": "4",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_3",
+    "categoryId": "emotional",
+    "title": "Mindfulness para o dia a dia",
+    "subtitle": "Reduzindo o cortisol para melhorar o bem-estar.",
+    "readTime": "2",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_4",
+    "categoryId": "sports",
+    "title": "O ritmo do cardio",
+    "subtitle": "Encontrando os BPMs perfeitos para resistência ou queima de gordura.",
+    "readTime": "5",
+    "imageAssetName": ""
+  },
+  {
+    "id": "art_5",
+    "categoryId": "sleep",
+    "title": "Melhor Sono, Melhor Coração",
+    "subtitle": "Por que o sono profundo é crucial para a recuperação.",
+    "readTime": "4",
+    "imageAssetName": ""
+  }
+]

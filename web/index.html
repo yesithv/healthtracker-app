@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="My Vitals - Health Tracker">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="My Vitals">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>My Vitals</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script>
+    // Register the sqflite service worker required by sqflite_common_ffi_web
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sqflite_sw.js').then(function(registration) {
+        console.log('[SW] sqflite service worker registered:', registration.scope);
+      }).catch(function(error) {
+        console.warn('[SW] sqflite service worker registration failed:', error);
+      });
+    }
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
