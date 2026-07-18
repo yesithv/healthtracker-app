@@ -21,11 +21,18 @@ class LocaleUnitsProvider extends ChangeNotifier {
     _load();
   }
 
+  /// Idioma inicial autodetectado del DISPOSITIVO: recorre la lista de idiomas
+  /// preferidos del sistema (en orden) y toma el primero que la app soporta; si
+  /// ninguno lo está, cae a español (público principal hispanohablante). Solo
+  /// aplica cuando el usuario NO ha elegido idioma manualmente (ver [_load]); su
+  /// elección en preferencias siempre manda.
   static Locale _defaultLocale() {
-    final code = ui.PlatformDispatcher.instance.locale.languageCode;
-    return supportedLanguages.contains(code)
-        ? Locale(code)
-        : const Locale('en');
+    for (final locale in ui.PlatformDispatcher.instance.locales) {
+      if (supportedLanguages.contains(locale.languageCode)) {
+        return Locale(locale.languageCode);
+      }
+    }
+    return const Locale('es');
   }
 
   Future<void> _load() async {
@@ -60,6 +67,28 @@ class LocaleUnitsProvider extends ChangeNotifier {
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_unitKey, unit.name);
+  }
+
+  /// Aplica idioma/unidades por defecto SOLO si el usuario nunca ha elegido
+  /// (no pisa una preferencia persistida). Pensado para el login de un paciente
+  /// migrado del legacy: español + sistema métrico.
+  Future<void> ensureDefaults({String? languageCode, MeasurementUnit? unit}) async {
+    final prefs = await SharedPreferences.getInstance();
+    var changed = false;
+
+    if (languageCode != null &&
+        prefs.getString(_langKey) == null &&
+        supportedLanguages.contains(languageCode)) {
+      _locale = Locale(languageCode);
+      await prefs.setString(_langKey, languageCode);
+      changed = true;
+    }
+    if (unit != null && prefs.getString(_unitKey) == null) {
+      _unit = unit;
+      await prefs.setString(_unitKey, unit.name);
+      changed = true;
+    }
+    if (changed) notifyListeners();
   }
 
   /// Re-reads language/unit from storage (e.g. after a restored backup).

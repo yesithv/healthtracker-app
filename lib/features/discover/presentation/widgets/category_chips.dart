@@ -1,56 +1,75 @@
 import 'package:flutter/material.dart';
 
+import '../theme/discover_palette.dart';
+
+/// Horizontal, icon-led category filter. Works on stable category *keys* so the
+/// selection logic never depends on translated labels.
 class CategoryChips extends StatelessWidget {
-  final List<String> categories;
-  final String selectedCategory;
+  final List<String> categoryKeys;
+  final String selectedKey;
+  final String Function(String key) labelFor;
   final ValueChanged<String> onSelected;
 
   const CategoryChips({
     super.key,
-    required this.categories,
-    required this.selectedCategory,
+    required this.categoryKeys,
+    required this.selectedKey,
+    required this.labelFor,
     required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        children: categories.map((category) {
-          final isSelected = category == selectedCategory;
-          final primaryColor = Theme.of(context).colorScheme.primary;
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: categoryKeys.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final key = categoryKeys[index];
+          final isSelected = key == selectedKey;
+          final accent =
+              key == 'all' ? DiscoverPalette.brand : DiscoverPalette.of(key).accent;
 
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ChoiceChip(
-              label: Text(
-                category,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black87,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          return Material(
+            color: isSelected ? accent : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => onSelected(key),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected ? accent : const Color(0xFFE2E8F0),
+                  ),
                 ),
-              ),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) {
-                  onSelected(category);
-                }
-              },
-              selectedColor: primaryColor,
-              backgroundColor: Colors.white,
-              showCheckmark: false,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: BorderSide(
-                  color: isSelected ? primaryColor : Colors.grey.shade300,
-                  width: 1,
+                child: Row(
+                  children: [
+                    Icon(
+                      DiscoverPalette.chipIcon(key),
+                      size: 16,
+                      color: isSelected ? Colors.white : accent,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      labelFor(key),
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : const Color(0xFF334155),
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                        fontSize: 13.5,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           );
-        }).toList(),
+        },
       ),
     );
   }

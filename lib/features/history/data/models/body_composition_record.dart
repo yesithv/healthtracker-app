@@ -5,6 +5,10 @@ class BodyCompositionRecord {
   final DateTime date;
   final double? bodyFatPercent;
   final double? muscleMassKg;
+
+  /// % de músculo esquelético — es lo que reporta la báscula OMRON y lo que
+  /// guardaba el legacy ([muscleMassKg] queda para básculas que entregan kg).
+  final double? musclePct;
   final int? visceralFatLevel;
   final int? metabolicAge;
   final int? bmrKcal;
@@ -21,6 +25,7 @@ class BodyCompositionRecord {
     required this.date,
     this.bodyFatPercent,
     this.muscleMassKg,
+    this.musclePct,
     this.visceralFatLevel,
     this.metabolicAge,
     this.bmrKcal,
@@ -41,6 +46,7 @@ class BodyCompositionRecord {
       'measurement_date': date.toIso8601String(),
       'body_fat_percent': bodyFatPercent,
       'muscle_mass_kg': muscleMassKg,
+      'muscle_pct': musclePct,
       'visceral_fat_level': visceralFatLevel,
       'metabolic_age': metabolicAge,
       'bmr_kcal': bmrKcal,
@@ -60,6 +66,7 @@ class BodyCompositionRecord {
       date: DateTime.parse(map['measurement_date']),
       bodyFatPercent: map['body_fat_percent'],
       muscleMassKg: map['muscle_mass_kg'],
+      musclePct: map['muscle_pct'],
       visceralFatLevel: map['visceral_fat_level'],
       metabolicAge: map['metabolic_age'],
       bmrKcal: map['bmr_kcal'],

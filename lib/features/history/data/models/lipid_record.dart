@@ -9,6 +9,10 @@ class LipidRecord {
   final double? vldl;
   final double? triglycerides;
   final String? labName;
+
+  /// Código del laboratorio elegido del catálogo (vocabulario controlado,
+  /// `laboratory.code`). null = "Otro" (ver [labName]) o "No sé/Ninguno".
+  final String? labCode;
   final String? comment;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -23,6 +27,7 @@ class LipidRecord {
     this.vldl,
     this.triglycerides,
     this.labName,
+    this.labCode,
     this.comment,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -41,6 +46,7 @@ class LipidRecord {
       'vldl': vldl,
       'triglycerides': triglycerides,
       'lab_name': labName,
+      'lab_code': labCode,
       'comment': comment,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
@@ -58,6 +64,7 @@ class LipidRecord {
       vldl: map['vldl'],
       triglycerides: map['triglycerides'],
       labName: map['lab_name'],
+      labCode: map['lab_code'],
       comment: map['comment'],
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),

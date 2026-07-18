@@ -1,0 +1,176 @@
+{
+  "dailyTips": [
+    { "id": "tip_1", "text": "Bebe un vaso de agua al despertar para activar tu metabolismo." },
+    { "id": "tip_2", "text": "Haz 5 minutos de estiramientos por cada hora que pases sentado." },
+    { "id": "tip_3", "text": "Apunta a 7-8 horas de sueño de calidad para favorecer la recuperación." },
+    { "id": "tip_4", "text": "Come un puñado de nueces al día; son ricas en grasas saludables." },
+    { "id": "tip_5", "text": "Realiza una caminata ligera de 15 minutos tras el almuerzo." },
+    { "id": "tip_6", "text": "Practica ejercicios de respiración profunda para reducir el estrés." },
+    { "id": "tip_7", "text": "Sustituye los carbohidratos simples por cereales integrales." },
+    { "id": "tip_8", "text": "Limita el tiempo de pantalla 30 minutos antes de dormir." },
+    { "id": "tip_9", "text": "Consume al menos una ración de hojas verdes oscuras hoy." },
+    { "id": "tip_10", "text": "Controla tu consumo de sodio para cuidar tu presión arterial." },
+    { "id": "tip_11", "text": "Levántate y camina un poco mientras hablas por teléfono." },
+    { "id": "tip_12", "text": "Medita 5 minutos para cuidar tu salud emocional." },
+    { "id": "tip_13", "text": "Opta por fruta entera en lugar de jugo de fruta." },
+    { "id": "tip_14", "text": "Mantén tu habitación fresca y oscura para dormir mejor." },
+    { "id": "tip_15", "text": "Recuerda: la constancia supera a la intensidad en tu salud." }
+  ],
+  "articles": [
+    {
+      "id": "art_ldl",
+      "category": "heart",
+      "title": "Comprendiendo tus niveles de LDL",
+      "subtitle": "Cómo el colesterol impacta tu salud arterial y tu longevidad.",
+      "body": "El colesterol LDL, conocido como \"colesterol malo\", puede acumularse en las paredes de tus arterias. Mantener niveles saludables mediante dieta, ejercicio y seguimiento regular reduce el riesgo cardiovascular. Registra tu perfil lipídico y observa la tendencia en el tiempo.",
+      "author": "Equipo HealthTracker",
+      "readTime": "3",
+      "featured": true
+    },
+    {
+      "id": "art_cardio_rhythm",
+      "category": "sports",
+      "title": "El ritmo del cardio",
+      "subtitle": "Encuentra los BPM perfectos para quemar grasa o ganar resistencia.",
+      "body": "Trabajar dentro de tu zona de frecuencia cardíaca objetivo maximiza los beneficios del ejercicio. Para quemar grasa, mantente entre el 60-70% de tu frecuencia máxima; para resistencia, sube al 70-85%.",
+      "author": "Coach Pedro",
+      "readTime": "5",
+      "featured": true
+    },
+    {
+      "id": "art_fats",
+      "category": "nutrition",
+      "title": "Grasas buenas vs. grasas malas",
+      "subtitle": "Aprende a diferenciar las grasas que cuidan tu corazón.",
+      "author": "Dra. Ana Ruiz",
+      "readTime": "4",
+      "featured": false
+    },
+    {
+      "id": "art_hydration",
+      "category": "nutrition",
+      "title": "Hidratación y rendimiento",
+      "subtitle": "Por qué beber suficiente agua mejora tu energía y concentración.",
+      "author": "Coach Pedro",
+      "readTime": "3",
+      "featured": false
+    },
+    {
+      "id": "art_mindfulness",
+      "category": "emotional",
+      "title": "Mindfulness cotidiano",
+      "subtitle": "Reduce el cortisol y mejora tu bienestar en minutos al día.",
+      "author": "Dra. Ana Ruiz",
+      "readTime": "2",
+      "featured": false
+    },
+    {
+      "id": "art_sleep_heart",
+      "category": "sleep",
+      "title": "Mejor sueño, mejor corazón",
+      "subtitle": "Por qué el sueño profundo es vital para tu recuperación.",
+      "author": "Equipo HealthTracker",
+      "readTime": "4",
+      "featured": false
+    },
+    {
+      "id": "art_sleep_habits",
+      "category": "sleep",
+      "title": "5 hábitos para dormir mejor",
+      "subtitle": "Pequeños cambios de rutina para un descanso reparador.",
+      "author": "Dra. Ana Ruiz",
+      "readTime": "3",
+      "featured": false
+    },
+    {
+      "id": "art_heart_rate",
+      "category": "heart",
+      "title": "Cómo medir tu ritmo cardíaco",
+      "subtitle": "Guía práctica para tomar tu pulso en reposo con precisión.",
+      "author": "Equipo HealthTracker",
+      "readTime": "2",
+      "featured": false
+    }
+  ],
+  "routines": [
+    {
+      "id": "rt_hiit",
+      "title": "Cardio HIIT 20 min",
+      "subtitle": "Intervalos de alta intensidad para quemar grasa.",
+      "category": "sports",
+      "level": "Intermedio",
+      "durationMin": 20,
+      "exercises": 8
+    },
+    {
+      "id": "rt_upper",
+      "title": "Fuerza tren superior",
+      "subtitle": "Pecho, espalda y brazos con progresión de carga.",
+      "category": "sports",
+      "level": "Avanzado",
+      "durationMin": 45,
+      "exercises": 10
+    },
+    {
+      "id": "rt_yoga",
+      "title": "Yoga para principiantes",
+      "subtitle": "Flexibilidad y calma para empezar el día.",
+      "category": "emotional",
+      "level": "Principiante",
+      "durationMin": 30,
+      "exercises": 12
+    },
+    {
+      "id": "rt_walk",
+      "title": "Caminata activa",
+      "subtitle": "Cardio suave ideal para la salud del corazón.",
+      "category": "heart",
+      "level": "Principiante",
+      "durationMin": 25,
+      "exercises": 3
+    },
+    {
+      "id": "rt_mobility",
+      "title": "Movilidad y estiramiento",
+      "subtitle": "Libera tensión y mejora tu rango de movimiento.",
+      "category": "sports",
+      "level": "Principiante",
+      "durationMin": 15,
+      "exercises": 6
+    }
+  ],
+  "challenges": [
+    {
+      "id": "ch_steps",
+      "title": "Reto 10.000 pasos",
+      "goal": "10.000 pasos diarios durante 30 días.",
+      "participants": 3240,
+      "status": "Activo",
+      "durationDays": 30
+    },
+    {
+      "id": "ch_hydrate",
+      "title": "Hidrátate cada día",
+      "goal": "Bebe 2 litros de agua al día durante 3 semanas.",
+      "participants": 2450,
+      "status": "Activo",
+      "durationDays": 21
+    },
+    {
+      "id": "ch_sugar",
+      "title": "Semana sin azúcar",
+      "goal": "7 días sin azúcar añadido.",
+      "participants": 1180,
+      "status": "Programado",
+      "durationDays": 7
+    },
+    {
+      "id": "ch_marathon",
+      "title": "Maratón de mayo",
+      "goal": "Correr 42 km a lo largo del mes.",
+      "participants": 870,
+      "status": "Finalizado",
+      "durationDays": 31
+    }
+  ]
+}

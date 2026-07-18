@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/language_selection_screen.dart'
@@ -31,9 +32,13 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _emailController;
+  late TextEditingController _phoneController;
   DateTime? _selectedDate;
   String _selectedGender = '';
   String _selectedActivityLevel = 'sedentary';
+  // Prefijo del teléfono Y país del paciente a la vez: elegir '+57' ya nos dice
+  // el país (captura implícita, sin campo extra). Default: locale del dispositivo.
+  late Country _selectedCountry;
 
   // Validation error states
   bool _nameError = false;
@@ -46,15 +51,19 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
     final prefs = Provider.of<UserProfileProvider>(context, listen: false);
     _nameController = TextEditingController(text: prefs.userName);
     _emailController = TextEditingController(text: prefs.userEmail);
+    _phoneController = TextEditingController(text: prefs.userPhone);
     _selectedDate = prefs.birthDate;
     _selectedGender = prefs.userGender;
     _selectedActivityLevel = prefs.userActivityLevel;
+    _selectedCountry =
+        Countries.byIso(prefs.userCountryCode) ?? Countries.deviceDefault();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -66,7 +75,32 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
       email: _emailController.text,
       gender: _selectedGender,
       activityLevel: _selectedActivityLevel,
+      phone: _phoneController.text,
+      countryCode: _selectedCountry.iso,
     );
+  }
+
+  /// Bottom sheet con el catálogo de países (bandera + nombre + prefijo) y
+  /// búsqueda por nombre o prefijo.
+  Future<void> _pickCountry() async {
+    final l10n = AppLocalizations.of(context)!;
+    final picked = await showModalBottomSheet<Country>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => _CountryPickerSheet(
+        title: l10n.selectCountry,
+        searchHint: l10n.searchCountry,
+        selected: _selectedCountry,
+      ),
+    );
+    if (picked != null && picked.iso != _selectedCountry.iso) {
+      setState(() => _selectedCountry = picked);
+      _saveCurrentState();
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -141,6 +175,8 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                 email: _emailController.text,
                 gender: _selectedGender,
                 activityLevel: _selectedActivityLevel,
+                phone: _phoneController.text,
+                countryCode: _selectedCountry.iso,
               );
               if (widget.onNext != null) {
                 widget.onNext!();
@@ -240,6 +276,63 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                     Icons.email_outlined,
                     const Color(0xFF8B5CF6),
                   ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // --- Phone with country prefix (optional) ---
+                // El picker de prefijo captura además el país del paciente
+                // (WhatsApp/marketing) sin pedirlo como campo aparte.
+                _buildLabel(l10n.phoneOptional, required: false),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: _pickCountry,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height: 56,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_selectedCountry.flag,
+                                style: const TextStyle(fontSize: 20)),
+                            const SizedBox(width: 6),
+                            Text(
+                              _selectedCountry.dialCode,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF1E293B),
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: Color(0xFF64748B),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _phoneController,
+                        onChanged: (_) => _saveCurrentState(),
+                        keyboardType: TextInputType.phone,
+                        decoration: _inputDecoration(
+                          '300 123 4567',
+                          Icons.phone_outlined,
+                          const Color(0xFF0EA5E9),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 20),
@@ -543,6 +636,135 @@ class _ActivityLevelOption extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Selector de país (bandera + nombre + prefijo) con búsqueda. Devuelve el
+/// [Country] elegido vía Navigator.pop.
+class _CountryPickerSheet extends StatefulWidget {
+  final String title;
+  final String searchHint;
+  final Country selected;
+
+  const _CountryPickerSheet({
+    required this.title,
+    required this.searchHint,
+    required this.selected,
+  });
+
+  @override
+  State<_CountryPickerSheet> createState() => _CountryPickerSheetState();
+}
+
+class _CountryPickerSheetState extends State<_CountryPickerSheet> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final query = _query.trim().toLowerCase();
+    final results = query.isEmpty
+        ? Countries.all
+        : Countries.all
+            .where((c) =>
+                c.name.toLowerCase().contains(query) ||
+                c.dialCode.contains(query))
+            .toList();
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                child: Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  autofocus: false,
+                  onChanged: (v) => setState(() => _query = v),
+                  decoration: InputDecoration(
+                    hintText: widget.searchHint,
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: Color(0xFF64748B), size: 20),
+                    filled: true,
+                    fillColor: const Color(0xFFF8FAFC),
+                    contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: results.length,
+                  itemBuilder: (context, i) {
+                    final country = results[i];
+                    final isSelected = country.iso == widget.selected.iso;
+                    return ListTile(
+                      onTap: () => Navigator.pop(context, country),
+                      leading: Text(country.flag,
+                          style: const TextStyle(fontSize: 22)),
+                      title: Text(
+                        country.name,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.w500,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            country.dialCode,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                          if (isSelected) ...[
+                            const SizedBox(width: 8),
+                            const Icon(Icons.check_circle_rounded,
+                                color: Color(0xFF10B981), size: 18),
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

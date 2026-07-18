@@ -33,6 +33,14 @@ class _RecordAnthropometricScreenState
 
   final TextEditingController _commentController = TextEditingController();
 
+  // Perímetros corporales (cm), opcionales — los mismos que mide la consulta.
+  final _waistController = TextEditingController();
+  final _hipController = TextEditingController();
+  final _lowerAbdomenController = TextEditingController();
+  final _armController = TextEditingController();
+  final _legController = TextEditingController();
+  final _chestBustController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -41,17 +49,38 @@ class _RecordAnthropometricScreenState
       selectedDate = r.date;
       selectedTime = TimeOfDay.fromDateTime(r.date);
       weight = r.weight;
-      height = r.height;
+      // Registros importados del servidor pueden traer la talla en metros.
+      height = r.height < 3 ? r.height * 100 : r.height;
       manualBmi = r.bmi;
       _commentController.text = r.comment ?? '';
+      _waistController.text = _cmToText(r.waistCm);
+      _hipController.text = _cmToText(r.hipCm);
+      _lowerAbdomenController.text = _cmToText(r.lowerAbdomenCm);
+      _armController.text = _cmToText(r.armCm);
+      _legController.text = _cmToText(r.legCm);
+      _chestBustController.text = _cmToText(r.chestBustCm);
     }
   }
 
   @override
   void dispose() {
     _commentController.dispose();
+    _waistController.dispose();
+    _hipController.dispose();
+    _lowerAbdomenController.dispose();
+    _armController.dispose();
+    _legController.dispose();
+    _chestBustController.dispose();
     super.dispose();
   }
+
+  static String _cmToText(double? v) {
+    if (v == null) return '';
+    return v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  }
+
+  double? _cmValue(TextEditingController c) =>
+      double.tryParse(c.text.trim().replaceAll(',', '.'));
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -303,6 +332,10 @@ class _RecordAnthropometricScreenState
                     );
                   }),
                   const SizedBox(height: 32),
+                  _buildSectionTitle('PERÍMETROS CORPORALES (OPCIONAL)'),
+                  const SizedBox(height: 12),
+                  _buildCircumferencesCard(),
+                  const SizedBox(height: 32),
                   _buildSectionTitle(l10n.commentOptional),
                   const SizedBox(height: 12),
                   _buildCommentBox(l10n),
@@ -324,6 +357,12 @@ class _RecordAnthropometricScreenState
                           weight: weight,
                           height: height,
                           bmi: currentBmi,
+                          waistCm: _cmValue(_waistController),
+                          hipCm: _cmValue(_hipController),
+                          lowerAbdomenCm: _cmValue(_lowerAbdomenController),
+                          armCm: _cmValue(_armController),
+                          legCm: _cmValue(_legController),
+                          chestBustCm: _cmValue(_chestBustController),
                           comment: _commentController.text.trim().isEmpty
                               ? null
                               : _commentController.text.trim(),
@@ -744,6 +783,88 @@ class _RecordAnthropometricScreenState
       fontWeight: FontWeight.bold,
       color: Color(0xFF94A3B8),
       letterSpacing: 0.5,
+    );
+  }
+
+  /// Tarjeta con los 6 perímetros (cm) que también mide la consulta. Todos
+  /// opcionales: se guarda solo lo diligenciado.
+  Widget _buildCircumferencesCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(children: [
+            Expanded(child: _buildCmField('Cintura', _waistController)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildCmField('Cadera', _hipController)),
+          ]),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: _buildCmField('Abdomen bajo', _lowerAbdomenController)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildCmField('Brazo', _armController)),
+          ]),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: _buildCmField('Pierna', _legController)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildCmField('Pecho/Busto', _chestBustController)),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCmField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF64748B),
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+          ],
+          decoration: InputDecoration(
+            hintText: '— cm',
+            hintStyle: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 13),
+            suffixText: 'cm',
+            suffixStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: MetricColors.anthropoColor,
+            ),
+            filled: true,
+            fillColor: const Color(0xFFF8FAFC),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          ),
+        ),
+      ],
     );
   }
 

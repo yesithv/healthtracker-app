@@ -24,8 +24,9 @@ class DatabaseService {
       return await databaseFactory.openDatabase(
         filePath,
         options: OpenDatabaseOptions(
-          version: 1,
+          version: _dbVersion,
           onCreate: _createDB,
+          onUpgrade: _upgradeDB,
         ),
       );
     }
@@ -35,9 +36,35 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: _dbVersion,
       onCreate: _createDB,
+      onUpgrade: _upgradeDB,
     );
+  }
+
+  /// Bumped whenever the schema changes. v2: `lab_code` on lipid_records (lab picker).
+  /// v3: perímetros corporales en anthropometric_records + muscle_pct en
+  /// body_composition_records (paridad con lo que guarda el legacy).
+  static const int _dbVersion = 3;
+
+  /// Incremental migrations for existing installs. Each step is idempotent-friendly
+  /// and additive (no destructive changes to the user's local data).
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE lipid_records ADD COLUMN lab_code TEXT');
+    }
+    if (oldVersion < 3) {
+      for (final col in [
+        'waist_cm', 'hip_cm', 'lower_abdomen_cm', 'arm_cm', 'leg_cm', 'chest_bust_cm',
+      ]) {
+        await db.execute('ALTER TABLE anthropometric_records ADD COLUMN $col REAL');
+      }
+      await db.execute('ALTER TABLE body_composition_records ADD COLUMN muscle_pct REAL');
+      // Normaliza tallas importadas del servidor en METROS (< 3) al canon local en cm:
+      // la captura siempre produjo cm (mínimo 50), así que < 3 solo puede ser metros.
+      await db.execute(
+          'UPDATE anthropometric_records SET height = height * 100 WHERE height < 3');
+    }
   }
 
   Future _createDB(Database db, int version) async {
@@ -53,6 +80,12 @@ CREATE TABLE anthropometric_records (
   weight $realType NOT NULL,
   height $realType NOT NULL,
   bmi $realType NOT NULL,
+  waist_cm $realType,
+  hip_cm $realType,
+  lower_abdomen_cm $realType,
+  arm_cm $realType,
+  leg_cm $realType,
+  chest_bust_cm $realType,
   comment $textType,
   created_at $textType NOT NULL,
   updated_at $textType NOT NULL,
@@ -86,6 +119,7 @@ CREATE TABLE lipid_records (
   vldl $realType,
   triglycerides $realType,
   lab_name $textType,
+  lab_code $textType,
   comment $textType,
   created_at $textType NOT NULL,
   updated_at $textType NOT NULL,
@@ -99,6 +133,7 @@ CREATE TABLE body_composition_records (
   measurement_date $textType NOT NULL,
   body_fat_percent $realType,
   muscle_mass_kg $realType,
+  muscle_pct $realType,
   visceral_fat_level $integerType,
   metabolic_age $integerType,
   bmr_kcal $integerType,

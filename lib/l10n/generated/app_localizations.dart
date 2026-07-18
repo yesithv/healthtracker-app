@@ -536,6 +536,24 @@ abstract class AppLocalizations {
   /// **'Email (Optional)'**
   String get emailOptional;
 
+  /// No description provided for @phoneOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (Optional)'**
+  String get phoneOptional;
+
+  /// No description provided for @selectCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your country'**
+  String get selectCountry;
+
+  /// No description provided for @searchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country'**
+  String get searchCountry;
+
   /// No description provided for @gender.
   ///
   /// In en, this message translates to:
@@ -1339,6 +1357,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MIN READ'**
   String get discoverMinRead;
+
+  /// No description provided for @discoverFeatured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get discoverFeatured;
+
+  /// No description provided for @discoverRoutines.
+  ///
+  /// In en, this message translates to:
+  /// **'Routines'**
+  String get discoverRoutines;
+
+  /// No description provided for @discoverArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get discoverArticles;
+
+  /// No description provided for @discoverChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenges'**
+  String get discoverChallenges;
+
+  /// No description provided for @discoverSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get discoverSeeAll;
+
+  /// No description provided for @discoverMinShort.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get discoverMinShort;
+
+  /// No description provided for @discoverStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get discoverStart;
+
+  /// No description provided for @discoverJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get discoverJoin;
+
+  /// No description provided for @discoverLevelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get discoverLevelBeginner;
+
+  /// No description provided for @discoverLevelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get discoverLevelIntermediate;
+
+  /// No description provided for @discoverLevelAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get discoverLevelAdvanced;
+
+  /// No description provided for @discoverStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get discoverStatusActive;
+
+  /// No description provided for @discoverStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get discoverStatusScheduled;
+
+  /// No description provided for @discoverStatusFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get discoverStatusFinished;
+
+  /// No description provided for @discoverEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No content available yet.'**
+  String get discoverEmpty;
+
+  /// No description provided for @discoverExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises'**
+  String discoverExercises(String count);
+
+  /// No description provided for @discoverParticipants.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} participants'**
+  String discoverParticipants(String count);
+
+  /// No description provided for @discoverDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String discoverDaysShort(String count);
 
   /// No description provided for @privacySecurityDescription.
   ///

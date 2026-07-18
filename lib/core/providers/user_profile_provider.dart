@@ -17,6 +17,10 @@ class UserProfileProvider extends ChangeNotifier {
   String _userEmail = '';
   String _userGender = '';
   String _userActivityLevel = 'sedentary';
+  // Teléfono local (sin prefijo) y país ISO 3166-1 alpha-2 ('CO'). El prefijo
+  // telefónico se deriva del país vía el catálogo Countries.
+  String _userPhone = '';
+  String _userCountryCode = '';
 
   // Legacy base64 blob in SharedPreferences. Still the storage on web (no
   // filesystem), and read once on mobile to migrate into [_imageFileName].
@@ -30,7 +34,14 @@ class UserProfileProvider extends ChangeNotifier {
   static const String _emailKey = 'user_email';
   static const String _genderKey = 'user_gender';
   static const String _activityLevelKey = 'user_activity_level';
+  static const String _phoneKey = 'user_phone';
+  static const String _countryKey = 'user_country';
   static const String _biometricKey = 'user_biometric_enabled';
+  static const String _defaultDeviceKey = 'default_device_name';
+
+  /// Báscula/bioimpedancia habitual del usuario ('' = ninguna configurada).
+  String _defaultDeviceName = '';
+  String get defaultDeviceName => _defaultDeviceName;
 
   bool _isBiometricEnabled = false;
   bool _isReady = false;
@@ -42,6 +53,8 @@ class UserProfileProvider extends ChangeNotifier {
   String get userEmail => _userEmail;
   String get userGender => _userGender;
   String get userActivityLevel => _userActivityLevel;
+  String get userPhone => _userPhone;
+  String get userCountryCode => _userCountryCode;
   bool get isBiometricEnabled => _isBiometricEnabled;
   bool get isReady => _isReady;
   Future<void> get ready => _readyCompleter.future;
@@ -101,12 +114,16 @@ class UserProfileProvider extends ChangeNotifier {
     required String email,
     required String gender,
     required String activityLevel,
+    String? phone,
+    String? countryCode,
   }) async {
     _userName = name;
     _birthDate = dob;
     _userEmail = email;
     _userGender = gender;
     _userActivityLevel = activityLevel;
+    if (phone != null) _userPhone = phone;
+    if (countryCode != null) _userCountryCode = countryCode;
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
@@ -119,6 +136,56 @@ class UserProfileProvider extends ChangeNotifier {
     await prefs.setString(_emailKey, email);
     await prefs.setString(_genderKey, gender);
     await prefs.setString(_activityLevelKey, activityLevel);
+    if (phone != null) await prefs.setString(_phoneKey, phone);
+    if (countryCode != null) await prefs.setString(_countryKey, countryCode);
+  }
+
+  /// Fills profile fields from the server (after a migrated/existing patient logs
+  /// in) WITHOUT clobbering anything the user may have already set locally: only
+  /// empty fields are populated. Lets the dashboard/profile show the patient's
+  /// name, birth date, email and gender right after login without sending them
+  /// through the onboarding wizard.
+  Future<void> hydrateIdentity({
+    String? name,
+    String? email,
+    DateTime? birthDate,
+    String? gender,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    var changed = false;
+
+    if (_userName.trim().isEmpty && name != null && name.trim().isNotEmpty) {
+      _userName = name.trim();
+      await prefs.setString(_userNameKey, _userName);
+      changed = true;
+    }
+    if (_userEmail.trim().isEmpty && email != null && email.trim().isNotEmpty) {
+      _userEmail = email.trim();
+      await prefs.setString(_emailKey, _userEmail);
+      changed = true;
+    }
+    if (_birthDate == null && birthDate != null) {
+      _birthDate = birthDate;
+      await prefs.setString(_birthDateKey, birthDate.toIso8601String());
+      changed = true;
+    }
+    if (_userGender.trim().isEmpty && gender != null && gender.trim().isNotEmpty) {
+      _userGender = gender.trim();
+      await prefs.setString(_genderKey, _userGender);
+      changed = true;
+    }
+    if (changed) notifyListeners();
+  }
+
+  /// Dispositivo de medición por defecto (se precarga en los registros de
+  /// composición corporal). Solo se fija si aún no había uno: la elección del
+  /// usuario siempre manda.
+  Future<void> setDefaultDeviceIfUnset(String name) async {
+    if (_defaultDeviceName.isNotEmpty || name.trim().isEmpty) return;
+    _defaultDeviceName = name.trim();
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_defaultDeviceKey, _defaultDeviceName);
   }
 
   /// Resolves the in-memory [_profileImageBase64] from persistent storage.
@@ -166,6 +233,9 @@ class UserProfileProvider extends ChangeNotifier {
     _userEmail = prefs.getString(_emailKey) ?? '';
     _userGender = prefs.getString(_genderKey) ?? '';
     _userActivityLevel = prefs.getString(_activityLevelKey) ?? 'sedentary';
+    _userPhone = prefs.getString(_phoneKey) ?? '';
+    _userCountryCode = prefs.getString(_countryKey) ?? '';
+    _defaultDeviceName = prefs.getString(_defaultDeviceKey) ?? '';
 
     _isBiometricEnabled = prefs.getBool(_biometricKey) ?? false;
 

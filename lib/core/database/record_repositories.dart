@@ -112,6 +112,33 @@ abstract class RecordRepository<T> extends ChangeNotifier {
     final result = await db.rawQuery('SELECT COUNT(*) FROM $table');
     return Sqflite.firstIntValue(result) ?? 0;
   }
+
+  /// Records not yet pushed to the server (`is_synced = 0`), oldest first so the
+  /// server receives them in chronological order. Backs the outbound sync.
+  Future<List<T>> getUnsynced() async {
+    final db = await _db;
+    final maps = await db.query(
+      table,
+      where: 'is_synced = ?',
+      whereArgs: [0],
+      orderBy: 'measurement_date ASC',
+    );
+    return maps.map(fromMap).toList();
+  }
+
+  /// Marks the given ids as synced (`is_synced = 1`) after a successful upload,
+  /// then refreshes the cache. No-op on an empty list.
+  Future<void> markSynced(Iterable<String> ids) async {
+    final list = ids.toList();
+    if (list.isEmpty) return;
+    final db = await _db;
+    final placeholders = List.filled(list.length, '?').join(',');
+    await db.rawUpdate(
+      'UPDATE $table SET is_synced = 1 WHERE id IN ($placeholders)',
+      list,
+    );
+    await refresh();
+  }
 }
 
 class AnthropometricRepository extends RecordRepository<AnthropometricRecord> {

@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
+import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
-import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/language_selection_screen.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/measurement_units_screen.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'onboarding_welcome_page.dart';
 import 'onboarding_avatar_page.dart';
 
-/// The 5-step onboarding wizard shell.
+/// The 3-step onboarding wizard shell (datos → unidades → avatar).
+/// La portada de bienvenida vive en /welcome; el idioma se autodetecta del
+/// dispositivo (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
 /// Wraps a [PageView] with step indicators, Next/Finish buttons,
 /// and embeds shared profile screens via their `onNext` / `showAppBar` params.
 class OnboardingShell extends StatefulWidget {
-  const OnboardingShell({super.key});
+  /// When true, finishing the wizard creates the patient account (register,
+  /// source=APP) with the collected profile. When false the wizard is local-only
+  /// ("usar sin cuenta"): the account can be linked later from Profile.
+  final bool createAccount;
+
+  const OnboardingShell({super.key, this.createAccount = false});
 
   @override
   State<OnboardingShell> createState() => _OnboardingShellState();
@@ -23,11 +32,9 @@ class OnboardingShell extends StatefulWidget {
 class _OnboardingShellState extends State<OnboardingShell> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  static const int _totalPages = 5;
+  static const int _totalPages = 3;
 
-  // GlobalKeys to access embedded screen states and call validate()
-  final GlobalKey<LanguageSelectionScreenState> _languageKey =
-      GlobalKey<LanguageSelectionScreenState>();
+  // GlobalKey to access the embedded Personal Info screen state and call validate()
   final GlobalKey<PersonalInfoScreenState> _personalInfoKey =
       GlobalKey<PersonalInfoScreenState>();
 
@@ -47,14 +54,11 @@ class _OnboardingShellState extends State<OnboardingShell> {
     List<String> errors = [];
 
     switch (_currentPage) {
-      case 1: // Language — required
-        errors = _languageKey.currentState?.validate(context) ?? [];
-        break;
-      case 2: // Personal Info — name, dob, gender required
+      case 0: // Personal Info — name, dob, gender required
         errors = _personalInfoKey.currentState?.validate(context) ?? [];
         break;
-      // Step 3 (Measurement Units): always has a default → no validation needed
-      // Step 4 (Avatar): fully optional → no validation
+      // Step 1 (Measurement Units): always has a default → no validation needed
+      // Step 2 (Avatar): fully optional → no validation
       default:
         break;
     }
@@ -91,19 +95,64 @@ class _OnboardingShellState extends State<OnboardingShell> {
 
   Future<void> _finishOnboarding() async {
     final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
+    if (widget.createAccount) {
+      await _tryRegister();
+    }
     await onboarding.setComplete();
     if (mounted) context.go('/dashboard');
   }
 
-  // ── UI HELPERS ───────────────────────────────────────────────────────────────
+  /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido. No
+  /// bloquea: si no hay email o el registro falla (offline, email duplicado), el
+  /// usuario entra en modo local y puede vincular la cuenta luego desde Perfil.
+  Future<void> _tryRegister() async {
+    final profile = Provider.of<UserProfileProvider>(context, listen: false);
+    final email = profile.userEmail.trim();
+    if (email.isEmpty) return; // sin identificador no se puede crear la cuenta
 
-  /// Returns the background color for the bottom action area based on step.
-  Color _bottomBgColor() {
-    if (_currentPage == 0) return const Color(0xFF0D48A0); // Welcome (blue)
-    return const Color(0xFFF4F6F9); // Light for other steps
+    // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
+    // locale del dispositivo (captura silenciosa; el backend valida el código).
+    final country = Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
+    // Teléfono en formato internacional (prefijo + número): listo para WhatsApp.
+    final localPhone = profile.userPhone.replaceAll(RegExp(r'[^0-9]'), '');
+
+    final auth = AuthApiClient();
+    try {
+      final account = await auth.register(
+        firstName: profile.userName.trim().isEmpty ? 'Paciente' : profile.userName.trim(),
+        email: email,
+        birthDate: profile.birthDate,
+        sex: profile.userGender.isEmpty ? null : profile.userGender,
+        phone: localPhone.isEmpty ? null : '${country.dialCode}$localPhone',
+        country: country.iso,
+      );
+      await PatientSession.instance.save(
+        publicId: account.publicId,
+        firstName: account.firstName,
+        source: account.source,
+      );
+    } catch (e) {
+      debugPrint('Registro al terminar onboarding falló: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No se pudo crear la cuenta ahora; puedes vincularla luego en Perfil.'),
+          ),
+        );
+      }
+    } finally {
+      auth.close();
+    }
   }
 
-  bool get _isWelcomeStep => _currentPage == 0;
+  // ── UI HELPERS ───────────────────────────────────────────────────────────────
+
+  /// Bottom action area background. Uniform light now that the wizard starts on
+  /// the first form step (the blue welcome portada moved to /welcome).
+  Color _bottomBgColor() => const Color(0xFFF4F6F9);
+
+  // Ya no hay un paso "welcome" oscuro dentro del wizard; la barra siempre es clara.
+  bool get _isWelcomeStep => false;
 
   @override
   Widget build(BuildContext context) {
@@ -128,31 +177,21 @@ class _OnboardingShellState extends State<OnboardingShell> {
                   setState(() => _currentPage = page);
                 },
                 children: [
-                  // Step 1 — Welcome
-                  const OnboardingWelcomePage(),
-
-                  // Step 2 — Language (shared with Profile)
-                  LanguageSelectionScreen(
-                    key: _languageKey,
-                    showAppBar: false,
-                    onNext: _nextPage,
-                  ),
-
-                  // Step 3 — Personal Info (shared with Profile)
+                  // Step 1 — Personal Info (shared with Profile)
                   PersonalInfoScreen(
                     key: _personalInfoKey,
                     showAppBar: false,
                     onNext: _nextPage,
                   ),
 
-                  // Step 4 — Measurement Units (shared with Profile)
+                  // Step 2 — Measurement Units (shared with Profile)
                   // No validation needed: always has a default value
                   MeasurementUnitsScreen(
                     showAppBar: false,
                     onNext: _nextPage,
                   ),
 
-                  // Step 5 — Avatar (fully optional)
+                  // Step 3 — Avatar (fully optional)
                   const OnboardingAvatarPage(),
                 ],
               ),
@@ -225,8 +264,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
                     ],
                   ),
 
-                  // Skip text (only on avatar step, since it is fully optional)
-                  if (_currentPage == 4) ...[
+                  // Skip text (only on the last step —avatar—, fully optional)
+                  if (isLastPage) ...[
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: _finishOnboarding,

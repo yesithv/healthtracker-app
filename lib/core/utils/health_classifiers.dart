@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/lab_ranges_store.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
 
-/// Centralized, single-source-of-truth classification of health metrics.
+/// Centralized classification of health metrics.
 ///
-/// Each metric is an enhanced enum: `Category.of(...)` performs the pure
-/// classification (no UI dependency, easy to unit-test), while `.color` and
-/// `.label(l10n)` map a category to its presentation. All medical thresholds
-/// live here and nowhere else — screens must not re-derive them.
+/// La FUENTE DE VERDAD de los umbrales son los rangos administrados en el
+/// backoffice y servidos por `GET /me/reference-ranges` (ya resueltos por
+/// dispositivo/sexo/edad del paciente): cada `Category.of(...)` consulta
+/// primero [ReferenceRangesStore]. Los cortes literales que quedan abajo son
+/// SOLO el fallback offline (invitado sin sesión o primer arranque sin red) —
+/// no editarlos para "ajustar" la interpretación: eso se hace en el backoffice.
 ///
-/// The semantic colors below match the hex values previously hardcoded across
-/// the screens. Phase 6 will fold them into the app-wide design system.
+/// Los lípidos usan su propia fuente: los rangos del LABORATORIO donde se tomó
+/// cada examen ([LabRangesStore], por el `labCode` del registro), con ATP III
+/// como fallback.
 const Color _blue = Color(0xFF3B82F6); // low / near-optimal
 const Color _green = Color(0xFF10B981); // normal / optimal
 const Color _amber = Color(0xFFF59E0B); // elevated / borderline
 const Color _red = Color(0xFFEF4444); // high / out-of-range
+
+/// Clasifica [value] contra las bandas del servidor y las traduce al enum del
+/// clasificador vía [byBandCode]. Devuelve null si no hay banda aplicable o el
+/// código no está mapeado (el llamador usa su fallback de fábrica).
+T? _serverCategory<T>(String indicatorCode, num value, Map<String, T> byBandCode) {
+  final band = ReferenceRangesStore.instance.classify(indicatorCode, value);
+  if (band == null) return null;
+  return byBandCode[band.bandCode.toUpperCase()];
+}
 
 /// Blood pressure category from a systolic/diastolic reading (mmHg).
 enum BpCategory {
@@ -23,7 +37,27 @@ enum BpCategory {
   elevated,
   high;
 
+  static const _bandMap = {
+    'LOW': BpCategory.low,
+    'NORMAL': BpCategory.normal,
+    'ELEVATED': BpCategory.elevated,
+    'BORDERLINE': BpCategory.elevated,
+    'HIGH': BpCategory.high,
+    'VERY_HIGH': BpCategory.high,
+  };
+
   static BpCategory of(int systolic, int diastolic) {
+    // Servidor primero: se clasifica cada componente y gana el más severo.
+    final s = _serverCategory('BP_SYSTOLIC', systolic, _bandMap);
+    final d = _serverCategory('BP_DIASTOLIC', diastolic, _bandMap);
+    if (s != null || d != null) {
+      final cats = [?s, ?d];
+      if (cats.contains(BpCategory.high)) return BpCategory.high;
+      if (cats.contains(BpCategory.elevated)) return BpCategory.elevated;
+      if (cats.contains(BpCategory.low)) return BpCategory.low;
+      return BpCategory.normal;
+    }
+    // Fallback offline.
     if (systolic < 90 || diastolic < 60) return BpCategory.low;
     if (systolic <= 120 && diastolic <= 80) return BpCategory.normal;
     if (systolic <= 139 || diastolic <= 89) return BpCategory.elevated;
@@ -52,6 +86,15 @@ enum HrCategory {
   high;
 
   static HrCategory of(int heartRate) {
+    final s = _serverCategory('HEART_RATE', heartRate, const {
+      'LOW': HrCategory.low,
+      'NORMAL': HrCategory.normal,
+      'ELEVATED': HrCategory.high,
+      'HIGH': HrCategory.high,
+      'VERY_HIGH': HrCategory.high,
+    });
+    if (s != null) return s;
+    // Fallback offline.
     if (heartRate < 60) return HrCategory.low;
     if (heartRate <= 100) return HrCategory.normal;
     return HrCategory.high;
@@ -78,6 +121,18 @@ enum BmiCategory {
   obesity;
 
   static BmiCategory of(double bmi) {
+    final s = _serverCategory('BMI', bmi, const {
+      'UNDERWEIGHT': BmiCategory.low,
+      'LOW': BmiCategory.low,
+      'NORMAL': BmiCategory.normal,
+      'OVERWEIGHT': BmiCategory.overweight,
+      'BORDERLINE': BmiCategory.overweight,
+      'OBESE': BmiCategory.obesity,
+      'HIGH': BmiCategory.obesity,
+      'VERY_HIGH': BmiCategory.obesity,
+    });
+    if (s != null) return s;
+    // Fallback offline (cortes OMS).
     if (bmi < 18.5) return BmiCategory.low;
     if (bmi < 25) return BmiCategory.normal;
     if (bmi < 30) return BmiCategory.overweight;
@@ -108,6 +163,17 @@ enum FatCategory {
   high;
 
   static FatCategory of(double bodyFatPercent) {
+    // Servidor primero: bandas por sexo/edad del paciente (tabla OMRON del backoffice).
+    final s = _serverCategory('BODY_FAT', bodyFatPercent, const {
+      'VERY_LOW': FatCategory.veryLow,
+      'LOW': FatCategory.low,
+      'NORMAL': FatCategory.normal,
+      'ELEVATED': FatCategory.elevated,
+      'HIGH': FatCategory.elevated,
+      'VERY_HIGH': FatCategory.high,
+    });
+    if (s != null) return s;
+    // Fallback offline.
     if (bodyFatPercent < 5) return FatCategory.veryLow;
     if (bodyFatPercent < 10) return FatCategory.low;
     if (bodyFatPercent < 25) return FatCategory.normal;
@@ -138,6 +204,15 @@ enum VisceralCategory {
   high;
 
   static VisceralCategory of(int level) {
+    final s = _serverCategory('VISCERAL_FAT_LEVEL', level, const {
+      'LOW': VisceralCategory.normal,
+      'NORMAL': VisceralCategory.normal,
+      'ELEVATED': VisceralCategory.elevated,
+      'HIGH': VisceralCategory.elevated,
+      'VERY_HIGH': VisceralCategory.high,
+    });
+    if (s != null) return s;
+    // Fallback offline (escala OMRON).
     if (level <= 9) return VisceralCategory.normal;
     if (level <= 14) return VisceralCategory.elevated;
     return VisceralCategory.high;
@@ -157,39 +232,79 @@ enum VisceralCategory {
   };
 }
 
-/// Lipid panel status, shared by every cholesterol/triglyceride field
-/// (ATP III style cut-offs). Use the named constructors per field.
+/// Lipid panel status, shared by every cholesterol/triglyceride field.
+///
+/// Fuente de verdad: los rangos del LABORATORIO donde se tomó el examen
+/// ([LabRangesStore], según el `labCode` del registro). Sin lab o sin datos
+/// cacheados, caen a los cortes ATP III de fábrica.
 enum LipidStatus {
   optimal,
   nearOptimal,
   borderline,
   high;
 
-  static LipidStatus totalCholesterol(double v) {
+  /// Mapeo genérico banda→estado para los campos donde "alto es malo".
+  static const _map = {
+    'DESIRABLE': LipidStatus.optimal,
+    'OPTIMAL': LipidStatus.optimal,
+    'NORMAL': LipidStatus.optimal,
+    'NEAR_OPTIMAL': LipidStatus.nearOptimal,
+    'BORDERLINE': LipidStatus.borderline,
+    'PREDIABETES': LipidStatus.borderline,
+    'HIGH': LipidStatus.high,
+    'VERY_HIGH': LipidStatus.high,
+    'LOW': LipidStatus.borderline, // p. ej. glucosa baja: anómalo sin ser "alto"
+  };
+
+  static LipidStatus? _fromLab(String? labCode, String indicator, double v,
+      [Map<String, LipidStatus> byBand = _map]) {
+    if (labCode == null || labCode.isEmpty) return null;
+    final band = LabRangesStore.instance.classify(labCode, indicator, v);
+    if (band == null) return null;
+    return byBand[band.bandCode.toUpperCase()];
+  }
+
+  static LipidStatus totalCholesterol(double v, {String? labCode}) {
+    final s = _fromLab(labCode, 'CHOLESTEROL_TOTAL', v);
+    if (s != null) return s;
     if (v < 200) return LipidStatus.optimal;
     if (v < 240) return LipidStatus.borderline;
     return LipidStatus.high;
   }
 
-  static LipidStatus ldl(double v) {
+  static LipidStatus ldl(double v, {String? labCode}) {
+    final s = _fromLab(labCode, 'CHOLESTEROL_LDL', v);
+    if (s != null) return s;
     if (v < 100) return LipidStatus.optimal;
     if (v < 130) return LipidStatus.nearOptimal;
     if (v < 160) return LipidStatus.borderline;
     return LipidStatus.high;
   }
 
-  static LipidStatus hdl(double v) {
+  static LipidStatus hdl(double v, {String? labCode}) {
+    // HDL invierte la semántica: bajo es lo riesgoso, alto protege.
+    final s = _fromLab(labCode, 'CHOLESTEROL_HDL', v, const {
+      'LOW': LipidStatus.high,
+      'NORMAL': LipidStatus.nearOptimal,
+      'PROTECTIVE': LipidStatus.optimal,
+      'HIGH': LipidStatus.optimal,
+    });
+    if (s != null) return s;
     if (v >= 60) return LipidStatus.optimal;
     if (v >= 40) return LipidStatus.nearOptimal;
     return LipidStatus.high; // low HDL is the risky end
   }
 
-  static LipidStatus vldl(double v) {
+  static LipidStatus vldl(double v, {String? labCode}) {
+    final s = _fromLab(labCode, 'CHOLESTEROL_VLDL', v);
+    if (s != null) return s;
     if (v >= 2 && v <= 30) return LipidStatus.optimal;
     return LipidStatus.high;
   }
 
-  static LipidStatus triglycerides(double v) {
+  static LipidStatus triglycerides(double v, {String? labCode}) {
+    final s = _fromLab(labCode, 'TRIGLYCERIDES', v);
+    if (s != null) return s;
     if (v < 150) return LipidStatus.optimal;
     if (v < 200) return LipidStatus.borderline;
     return LipidStatus.high;
@@ -225,15 +340,17 @@ enum LipidStatus {
 
 /// Worst-case lipid status across the populated fields of [record], used for
 /// the dashboard/history "overall" indicator. Falls back to [LipidStatus.optimal]
-/// when the record has no values.
+/// when the record has no values. Usa los rangos del laboratorio del registro
+/// ([LipidRecord.labCode]) cuando están cacheados.
 LipidStatus overallLipidStatus(LipidRecord record) {
+  final lab = record.labCode;
   final statuses = <LipidStatus>[
     if (record.totalCholesterol != null)
-      LipidStatus.totalCholesterol(record.totalCholesterol!),
-    if (record.ldl != null) LipidStatus.ldl(record.ldl!),
-    if (record.hdl != null) LipidStatus.hdl(record.hdl!),
+      LipidStatus.totalCholesterol(record.totalCholesterol!, labCode: lab),
+    if (record.ldl != null) LipidStatus.ldl(record.ldl!, labCode: lab),
+    if (record.hdl != null) LipidStatus.hdl(record.hdl!, labCode: lab),
     if (record.triglycerides != null)
-      LipidStatus.triglycerides(record.triglycerides!),
+      LipidStatus.triglycerides(record.triglycerides!, labCode: lab),
   ];
   if (statuses.isEmpty) return LipidStatus.optimal;
   // Severity grows with the enum index: optimal < nearOptimal < borderline < high.

@@ -9,6 +9,7 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/body_com
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
+import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
 import 'dart:math' as math;
 
@@ -34,6 +35,10 @@ class _RecordBodyCompositionScreenState
   double? bodyWater;
   double? boneMass;
 
+  /// % de músculo esquelético (opcional): es lo que reporta la báscula OMRON y
+  /// lo que guardaba el legacy; [muscleMass] (kg) queda para básculas en kg.
+  double? musclePct;
+
   final TextEditingController _commentController = TextEditingController();
   late final TextEditingController _bmrController;
 
@@ -55,6 +60,7 @@ class _RecordBodyCompositionScreenState
       if (r.metabolicAge != null) metabolicAge = r.metabolicAge!;
       bodyWater = r.bodyWaterPercent;
       boneMass = r.boneMassKg;
+      musclePct = r.musclePct;
       _commentController.text = r.comment ?? '';
       if (r.bmrKcal != null) _userBmr = r.bmrKcal;
     }
@@ -258,6 +264,13 @@ class _RecordBodyCompositionScreenState
 
   // ── Save ─────────────────────────────────────────────────────────────────
   Future<void> _saveRecord() async {
+    // Dispositivo: en edición se conserva el del registro; en uno nuevo se usa la
+    // báscula por defecto del perfil (p. ej. 'Omron' para pacientes del legacy).
+    final defaultDevice =
+        context.read<UserProfileProvider>().defaultDeviceName;
+    final deviceName = widget.recordToEdit?.deviceName ??
+        (defaultDevice.isEmpty ? null : defaultDevice);
+
     final record = BodyCompositionRecord(
       id: widget.recordToEdit?.id,
       date: DateTime(
@@ -269,12 +282,13 @@ class _RecordBodyCompositionScreenState
       ),
       bodyFatPercent: bodyFat,
       muscleMassKg: muscleMass,
+      musclePct: musclePct,
       visceralFatLevel: visceralFat,
       metabolicAge: metabolicAge,
       bmrKcal: _displayBmr,
       bodyWaterPercent: bodyWater,
       boneMassKg: boneMass,
-      deviceName: null,
+      deviceName: deviceName,
       comment: _commentController.text.trim().isEmpty
           ? null
           : _commentController.text.trim(),
@@ -469,6 +483,15 @@ class _RecordBodyCompositionScreenState
                     title: l10n.compositionOptionalSection,
                     child: Column(
                       children: [
+                        _buildOptionalDoubleField(
+                          label: 'Músculo esquelético',
+                          refText: 'Como lo reporta tu báscula (%)',
+                          value: musclePct,
+                          unit: '%',
+                          hint: 'Ej: 24.9',
+                          onSaved: (v) => setState(() => musclePct = v),
+                        ),
+                        const SizedBox(height: 16),
                         _buildOptionalDoubleField(
                           label: l10n.compositionBodyWater,
                           refText: l10n.compositionBodyWaterRef,
