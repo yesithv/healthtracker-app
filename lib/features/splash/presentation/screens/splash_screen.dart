@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
+import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
@@ -69,13 +70,17 @@ class _SplashScreenState extends State<SplashScreen>
     await onboarding.ready;
     if (!mounted) return;
 
-    // ── ONBOARDING CHECK ──────────────────────────────────────────────
-    // Show wizard if: first launch OR user has not completed their profile.
-    final needsOnboarding =
-        !onboarding.isComplete || prefs.userName.trim().isEmpty;
+    // ── AUTH / ONBOARDING GATE ────────────────────────────────────────
+    // Priority: an active patient session (migrated/created) goes straight in.
+    // Otherwise, a locally-configured profile (onboarding done) also goes in.
+    // A fresh install with neither lands on the Welcome gate to choose between
+    // logging in (migrated patient), creating an account, or using it offline.
+    final hasSession = PatientSession.instance.isAuthenticated;
+    final hasLocalProfile =
+        onboarding.isComplete && prefs.userName.trim().isNotEmpty;
 
-    if (needsOnboarding) {
-      context.go('/onboarding');
+    if (!hasSession && !hasLocalProfile) {
+      context.go('/welcome');
       return;
     }
 

@@ -354,10 +354,22 @@ class ProfileScreen extends StatelessWidget {
 
                 // --- MENU ITEMS ---
                 _MenuTile(
+                  icon: Icons.sync,
+                  title: 'Cuenta y sincronización',
+                  iconColor: const Color(0xFF0D48A0),
+                  onTap: () => context.push('/profile/account'),
+                ),
+                _MenuTile(
                   icon: Icons.badge_outlined,
                   title: l10n.personalInfo,
                   iconColor: const Color(0xFF0D48A0),
                   onTap: () => context.push('/profile/info'),
+                ),
+                _MenuTile(
+                  icon: Icons.monitor_heart_outlined,
+                  title: 'Mi dispositivo de medición',
+                  iconColor: const Color(0xFF0D48A0),
+                  onTap: () => context.push('/profile/device'),
                 ),
                 _MenuTile(
                   icon: Icons.flag_circle_outlined,

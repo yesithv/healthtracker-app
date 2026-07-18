@@ -1,0 +1,176 @@
+{
+  "dailyTips": [
+    { "id": "tip_1", "text": "Drink a glass of water when you wake up to kick-start your metabolism." },
+    { "id": "tip_2", "text": "Stretch for 5 minutes for every hour you spend sitting." },
+    { "id": "tip_3", "text": "Aim for 7-8 hours of quality sleep to support recovery." },
+    { "id": "tip_4", "text": "Eat a handful of nuts a day; they're rich in healthy fats." },
+    { "id": "tip_5", "text": "Take a light 15-minute walk after lunch." },
+    { "id": "tip_6", "text": "Practice deep-breathing exercises to lower stress." },
+    { "id": "tip_7", "text": "Swap simple carbs for whole grains." },
+    { "id": "tip_8", "text": "Limit screen time 30 minutes before bed." },
+    { "id": "tip_9", "text": "Have at least one serving of dark leafy greens today." },
+    { "id": "tip_10", "text": "Watch your sodium intake to help your blood pressure." },
+    { "id": "tip_11", "text": "Stand up and walk around while you're on the phone." },
+    { "id": "tip_12", "text": "Meditate for 5 minutes to care for your emotional health." },
+    { "id": "tip_13", "text": "Choose whole fruit over fruit juice." },
+    { "id": "tip_14", "text": "Keep your bedroom cool and dark for better sleep." },
+    { "id": "tip_15", "text": "Remember: consistency beats intensity for your health." }
+  ],
+  "articles": [
+    {
+      "id": "art_ldl",
+      "category": "heart",
+      "title": "Understanding your LDL levels",
+      "subtitle": "How cholesterol impacts your arterial health and longevity.",
+      "body": "LDL cholesterol, known as \"bad cholesterol\", can build up on your artery walls. Keeping healthy levels through diet, exercise and regular tracking lowers cardiovascular risk. Log your lipid profile and watch the trend over time.",
+      "author": "HealthTracker Team",
+      "readTime": "3",
+      "featured": true
+    },
+    {
+      "id": "art_cardio_rhythm",
+      "category": "sports",
+      "title": "The rhythm of cardio",
+      "subtitle": "Find the perfect BPM to burn fat or build endurance.",
+      "body": "Training within your target heart-rate zone maximizes the benefits of exercise. To burn fat, stay at 60-70% of your max; for endurance, move up to 70-85%.",
+      "author": "Coach Pedro",
+      "readTime": "5",
+      "featured": true
+    },
+    {
+      "id": "art_fats",
+      "category": "nutrition",
+      "title": "Good fats vs. bad fats",
+      "subtitle": "Learn to tell apart the fats that protect your heart.",
+      "author": "Dr. Ana Ruiz",
+      "readTime": "4",
+      "featured": false
+    },
+    {
+      "id": "art_hydration",
+      "category": "nutrition",
+      "title": "Hydration and performance",
+      "subtitle": "Why drinking enough water boosts your energy and focus.",
+      "author": "Coach Pedro",
+      "readTime": "3",
+      "featured": false
+    },
+    {
+      "id": "art_mindfulness",
+      "category": "emotional",
+      "title": "Everyday mindfulness",
+      "subtitle": "Lower cortisol and improve wellbeing in minutes a day.",
+      "author": "Dr. Ana Ruiz",
+      "readTime": "2",
+      "featured": false
+    },
+    {
+      "id": "art_sleep_heart",
+      "category": "sleep",
+      "title": "Better sleep, better heart",
+      "subtitle": "Why deep sleep is vital for your recovery.",
+      "author": "HealthTracker Team",
+      "readTime": "4",
+      "featured": false
+    },
+    {
+      "id": "art_sleep_habits",
+      "category": "sleep",
+      "title": "5 habits for better sleep",
+      "subtitle": "Small routine changes for restorative rest.",
+      "author": "Dr. Ana Ruiz",
+      "readTime": "3",
+      "featured": false
+    },
+    {
+      "id": "art_heart_rate",
+      "category": "heart",
+      "title": "How to measure your heart rate",
+      "subtitle": "A practical guide to taking your resting pulse accurately.",
+      "author": "HealthTracker Team",
+      "readTime": "2",
+      "featured": false
+    }
+  ],
+  "routines": [
+    {
+      "id": "rt_hiit",
+      "title": "Cardio HIIT 20 min",
+      "subtitle": "High-intensity intervals to burn fat.",
+      "category": "sports",
+      "level": "Intermedio",
+      "durationMin": 20,
+      "exercises": 8
+    },
+    {
+      "id": "rt_upper",
+      "title": "Upper-body strength",
+      "subtitle": "Chest, back and arms with load progression.",
+      "category": "sports",
+      "level": "Avanzado",
+      "durationMin": 45,
+      "exercises": 10
+    },
+    {
+      "id": "rt_yoga",
+      "title": "Yoga for beginners",
+      "subtitle": "Flexibility and calm to start your day.",
+      "category": "emotional",
+      "level": "Principiante",
+      "durationMin": 30,
+      "exercises": 12
+    },
+    {
+      "id": "rt_walk",
+      "title": "Active walk",
+      "subtitle": "Gentle cardio, ideal for heart health.",
+      "category": "heart",
+      "level": "Principiante",
+      "durationMin": 25,
+      "exercises": 3
+    },
+    {
+      "id": "rt_mobility",
+      "title": "Mobility & stretching",
+      "subtitle": "Release tension and improve your range of motion.",
+      "category": "sports",
+      "level": "Principiante",
+      "durationMin": 15,
+      "exercises": 6
+    }
+  ],
+  "challenges": [
+    {
+      "id": "ch_steps",
+      "title": "10,000 steps challenge",
+      "goal": "10,000 steps a day for 30 days.",
+      "participants": 3240,
+      "status": "Activo",
+      "durationDays": 30
+    },
+    {
+      "id": "ch_hydrate",
+      "title": "Hydrate every day",
+      "goal": "Drink 2 liters of water a day for 3 weeks.",
+      "participants": 2450,
+      "status": "Activo",
+      "durationDays": 21
+    },
+    {
+      "id": "ch_sugar",
+      "title": "Sugar-free week",
+      "goal": "7 days with no added sugar.",
+      "participants": 1180,
+      "status": "Programado",
+      "durationDays": 7
+    },
+    {
+      "id": "ch_marathon",
+      "title": "May marathon",
+      "goal": "Run 42 km over the month.",
+      "participants": 870,
+      "status": "Finalizado",
+      "durationDays": 31
+    }
+  ]
+}

@@ -6,6 +6,16 @@ class AnthropometricRecord {
   final double weight;
   final double height;
   final double bmi;
+
+  // Perímetros corporales en cm (opcionales) — mismos campos que mide la consulta
+  // en el legacy (cintura, cadera, abdomen bajo, brazo, pierna, pecho/busto).
+  final double? waistCm;
+  final double? hipCm;
+  final double? lowerAbdomenCm;
+  final double? armCm;
+  final double? legCm;
+  final double? chestBustCm;
+
   final String? comment;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,6 +27,12 @@ class AnthropometricRecord {
     required this.weight,
     required this.height,
     required this.bmi,
+    this.waistCm,
+    this.hipCm,
+    this.lowerAbdomenCm,
+    this.armCm,
+    this.legCm,
+    this.chestBustCm,
     this.comment,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -25,6 +41,15 @@ class AnthropometricRecord {
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
+  /// ¿Trae al menos un perímetro? (para mostrar u ocultar la sección en historiales).
+  bool get hasCircumferences =>
+      waistCm != null ||
+      hipCm != null ||
+      lowerAbdomenCm != null ||
+      armCm != null ||
+      legCm != null ||
+      chestBustCm != null;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -32,6 +57,12 @@ class AnthropometricRecord {
       'weight': weight,
       'height': height,
       'bmi': bmi,
+      'waist_cm': waistCm,
+      'hip_cm': hipCm,
+      'lower_abdomen_cm': lowerAbdomenCm,
+      'arm_cm': armCm,
+      'leg_cm': legCm,
+      'chest_bust_cm': chestBustCm,
       'comment': comment,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
@@ -46,6 +77,12 @@ class AnthropometricRecord {
       weight: map['weight'],
       height: map['height'],
       bmi: map['bmi'],
+      waistCm: map['waist_cm'],
+      hipCm: map['hip_cm'],
+      lowerAbdomenCm: map['lower_abdomen_cm'],
+      armCm: map['arm_cm'],
+      legCm: map['leg_cm'],
+      chestBustCm: map['chest_bust_cm'],
       comment: map['comment'],
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),

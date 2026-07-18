@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
+import 'package:myvitals_healthtracker_app/core/labs/lab.dart';
+import 'package:myvitals_healthtracker_app/core/labs/labs_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/lab_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/constants/metric_colors.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:intl/intl.dart';
@@ -34,8 +37,30 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
   final _hdlController = TextEditingController();
   final _vldlController = TextEditingController();
   final _trigsController = TextEditingController();
-  final _labController = TextEditingController();
+  final _labController = TextEditingController(); // solo para "Otro"
   final _commentController = TextEditingController();
+
+  // Selector de laboratorio: '__none__' = no indicado, un code del catálogo, o
+  // '__other__' = otro (texto libre en [_labController]).
+  static const _kNone = '__none__';
+  static const _kOther = '__other__';
+  final _labClient = LabsApiClient();
+  List<Lab> _labs = [];
+  bool _labsLoaded = false;
+  String _selectedLab = _kNone;
+
+  /// Código de lab efectivo para clasificar (null = sin lab → rangos estándar).
+  String? get _labCodeForRanges =>
+      (_selectedLab == _kNone || _selectedLab == _kOther) ? null : _selectedLab;
+
+  /// Precarga los rangos del lab elegido para que los badges se re-pinten con
+  /// SU escala (best-effort; sin red los badges usan el fallback ATP III).
+  void _warmLabRanges(String? labCode) {
+    if (labCode == null) return;
+    LabRangesStore.instance.ensureLoaded(labCode).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   void initState() {
@@ -49,9 +74,35 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       _hdlController.text = _numToText(r.hdl);
       _vldlController.text = _numToText(r.vldl);
       _trigsController.text = _numToText(r.triglycerides);
-      _labController.text = r.labName ?? '';
       _commentController.text = r.comment ?? '';
+      if (r.labCode != null && r.labCode!.isNotEmpty) {
+        _selectedLab = r.labCode!;
+      } else if ((r.labName ?? '').isNotEmpty) {
+        _selectedLab = _kOther;
+        _labController.text = r.labName!;
+      }
     }
+    _loadLabs();
+    _warmLabRanges(_labCodeForRanges);
+  }
+
+  /// Trae el catálogo de laboratorios. Si el registro traía un code que ya no está
+  /// en el catálogo, cae a "Otro" conservando el nombre.
+  Future<void> _loadLabs() async {
+    final labs = await _labClient.fetchLabs();
+    if (!mounted) return;
+    setState(() {
+      _labs = labs;
+      _labsLoaded = true;
+      if (_selectedLab != _kNone &&
+          _selectedLab != _kOther &&
+          !labs.any((l) => l.code == _selectedLab)) {
+        if (_labController.text.isEmpty) {
+          _labController.text = widget.recordToEdit?.labName ?? '';
+        }
+        _selectedLab = _labController.text.isEmpty ? _kNone : _kOther;
+      }
+    });
   }
 
   @override
@@ -63,6 +114,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     _trigsController.dispose();
     _labController.dispose();
     _commentController.dispose();
+    _labClient.close();
     super.dispose();
   }
 
@@ -138,6 +190,19 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       return;
     }
 
+    // Deriva laboratorio (código controlado) + nombre a partir de la selección.
+    String? labCode;
+    String? labName;
+    if (_selectedLab == _kOther) {
+      labName = _labController.text.trim().isEmpty ? null : _labController.text.trim();
+    } else if (_selectedLab != _kNone) {
+      labCode = _selectedLab;
+      labName = _labs
+          .firstWhere((l) => l.code == _selectedLab,
+              orElse: () => Lab(code: _selectedLab, name: _selectedLab))
+          .name;
+    }
+
     final record = LipidRecord(
       id: widget.recordToEdit?.id,
       date: DateTime(
@@ -152,9 +217,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       hdl: hdl,
       vldl: vldl,
       triglycerides: trigs,
-      labName: _labController.text.trim().isEmpty
-          ? null
-          : _labController.text.trim(),
+      labName: labName,
+      labCode: labCode,
       comment: _commentController.text.trim().isEmpty
           ? null
           : _commentController.text.trim(),
@@ -265,12 +329,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                   _buildSectionCard(
                     icon: Icons.science_outlined,
                     title: l10n.lipidLabInfo,
-                    child: _buildTextField(
-                      controller: _labController,
-                      label: l10n.lipidLabName,
-                      hint: l10n.lipidLabNameHint,
-                      isNumeric: false,
-                    ),
+                    child: _buildLabSelector(l10n),
                   ),
 
                   const SizedBox(height: 20),
@@ -286,7 +345,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidTotalCholesterol,
                           hint: 'Ej: 180',
                           refRange: l10n.lipidTcRef,
-                          statusFn: LipidStatus.totalCholesterol,
+                          statusFn: (v) => LipidStatus.totalCholesterol(v,
+                              labCode: _labCodeForRanges),
                           l10n: l10n,
                         ),
                         const SizedBox(height: 16),
@@ -295,7 +355,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidLdl,
                           hint: 'Ej: 90',
                           refRange: l10n.lipidLdlRef,
-                          statusFn: LipidStatus.ldl,
+                          statusFn: (v) =>
+                              LipidStatus.ldl(v, labCode: _labCodeForRanges),
                           l10n: l10n,
                         ),
                         const SizedBox(height: 16),
@@ -304,7 +365,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidHdl,
                           hint: 'Ej: 60',
                           refRange: l10n.lipidHdlRef,
-                          statusFn: LipidStatus.hdl,
+                          statusFn: (v) =>
+                              LipidStatus.hdl(v, labCode: _labCodeForRanges),
                           l10n: l10n,
                           hdlInverted: true,
                         ),
@@ -314,7 +376,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidVldl,
                           hint: 'Ej: 20',
                           refRange: l10n.lipidVldlRef,
-                          statusFn: LipidStatus.vldl,
+                          statusFn: (v) =>
+                              LipidStatus.vldl(v, labCode: _labCodeForRanges),
                           l10n: l10n,
                         ),
                         const SizedBox(height: 16),
@@ -323,7 +386,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidTriglycerides,
                           hint: 'Ej: 140',
                           refRange: l10n.lipidTrigsRef,
-                          statusFn: LipidStatus.triglycerides,
+                          statusFn: (v) => LipidStatus.triglycerides(v,
+                              labCode: _labCodeForRanges),
                           l10n: l10n,
                         ),
                       ],
@@ -658,13 +722,14 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
         trigs != null;
     if (!hasSomeData) return const SizedBox.shrink();
 
-    // Derive overall risk
+    // Derive overall risk (con los rangos del lab elegido cuando hay).
+    final lab = _labCodeForRanges;
     final statuses = <LipidStatus>[
-      if (tc != null) LipidStatus.totalCholesterol(tc),
-      if (ldl != null) LipidStatus.ldl(ldl),
-      if (hdl != null) LipidStatus.hdl(hdl),
-      if (vldl != null) LipidStatus.vldl(vldl),
-      if (trigs != null) LipidStatus.triglycerides(trigs),
+      if (tc != null) LipidStatus.totalCholesterol(tc, labCode: lab),
+      if (ldl != null) LipidStatus.ldl(ldl, labCode: lab),
+      if (hdl != null) LipidStatus.hdl(hdl, labCode: lab),
+      if (vldl != null) LipidStatus.vldl(vldl, labCode: lab),
+      if (trigs != null) LipidStatus.triglycerides(trigs, labCode: lab),
     ];
 
     final hasHigh = statuses.any((s) => s == LipidStatus.high);
@@ -751,6 +816,71 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // ── Lab selector (catálogo + "Otro" + "No indicado") ──────────────────────
+  Widget _buildLabSelector(AppLocalizations l10n) {
+    if (!_labsLoaded) {
+      return Row(
+        children: const [
+          SizedBox(
+            width: 16, height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2, color: MetricColors.lipidColor),
+          ),
+          SizedBox(width: 10),
+          Text('Cargando laboratorios…',
+              style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '¿En qué laboratorio te hiciste el examen?',
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _selectedLab,
+              isExpanded: true,
+              borderRadius: BorderRadius.circular(14),
+              items: [
+                const DropdownMenuItem(value: _kNone, child: Text('No indicado / no sé')),
+                ..._labs.map((l) => DropdownMenuItem(
+                      value: l.code,
+                      child: Text(l.city == null ? l.name : '${l.name} · ${l.city}',
+                          overflow: TextOverflow.ellipsis),
+                    )),
+                const DropdownMenuItem(value: _kOther, child: Text('Otro (especificar)')),
+              ],
+              onChanged: (v) {
+                setState(() => _selectedLab = v ?? _kNone);
+                _warmLabRanges(_labCodeForRanges);
+              },
+            ),
+          ),
+        ),
+        if (_selectedLab == _kOther) ...[
+          const SizedBox(height: 12),
+          _buildTextField(
+            controller: _labController,
+            label: l10n.lipidLabName,
+            hint: l10n.lipidLabNameHint,
+            isNumeric: false,
+          ),
+        ],
+      ],
     );
   }
 

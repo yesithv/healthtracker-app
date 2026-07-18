@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -351,6 +352,10 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
               LineChartData(
                 minY: minDisplay,
                 maxY: maxDisplay,
+                // Zonas de referencia del paciente (su báscula/sexo/edad, desde el
+                // servidor): la gráfica se pinta como el CRM la ve en "Vista del paciente".
+                rangeAnnotations: bandRangeAnnotations('BODY_FAT',
+                    minY: minDisplay, maxY: maxDisplay),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
@@ -663,6 +668,20 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     return false;
   }
 
+  /// Línea compacta con los demás valores del registro (músculo %/kg, visceral,
+  /// edad metabólica, TMB) — visible p. ej. en la historia importada del legacy.
+  String? _secondaryLine(BodyCompositionRecord r) {
+    final parts = <String>[
+      if (r.musclePct != null) 'Músculo ${r.musclePct}%',
+      if (r.musclePct == null && r.muscleMassKg != null)
+        'Músculo ${r.muscleMassKg}kg',
+      if (r.visceralFatLevel != null) 'Visceral ${r.visceralFatLevel}',
+      if (r.metabolicAge != null) 'Edad ${r.metabolicAge}',
+      if (r.bmrKcal != null) '${r.bmrKcal} kcal',
+    ];
+    return parts.isEmpty ? null : parts.join(' · ');
+  }
+
   Widget _buildHistoryItem(
     BodyCompositionRecord record,
     AppLocalizations l10n,
@@ -729,6 +748,16 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                   ),
                 ],
               ),
+              if (_secondaryLine(record) != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  _secondaryLine(record)!,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF64748B),
+                  ),
+                ),
+              ],
             ],
           ),
           if (record.bodyFatPercent != null)

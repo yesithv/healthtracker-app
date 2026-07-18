@@ -234,6 +234,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailOptional => 'Email (Optional)';
 
   @override
+  String get phoneOptional => 'Phone (Optional)';
+
+  @override
+  String get selectCountry => 'Select your country';
+
+  @override
+  String get searchCountry => 'Search country';
+
+  @override
   String get gender => 'Gender';
 
   @override
@@ -647,6 +656,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discoverMinRead => 'MIN READ';
+
+  @override
+  String get discoverFeatured => 'Featured';
+
+  @override
+  String get discoverRoutines => 'Routines';
+
+  @override
+  String get discoverArticles => 'Articles';
+
+  @override
+  String get discoverChallenges => 'Challenges';
+
+  @override
+  String get discoverSeeAll => 'See all';
+
+  @override
+  String get discoverMinShort => 'min';
+
+  @override
+  String get discoverStart => 'Start';
+
+  @override
+  String get discoverJoin => 'Join';
+
+  @override
+  String get discoverLevelBeginner => 'Beginner';
+
+  @override
+  String get discoverLevelIntermediate => 'Intermediate';
+
+  @override
+  String get discoverLevelAdvanced => 'Advanced';
+
+  @override
+  String get discoverStatusActive => 'Active';
+
+  @override
+  String get discoverStatusScheduled => 'Scheduled';
+
+  @override
+  String get discoverStatusFinished => 'Finished';
+
+  @override
+  String get discoverEmpty => 'No content available yet.';
+
+  @override
+  String discoverExercises(String count) {
+    return '$count exercises';
+  }
+
+  @override
+  String discoverParticipants(String count) {
+    return '$count participants';
+  }
+
+  @override
+  String discoverDaysShort(String count) {
+    return '$count days';
+  }
 
   @override
   String get privacySecurityDescription =>

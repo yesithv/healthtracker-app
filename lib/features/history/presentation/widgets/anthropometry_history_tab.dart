@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdf/pdf.dart';
@@ -319,6 +320,13 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     minDisplayBmi = (minDisplayBmi - 1).floorToDouble();
     maxDisplayBmi = (maxDisplayBmi + 1).ceilToDouble();
 
+    // Zonas del SERVIDOR (rangos administrados en el backoffice, resueltos para
+    // este paciente). Con datos: todas las bandas de IMC como fondo. Sin datos
+    // (offline/invitado): fallback a la zona saludable OMS de siempre.
+    final serverZones = bandRangeAnnotations('BMI',
+        minY: minDisplayBmi, maxY: maxDisplayBmi, opacity: 0.10);
+    final hasServerZones = serverZones.horizontalRangeAnnotations.isNotEmpty;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -371,32 +379,41 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
               LineChartData(
                 minY: minDisplayBmi,
                 maxY: maxDisplayBmi,
-                rangeAnnotations: RangeAnnotations(
-                  horizontalRangeAnnotations: [
-                    HorizontalRangeAnnotation(
-                      y1: 18.5,
-                      y2: 24.9,
-                      color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                    ),
-                  ],
-                ),
-                extraLinesData: ExtraLinesData(
-                  extraLinesOnTop: false,
-                  horizontalLines: [
-                    HorizontalLine(
-                      y: 18.5,
-                      color: const Color(0xFF10B981).withValues(alpha: 0.6),
-                      strokeWidth: 1.5,
-                      dashArray: [4, 4],
-                    ),
-                    HorizontalLine(
-                      y: 24.9,
-                      color: const Color(0xFF10B981).withValues(alpha: 0.6),
-                      strokeWidth: 1.5,
-                      dashArray: [4, 4],
-                    ),
-                  ],
-                ),
+                rangeAnnotations: hasServerZones
+                    ? serverZones
+                    : RangeAnnotations(
+                        horizontalRangeAnnotations: [
+                          HorizontalRangeAnnotation(
+                            y1: 18.5,
+                            y2: 24.9,
+                            color:
+                                const Color(0xFF10B981).withValues(alpha: 0.15),
+                          ),
+                        ],
+                      ),
+                extraLinesData: hasServerZones
+                    // Con zonas del servidor, las líneas OMS fijas sobran (y
+                    // mentirían si el backoffice usa otros cortes).
+                    ? const ExtraLinesData()
+                    : ExtraLinesData(
+                        extraLinesOnTop: false,
+                        horizontalLines: [
+                          HorizontalLine(
+                            y: 18.5,
+                            color:
+                                const Color(0xFF10B981).withValues(alpha: 0.6),
+                            strokeWidth: 1.5,
+                            dashArray: [4, 4],
+                          ),
+                          HorizontalLine(
+                            y: 24.9,
+                            color:
+                                const Color(0xFF10B981).withValues(alpha: 0.6),
+                            strokeWidth: 1.5,
+                            dashArray: [4, 4],
+                          ),
+                        ],
+                      ),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
@@ -810,11 +827,37 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                   ),
                 ],
               ),
+              if (record.hasCircumferences) ...[
+                const SizedBox(height: 4),
+                Text(
+                  _circumferencesLine(record),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF64748B),
+                  ),
+                ),
+              ],
             ],
           ),
           BmiStatusBadge(bmi: record.bmi, label: statusLabel),
         ],
       ),
     );
+  }
+
+  /// Línea compacta con los perímetros del registro (cm) — visibles p. ej. en la
+  /// historia importada del legacy: cintura, cadera, abdomen, brazo, pierna, pecho.
+  String _circumferencesLine(AnthropometricRecord r) {
+    String f(double v) =>
+        v == v.roundToDouble() ? v.toInt().toString() : v.toStringAsFixed(1);
+    final parts = <String>[
+      if (r.waistCm != null) 'Cintura ${f(r.waistCm!)}',
+      if (r.hipCm != null) 'Cadera ${f(r.hipCm!)}',
+      if (r.lowerAbdomenCm != null) 'Abd. ${f(r.lowerAbdomenCm!)}',
+      if (r.armCm != null) 'Brazo ${f(r.armCm!)}',
+      if (r.legCm != null) 'Pierna ${f(r.legCm!)}',
+      if (r.chestBustCm != null) 'Pecho ${f(r.chestBustCm!)}',
+    ];
+    return '${parts.join(' · ')} cm';
   }
 }

@@ -12,6 +12,7 @@ import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/profile/presentation/screens/language_selection_screen.dart';
 import '../../features/profile/presentation/screens/measurement_units_screen.dart';
 import '../../features/profile/presentation/screens/personal_info_screen.dart';
+import '../../features/profile/presentation/screens/measuring_device_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/history/presentation/screens/record_anthropometric_screen.dart';
 import '../../features/history/presentation/screens/record_vital_signs_screen.dart';
@@ -27,6 +28,10 @@ import '../../features/profile/presentation/screens/contact_screen.dart';
 import '../../features/profile/presentation/screens/data_backup_screen.dart';
 import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
+import '../../features/account/presentation/screens/account_sync_screen.dart';
+import '../../features/welcome/presentation/screens/welcome_screen.dart';
+import '../../features/auth/presentation/screens/identify_screen.dart';
+import '../../features/auth/presentation/screens/verify_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -38,8 +43,30 @@ class AppRouter {
     routes: [
       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
       GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: '/identify',
+        builder: (context, state) => const IdentifyScreen(),
+      ),
+      GoRoute(
+        path: '/verify',
+        builder: (context, state) {
+          // El identificador llega del paso de identificación; sin él, volver a identificar.
+          final id = state.extra as String?;
+          return (id == null || id.isEmpty)
+              ? const IdentifyScreen()
+              : VerifyScreen(identifier: id);
+        },
+      ),
+      GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingShell(),
+        builder: (context, state) => OnboardingShell(
+          // 'account' = al terminar el wizard se crea la cuenta (register);
+          // cualquier otro valor (o ninguno) = modo local sin cuenta.
+          createAccount: state.uri.queryParameters['mode'] == 'account',
+        ),
       ),
       GoRoute(
         path: '/profile/language',
@@ -52,6 +79,14 @@ class AppRouter {
       GoRoute(
         path: '/profile/info',
         builder: (context, state) => const PersonalInfoScreen(),
+      ),
+      GoRoute(
+        path: '/profile/device',
+        builder: (context, state) => const MeasuringDeviceScreen(),
+      ),
+      GoRoute(
+        path: '/profile/account',
+        builder: (context, state) => const AccountSyncScreen(),
       ),
       GoRoute(
         path: '/profile/privacy',
