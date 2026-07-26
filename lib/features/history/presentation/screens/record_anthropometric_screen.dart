@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dashed_border_container.dart';
-import 'package:myvitals_healthtracker_app/core/constants/metric_colors.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
 import 'package:intl/intl.dart';
@@ -82,24 +85,33 @@ class _RecordAnthropometricScreenState
   double? _cmValue(TextEditingController c) =>
       double.tryParse(c.text.trim().replaceAll(',', '.'));
 
+  /// Tiñe el selector de Material con la identidad de la familia.
+  ///
+  /// Se sobreescribe solo el `ColorScheme`, no la `ThemeData` entera: así el
+  /// calendario hereda la tipografía y las superficies del tema activo y solo
+  /// se le impone de qué color es el día seleccionado.
+  Widget _themedPicker(BuildContext ctx, Widget? child) {
+    final base = Theme.of(ctx);
+    final family = base.metrics.tone(MetricFamily.anthropometry);
+    return Theme(
+      data: base.copyWith(
+        colorScheme: base.colorScheme.copyWith(
+          primary: family.accent,
+          onPrimary: family.onAccent,
+          onSurface: base.surfaces.ink,
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: MetricColors.anthropoColor,
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1E293B),
-            ),
-          ),
-          child: child!,
-        );
-      },
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -112,16 +124,7 @@ class _RecordAnthropometricScreenState
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: MetricColors.anthropoColor,
-            ),
-          ),
-          child: child!,
-        );
-      },
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedTime) {
       setState(() {
@@ -139,41 +142,41 @@ class _RecordAnthropometricScreenState
       text: currentValue.toStringAsFixed(1),
     );
     final l10n = AppLocalizations.of(context)!;
+    // Se capturan antes de abrir: dentro del builder `context` es el del
+    // diálogo, y leer los tokens de aquí deja explícito de qué tema salen.
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: surfaces.card,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(surfaces.radiusCard),
           ),
           title: Text(
             title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Color(0xFF1E293B),
-            ),
+            style: theme.type.cardTitle.copyWith(fontSize: 18),
           ),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
+            style: theme.type.body.copyWith(color: surfaces.ink),
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
             ],
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFF8FAFC),
+              fillColor: surfaces.inset,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  color: MetricColors.anthropoColor,
-                  width: 1.5,
-                ),
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide(color: family.accent, width: 1.5),
               ),
             ),
             autofocus: true,
@@ -183,7 +186,9 @@ class _RecordAnthropometricScreenState
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10n.cancel,
-                style: const TextStyle(color: Color(0xFF64748B)),
+                style: theme.type.button.copyWith(
+                  color: surfaces.inkSecondary,
+                ),
               ),
             ),
             ElevatedButton(
@@ -197,13 +202,16 @@ class _RecordAnthropometricScreenState
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: MetricColors.anthropoColor,
-                foregroundColor: Colors.white,
+                backgroundColor: family.accent,
+                foregroundColor: family.onAccent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
                 ),
               ),
-              child: const Text('OK'),
+              child: Text(
+                'OK',
+                style: theme.type.button.copyWith(color: family.onAccent),
+              ),
             ),
           ],
         );
@@ -237,16 +245,26 @@ class _RecordAnthropometricScreenState
     return weight / (heightInMeters * heightInMeters);
   }
 
+  // ── Tokens ────────────────────────────────────────────────────────────────
+  // Los ayudantes de abajo se llaman desde `build`, así que leen el tema por
+  // `context` como cualquier widget. Se exponen como getters para no repetir
+  // `Theme.of(context)` en cada uno.
+
+  ThemeData get _theme => Theme.of(context);
+
+  /// Identidad de la familia «antropometría». El tema decide el ámbar exacto;
+  /// que sea ámbar y no otro matiz lo fija el contrato semántico.
+  Tone get _family => _theme.metrics.tone(MetricFamily.anthropometry);
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final currentBmi = bmi;
     final bmiCat = BmiCategory.of(currentBmi);
-    final bmiCategory = bmiCat.label(l10n);
-    final bmiColor = bmiCat.color;
+    final surfaces = _theme.surfaces;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           _buildCustomAppBar(context, l10n),
@@ -259,7 +277,7 @@ class _RecordAnthropometricScreenState
                   if (!context.watch<UIPreferencesProvider>().isAnthropoInfoDismissed) ...[
                     DismissibleInfoBanner(
                       text: l10n.infoBannerAnthro,
-                      baseColor: MetricColors.anthropoColor,
+                      baseColor: _family.accent,
                       onDismiss: () {
                         context.read<UIPreferencesProvider>().dismissAnthropoInfo();
                       },
@@ -324,7 +342,7 @@ class _RecordAnthropometricScreenState
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildBmiCard(l10n, currentBmi, bmiCategory, bmiColor, () {
+                  _buildBmiCard(l10n, currentBmi, bmiCat, () {
                     _showEditDialog(
                       l10n.bmiTitle,
                       currentBmi,
@@ -378,37 +396,43 @@ class _RecordAnthropometricScreenState
                           );
                         }
                         if (!context.mounted) return;
+                        // Guardar bien es un resultado ÓPTIMO, y ese es el
+                        // verde de la paleta clínica: no un verde suelto.
+                        final ok = _theme.clinical.optimal;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                               l10n.anthropoSavedSuccess,
-                              style: const TextStyle(color: Colors.white),
+                              style: _theme.type.body.copyWith(
+                                color: ok.onAccent,
+                              ),
                             ),
-                            backgroundColor: const Color(0xFF10B981),
+                            backgroundColor: ok.accent,
                           ),
                         );
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: MetricColors.anthropoColor,
+                        backgroundColor: _family.accent,
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(
+                            surfaces.radiusControl,
+                          ),
                         ),
-                        elevation: 4,
-                        shadowColor: MetricColors.anthropoColor.withValues(
-                          alpha: 0.4,
-                        ),
+                        // Los temas planos no llevan sombra en los controles;
+                        // el token de sombra de tarjeta dice cuál es el caso.
+                        elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
+                        shadowColor: _family.accent.withValues(alpha: 0.4),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             l10n.saveAndEarnXp,
-                            style: const TextStyle(
+                            style: _theme.type.button.copyWith(
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: _family.onAccent,
                             ),
                           ),
                         ],
@@ -427,13 +451,14 @@ class _RecordAnthropometricScreenState
   }
 
   Widget _buildCustomAppBar(BuildContext context, AppLocalizations l10n) {
+    final family = _family;
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: MetricColors.anthropoColor,
+      decoration: BoxDecoration(
+        color: family.accent,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(_theme.surfaces.radiusCard + 4),
+          bottomRight: Radius.circular(_theme.surfaces.radiusCard + 4),
         ),
       ),
       child: SafeArea(
@@ -445,23 +470,21 @@ class _RecordAnthropometricScreenState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: family.onAccent),
                 onPressed: () => context.pop(),
               ),
               Expanded(
                 child: Text(
                   l10n.recordAnthropometricTitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  style: _theme.type.sectionLabel.copyWith(
                     fontSize: 15,
-                    letterSpacing: 1.0,
+                    color: family.onAccent,
                   ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.straighten, color: Colors.white),
+                icon: Icon(Icons.straighten, color: family.onAccent),
                 onPressed: () {},
               ),
             ],
@@ -474,12 +497,7 @@ class _RecordAnthropometricScreenState
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF1E293B),
-        letterSpacing: 1.0,
-      ),
+      style: _theme.type.sectionLabel.copyWith(color: _theme.surfaces.ink),
     );
   }
 
@@ -489,41 +507,31 @@ class _RecordAnthropometricScreenState
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final surfaces = _theme.surfaces;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF64748B),
-            ),
-          ),
+          child: Text(label, style: _theme.type.fieldLabel),
         ),
         GestureDetector(
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              color: surfaces.card,
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
+              border: Border.all(color: surfaces.divider),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
+                  style: _theme.type.cardTitle.copyWith(fontSize: 15),
                 ),
-                Icon(icon, color: const Color(0xFF64748B), size: 18),
+                Icon(icon, color: surfaces.inkSecondary, size: 18),
               ],
             ),
           ),
@@ -540,19 +548,11 @@ class _RecordAnthropometricScreenState
     VoidCallback onIncrement,
     VoidCallback onEdit,
   ) {
+    final theme = _theme;
+    final family = _family;
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: theme.surfaces.cardDecoration(),
       child: Row(
         children: [
           Expanded(
@@ -561,11 +561,7 @@ class _RecordAnthropometricScreenState
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
-                  ),
+                  style: theme.type.fieldLabel.copyWith(fontSize: 13),
                 ),
                 const SizedBox(height: 4),
                 GestureDetector(
@@ -576,27 +572,18 @@ class _RecordAnthropometricScreenState
                     children: [
                       Text(
                         value,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
-                        ),
+                        style: theme.type.numeralSmall.copyWith(fontSize: 28),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         unit,
-                        style: const TextStyle(
+                        style: theme.type.numeralUnit.copyWith(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: MetricColors.anthropoColor,
+                          color: family.accent,
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Icon(
-                        Icons.edit,
-                        size: 16,
-                        color: MetricColors.anthropoColor,
-                      ),
+                      Icon(Icons.edit, size: 16, color: family.accent),
                     ],
                   ),
                 ),
@@ -612,6 +599,7 @@ class _RecordAnthropometricScreenState
   }
 
   Widget _buildAdjustButton(IconData icon, VoidCallback onTap) {
+    final surfaces = _theme.surfaces;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
@@ -619,25 +607,32 @@ class _RecordAnthropometricScreenState
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
+          color: surfaces.inset,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: surfaces.divider),
         ),
-        child: Icon(icon, color: MetricColors.anthropoColor),
+        child: Icon(icon, color: _family.accent),
       ),
     );
   }
 
+  /// Tarjeta del IMC.
+  ///
+  /// Recibe la CATEGORÍA, no un color: quién decide que 26,1 es «sobrepeso» son
+  /// los rangos del backoffice vía [BmiCategory], y el tema solo resuelve con
+  /// qué ámbar se pinta. La insignia es [StatusChip], que además aplica el
+  /// idioma del tema —relleno sólido o suave— sin que esta pantalla lo sepa.
   Widget _buildBmiCard(
     AppLocalizations l10n,
     double bmi,
-    String category,
-    Color color,
+    BmiCategory category,
     VoidCallback onEditManual,
   ) {
+    final theme = _theme;
+    final family = _family;
     return DashedBorderContainer(
-      color: MetricColors.anthropoColor.withValues(alpha: 0.5),
-      borderRadius: 20,
+      color: family.accent.withValues(alpha: 0.5),
+      borderRadius: theme.surfaces.radiusCard,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Column(
@@ -648,11 +643,7 @@ class _RecordAnthropometricScreenState
               children: [
                 Text(
                   l10n.bmiTitle,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
-                  ),
+                  style: theme.type.fieldLabel.copyWith(fontSize: 13),
                 ),
                 InkWell(
                   onTap: onEditManual,
@@ -661,18 +652,13 @@ class _RecordAnthropometricScreenState
                     padding: const EdgeInsets.all(4.0),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.edit,
-                          size: 14,
-                          color: MetricColors.anthropoColor,
-                        ),
+                        Icon(Icons.edit, size: 14, color: family.accent),
                         const SizedBox(width: 4),
                         Text(
                           l10n.manual,
-                          style: const TextStyle(
+                          style: theme.type.button.copyWith(
                             fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: MetricColors.anthropoColor,
+                            color: family.accent,
                           ),
                         ),
                       ],
@@ -687,30 +673,15 @@ class _RecordAnthropometricScreenState
               children: [
                 Text(
                   bmi.toStringAsFixed(1),
-                  style: const TextStyle(
+                  style: theme.type.numeral.copyWith(
                     fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: MetricColors.anthropoColor,
+                    color: family.accent,
                   ),
                 ),
                 const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    category,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                StatusChip(
+                  status: category.status,
+                  label: category.label(l10n),
                 ),
               ],
             ),
@@ -727,6 +698,9 @@ class _RecordAnthropometricScreenState
     double percent = (bmi - 15) / (35 - 15);
     percent = math.max(0.0, math.min(1.0, percent));
 
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+
     return Column(
       children: [
         Stack(
@@ -736,13 +710,11 @@ class _RecordAnthropometricScreenState
               height: 10,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF3B82F6), // Bajo
-                    Color(0xFF10B981), // Normal
-                    Color(0xFFF59E0B), // Sobrepeso
-                    Color(0xFFEF4444), // Obesidad
-                  ],
+                // La rampa de severidad del tema, en orden clínico:
+                // bajo → normal → sobrepeso → obesidad. El orden lo fija la
+                // paleta, no esta pantalla, así que no puede quedar al revés.
+                gradient: LinearGradient(
+                  colors: theme.clinical.severityRamp,
                 ),
               ),
             ),
@@ -753,11 +725,13 @@ class _RecordAnthropometricScreenState
                   -40, // Adjusted top position to make the tip touch the bar correctly
               child: FractionalTranslation(
                 translation: Offset(percent - 0.5, 0),
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_drop_down,
-                  color: Color(0xFF1E293B),
+                  color: surfaces.ink,
                   size: 80, // Increased size even more per request
-                  shadows: [Shadow(color: Colors.white, blurRadius: 2)],
+                  // El halo va del color del lienzo: separa la punta de la
+                  // rampa en cualquier tema, claro o cálido.
+                  shadows: [Shadow(color: surfaces.canvas, blurRadius: 2)],
                 ),
               ),
             ),
@@ -777,31 +751,17 @@ class _RecordAnthropometricScreenState
     );
   }
 
-  TextStyle _bmiLabelStyle() {
-    return const TextStyle(
-      fontSize: 8,
-      fontWeight: FontWeight.bold,
-      color: Color(0xFF94A3B8),
-      letterSpacing: 0.5,
-    );
-  }
+  TextStyle _bmiLabelStyle() => _theme.type.sectionLabel.copyWith(
+    fontSize: 8,
+    color: _theme.surfaces.inkMuted,
+  );
 
   /// Tarjeta con los 6 perímetros (cm) que también mide la consulta. Todos
   /// opcionales: se guarda solo lo diligenciado.
   Widget _buildCircumferencesCard() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: _theme.surfaces.cardDecoration(),
       child: Column(
         children: [
           Row(children: [
@@ -827,37 +787,35 @@ class _RecordAnthropometricScreenState
   }
 
   Widget _buildCmField(String label, TextEditingController controller) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-          ),
-        ),
+        Text(label, style: theme.type.fieldLabel),
         const SizedBox(height: 6),
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
+          style: theme.type.body.copyWith(color: surfaces.ink),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
           ],
           decoration: InputDecoration(
             hintText: '— cm',
-            hintStyle: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 13),
+            hintStyle: theme.type.body.copyWith(
+              color: surfaces.inkMuted,
+              fontSize: 13,
+            ),
             suffixText: 'cm',
-            suffixStyle: const TextStyle(
+            suffixStyle: theme.type.numeralUnit.copyWith(
               fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: MetricColors.anthropoColor,
+              color: _family.accent,
             ),
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: surfaces.inset,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
               borderSide: BorderSide.none,
             ),
             contentPadding:
@@ -869,18 +827,24 @@ class _RecordAnthropometricScreenState
   }
 
   Widget _buildCommentBox(AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: surfaces.card,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        border: Border.all(color: surfaces.divider),
       ),
       child: TextField(
         controller: _commentController,
         maxLines: 4,
+        style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+          hintStyle: theme.type.body.copyWith(
+            color: surfaces.inkMuted,
+            fontSize: 13,
+          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),

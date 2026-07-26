@@ -107,9 +107,24 @@ tokens, así que no puede desincronizarse.
 ## Estado de la migración
 
 Migrado: **todo el flujo de arranque** —splash, bienvenida, identificación,
-verificación, asistente de alta (3 pasos) y panel—, la barra de navegación y los
-widgets compartidos que usan (`ActionButton`, `StatusChip`, `BmiStatusBadge`,
-`MainAppBar`, `DashedBorderContainer`, `ProfileSettingsLayout`…).
+verificación, asistente de alta (3 pasos) y panel—, **el camino de registrar un
+indicador** —la hoja «Registrar indicadores», antropometría y signos vitales—,
+la barra de navegación y los widgets compartidos que usan (`ActionButton`,
+`StatusChip`, `BmiStatusBadge`, `MainAppBar`, `DashedBorderContainer`,
+`DismissibleInfoBanner`, `ProfileSettingsLayout`…).
+
+En las pantallas de registro, tres sustituciones cargan con casi todo el
+trabajo, y las tres consisten en pedir el SIGNIFICADO en vez del color:
+
+| Antes | Ahora |
+|---|---|
+| `MetricColors.vitalsColor` | `theme.metrics.tone(MetricFamily.vitals)` |
+| `bpCat.color` + `Container` propio | `StatusChip(status: bpCat.status, …)` |
+| Degradado de 4 hexadecimales | `theme.clinical.severityRamp` |
+
+La rampa importa más de lo que parece: era el mismo azul→verde→ámbar→rojo
+escrito a mano en dos archivos, y con el token el ORDEN CLÍNICO lo fija la
+paleta, así que no puede quedar al revés en una pantalla y bien en otra.
 
 En las pantallas de bienvenida, identificación y verificación se aplicó **solo el
 tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
@@ -117,15 +132,23 @@ tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
 sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
 descargo médico— está pendiente de decidir aparte.
 
-Sin migrar: historial, Descubre, perfil y ajustes — siguen con colores escritos
-a mano y se ven igual en ambos temas.
+Sin migrar: perfil lipídico y composición corporal (las otras dos pantallas de
+registro), historial, Descubre, perfil y ajustes — siguen con colores escritos a
+mano y se ven igual en ambos temas.
 
-Una deuda conocida, anterior a este trabajo:
+Deudas conocidas, anteriores a este trabajo:
 
 - `identify_screen.dart` y `verify_screen.dart` tienen **todos sus textos en
   español escritos a mano**, sin pasar por `l10n`. Como el resto de la app sigue
   el idioma del dispositivo, en un móvil en inglés esas dos pantallas se ven en
   español mientras las demás están en inglés.
+- En `record_anthropometric_screen.dart`, el bloque de **perímetros corporales**
+  tiene su rótulo y sus seis etiquetas en español a mano (`'Cintura'`,
+  `'Cadera'`…), con el mismo efecto en un dispositivo en inglés.
+- En la hoja «Registrar indicadores», solo **Antropometría** navega; las otras
+  tres tarjetas cierran la hoja sin ir a ninguna parte. Las cuatro rutas existen
+  y las cuatro pantallas se abren desde el panel y desde Historial, así que es
+  un cable sin conectar, no una pantalla que falte.
 
 ## El flujo de entrada
 

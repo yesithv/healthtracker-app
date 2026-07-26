@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import '../constants/metric_colors.dart';
+import '../theme/theme_context.dart';
+import '../theme/tokens/metric_palette.dart';
 
 /// Shows the register modal with a blurred background.
 void showRegisterModal(BuildContext context) {
@@ -21,13 +22,15 @@ class _RegisterModalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
+        color: surfaces.card,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(surfaces.radiusCard + 8),
+          topRight: Radius.circular(surfaces.radiusCard + 8),
         ),
         boxShadow: [
           BoxShadow(
@@ -50,7 +53,7 @@ class _RegisterModalContent extends StatelessWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: surfaces.divider,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -62,11 +65,8 @@ class _RegisterModalContent extends StatelessWidget {
                 children: [
                   Text(
                     l10n.registerIndicators,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      letterSpacing: 0.8,
-                      color: Color(0xFF0D48A0),
+                    style: theme.type.sectionLabel.copyWith(
+                      color: surfaces.brand,
                     ),
                   ),
                   InkWell(
@@ -75,13 +75,13 @@ class _RegisterModalContent extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: surfaces.inset,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
                         size: 16,
-                        color: Colors.grey,
+                        color: surfaces.inkSecondary,
                       ),
                     ),
                   ),
@@ -100,8 +100,7 @@ class _RegisterModalContent extends StatelessWidget {
                   _RegisterOption(
                     icon: Icons.straighten,
                     label: l10n.anthropometry,
-                    iconColor: MetricColors.anthropoColor,
-                    bgColor: MetricColors.anthropoBg,
+                    family: MetricFamily.anthropometry,
                     onTap: () {
                       Navigator.of(context).pop();
                       context.push('/record-anthropometric');
@@ -110,22 +109,19 @@ class _RegisterModalContent extends StatelessWidget {
                   _RegisterOption(
                     icon: Icons.favorite,
                     label: l10n.vitalSigns,
-                    iconColor: MetricColors.vitalsColor,
-                    bgColor: MetricColors.vitalsBg,
+                    family: MetricFamily.vitals,
                     onTap: () => Navigator.of(context).pop(),
                   ),
                   _RegisterOption(
                     icon: Icons.bloodtype,
                     label: l10n.lipidProfile,
-                    iconColor: MetricColors.lipidColor,
-                    bgColor: MetricColors.lipidBg,
+                    family: MetricFamily.lipids,
                     onTap: () => Navigator.of(context).pop(),
                   ),
                   _RegisterOption(
                     icon: Icons.accessibility_new,
                     label: l10n.bodyComposition,
-                    iconColor: MetricColors.compositionColor,
-                    bgColor: MetricColors.compositionBg,
+                    family: MetricFamily.bodyComposition,
                     onTap: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -141,28 +137,33 @@ class _RegisterModalContent extends StatelessWidget {
 class _RegisterOption extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color iconColor;
-  final Color bgColor;
+
+  /// Familia del indicador. La tarjeta pide la IDENTIDAD y el tema resuelve el
+  /// color: así el rojo del corazón sigue siendo rojo en cualquier tema.
+  final MetricFamily family;
   final VoidCallback onTap;
 
   const _RegisterOption({
     required this.icon,
     required this.label,
-    required this.iconColor,
-    required this.bgColor,
+    required this.family,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tone = theme.metrics.tone(family);
+    final radius = theme.surfaces.radiusCard;
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(radius),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(16),
+          color: tone.surface,
+          borderRadius: BorderRadius.circular(radius),
         ),
         child: Row(
           children: [
@@ -170,19 +171,18 @@ class _RegisterOption extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.15),
+                color: tone.accent.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: iconColor, size: 22),
+              child: Icon(icon, color: tone.accent, size: 22),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: iconColor,
-                  fontWeight: FontWeight.w700,
+                style: theme.type.cardTitle.copyWith(
+                  fontSize: 12.5,
+                  color: tone.accent,
                   height: 1.25,
                 ),
               ),
