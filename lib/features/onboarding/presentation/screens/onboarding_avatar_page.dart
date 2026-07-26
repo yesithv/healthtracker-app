@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
@@ -54,17 +55,24 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context);
-    final hasImage = prefs.profileImageBase64 != null &&
+    final hasImage =
+        prefs.profileImageBase64 != null &&
         prefs.profileImageBase64!.isNotEmpty;
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFF0F7FF), Color(0xFFE8F4FD), Color(0xFFF4F6F9)],
+          colors: [
+            Color.lerp(surfaces.canvas, surfaces.brand, 0.10)!,
+            Color.lerp(surfaces.canvas, surfaces.brand, 0.05)!,
+            surfaces.canvas,
+          ],
         ),
       ),
       child: SafeArea(
@@ -78,10 +86,10 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               Text(
                 l10n.onboardingAvatarTitle,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
+                  color: surfaces.ink,
                   letterSpacing: 0.3,
                 ),
               ),
@@ -91,7 +99,7 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.grey[600],
+                  color: surfaces.inkSecondary,
                   height: 1.5,
                 ),
               ),
@@ -114,8 +122,8 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              const Color(0xFF0D48A0).withValues(alpha: 0.15),
-                              const Color(0xFF0D48A0).withValues(alpha: 0.0),
+                              surfaces.brand.withValues(alpha: 0.15),
+                              surfaces.brand.withValues(alpha: 0.0),
                             ],
                           ),
                         ),
@@ -129,14 +137,13 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                           color: Colors.white,
                           border: Border.all(
                             color: hasImage
-                                ? const Color(0xFF0D48A0)
-                                : const Color(0xFFCBD5E1),
+                                ? surfaces.brand
+                                : surfaces.inkMuted,
                             width: 3,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF0D48A0)
-                                  .withValues(alpha: 0.15),
+                              color: surfaces.brand.withValues(alpha: 0.15),
                               blurRadius: 20,
                               spreadRadius: 2,
                               offset: const Offset(0, 6),
@@ -145,17 +152,15 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                         ),
                         child: ClipOval(
                           child: _isLoading
-                              ? const Center(
+                              ? Center(
                                   child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color(0xFF0D48A0),
+                                      surfaces.brand,
                                     ),
                                     strokeWidth: 3,
                                   ),
                                 )
-                              : _buildAvatarContent(
-                                  prefs.profileImageBase64,
-                                ),
+                              : _buildAvatarContent(prefs.profileImageBase64),
                         ),
                       ),
                       // Camera badge
@@ -165,13 +170,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0D48A0),
+                            color: surfaces.brand,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 3),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF0D48A0)
-                                    .withValues(alpha: 0.4),
+                                color: surfaces.brand.withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
                               ),
@@ -195,14 +199,14 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               _ActionButton(
                 icon: Icons.photo_library_outlined,
                 label: l10n.gallery,
-                color: const Color(0xFF0D48A0),
+                color: surfaces.brand,
                 onTap: () => _pickImage(context, ImageSource.gallery),
               ),
               const SizedBox(height: 14),
               _ActionButton(
                 icon: Icons.camera_alt_outlined,
                 label: l10n.camera,
-                color: const Color(0xFF10B981),
+                color: theme.clinical.optimal.accent,
                 onTap: () => _pickImage(context, ImageSource.camera),
               ),
               if (hasImage) ...[
@@ -210,10 +214,11 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                 _ActionButton(
                   icon: Icons.delete_outline_rounded,
                   label: l10n.deletePhoto,
-                  color: const Color(0xFFEF4444),
-                  onTap: () =>
-                      Provider.of<UserProfileProvider>(context, listen: false)
-                          .setProfileImage(null),
+                  color: theme.clinical.alert.accent,
+                  onTap: () => Provider.of<UserProfileProvider>(
+                    context,
+                    listen: false,
+                  ).setProfileImage(null),
                 ),
               ],
 
@@ -227,25 +232,27 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                    color: theme.clinical.optimal.accent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF10B981).withValues(alpha: 0.3),
+                      color: theme.clinical.optimal.accent.withValues(
+                        alpha: 0.3,
+                      ),
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_circle_rounded,
-                        color: Color(0xFF10B981),
+                        color: theme.clinical.optimal.accent,
                         size: 18,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         l10n.profileImageTitle,
-                        style: const TextStyle(
-                          color: Color(0xFF10B981),
+                        style: TextStyle(
+                          color: theme.clinical.optimal.accent,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -263,6 +270,7 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
   }
 
   Widget _buildAvatarContent(String? base64) {
+    final surfaces = Theme.of(context).surfaces;
     if (base64 != null && base64.isNotEmpty) {
       try {
         return Image.memory(
@@ -274,17 +282,15 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
       } catch (_) {}
     }
     return Container(
-      color: const Color(0xFFE2E8F0),
-      child: const Icon(
-        Icons.person_rounded,
-        size: 72,
-        color: Color(0xFF94A3B8),
-      ),
+      color: surfaces.divider,
+      child: Icon(Icons.person_rounded, size: 72, color: surfaces.inkMuted),
     );
   }
 
   void _showImageOptions(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -301,17 +307,17 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFFCBD5E1),
+                color: surfaces.inkMuted,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: 20),
             Text(
               l10n.profileImageTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
+                color: surfaces.ink,
               ),
             ),
             const SizedBox(height: 20),
@@ -319,12 +325,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D48A0).withValues(alpha: 0.1),
+                  color: surfaces.brand.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.photo_library_outlined,
-                  color: Color(0xFF0D48A0),
+                  color: surfaces.brand,
                 ),
               ),
               title: Text(l10n.gallery),
@@ -337,12 +343,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               leading: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                  color: theme.clinical.optimal.accent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.camera_alt_outlined,
-                  color: Color(0xFF10B981),
+                  color: theme.clinical.optimal.accent,
                 ),
               ),
               title: Text(l10n.camera),
@@ -373,35 +379,31 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(surfaces.radiusControl),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            color: surfaces.card,
+            borderRadius: BorderRadius.circular(surfaces.radiusControl),
             border: Border.all(
-              color: color.withValues(alpha: 0.2),
+              color: Color.lerp(surfaces.card, color, 0.20)!,
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: surfaces.cardShadow,
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: Color.lerp(surfaces.card, color, 0.10),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: color, size: 20),
@@ -409,11 +411,7 @@ class _ActionButton extends StatelessWidget {
               const SizedBox(width: 16),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
+                style: theme.type.button.copyWith(fontSize: 15, color: color),
               ),
             ],
           ),

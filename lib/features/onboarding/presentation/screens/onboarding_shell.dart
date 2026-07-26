@@ -6,7 +6,7 @@ import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
-import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/measurement_units_screen.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -37,8 +37,6 @@ class _OnboardingShellState extends State<OnboardingShell> {
   // GlobalKey to access the embedded Personal Info screen state and call validate()
   final GlobalKey<PersonalInfoScreenState> _personalInfoKey =
       GlobalKey<PersonalInfoScreenState>();
-
-
 
   @override
   void dispose() {
@@ -112,14 +110,17 @@ class _OnboardingShellState extends State<OnboardingShell> {
 
     // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
     // locale del dispositivo (captura silenciosa; el backend valida el código).
-    final country = Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
+    final country =
+        Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
     // Teléfono en formato internacional (prefijo + número): listo para WhatsApp.
     final localPhone = profile.userPhone.replaceAll(RegExp(r'[^0-9]'), '');
 
     final auth = AuthApiClient();
     try {
       final account = await auth.register(
-        firstName: profile.userName.trim().isEmpty ? 'Paciente' : profile.userName.trim(),
+        firstName: profile.userName.trim().isEmpty
+            ? 'Paciente'
+            : profile.userName.trim(),
         email: email,
         birthDate: profile.birthDate,
         sex: profile.userGender.isEmpty ? null : profile.userGender,
@@ -136,7 +137,9 @@ class _OnboardingShellState extends State<OnboardingShell> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No se pudo crear la cuenta ahora; puedes vincularla luego en Perfil.'),
+            content: Text(
+              'No se pudo crear la cuenta ahora; puedes vincularla luego en Perfil.',
+            ),
           ),
         );
       }
@@ -147,9 +150,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
 
   // ── UI HELPERS ───────────────────────────────────────────────────────────────
 
-  /// Bottom action area background. Uniform light now that the wizard starts on
-  /// the first form step (the blue welcome portada moved to /welcome).
-  Color _bottomBgColor() => const Color(0xFFF4F6F9);
+  /// Fondo de la barra de acciones: el lienzo del tema activo.
+  Color _bottomBgColor() => Theme.of(context).surfaces.canvas;
 
   // Ya no hay un paso "welcome" oscuro dentro del wizard; la barra siempre es clara.
   bool get _isWelcomeStep => false;
@@ -157,6 +159,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final isLastPage = _currentPage == _totalPages - 1;
 
     return PopScope(
@@ -186,17 +190,13 @@ class _OnboardingShellState extends State<OnboardingShell> {
 
                   // Step 2 — Measurement Units (shared with Profile)
                   // No validation needed: always has a default value
-                  MeasurementUnitsScreen(
-                    showAppBar: false,
-                    onNext: _nextPage,
-                  ),
+                  MeasurementUnitsScreen(showAppBar: false, onNext: _nextPage),
 
                   // Step 3 — Avatar (fully optional)
                   const OnboardingAvatarPage(),
                 ],
               ),
             ),
-
 
             // ── BOTTOM NAVIGATION BAR ─────────────────────────────────────
             AnimatedContainer(
@@ -231,8 +231,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
                           icon: Icon(
                             Icons.arrow_back_ios_rounded,
                             color: _isWelcomeStep
-                                ? Colors.white70
-                                : const Color(0xFF64748B),
+                                ? surfaces.onBrand.withValues(alpha: 0.7)
+                                : surfaces.inkSecondary,
                           ),
                         ),
                       ),
@@ -240,14 +240,16 @@ class _OnboardingShellState extends State<OnboardingShell> {
                       const Spacer(),
 
                       // Step counter text
+                      // «PASO 1 DE 3»: rótulo de sección, en versalitas
+                      // monoespaciadas cuando el tema lo pide.
                       Text(
-                        l10n.onboardingStep(_currentPage + 1, _totalPages),
-                        style: TextStyle(
-                          fontSize: 13,
+                        l10n
+                            .onboardingStep(_currentPage + 1, _totalPages)
+                            .toUpperCase(),
+                        style: theme.type.sectionLabel.copyWith(
                           color: _isWelcomeStep
-                              ? Colors.white60
-                              : const Color(0xFF94A3B8),
-                          fontWeight: FontWeight.w500,
+                              ? surfaces.onBrand.withValues(alpha: 0.6)
+                              : surfaces.inkMuted,
                         ),
                       ),
 
@@ -271,11 +273,7 @@ class _OnboardingShellState extends State<OnboardingShell> {
                       onPressed: _finishOnboarding,
                       child: Text(
                         l10n.onboardingSkip,
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: theme.type.meta.copyWith(fontSize: 13),
                       ),
                     ),
                   ],
@@ -309,11 +307,11 @@ class _StepIndicators extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(total, (i) {
         final isActive = i == current;
-        final Color activeColor =
-            isLight ? Colors.white : AppTheme.primaryColor;
+        final surfaces = Theme.of(context).surfaces;
+        final Color activeColor = isLight ? surfaces.onBrand : surfaces.brand;
         final Color inactiveColor = isLight
-            ? Colors.white.withValues(alpha: 0.3)
-            : const Color(0xFFCBD5E1);
+            ? surfaces.onBrand.withValues(alpha: 0.3)
+            : surfaces.track;
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -347,44 +345,42 @@ class _NextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final radius = BorderRadius.circular(surfaces.radiusControl);
+
+    final Color fill = isLight ? surfaces.onBrand : surfaces.brand;
+    final Color onFill = isLight ? surfaces.brand : surfaces.onBrand;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: radius,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
           decoration: BoxDecoration(
-            color: isLight ? Colors.white : AppTheme.primaryColor,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: isLight
-                    ? Colors.white.withValues(alpha: 0.3)
-                    : AppTheme.primaryColor.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            color: fill,
+            borderRadius: radius,
+            // El halo del botón lo hereda del tema: en «Consulta Serena» las
+            // superficies son planas y aquí no se dibuja sombra ninguna.
+            boxShadow: surfaces.cardShadow.isEmpty
+                ? const []
+                : [
+                    BoxShadow(
+                      color: fill.withValues(alpha: 0.35),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: isLight ? AppTheme.primaryColor : Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
+              Text(label, style: theme.type.button.copyWith(color: onFill)),
               const SizedBox(width: 6),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 14,
-                color: isLight ? AppTheme.primaryColor : Colors.white,
-              ),
+              Icon(Icons.arrow_forward_ios_rounded, size: 14, color: onFill),
             ],
           ),
         ),

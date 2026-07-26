@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/theme_context.dart';
+
 class AppBrandHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -18,11 +20,14 @@ class AppBrandHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final onBrand = theme.surfaces.onBrand;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.monitor_heart, color: Colors.white, size: iconSize),
+        // El ICONO no cambia entre temas: sólo su color se adapta al fondo.
+        Icon(Icons.monitor_heart, color: onBrand, size: iconSize),
         const SizedBox(width: 12),
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -30,21 +35,17 @@ class AppBrandHeader extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              style: theme.type.display.copyWith(
+                color: onBrand,
                 fontSize: titleFontSize,
-                letterSpacing: 1.2,
               ),
             ),
             if (subtitle != null)
               Text(
                 subtitle!,
-                style: TextStyle(
-                  color: Colors.white70,
+                style: theme.type.displayMeta.copyWith(
+                  color: onBrand.withValues(alpha: 0.78),
                   fontSize: subtitleFontSize,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
           ],

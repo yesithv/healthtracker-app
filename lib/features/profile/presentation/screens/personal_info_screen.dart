@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/features/profile/presentation/screens
     show WizardValidatable;
 import 'package:myvitals_healthtracker_app/features/profile/presentation/widgets/profile_settings_layout.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
@@ -17,11 +18,7 @@ class PersonalInfoScreen extends StatefulWidget {
   /// Whether to show the SecondaryAppBar. Defaults to true (Profile mode).
   final bool showAppBar;
 
-  const PersonalInfoScreen({
-    super.key,
-    this.onNext,
-    this.showAppBar = true,
-  });
+  const PersonalInfoScreen({super.key, this.onNext, this.showAppBar = true});
 
   @override
   State<PersonalInfoScreen> createState() => PersonalInfoScreenState();
@@ -110,12 +107,13 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
       builder: (context, child) {
+        final surfaces = Theme.of(context).surfaces;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF0D48A0),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1E293B),
+            colorScheme: ColorScheme.light(
+              primary: surfaces.brand,
+              onPrimary: surfaces.onBrand,
+              onSurface: surfaces.ink,
             ),
           ),
           child: child!,
@@ -155,11 +153,13 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: widget.showAppBar ? const SecondaryAppBar() : null,
       body: SingleChildScrollView(
         child: ProfileSettingsLayout(
@@ -198,7 +198,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                     borderRadius: BorderRadius.circular(16),
                     border: _nameError
                         ? Border.all(
-                            color: const Color(0xFFEF4444),
+                            color: theme.clinical.alert.accent,
                             width: 1.5,
                           )
                         : Border.all(color: Colors.transparent),
@@ -214,15 +214,14 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                     decoration: _inputDecoration(
                       l10n.fullName,
                       Icons.person_outline,
-                      const Color(0xFF0D48A0),
+                      surfaces.brand,
                       hasError: _nameError,
                     ),
                     validator: (value) =>
                         value == null || value.isEmpty ? '' : null,
                   ),
                 ),
-                if (_nameError)
-                  _buildInlineError(l10n.validationEnterName),
+                if (_nameError) _buildInlineError(l10n.validationEnterName),
 
                 const SizedBox(height: 20),
 
@@ -234,7 +233,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                     borderRadius: BorderRadius.circular(16),
                     border: _dateError
                         ? Border.all(
-                            color: const Color(0xFFEF4444),
+                            color: theme.clinical.alert.accent,
                             width: 1.5,
                           )
                         : Border.all(color: Colors.transparent),
@@ -250,10 +249,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         decoration: _inputDecoration(
                           _selectedDate == null
                               ? l10n.selectDate
-                              : DateFormat('dd / MM / yyyy')
-                                  .format(_selectedDate!),
+                              : DateFormat(
+                                  'dd / MM / yyyy',
+                                ).format(_selectedDate!),
                           Icons.calendar_today_outlined,
-                          const Color(0xFF10B981),
+                          surfaces.brand,
                           hasError: _dateError,
                         ),
                       ),
@@ -274,7 +274,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                   decoration: _inputDecoration(
                     'email@ejemplo.com',
                     Icons.email_outlined,
-                    const Color(0xFF8B5CF6),
+                    surfaces.brand,
                   ),
                 ),
 
@@ -294,26 +294,28 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         height: 56,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
+                          color: surfaces.inset,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(_selectedCountry.flag,
-                                style: const TextStyle(fontSize: 20)),
+                            Text(
+                              _selectedCountry.flag,
+                              style: const TextStyle(fontSize: 20),
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               _selectedCountry.dialCode,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1E293B),
+                                color: surfaces.ink,
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.arrow_drop_down_rounded,
-                              color: Color(0xFF64748B),
+                              color: surfaces.inkSecondary,
                             ),
                           ],
                         ),
@@ -328,7 +330,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         decoration: _inputDecoration(
                           '300 123 4567',
                           Icons.phone_outlined,
-                          const Color(0xFF0EA5E9),
+                          surfaces.brand,
                         ),
                       ),
                     ),
@@ -348,7 +350,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                     borderRadius: BorderRadius.circular(24),
                     border: _genderError
                         ? Border.all(
-                            color: const Color(0xFFEF4444),
+                            color: theme.clinical.alert.accent,
                             width: 1.5,
                           )
                         : Border.all(color: Colors.transparent),
@@ -359,7 +361,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         label: l10n.male,
                         icon: Icons.male,
                         isSelected: _selectedGender == 'male',
-                        selectedColor: const Color(0xFF2E5BFF),
+                        selectedColor: surfaces.brand,
                         onTap: () {
                           setState(() {
                             _selectedGender = 'male';
@@ -373,7 +375,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         label: l10n.female,
                         icon: Icons.female,
                         isSelected: _selectedGender == 'female',
-                        selectedColor: const Color(0xFFFF4D94),
+                        selectedColor: surfaces.brand,
                         onTap: () {
                           setState(() {
                             _selectedGender = 'female';
@@ -401,10 +403,9 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         icon: Icons.chair_outlined,
                         value: 'sedentary',
                         selectedValue: _selectedActivityLevel,
-                        selectedColor: const Color(0xFF64748B),
+                        selectedColor: surfaces.inkSecondary,
                         onTap: () {
-                          setState(
-                              () => _selectedActivityLevel = 'sedentary');
+                          setState(() => _selectedActivityLevel = 'sedentary');
                           _saveCurrentState();
                         },
                       ),
@@ -414,10 +415,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         icon: Icons.directions_walk,
                         value: 'lightly_active',
                         selectedValue: _selectedActivityLevel,
-                        selectedColor: const Color(0xFF10B981),
+                        selectedColor: theme.clinical.optimal.accent,
                         onTap: () {
                           setState(
-                              () => _selectedActivityLevel = 'lightly_active');
+                            () => _selectedActivityLevel = 'lightly_active',
+                          );
                           _saveCurrentState();
                         },
                       ),
@@ -427,10 +429,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         icon: Icons.directions_bike_outlined,
                         value: 'moderately_active',
                         selectedValue: _selectedActivityLevel,
-                        selectedColor: const Color(0xFF3B82F6),
+                        selectedColor: surfaces.brand,
                         onTap: () {
-                          setState(() =>
-                              _selectedActivityLevel = 'moderately_active');
+                          setState(
+                            () => _selectedActivityLevel = 'moderately_active',
+                          );
                           _saveCurrentState();
                         },
                       ),
@@ -440,10 +443,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         icon: Icons.directions_run,
                         value: 'very_active',
                         selectedValue: _selectedActivityLevel,
-                        selectedColor: const Color(0xFFF59E0B),
+                        selectedColor: surfaces.brand,
                         onTap: () {
                           setState(
-                              () => _selectedActivityLevel = 'very_active');
+                            () => _selectedActivityLevel = 'very_active',
+                          );
                           _saveCurrentState();
                         },
                       ),
@@ -453,10 +457,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         icon: Icons.fitness_center,
                         value: 'extra_active',
                         selectedValue: _selectedActivityLevel,
-                        selectedColor: const Color(0xFFEF4444),
+                        selectedColor: theme.clinical.alert.accent,
                         onTap: () {
                           setState(
-                              () => _selectedActivityLevel = 'extra_active');
+                            () => _selectedActivityLevel = 'extra_active',
+                          );
                           _saveCurrentState();
                         },
                       ),
@@ -473,6 +478,8 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
 
   /// Label with optional red asterisk for required fields.
   Widget _buildLabel(String text, {bool required = false}) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Row(
@@ -480,20 +487,20 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
         children: [
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF64748B),
+              color: surfaces.inkSecondary,
             ),
           ),
           if (required) ...[
             const SizedBox(width: 4),
-            const Text(
+            Text(
               '*',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFEF4444),
+                color: theme.clinical.alert.accent,
               ),
             ),
           ],
@@ -504,21 +511,22 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
 
   /// Small inline error hint below a field.
   Widget _buildInlineError(String message) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 4, bottom: 4),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
             size: 13,
-            color: Color(0xFFEF4444),
+            color: theme.clinical.alert.accent,
           ),
           const SizedBox(width: 4),
           Text(
             message,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: Color(0xFFEF4444),
+              color: theme.clinical.alert.accent,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -533,13 +541,17 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
     Color iconColor, {
     bool hasError = false,
   }) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(icon, color: hasError ? const Color(0xFFEF4444) : iconColor, size: 20),
+      prefixIcon: Icon(
+        icon,
+        color: hasError ? theme.clinical.alert.accent : iconColor,
+        size: 20,
+      ),
       filled: true,
-      fillColor: hasError
-          ? const Color(0xFFFFF5F5)
-          : const Color(0xFFF8FAFC),
+      fillColor: hasError ? theme.clinical.alert.surface : surfaces.inset,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
@@ -551,7 +563,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
-          color: hasError ? const Color(0xFFEF4444) : const Color(0xFF0D48A0),
+          color: hasError ? theme.clinical.alert.accent : surfaces.brand,
           width: 1.5,
         ),
       ),
@@ -581,6 +593,8 @@ class _ActivityLevelOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -589,10 +603,10 @@ class _ActivityLevelOption extends StatelessWidget {
         width: 90,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? selectedColor : const Color(0xFFF8FAFC),
+          color: isSelected ? selectedColor : surfaces.inset,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? selectedColor : const Color(0xFFE2E8F0),
+            color: isSelected ? selectedColor : surfaces.divider,
             width: 1.5,
           ),
           boxShadow: isSelected
@@ -631,7 +645,7 @@ class _ActivityLevelOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : const Color(0xFF475569),
+                color: isSelected ? Colors.white : surfaces.inkSecondary,
                 height: 1.3,
               ),
             ),
@@ -664,14 +678,18 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final query = _query.trim().toLowerCase();
     final results = query.isEmpty
         ? Countries.all
         : Countries.all
-            .where((c) =>
-                c.name.toLowerCase().contains(query) ||
-                c.dialCode.contains(query))
-            .toList();
+              .where(
+                (c) =>
+                    c.name.toLowerCase().contains(query) ||
+                    c.dialCode.contains(query),
+              )
+              .toList();
 
     return SafeArea(
       child: Padding(
@@ -687,7 +705,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
+                  color: surfaces.inkMuted,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -695,10 +713,10 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                 child: Text(
                   widget.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: surfaces.ink,
                   ),
                 ),
               ),
@@ -709,10 +727,13 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                   onChanged: (v) => setState(() => _query = v),
                   decoration: InputDecoration(
                     hintText: widget.searchHint,
-                    prefixIcon: const Icon(Icons.search_rounded,
-                        color: Color(0xFF64748B), size: 20),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: surfaces.inkSecondary,
+                      size: 20,
+                    ),
                     filled: true,
-                    fillColor: const Color(0xFFF8FAFC),
+                    fillColor: surfaces.inset,
                     contentPadding: EdgeInsets.zero,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -730,15 +751,18 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                     final isSelected = country.iso == widget.selected.iso;
                     return ListTile(
                       onTap: () => Navigator.pop(context, country),
-                      leading: Text(country.flag,
-                          style: const TextStyle(fontSize: 22)),
+                      leading: Text(
+                        country.flag,
+                        style: const TextStyle(fontSize: 22),
+                      ),
                       title: Text(
                         country.name,
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w500,
-                          color: const Color(0xFF1E293B),
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w500,
+                          color: surfaces.ink,
                         ),
                       ),
                       trailing: Row(
@@ -746,16 +770,19 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                         children: [
                           Text(
                             country.dialCode,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF64748B),
+                              color: surfaces.inkSecondary,
                             ),
                           ),
                           if (isSelected) ...[
                             const SizedBox(width: 8),
-                            const Icon(Icons.check_circle_rounded,
-                                color: Color(0xFF10B981), size: 18),
+                            Icon(
+                              Icons.check_circle_rounded,
+                              color: theme.clinical.optimal.accent,
+                              size: 18,
+                            ),
                           ],
                         ],
                       ),
@@ -788,6 +815,8 @@ class _GenderOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return Expanded(
       child: Center(
         child: InkWell(
@@ -798,10 +827,10 @@ class _GenderOption extends StatelessWidget {
             width: 120,
             padding: const EdgeInsets.symmetric(vertical: 14),
             decoration: BoxDecoration(
-              color: isSelected ? selectedColor : const Color(0xFFF8FAFC),
+              color: isSelected ? selectedColor : surfaces.inset,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isSelected ? selectedColor : const Color(0xFFE2E8F0),
+                color: isSelected ? selectedColor : surfaces.divider,
                 width: 1.5,
               ),
             ),
@@ -810,7 +839,7 @@ class _GenderOption extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: isSelected ? Colors.white : const Color(0xFF64748B),
+                  color: isSelected ? Colors.white : surfaces.inkSecondary,
                   size: 26,
                 ),
                 const SizedBox(height: 6),
@@ -820,8 +849,7 @@ class _GenderOption extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color:
-                        isSelected ? Colors.white : const Color(0xFF64748B),
+                    color: isSelected ? Colors.white : surfaces.inkSecondary,
                   ),
                 ),
               ],

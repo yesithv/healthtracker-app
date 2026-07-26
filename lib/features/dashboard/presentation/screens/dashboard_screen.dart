@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/theme_context.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../widgets/user_profile_card.dart';
 import '../widgets/anthropometric_history_card.dart';
@@ -12,13 +13,16 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: Theme.of(context).surfaces.canvas,
       body: Column(
         children: [
           const MainAppBar(title: 'MY VITALS', subtitle: 'Health Tracker'),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 24.0,
+              ),
               children: const [
                 UserProfileCard(),
                 SizedBox(height: 24),

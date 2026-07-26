@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dashed_border_container.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'dart:math' as math;
 
+/// Escala de IMC con marcador de posición.
+///
+/// La barra usa la RAMPA DE SEVERIDAD del tema (bajo → óptimo → atención →
+/// alto), no un degradado escrito a mano, y el color del marcador sale del
+/// clasificador. Así degradado, marcador e insignia no pueden contradecirse:
+/// los tres beben de la misma paleta clínica y de los mismos umbrales.
 class CompositionIndicatorCard extends StatelessWidget {
   final double bmi;
   final String status;
@@ -14,26 +21,24 @@ class CompositionIndicatorCard extends StatelessWidget {
     required this.status,
   });
 
-  Color get _knobColor {
-    if (bmi < 18.5) return const Color(0xFF3B82F6);
-    if (bmi < 25) return const Color(0xFF10B981);
-    if (bmi < 30) return const Color(0xFFF59E0B);
-    return const Color(0xFFEF4444);
-  }
+  /// Extremos de la escala visible. Fuera de ellos el marcador se ancla al
+  /// borde: la barra es una ayuda de lectura, no un eje de medida.
+  static const double _min = 15;
+  static const double _max = 35;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final clinical = theme.clinical;
 
-    // Normalizing BMI for the gradient marker (15 to 35 typical range)
-    double percent = (bmi - 15) / (35 - 15);
-    percent = math.max(0.0, math.min(1.0, percent));
-
-    final knobColor = _knobColor;
+    final percent = ((bmi - _min) / (_max - _min)).clamp(0.0, 1.0);
+    final knobColor = clinical.tone(BmiCategory.of(bmi).status).accent;
 
     return DashedBorderContainer(
-      color: const Color(0xFF0D48A0).withValues(alpha: 0.3),
-      borderRadius: 16,
+      color: Color.lerp(surfaces.card, surfaces.brand, 0.30)!,
+      borderRadius: surfaces.radiusControl,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -43,22 +48,19 @@ class CompositionIndicatorCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // ── Title ──────────────────────────────────────
-                Text(
-                  l10n.historyBmiTrend,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF0D48A0),
-                    letterSpacing: 0.8,
+                Expanded(
+                  child: Text(
+                    l10n.historyBmiTrend.toUpperCase(),
+                    style: theme.type.sectionLabel.copyWith(
+                      color: surfaces.brand,
+                    ),
                   ),
                 ),
-                // ── Shared status badge ────────────────────────
+                const SizedBox(width: 8),
                 BmiStatusBadge(bmi: bmi, label: status),
               ],
             ),
             const SizedBox(height: 24),
-            // ── Gradient bar + knob ──────────────────────────
             Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.center,
@@ -67,14 +69,7 @@ class CompositionIndicatorCard extends StatelessWidget {
                   height: 10,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF3B82F6), // Bajo
-                        Color(0xFF10B981), // Normal
-                        Color(0xFFF59E0B), // Sobrepeso
-                        Color(0xFFEF4444), // Obesidad
-                      ],
-                    ),
+                    gradient: LinearGradient(colors: clinical.severityRamp),
                   ),
                 ),
                 Positioned(
@@ -87,7 +82,7 @@ class CompositionIndicatorCard extends StatelessWidget {
                       width: 22,
                       height: 22,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: surfaces.card,
                         shape: BoxShape.circle,
                         border: Border.all(color: knobColor, width: 3),
                         boxShadow: [
@@ -104,14 +99,13 @@ class CompositionIndicatorCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // ── Category labels ──────────────────────────────
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _label(l10n.bmiLow, const Color(0xFF3B82F6)),
-                _label(l10n.bmiNormal, const Color(0xFF10B981)),
-                _label(l10n.bmiOverweight, const Color(0xFFF59E0B)),
-                _label(l10n.bmiObesity, const Color(0xFFEF4444)),
+                _label(context, l10n.bmiLow, clinical.info.accent),
+                _label(context, l10n.bmiNormal, clinical.optimal.accent),
+                _label(context, l10n.bmiOverweight, clinical.caution.accent),
+                _label(context, l10n.bmiObesity, clinical.alert.accent),
               ],
             ),
           ],
@@ -120,13 +114,11 @@ class CompositionIndicatorCard extends StatelessWidget {
     );
   }
 
-  Widget _label(String text, Color color) => Text(
-    text,
-    style: TextStyle(
-      fontSize: 8,
-      fontWeight: FontWeight.bold,
-      color: color.withValues(alpha: 0.7),
-      letterSpacing: 0.3,
+  Widget _label(BuildContext context, String text, Color color) => Flexible(
+    child: Text(
+      text,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).type.meta.copyWith(fontSize: 10, color: color),
     ),
   );
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'core/theme/app_theme.dart';
+import 'core/theme/theme_catalog.dart';
 import 'core/router/app_router.dart';
 import 'core/providers/user_profile_provider.dart';
 import 'core/providers/measuring_device_provider.dart';
@@ -11,6 +11,7 @@ import 'core/providers/reminders_provider.dart';
 import 'core/providers/health_goals_provider.dart';
 import 'core/providers/onboarding_provider.dart';
 import 'core/providers/ui_preferences_provider.dart';
+import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_units_provider.dart';
 import 'core/providers/discover_provider.dart';
 import 'package:myvitals_healthtracker_app/features/discover/data/repositories/discover_repository.dart';
@@ -74,6 +75,11 @@ void main() {
         debugPrint('=== DISCOVER WARM ERROR: $e\n$st');
       }
 
+      // 5. Preferencia de tema. Se lee ANTES de `runApp` para que el primer
+      // frame ya salga con el tema elegido: cargarla después provocaría un
+      // destello del tema por defecto en cada arranque.
+      final themeProvider = await ThemeProvider.load();
+
       runApp(
         MultiProvider(
           providers: [
@@ -83,6 +89,8 @@ void main() {
             ChangeNotifierProvider(create: (_) => HealthGoalsProvider()),
             ChangeNotifierProvider(create: (_) => OnboardingProvider()),
             ChangeNotifierProvider(create: (_) => UIPreferencesProvider()),
+            // Tema activo. `.value` porque ya viene cargado de disco.
+            ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
             ChangeNotifierProvider(create: (_) => LocaleUnitsProvider()),
             // Discover feed: warmed eagerly (lazy:false) so content is ready in
             // memory before the user ever opens the Discover tab.
@@ -141,11 +149,15 @@ class MyVitalsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localeUnits = Provider.of<LocaleUnitsProvider>(context);
+    // Éste es el ÚNICO widget que escucha al tema: al cambiar, sólo se
+    // reconstruye desde aquí, y el resto del árbol se repinta por el
+    // InheritedWidget de Theme. Ninguna pantalla se suscribe al provider.
+    final themeId = context.select<ThemeProvider, AppThemeId>((p) => p.themeId);
 
     return MaterialApp.router(
       title: 'My Vitals',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: AppThemeCatalog.themeOf(themeId),
       routerConfig: AppRouter.router,
       locale: localeUnits.locale,
       localizationsDelegates: const [

@@ -32,6 +32,7 @@ import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/identify_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
+import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -41,7 +42,17 @@ class AppRouter {
   static final router = GoRouter(
     initialLocation: '/',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+      // PANTALLA 0 — selector de tema (temporal, ver ThemePickerScreen).
+      // Es la raíz para poder recorrer el flujo entero con cualquiera de los
+      // temas. Al reubicarla en Perfil, basta devolver '/' a SplashScreen.
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const ThemePickerScreen(),
+      ),
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: '/welcome',
         builder: (context, state) => const WelcomeScreen(),
@@ -150,27 +161,23 @@ class AppRouter {
 
       GoRoute(
         path: '/history/anthropometry',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: AnthropometryHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: AnthropometryHistoryTab()),
       ),
       GoRoute(
         path: '/history/vital-signs',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: VitalSignsHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: VitalSignsHistoryTab()),
       ),
       GoRoute(
         path: '/history/lipid',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: LipidHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: LipidHistoryTab()),
       ),
       GoRoute(
         path: '/history/body-composition',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: BodyCompositionHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: BodyCompositionHistoryTab()),
       ),
       ShellRoute(
         builder: (context, state, child) {

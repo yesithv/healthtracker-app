@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.da
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -116,71 +117,44 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0D48A0),
+      backgroundColor: surfaces.brand,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // --- ECG MONITOR FRAME ---
-            Container(
-              width: 240,
-              height: 140,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF020617),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: AnimatedBuilder(
-                  animation: _ecgController,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      painter: EcgPainter(
-                        progress: _ecgController.value,
-                        color: const Color(0xFF22C55E),
-                      ),
-                      child: Container(),
-                    );
-                  },
-                ),
-              ),
+            // ── ELECTRO ─────────────────────────────────────────────────────
+            // El trazo es el mismo en los dos temas. Lo que cambia es si va
+            // dentro de un bisel de instrumental o desnudo sobre el fondo, y
+            // eso lo dice el tema (`monitorBezel`), no esta pantalla.
+            _EcgPanel(
+              controller: _ecgController,
+              stroke: surfaces.dataStroke,
+              strokeWidth: surfaces.chartLineWidth,
+              bezel: surfaces.monitorBezel,
+              radius: surfaces.radiusCard,
+              onBrand: surfaces.onBrand,
             ),
             const SizedBox(height: 48),
-            // --- TEXT SECTION ---
+            // ── MARCA ───────────────────────────────────────────────────────
             FadeTransition(
               opacity: _fadeAnimation,
               child: Column(
-                children: const [
+                children: [
                   Text(
-                    'MY VITALS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 4,
-                    ),
+                    'My Vitals',
+                    textAlign: TextAlign.center,
+                    style: theme.type.display.copyWith(color: surfaces.onBrand),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Health Tracker',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      letterSpacing: 2,
-                      fontWeight: FontWeight.w500,
+                    textAlign: TextAlign.center,
+                    style: theme.type.displayMeta.copyWith(
+                      color: surfaces.onBrand.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -193,22 +167,104 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
+/// El electro del arranque, en los dos acabados que admite el sistema.
+class _EcgPanel extends StatelessWidget {
+  const _EcgPanel({
+    required this.controller,
+    required this.stroke,
+    required this.strokeWidth,
+    required this.bezel,
+    required this.radius,
+    required this.onBrand,
+  });
+
+  final AnimationController controller;
+  final Color stroke;
+  final double strokeWidth;
+  final bool bezel;
+  final double radius;
+  final Color onBrand;
+
+  @override
+  Widget build(BuildContext context) {
+    final trace = AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) => CustomPaint(
+        painter: EcgPainter(
+          progress: controller.value,
+          color: stroke,
+          strokeWidth: strokeWidth,
+          // La rejilla y el resplandor son cromo de instrumental: sólo
+          // acompañan al bisel.
+          showGrid: bezel,
+          glow: bezel,
+        ),
+        child: const SizedBox.expand(),
+      ),
+    );
+
+    if (!bezel) {
+      // «Consulta Serena»: el trazo respira sobre el lienzo de marca.
+      return SizedBox(width: 240, height: 60, child: trace);
+    }
+
+    // «Pulso Clínico»: pantalla de monitor con marco y halo.
+    return Container(
+      width: 240,
+      height: 140,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        // Interior de la pantalla del monitor. Es una constante del PROPIO
+        // idioma de instrumental, no de la paleta del tema: un monitor apagado
+        // es negro en cualquier tema. Sólo se dibuja si `monitorBezel` es true.
+        color: const Color(0xFF020617),
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(color: onBrand.withValues(alpha: 0.2), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: onBrand.withValues(alpha: 0.1),
+            blurRadius: 20,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius - 4),
+        child: trace,
+      ),
+    );
+  }
+}
+
 class EcgPainter extends CustomPainter {
   final double progress;
   final Color color;
+  final double strokeWidth;
 
-  EcgPainter({required this.progress, required this.color});
+  /// Rejilla de fondo estilo papel de electro. Sólo con bisel de instrumental.
+  final bool showGrid;
+
+  /// Halo alrededor del trazo, como el fósforo de un monitor. Ídem.
+  final bool glow;
+
+  EcgPainter({
+    required this.progress,
+    required this.color,
+    this.strokeWidth = 2.5,
+    this.showGrid = true,
+    this.glow = true,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 2.5
+      ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
-    _drawGrid(canvas, size);
+    if (showGrid) _drawGrid(canvas, size);
 
     final path = Path();
     final double midY = size.height / 2;
@@ -216,7 +272,9 @@ class EcgPainter extends CustomPainter {
 
     for (double x = 0; x <= width; x++) {
       double relativeX = (x / width + (1 - progress)) % 1.0;
-      double y = midY + _getEcgHeight(relativeX * 10) * 40;
+      // La amplitud escala con la altura disponible: el mismo trazo sirve para
+      // el monitor de 140 px y para la línea desnuda de 60 px.
+      double y = midY + _getEcgHeight(relativeX * 10) * (size.height * 0.29);
 
       if (x == 0) {
         path.moveTo(x, y);
@@ -227,13 +285,15 @@ class EcgPainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
 
-    final glowPaint = Paint()
-      ..color = color.withValues(alpha: 0.3)
-      ..strokeWidth = 6.0
-      ..style = PaintingStyle.stroke
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
+    if (glow) {
+      final glowPaint = Paint()
+        ..color = color.withValues(alpha: 0.3)
+        ..strokeWidth = strokeWidth * 2.4
+        ..style = PaintingStyle.stroke
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
-    canvas.drawPath(path, glowPaint);
+      canvas.drawPath(path, glowPaint);
+    }
   }
 
   double _getEcgHeight(double t) {
@@ -264,5 +324,9 @@ class EcgPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(EcgPainter oldDelegate) =>
-      oldDelegate.progress != progress;
+      oldDelegate.progress != progress ||
+      oldDelegate.color != color ||
+      oldDelegate.strokeWidth != strokeWidth ||
+      oldDelegate.showGrid != showGrid ||
+      oldDelegate.glow != glow;
 }

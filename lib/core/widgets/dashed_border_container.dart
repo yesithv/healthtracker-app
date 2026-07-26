@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/theme_context.dart';
+
 class DashedBorderContainer extends StatelessWidget {
   final Widget child;
   final Color color;
@@ -16,7 +18,7 @@ class DashedBorderContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).surfaces.card,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: CustomPaint(

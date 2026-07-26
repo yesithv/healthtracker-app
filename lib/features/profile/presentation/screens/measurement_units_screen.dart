@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
 import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
@@ -67,7 +68,7 @@ class _MeasurementUnitsScreenState extends State<MeasurementUnitsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: Theme.of(context).surfaces.canvas,
       body: Column(
         children: [
           const SecondaryAppBar(),

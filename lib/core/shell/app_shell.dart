@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import '../theme/theme_context.dart';
 import '../widgets/register_modal.dart';
 
 class AppShell extends StatelessWidget {
@@ -20,21 +21,25 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentIndex = _getCurrentIndex(context);
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
 
     return Scaffold(
       body: child,
       floatingActionButton: FloatingActionButton(
         onPressed: () => showRegisterModal(context),
-        backgroundColor: const Color(0xFF0D48A0),
-        elevation: 4,
+        backgroundColor: surfaces.brand,
+        // Los temas planos no levantan el botón del lienzo.
+        elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
+        // El icono no cambia: sólo su color se adapta al fondo de marca.
+        child: Icon(Icons.add, color: surfaces.onBrand, size: 32),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
-        color: Colors.white,
+        color: surfaces.card,
         padding: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         child: SizedBox(
@@ -55,8 +60,10 @@ class AppShell extends StatelessWidget {
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0D48A0).withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(16),
+                        color: Color.lerp(surfaces.card, surfaces.brand, 0.08),
+                        borderRadius: BorderRadius.circular(
+                          surfaces.radiusControl,
+                        ),
                       ),
                     ),
                   ),
@@ -84,10 +91,9 @@ class AppShell extends StatelessWidget {
                             const SizedBox(height: 24), // Space for the FAB
                             Text(
                               l10n.record.toUpperCase(),
-                              style: const TextStyle(
+                              style: theme.type.badge.copyWith(
                                 fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0D48A0),
+                                color: surfaces.brand,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -133,7 +139,9 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? const Color(0xFF0D48A0) : Colors.grey[400];
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final color = isSelected ? surfaces.brand : surfaces.inkMuted;
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -146,10 +154,9 @@ class _NavBarItem extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(
+              style: theme.type.badge.copyWith(
                 color: color,
                 fontSize: 9,
-                fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),
             ),

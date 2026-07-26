@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/core/ranges/lab_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/clinical_palette.dart';
 
 /// Centralized classification of health metrics.
 ///
@@ -16,6 +17,13 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_re
 /// Los lípidos usan su propia fuente: los rangos del LABORATORIO donde se tomó
 /// cada examen ([LabRangesStore], por el `labCode` del registro), con ATP III
 /// como fallback.
+/// Colores de FÁBRICA. Son el último recurso, para código que todavía llama a
+/// `.color` sin `BuildContext`. La interfaz migrada NO los usa: pide
+/// `.status` y deja que el tema activo resuelva el acabado
+/// (`Theme.of(context).clinical.tone(cat.status)`).
+///
+/// Lo que NO cambia con el tema es este archivo: qué cuenta como «elevada» o
+/// «alta» lo deciden los rangos del backoffice, no la paleta.
 const Color _blue = Color(0xFF3B82F6); // low / near-optimal
 const Color _green = Color(0xFF10B981); // normal / optimal
 const Color _amber = Color(0xFFF59E0B); // elevated / borderline
@@ -24,7 +32,11 @@ const Color _red = Color(0xFFEF4444); // high / out-of-range
 /// Clasifica [value] contra las bandas del servidor y las traduce al enum del
 /// clasificador vía [byBandCode]. Devuelve null si no hay banda aplicable o el
 /// código no está mapeado (el llamador usa su fallback de fábrica).
-T? _serverCategory<T>(String indicatorCode, num value, Map<String, T> byBandCode) {
+T? _serverCategory<T>(
+  String indicatorCode,
+  num value,
+  Map<String, T> byBandCode,
+) {
   final band = ReferenceRangesStore.instance.classify(indicatorCode, value);
   if (band == null) return null;
   return byBandCode[band.bandCode.toUpperCase()];
@@ -71,6 +83,14 @@ enum BpCategory {
     BpCategory.high => _red,
   };
 
+  /// Severidad clínica de esta categoría. Criterio fijo: no lo altera el tema.
+  ClinicalStatus get status => switch (this) {
+    BpCategory.low => ClinicalStatus.info,
+    BpCategory.normal => ClinicalStatus.optimal,
+    BpCategory.elevated => ClinicalStatus.caution,
+    BpCategory.high => ClinicalStatus.alert,
+  };
+
   String label(AppLocalizations l10n) => switch (this) {
     BpCategory.low => l10n.bpLow,
     BpCategory.normal => l10n.bpNormal,
@@ -104,6 +124,12 @@ enum HrCategory {
     HrCategory.low => _blue,
     HrCategory.normal => _green,
     HrCategory.high => _red,
+  };
+
+  ClinicalStatus get status => switch (this) {
+    HrCategory.low => ClinicalStatus.info,
+    HrCategory.normal => ClinicalStatus.optimal,
+    HrCategory.high => ClinicalStatus.alert,
   };
 
   String label(AppLocalizations l10n) => switch (this) {
@@ -144,6 +170,13 @@ enum BmiCategory {
     BmiCategory.normal => _green,
     BmiCategory.overweight => _amber,
     BmiCategory.obesity => _red,
+  };
+
+  ClinicalStatus get status => switch (this) {
+    BmiCategory.low => ClinicalStatus.info,
+    BmiCategory.normal => ClinicalStatus.optimal,
+    BmiCategory.overweight => ClinicalStatus.caution,
+    BmiCategory.obesity => ClinicalStatus.alert,
   };
 
   String label(AppLocalizations l10n) => switch (this) {
@@ -188,6 +221,13 @@ enum FatCategory {
     FatCategory.high => _red,
   };
 
+  ClinicalStatus get status => switch (this) {
+    FatCategory.veryLow || FatCategory.low => ClinicalStatus.info,
+    FatCategory.normal => ClinicalStatus.optimal,
+    FatCategory.elevated => ClinicalStatus.caution,
+    FatCategory.high => ClinicalStatus.alert,
+  };
+
   String label(AppLocalizations l10n) => switch (this) {
     FatCategory.veryLow => l10n.fatVeryLow,
     FatCategory.low => l10n.fatLow,
@@ -224,6 +264,12 @@ enum VisceralCategory {
     VisceralCategory.high => _red,
   };
 
+  ClinicalStatus get status => switch (this) {
+    VisceralCategory.normal => ClinicalStatus.optimal,
+    VisceralCategory.elevated => ClinicalStatus.caution,
+    VisceralCategory.high => ClinicalStatus.alert,
+  };
+
   /// Reuses the generic NORMAL / ELEVATED / HIGH fat labels.
   String label(AppLocalizations l10n) => switch (this) {
     VisceralCategory.normal => l10n.fatNormal,
@@ -253,11 +299,16 @@ enum LipidStatus {
     'PREDIABETES': LipidStatus.borderline,
     'HIGH': LipidStatus.high,
     'VERY_HIGH': LipidStatus.high,
-    'LOW': LipidStatus.borderline, // p. ej. glucosa baja: anómalo sin ser "alto"
+    'LOW':
+        LipidStatus.borderline, // p. ej. glucosa baja: anómalo sin ser "alto"
   };
 
-  static LipidStatus? _fromLab(String? labCode, String indicator, double v,
-      [Map<String, LipidStatus> byBand = _map]) {
+  static LipidStatus? _fromLab(
+    String? labCode,
+    String indicator,
+    double v, [
+    Map<String, LipidStatus> byBand = _map,
+  ]) {
     if (labCode == null || labCode.isEmpty) return null;
     final band = LabRangesStore.instance.classify(labCode, indicator, v);
     if (band == null) return null;
@@ -315,6 +366,15 @@ enum LipidStatus {
     LipidStatus.nearOptimal => _blue,
     LipidStatus.borderline => _amber,
     LipidStatus.high => _red,
+  };
+
+  /// Severidad clínica. `nearOptimal` cae en `info` (frío): aceptable, sin ser
+  /// lo deseable — la misma lectura que «por debajo de rango» en el resto.
+  ClinicalStatus get status => switch (this) {
+    LipidStatus.optimal => ClinicalStatus.optimal,
+    LipidStatus.nearOptimal => ClinicalStatus.info,
+    LipidStatus.borderline => ClinicalStatus.caution,
+    LipidStatus.high => ClinicalStatus.alert,
   };
 
   /// When [hdlInverted] is true the wording switches to HDL semantics, where a

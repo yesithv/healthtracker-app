@@ -47,3 +47,32 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/
+
+  # Tipografías EMPAQUETADAS, no descargadas en tiempo de ejecución.
+  # Es una decisión de rendimiento deliberada: `google_fonts` resolvía la
+  # familia por red la primera vez, así que cambiar de tema podía provocar un
+  # parpadeo de fuente (o fallar sin conexión). Con los .ttf en el binario, el
+  # cambio de tema es un repintado puro, determinista y offline.
+  #
+  # Newsreader e Inter son fuentes VARIABLES (un archivo, eje `wght`): los
+  # pesos se piden con `TextStyle.fontVariations`, centralizado en
+  # `core/theme/tokens/app_typography.dart`. Licencias en assets/fonts/OFL-*.
+  fonts:
+    - family: Newsreader
+      fonts:
+        - asset: assets/fonts/Newsreader-Variable.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+    - family: IBM Plex Sans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSans-SemiBold.ttf
+          weight: 600
+    - family: IBM Plex Mono
+      fonts:
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+          weight: 600
