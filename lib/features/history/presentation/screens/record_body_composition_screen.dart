@@ -3,7 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'package:myvitals_healthtracker_app/core/constants/metric_colors.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/clinical_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/body_composition_record.dart';
 import 'package:intl/intl.dart';
@@ -74,6 +78,30 @@ class _RecordBodyCompositionScreenState
     super.dispose();
   }
 
+  // ── Tokens ────────────────────────────────────────────────────────────────
+
+  ThemeData get _theme => Theme.of(context);
+
+  /// Identidad de la familia «composición corporal»: índigo en cualquier tema.
+  Tone get _family => _theme.metrics.tone(MetricFamily.bodyComposition);
+
+  /// Tiñe el selector de Material con la identidad de la familia, dejándole al
+  /// tema la tipografía y las superficies.
+  Widget _themedPicker(BuildContext ctx, Widget? child) {
+    final base = Theme.of(ctx);
+    final family = base.metrics.tone(MetricFamily.bodyComposition);
+    return Theme(
+      data: base.copyWith(
+        colorScheme: base.colorScheme.copyWith(
+          primary: family.accent,
+          onPrimary: family.onAccent,
+          onSurface: base.surfaces.ink,
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   // ── Date / time pickers ──────────────────────────────────────────────────
   Future<void> _selectDate(BuildContext context) async {
     final picked = await showDatePicker(
@@ -81,16 +109,7 @@ class _RecordBodyCompositionScreenState
       initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: MetricColors.compositionColor,
-            onPrimary: Colors.white,
-            onSurface: Color(0xFF1E293B),
-          ),
-        ),
-        child: child!,
-      ),
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedDate) {
       setState(() => selectedDate = picked);
@@ -101,14 +120,7 @@ class _RecordBodyCompositionScreenState
     final picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: MetricColors.compositionColor,
-          ),
-        ),
-        child: child!,
-      ),
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedTime) {
       setState(() => selectedTime = picked);
@@ -126,38 +138,38 @@ class _RecordBodyCompositionScreenState
   }) async {
     final controller = TextEditingController(text: current.toStringAsFixed(1));
     final l10n = AppLocalizations.of(context)!;
+    // Capturados antes de abrir: dentro del builder `ctx` es el del diálogo.
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
+
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Color(0xFF1E293B),
-          ),
+        backgroundColor: surfaces.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(surfaces.radiusCard),
         ),
+        title: Text(title, style: theme.type.cardTitle.copyWith(fontSize: 18)),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
           ],
+          style: theme.type.body.copyWith(color: surfaces.ink),
           decoration: InputDecoration(
             suffixText: unit,
+            suffixStyle: theme.type.numeralUnit,
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: surfaces.inset,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(
-                color: MetricColors.compositionColor,
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
+              borderSide: BorderSide(color: family.accent, width: 1.5),
             ),
           ),
           autofocus: true,
@@ -167,7 +179,7 @@ class _RecordBodyCompositionScreenState
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Color(0xFF64748B)),
+              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
             ),
           ),
           ElevatedButton(
@@ -177,13 +189,16 @@ class _RecordBodyCompositionScreenState
               Navigator.pop(ctx);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: MetricColors.compositionColor,
-              foregroundColor: Colors.white,
+              backgroundColor: family.accent,
+              foregroundColor: family.onAccent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(surfaces.radiusControl),
               ),
             ),
-            child: const Text('OK'),
+            child: Text(
+              'OK',
+              style: theme.type.button.copyWith(color: family.onAccent),
+            ),
           ),
         ],
       ),
@@ -200,36 +215,36 @@ class _RecordBodyCompositionScreenState
   }) async {
     final controller = TextEditingController(text: current.toString());
     final l10n = AppLocalizations.of(context)!;
+    // Capturados antes de abrir: dentro del builder `ctx` es el del diálogo.
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
+
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Color(0xFF1E293B),
-          ),
+        backgroundColor: surfaces.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(surfaces.radiusCard),
         ),
+        title: Text(title, style: theme.type.cardTitle.copyWith(fontSize: 18)),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          style: theme.type.body.copyWith(color: surfaces.ink),
           decoration: InputDecoration(
             suffixText: unit,
+            suffixStyle: theme.type.numeralUnit,
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: surfaces.inset,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(
-                color: MetricColors.compositionColor,
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
+              borderSide: BorderSide(color: family.accent, width: 1.5),
             ),
           ),
           autofocus: true,
@@ -239,7 +254,7 @@ class _RecordBodyCompositionScreenState
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Color(0xFF64748B)),
+              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
             ),
           ),
           ElevatedButton(
@@ -249,13 +264,16 @@ class _RecordBodyCompositionScreenState
               Navigator.pop(ctx);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: MetricColors.compositionColor,
-              foregroundColor: Colors.white,
+              backgroundColor: family.accent,
+              foregroundColor: family.onAccent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(surfaces.radiusControl),
               ),
             ),
-            child: const Text('OK'),
+            child: Text(
+              'OK',
+              style: theme.type.button.copyWith(color: family.onAccent),
+            ),
           ),
         ],
       ),
@@ -301,13 +319,18 @@ class _RecordBodyCompositionScreenState
     }
     if (!mounted) return;
     final l10n = AppLocalizations.of(context)!;
+    // Este aviso usaba el color de la FAMILIA, no el verde de éxito de las
+    // otras tres pantallas. Se mantiene tal cual —solo se cambia el color a
+    // mano por su token— porque unificarlo sería cambiar la interfaz, no
+    // aplicar el tema.
+    final family = _family;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           l10n.compositionSavedSuccess,
-          style: const TextStyle(color: Colors.white),
+          style: _theme.type.body.copyWith(color: family.onAccent),
         ),
-        backgroundColor: MetricColors.compositionColor,
+        backgroundColor: family.accent,
       ),
     );
     context.pop();
@@ -317,11 +340,17 @@ class _RecordBodyCompositionScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final fatStatus = FatCategory.of(bodyFat);
-    final visceralStatus = VisceralCategory.of(visceralFat);
+    final fatCat = FatCategory.of(bodyFat);
+    final visceralCat = VisceralCategory.of(visceralFat);
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
+    // El clasificador da el ESTADO; el tema resuelve el color.
+    final fatTone = theme.clinical.tone(fatCat.status);
+    final visceralTone = theme.clinical.tone(visceralCat.status);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           _buildAppBar(context, l10n),
@@ -335,7 +364,7 @@ class _RecordBodyCompositionScreenState
                   if (!context.watch<UIPreferencesProvider>().isBodyCompInfoDismissed) ...[
                     DismissibleInfoBanner(
                       text: l10n.compositionInfoBanner,
-                      baseColor: MetricColors.compositionColor,
+                      baseColor: family.accent,
                       onDismiss: () {
                         context.read<UIPreferencesProvider>().dismissBodyCompInfo();
                       },
@@ -377,13 +406,13 @@ class _RecordBodyCompositionScreenState
                   _buildSectionCard(
                     icon: Icons.pie_chart_outline,
                     title: l10n.compositionBodyFat,
-                    badge: _buildFatBadge(fatStatus, l10n),
+                    badge: StatusChip(status: fatCat.status, label: fatCat.label(l10n)),
                     child: _buildSliderField(
                       value: bodyFat,
                       unit: '%',
                       min: 3,
                       max: 60,
-                      color: fatStatus.color,
+                      tone: fatTone,
                       onChanged: (v) => setState(() => bodyFat = _round1(v)),
                       onTap: () => _showDoubleEditDialog(
                         l10n.compositionBodyFat,
@@ -406,7 +435,7 @@ class _RecordBodyCompositionScreenState
                       unit: 'kg',
                       min: 10,
                       max: 100,
-                      color: MetricColors.compositionColor,
+                      tone: family,
                       onChanged: (v) => setState(() => muscleMass = _round1(v)),
                       onTap: () => _showDoubleEditDialog(
                         l10n.compositionMuscleMass,
@@ -431,8 +460,9 @@ class _RecordBodyCompositionScreenState
                             label: l10n.compositionVisceralFat,
                             value: visceralFat,
                             unit: l10n.compositionLevel,
-                            color: visceralStatus.color,
-                            badgeText: visceralStatus.label(l10n),
+                            tone: visceralTone,
+                            badgeStatus: visceralCat.status,
+                            badgeText: visceralCat.label(l10n),
                             onDecrement: () => setState(() {
                               if (visceralFat > 1) visceralFat--;
                             }),
@@ -455,7 +485,7 @@ class _RecordBodyCompositionScreenState
                             label: l10n.compositionMetabolicAge,
                             value: metabolicAge,
                             unit: l10n.compositionYears,
-                            color: MetricColors.compositionColor,
+                            tone: family,
                             onDecrement: () => setState(() {
                               if (metabolicAge > 10) metabolicAge--;
                             }),
@@ -531,22 +561,22 @@ class _RecordBodyCompositionScreenState
                     child: ElevatedButton(
                       onPressed: _saveRecord,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: MetricColors.compositionColor,
+                        backgroundColor: family.accent,
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(
+                            surfaces.radiusControl,
+                          ),
                         ),
-                        elevation: 4,
-                        shadowColor: MetricColors.compositionColor.withValues(
-                          alpha: 0.4,
-                        ),
+                        // Los temas planos no llevan sombra en los controles.
+                        elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
+                        shadowColor: family.accent.withValues(alpha: 0.4),
                       ),
                       child: Text(
                         l10n.saveAndEarnXp,
-                        style: const TextStyle(
+                        style: theme.type.button.copyWith(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: family.onAccent,
                         ),
                       ),
                     ),
@@ -564,13 +594,14 @@ class _RecordBodyCompositionScreenState
 
   // ── AppBar ────────────────────────────────────────────────────────────────
   Widget _buildAppBar(BuildContext context, AppLocalizations l10n) {
+    final family = _family;
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: MetricColors.compositionColor,
+      decoration: BoxDecoration(
+        color: family.accent,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(_theme.surfaces.radiusCard + 4),
+          bottomRight: Radius.circular(_theme.surfaces.radiusCard + 4),
         ),
       ),
       child: SafeArea(
@@ -582,23 +613,21 @@ class _RecordBodyCompositionScreenState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: family.onAccent),
                 onPressed: () => context.pop(),
               ),
               Expanded(
                 child: Text(
                   l10n.compositionTitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  style: _theme.type.sectionLabel.copyWith(
                     fontSize: 15,
-                    letterSpacing: 1.0,
+                    color: family.onAccent,
                   ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.accessibility_new, color: Colors.white),
+                icon: Icon(Icons.accessibility_new, color: family.onAccent),
                 onPressed: () {},
               ),
             ],
@@ -615,36 +644,24 @@ class _RecordBodyCompositionScreenState
     Widget? badge,
     required Widget child,
   }) {
+    final theme = _theme;
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: theme.surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, color: MetricColors.compositionColor, size: 18),
+                Icon(icon, color: _family.accent, size: 18),
                 const SizedBox(width: 8),
               ],
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                    letterSpacing: 1.0,
+                  style: theme.type.sectionLabel.copyWith(
+                    color: theme.surfaces.ink,
                   ),
                 ),
               ),
@@ -665,39 +682,30 @@ class _RecordBodyCompositionScreenState
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-          ),
-        ),
+        Text(label, style: theme.type.fieldLabel),
         const SizedBox(height: 6),
         GestureDetector(
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              color: surfaces.inset,
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
+              border: Border.all(color: surfaces.divider),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
+                  style: theme.type.cardTitle.copyWith(fontSize: 14),
                 ),
-                Icon(icon, color: const Color(0xFF64748B), size: 16),
+                Icon(icon, color: surfaces.inkSecondary, size: 16),
               ],
             ),
           ),
@@ -707,15 +715,20 @@ class _RecordBodyCompositionScreenState
   }
 
   // ── Slider field (fat % and muscle mass) ──────────────────────────────────
+  /// Recibe el TONO ya resuelto —clínico para la grasa, de familia para el
+  /// músculo— en vez de un color suelto: la cifra, la pista y el pulgar tienen
+  /// que salir todos del mismo sitio.
   Widget _buildSliderField({
     required double value,
     required String unit,
     required double min,
     required double max,
-    required Color color,
+    required Tone tone,
     required ValueChanged<double> onChanged,
     required VoidCallback onTap,
   }) {
+    final theme = _theme;
+    final color = tone.accent;
     return Column(
       children: [
         Row(
@@ -728,18 +741,16 @@ class _RecordBodyCompositionScreenState
                 children: [
                   Text(
                     value.toStringAsFixed(1),
-                    style: TextStyle(
+                    style: theme.type.numeral.copyWith(
                       fontSize: 40,
-                      fontWeight: FontWeight.bold,
                       color: color,
                     ),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     unit,
-                    style: TextStyle(
+                    style: theme.type.numeralUnit.copyWith(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                       color: color,
                     ),
                   ),
@@ -790,30 +801,27 @@ class _RecordBodyCompositionScreenState
     required String label,
     required int value,
     required String unit,
-    required Color color,
+    required Tone tone,
     required VoidCallback onDecrement,
     required VoidCallback onIncrement,
     required VoidCallback onTap,
+    ClinicalStatus? badgeStatus,
     String? badgeText,
   }) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final color = tone.accent;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(16),
+        color: surfaces.inset,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
         border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF64748B),
-            ),
-          ),
+          Text(label, style: theme.type.fieldLabel),
           const SizedBox(height: 8),
           GestureDetector(
             onTap: onTap,
@@ -823,41 +831,25 @@ class _RecordBodyCompositionScreenState
               children: [
                 Text(
                   value.toString(),
-                  style: TextStyle(
+                  style: theme.type.numeralSmall.copyWith(
                     fontSize: 28,
-                    fontWeight: FontWeight.bold,
                     color: color,
                   ),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   unit,
-                  style: TextStyle(
+                  style: theme.type.numeralUnit.copyWith(
                     fontSize: 13,
-                    fontWeight: FontWeight.bold,
                     color: color,
                   ),
                 ),
               ],
             ),
           ),
-          if (badgeText != null) ...[
+          if (badgeStatus != null && badgeText != null) ...[
             const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                badgeText,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            StatusChip(status: badgeStatus, label: badgeText),
           ],
           const SizedBox(height: 10),
           Row(
@@ -885,6 +877,9 @@ class _RecordBodyCompositionScreenState
     final controller = TextEditingController(
       text: value != null ? value.toStringAsFixed(1) : '',
     );
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
     return Row(
       children: [
         Expanded(
@@ -896,19 +891,9 @@ class _RecordBodyCompositionScreenState
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1E293B),
-                    ),
+                    style: theme.type.cardTitle.copyWith(fontSize: 13),
                   ),
-                  Text(
-                    refText,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Color(0xFF94A3B8),
-                    ),
-                  ),
+                  Text(refText, style: theme.type.meta.copyWith(fontSize: 10)),
                 ],
               ),
               const SizedBox(height: 8),
@@ -922,29 +907,30 @@ class _RecordBodyCompositionScreenState
                   final v = double.tryParse(text);
                   if (v != null) onSaved(v);
                 },
+                style: theme.type.body.copyWith(color: surfaces.ink),
                 decoration: InputDecoration(
                   hintText: hint,
-                  hintStyle: const TextStyle(
-                    color: Color(0xFF94A3B8),
+                  hintStyle: theme.type.body.copyWith(
+                    color: surfaces.inkMuted,
                     fontSize: 13,
                   ),
                   suffixText: unit,
-                  suffixStyle: TextStyle(
-                    color: MetricColors.compositionColor,
-                    fontWeight: FontWeight.bold,
+                  suffixStyle: theme.type.numeralUnit.copyWith(
+                    color: family.accent,
                   ),
                   filled: true,
-                  fillColor: const Color(0xFFF8FAFC),
+                  fillColor: surfaces.inset,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(
+                      surfaces.radiusControl,
+                    ),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: MetricColors.compositionColor,
-                      width: 1.5,
+                    borderRadius: BorderRadius.circular(
+                      surfaces.radiusControl,
                     ),
+                    borderSide: BorderSide(color: family.accent, width: 1.5),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -960,34 +946,44 @@ class _RecordBodyCompositionScreenState
   }
 
   // ── BMR editable card ─────────────────────────────────────────────────────
+  /// Única tarjeta sólida de la pantalla: va del color de la familia, así que
+  /// todo lo que lleva dentro se pinta con su `onAccent`. Las variantes
+  /// atenuadas se derivan con opacidad, en vez de usar blancos literales que
+  /// dejarían de funcionar si un tema tuviera acento claro.
   Widget _buildBmrCard(AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
+    final onAccent = family.onAccent;
+    final onAccentSoft = onAccent.withValues(alpha: 0.7);
+    final onAccentFaint = onAccent.withValues(alpha: 0.6);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: MetricColors.compositionColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: MetricColors.compositionColor.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: family.accent,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        boxShadow: surfaces.cardShadow.isEmpty
+            ? const []
+            : [
+                BoxShadow(
+                  color: family.accent.withValues(alpha: 0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.bolt, color: Colors.white70, size: 20),
+              Icon(Icons.bolt, color: onAccentSoft, size: 20),
               const SizedBox(width: 8),
               Text(
                 l10n.compositionBmr,
-                style: const TextStyle(
-                  color: Colors.white70,
+                style: theme.type.sectionLabel.copyWith(
                   fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
+                  color: onAccentSoft,
                 ),
               ),
             ],
@@ -1000,22 +996,23 @@ class _RecordBodyCompositionScreenState
                   controller: _bmrController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: theme.type.numeral.copyWith(
+                    color: onAccent,
                     fontSize: 38,
-                    fontWeight: FontWeight.bold,
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
-                    prefixIcon: Icon(Icons.edit, color: Colors.white70, size: 20),
-                    prefixIconConstraints: BoxConstraints(minWidth: 30, minHeight: 0),
+                    prefixIcon: Icon(Icons.edit, color: onAccentSoft, size: 20),
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 30,
+                      minHeight: 0,
+                    ),
                     suffixText: 'kcal',
-                    suffixStyle: TextStyle(
-                      color: Colors.white60,
+                    suffixStyle: theme.type.numeralUnit.copyWith(
+                      color: onAccentFaint,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   onChanged: (v) {
@@ -1044,10 +1041,9 @@ class _RecordBodyCompositionScreenState
           const SizedBox(height: 6),
           Text(
             l10n.compositionBmrSubtitle,
-            style: const TextStyle(
-              color: Colors.white60,
+            style: theme.type.meta.copyWith(
+              color: onAccentFaint,
               fontSize: 10,
-              letterSpacing: 0.3,
             ),
           ),
         ],
@@ -1056,6 +1052,7 @@ class _RecordBodyCompositionScreenState
   }
 
   Widget _buildBmrAdjustButton(IconData icon, VoidCallback onTap) {
+    final onAccent = _family.onAccent;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
@@ -1063,16 +1060,17 @@ class _RecordBodyCompositionScreenState
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: onAccent.withValues(alpha: 0.15),
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, color: Colors.white, size: 16),
+        child: Icon(icon, color: onAccent, size: 16),
       ),
     );
   }
 
   // ── Adjust buttons ────────────────────────────────────────────────────────
   Widget _buildAdjustButton(IconData icon, VoidCallback onTap) {
+    final surfaces = _theme.surfaces;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
@@ -1080,16 +1078,17 @@ class _RecordBodyCompositionScreenState
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
+          color: surfaces.inset,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: surfaces.divider),
         ),
-        child: Icon(icon, color: MetricColors.compositionColor, size: 20),
+        child: Icon(icon, color: _family.accent, size: 20),
       ),
     );
   }
 
   Widget _buildSmallAdjustButton(IconData icon, VoidCallback onTap) {
+    final family = _family;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -1097,49 +1096,34 @@ class _RecordBodyCompositionScreenState
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: MetricColors.compositionBg,
+          color: family.surface,
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, color: MetricColors.compositionColor, size: 16),
-      ),
-    );
-  }
-
-  // ── Fat badge ─────────────────────────────────────────────────────────────
-  Widget _buildFatBadge(FatCategory status, AppLocalizations l10n) {
-    final label = status.label(l10n);
-    final color = status.color;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-        ),
+        child: Icon(icon, color: family.accent, size: 16),
       ),
     );
   }
 
   // ── Comment box ───────────────────────────────────────────────────────────
   Widget _buildCommentBox(AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: surfaces.inset,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        border: Border.all(color: surfaces.divider),
       ),
       child: TextField(
         controller: _commentController,
         maxLines: 3,
+        style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+          hintStyle: theme.type.body.copyWith(
+            color: surfaces.inkMuted,
+            fontSize: 13,
+          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),

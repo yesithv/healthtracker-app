@@ -108,9 +108,10 @@ tokens, así que no puede desincronizarse.
 
 Migrado: **todo el flujo de arranque** —splash, bienvenida, identificación,
 verificación, asistente de alta (3 pasos) y panel—, **el camino de registrar un
-indicador** —la hoja «Registrar indicadores», antropometría y signos vitales—,
-la barra de navegación y los widgets compartidos que usan (`ActionButton`,
-`StatusChip`, `BmiStatusBadge`, `MainAppBar`, `DashedBorderContainer`,
+indicador completo** —la hoja «Registrar indicadores» y las cuatro pantallas:
+antropometría, signos vitales, perfil lipídico y composición corporal—, la barra
+de navegación y los widgets compartidos que usan (`ActionButton`, `StatusChip`,
+`BmiStatusBadge`, `MainAppBar`, `DashedBorderContainer`,
 `DismissibleInfoBanner`, `ProfileSettingsLayout`…).
 
 En las pantallas de registro, tres sustituciones cargan con casi todo el
@@ -126,15 +127,26 @@ La rampa importa más de lo que parece: era el mismo azul→verde→ámbar→roj
 escrito a mano en dos archivos, y con el token el ORDEN CLÍNICO lo fija la
 paleta, así que no puede quedar al revés en una pantalla y bien en otra.
 
+La distinción que estas pantallas hacen visible: **hay dos vocabularios y no se
+mezclan**. En composición corporal, el % de grasa se pinta con el tono CLÍNICO
+—verde si la clasificación dice «normal»— mientras la masa muscular se pinta con
+el color de la FAMILIA, porque no hay clasificación que aplicarle. Se ven una al
+lado de la otra en la misma pantalla, y el color dice cuál es cuál.
+
+Cuando un ayudante necesita un color, recibe un [Tone] ya resuelto y no un
+`Color`. Así el filete, la cifra y el pulgar de un control salen del mismo sitio
+por construcción, y no por acordarse de pasar el mismo valor tres veces.
+
 En las pantallas de bienvenida, identificación y verificación se aplicó **solo el
 tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
 (verificado comparando literales y rutas contra `origin/main`). El rediseño del
 sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
 descargo médico— está pendiente de decidir aparte.
 
-Sin migrar: perfil lipídico y composición corporal (las otras dos pantallas de
-registro), historial, Descubre, perfil y ajustes — siguen con colores escritos a
-mano y se ven igual en ambos temas.
+Sin migrar: historial, Descubre, perfil y ajustes — siguen con colores escritos a
+mano y se ven igual en ambos temas. `core/constants/metric_colors.dart` ya solo
+lo usa `health_goals_screen.dart`: cuando esa pantalla se migre, el archivo
+desaparece.
 
 Deudas conocidas, anteriores a este trabajo:
 
@@ -144,7 +156,14 @@ Deudas conocidas, anteriores a este trabajo:
   español mientras las demás están en inglés.
 - En `record_anthropometric_screen.dart`, el bloque de **perímetros corporales**
   tiene su rótulo y sus seis etiquetas en español a mano (`'Cintura'`,
-  `'Cadera'`…), con el mismo efecto en un dispositivo en inglés.
+  `'Cadera'`…), con el mismo efecto en un dispositivo en inglés. Lo mismo con el
+  selector de laboratorio de `record_lipid_screen.dart` («¿En qué laboratorio te
+  hiciste el examen?», «No indicado / no sé», «Otro (especificar)») y con
+  «Músculo esquelético» en `record_body_composition_screen.dart`.
+- El aviso de «guardado» de composición corporal usa el color de la FAMILIA,
+  mientras las otras tres pantallas usan el verde de éxito. Se dejó como estaba
+  —solo se cambió el color a mano por su token— porque unificarlo sería cambiar
+  la interfaz, no aplicar el tema.
 - En la hoja «Registrar indicadores», solo **Antropometría** navega; las otras
   tres tarjetas cierran la hoja sin ir a ninguna parte. Las cuatro rutas existen
   y las cuatro pantallas se abren desde el panel y desde Historial, así que es

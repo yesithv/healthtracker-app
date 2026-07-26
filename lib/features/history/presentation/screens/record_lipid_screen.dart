@@ -7,7 +7,10 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_re
 import 'package:myvitals_healthtracker_app/core/labs/lab.dart';
 import 'package:myvitals_healthtracker_app/core/labs/labs_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/lab_ranges_store.dart';
-import 'package:myvitals_healthtracker_app/core/constants/metric_colors.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:intl/intl.dart';
 
@@ -118,6 +121,30 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     super.dispose();
   }
 
+  // ── Tokens ────────────────────────────────────────────────────────────────
+
+  ThemeData get _theme => Theme.of(context);
+
+  /// Identidad de la familia «perfil lipídico»: verde-azulado en cualquier tema.
+  Tone get _family => _theme.metrics.tone(MetricFamily.lipids);
+
+  /// Tiñe el selector de Material con la identidad de la familia, dejándole al
+  /// tema la tipografía y las superficies.
+  Widget _themedPicker(BuildContext ctx, Widget? child) {
+    final base = Theme.of(ctx);
+    final family = base.metrics.tone(MetricFamily.lipids);
+    return Theme(
+      data: base.copyWith(
+        colorScheme: base.colorScheme.copyWith(
+          primary: family.accent,
+          onPrimary: family.onAccent,
+          onSurface: base.surfaces.ink,
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   // ── Helpers ──────────────────────────────────────────────────────────────
   double? _val(TextEditingController c) =>
       double.tryParse(c.text.trim().replaceAll(',', '.'));
@@ -134,16 +161,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: MetricColors.lipidColor,
-            onPrimary: Colors.white,
-            onSurface: Color(0xFF1E293B),
-          ),
-        ),
-        child: child!,
-      ),
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedDate) {
       setState(() => selectedDate = picked);
@@ -154,14 +172,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     final picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
-      builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: MetricColors.lipidColor,
-          ),
-        ),
-        child: child!,
-      ),
+      builder: _themedPicker,
     );
     if (picked != null && picked != selectedTime) {
       setState(() => selectedTime = picked);
@@ -181,10 +192,16 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
         hdl == null &&
         vldl == null &&
         trigs == null) {
+      // Falta un dato: merece ATENCIÓN, no alarma. Ese ámbar es el de la
+      // paleta clínica, con su propio color de texto legible.
+      final warn = _theme.clinical.caution;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.lipidAtLeastOneValue),
-          backgroundColor: const Color(0xFFF59E0B),
+          content: Text(
+            l10n.lipidAtLeastOneValue,
+            style: _theme.type.body.copyWith(color: warn.onAccent),
+          ),
+          backgroundColor: warn.accent,
         ),
       );
       return;
@@ -230,13 +247,15 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       await LipidRepository.instance.insert(record);
     }
     if (!mounted) return;
+    // Guardar bien es un resultado ÓPTIMO: ese verde sale de la paleta clínica.
+    final ok = _theme.clinical.optimal;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           l10n.lipidSavedSuccess,
-          style: const TextStyle(color: Colors.white),
+          style: _theme.type.body.copyWith(color: ok.onAccent),
         ),
-        backgroundColor: const Color(0xFF10B981),
+        backgroundColor: ok.accent,
       ),
     );
     context.pop();
@@ -246,9 +265,12 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final family = _family;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           _buildAppBar(context, l10n),
@@ -266,27 +288,31 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                     ),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: MetricColors.lipidBg,
-                      borderRadius: BorderRadius.circular(14),
+                      color: family.surface,
+                      borderRadius: BorderRadius.circular(
+                        surfaces.radiusControl,
+                      ),
                       border: Border.all(
-                        color: MetricColors.lipidColor.withValues(alpha: 0.3),
+                        color: family.accent.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.info_outline,
-                          color: MetricColors.lipidColor,
+                          color: family.accent,
                           size: 18,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             l10n.lipidInfoBanner,
-                            style: const TextStyle(
+                            // Sobre la superficie de la familia, el texto va en
+                            // su acento: es el par que el tema garantiza legible.
+                            style: theme.type.body.copyWith(
                               fontSize: 11,
-                              color: Color(0xFF00695C),
                               height: 1.5,
+                              color: family.accent,
                             ),
                           ),
                         ),
@@ -415,22 +441,22 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                     child: ElevatedButton(
                       onPressed: _save,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: MetricColors.lipidColor,
+                        backgroundColor: family.accent,
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(
+                            surfaces.radiusControl,
+                          ),
                         ),
-                        elevation: 4,
-                        shadowColor: MetricColors.lipidColor.withValues(
-                          alpha: 0.4,
-                        ),
+                        // Los temas planos no llevan sombra en los controles.
+                        elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
+                        shadowColor: family.accent.withValues(alpha: 0.4),
                       ),
                       child: Text(
                         l10n.saveAndEarnXp,
-                        style: const TextStyle(
+                        style: theme.type.button.copyWith(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: family.onAccent,
                         ),
                       ),
                     ),
@@ -448,13 +474,14 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
 
   // ── AppBar ─────────────────────────────────────────────────────────────────
   Widget _buildAppBar(BuildContext context, AppLocalizations l10n) {
+    final family = _family;
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: MetricColors.lipidColor,
+      decoration: BoxDecoration(
+        color: family.accent,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(_theme.surfaces.radiusCard + 4),
+          bottomRight: Radius.circular(_theme.surfaces.radiusCard + 4),
         ),
       ),
       child: SafeArea(
@@ -465,23 +492,21 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
           child: Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: family.onAccent),
                 onPressed: () => context.pop(),
               ),
               Expanded(
                 child: Text(
                   l10n.lipidProfileTitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  style: _theme.type.sectionLabel.copyWith(
                     fontSize: 15,
-                    letterSpacing: 1.0,
+                    color: family.onAccent,
                   ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.bloodtype, color: Colors.white),
+                icon: Icon(Icons.bloodtype, color: family.onAccent),
                 onPressed: () {},
               ),
             ],
@@ -497,35 +522,23 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     required String title,
     required Widget child,
   }) {
+    final theme = _theme;
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: theme.surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, color: MetricColors.lipidColor, size: 18),
+                Icon(icon, color: _family.accent, size: 18),
                 const SizedBox(width: 8),
               ],
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
-                  letterSpacing: 1.0,
+                style: theme.type.sectionLabel.copyWith(
+                  color: theme.surfaces.ink,
                 ),
               ),
             ],
@@ -544,39 +557,30 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-          ),
-        ),
+        Text(label, style: theme.type.fieldLabel),
         const SizedBox(height: 6),
         GestureDetector(
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              color: surfaces.inset,
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
+              border: Border.all(color: surfaces.divider),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
+                  style: theme.type.cardTitle.copyWith(fontSize: 14),
                 ),
-                Icon(icon, color: const Color(0xFF64748B), size: 16),
+                Icon(icon, color: surfaces.inkSecondary, size: 16),
               ],
             ),
           ),
@@ -595,10 +599,18 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     required AppLocalizations l10n,
     bool hdlInverted = false,
   }) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+
     return StatefulBuilder(
       builder: (context, setInner) {
         final val = _val(controller);
         final status = val != null ? statusFn(val) : null;
+        // El tono clínico del valor escrito. Quién decide que un LDL de 145 es
+        // «límite» son los rangos del laboratorio elegido, no el tema.
+        final tone = status == null
+            ? null
+            : theme.clinical.tone(status.status);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,18 +622,13 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                 Expanded(
                   child: Text(
                     label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1E293B),
-                    ),
+                    style: theme.type.cardTitle.copyWith(fontSize: 13),
                   ),
                 ),
                 Text(
                   refRange,
-                  style: const TextStyle(
+                  style: theme.type.meta.copyWith(
                     fontSize: 10,
-                    color: Color(0xFF94A3B8),
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -634,12 +641,14 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(14),
+                      color: surfaces.inset,
+                      borderRadius: BorderRadius.circular(
+                        surfaces.radiusControl,
+                      ),
                       border: Border.all(
-                        color: status != null
-                            ? status.color.withValues(alpha: 0.5)
-                            : const Color(0xFFE2E8F0),
+                        color: tone == null
+                            ? surfaces.divider
+                            : tone.accent.withValues(alpha: 0.5),
                         width: 1.5,
                       ),
                     ),
@@ -657,8 +666,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                             onChanged: (_) => setInner(() {}),
                             decoration: InputDecoration(
                               hintText: hint,
-                              hintStyle: const TextStyle(
-                                color: Color(0xFFCBD5E1),
+                              hintStyle: theme.type.body.copyWith(
+                                color: surfaces.inkMuted,
                                 fontSize: 14,
                               ),
                               border: InputBorder.none,
@@ -667,10 +676,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                                 vertical: 13,
                               ),
                             ),
-                            style: const TextStyle(
+                            style: theme.type.numeralSmall.copyWith(
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E293B),
                             ),
                           ),
                         ),
@@ -678,12 +685,9 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           padding: const EdgeInsets.only(right: 12),
                           child: Text(
                             'mg/dL',
-                            style: TextStyle(
+                            style: theme.type.numeralUnit.copyWith(
                               fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: status != null
-                                  ? status.color
-                                  : const Color(0xFF94A3B8),
+                              color: tone?.accent ?? surfaces.inkMuted,
                             ),
                           ),
                         ),
@@ -693,8 +697,8 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                 ),
                 if (status != null) ...[
                   const SizedBox(width: 10),
-                  _StatusBadge(
-                    status: status,
+                  StatusChip(
+                    status: status.status,
                     label: status.label(l10n, hdlInverted: hdlInverted),
                   ),
                 ],
@@ -740,8 +744,12 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
         ? LipidStatus.borderline
         : LipidStatus.optimal;
 
-    final overallColor = overallStatus.color;
     final overallLabel = overallStatus.label(l10n);
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    // El riesgo global gana el peor de los estados presentes: eso lo decide el
+    // cálculo de arriba, y el tema solo dice con qué color se pinta.
+    final tone = theme.clinical.tone(overallStatus.status);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 400),
@@ -749,33 +757,36 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            overallColor.withValues(alpha: 0.08),
-            overallColor.withValues(alpha: 0.02),
+            tone.accent.withValues(alpha: 0.08),
+            tone.accent.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
         border: Border.all(
-          color: overallColor.withValues(alpha: 0.3),
+          color: tone.accent.withValues(alpha: 0.3),
           width: 1.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: overallColor.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        // Los temas planos no llevan sombra: el filete ya delimita la tarjeta.
+        boxShadow: surfaces.cardShadow.isEmpty
+            ? const []
+            : [
+                BoxShadow(
+                  color: tone.accent.withValues(alpha: 0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 26,
-            backgroundColor: overallColor.withValues(alpha: 0.15),
+            backgroundColor: tone.accent.withValues(alpha: 0.15),
             child: Icon(
               Icons.analytics_outlined,
-              color: overallColor,
+              color: tone.accent,
               size: 28,
             ),
           ),
@@ -784,32 +795,19 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.lipidOverallRisk,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
-                    letterSpacing: 0.5,
-                  ),
-                ),
+                Text(l10n.lipidOverallRisk, style: theme.type.fieldLabel),
                 const SizedBox(height: 4),
                 Text(
                   overallLabel,
-                  style: TextStyle(
+                  style: theme.type.cardTitle.copyWith(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: overallColor,
+                    color: tone.accent,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   l10n.lipidOverallDesc,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Color(0xFF94A3B8),
-                    height: 1.4,
-                  ),
+                  style: theme.type.meta.copyWith(fontSize: 11, height: 1.4),
                 ),
               ],
             ),
@@ -821,16 +819,22 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
 
   // ── Lab selector (catálogo + "Otro" + "No indicado") ──────────────────────
   Widget _buildLabSelector(AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+
     if (!_labsLoaded) {
       return Row(
-        children: const [
+        children: [
           SizedBox(
             width: 16, height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2, color: MetricColors.lipidColor),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: _family.accent,
+            ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text('Cargando laboratorios…',
-              style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+              style: theme.type.body.copyWith(fontSize: 13)),
         ],
       );
     }
@@ -838,23 +842,26 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '¿En qué laboratorio te hiciste el examen?',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF64748B)),
+          style: theme.type.fieldLabel.copyWith(fontSize: 12),
         ),
         const SizedBox(height: 6),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            color: surfaces.inset,
+            borderRadius: BorderRadius.circular(surfaces.radiusControl),
+            border: Border.all(color: surfaces.divider),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _selectedLab,
               isExpanded: true,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
+              dropdownColor: surfaces.card,
+              style: theme.type.body.copyWith(color: surfaces.ink),
+              iconEnabledColor: surfaces.inkSecondary,
               items: [
                 const DropdownMenuItem(value: _kNone, child: Text('No indicado / no sé')),
                 ..._labs.map((l) => DropdownMenuItem(
@@ -891,33 +898,29 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     required String hint,
     bool isNumeric = true,
   }) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-          ),
-        ),
+        Text(label, style: theme.type.fieldLabel.copyWith(fontSize: 12)),
         const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            color: surfaces.inset,
+            borderRadius: BorderRadius.circular(surfaces.radiusControl),
+            border: Border.all(color: surfaces.divider),
           ),
           child: TextField(
             controller: controller,
             keyboardType: isNumeric
                 ? TextInputType.number
                 : TextInputType.text,
+            style: theme.type.body.copyWith(color: surfaces.ink),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(
-                color: Color(0xFFCBD5E1),
+              hintStyle: theme.type.body.copyWith(
+                color: surfaces.inkMuted,
                 fontSize: 13,
               ),
               border: InputBorder.none,
@@ -934,52 +937,26 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
 
   // ── Comment box ───────────────────────────────────────────────────────────
   Widget _buildCommentBox(AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: surfaces.inset,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        border: Border.all(color: surfaces.divider),
       ),
       child: TextField(
         controller: _commentController,
         maxLines: 3,
+        style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+          hintStyle: theme.type.body.copyWith(
+            color: surfaces.inkMuted,
+            fontSize: 13,
+          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
-        ),
-      ),
-    );
-  }
-
-}
-
-// ── Status badge widget ────────────────────────────────────────────────────
-class _StatusBadge extends StatelessWidget {
-  final LipidStatus status;
-  final String label;
-
-  const _StatusBadge({
-    required this.status,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: status.color,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.3,
         ),
       ),
     );
