@@ -1076,9 +1076,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingFinish => 'Get Started!';
 
   @override
-  String get onboardingSkip => 'Skip';
-
-  @override
   String onboardingStep(int current, int total) {
     return 'Step $current of $total';
   }

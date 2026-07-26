@@ -367,7 +367,6 @@
   "onboardingWelcomeFeature3": "100% privado, todo se guarda en tu dispositivo",
   "onboardingNext": "Siguiente",
   "onboardingFinish": "¡Empezar!",
-  "onboardingSkip": "Omitir",
   "onboardingStep": "Paso {current} de {total}",
   "@onboardingStep": {
     "placeholders": {

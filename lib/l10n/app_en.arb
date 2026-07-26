@@ -386,7 +386,6 @@
   "onboardingWelcomeFeature3": "100% private, everything stays on your device",
   "onboardingNext": "Next",
   "onboardingFinish": "Get Started!",
-  "onboardingSkip": "Skip",
   "onboardingStep": "Step {current} of {total}",
   "@onboardingStep": {
     "placeholders": {

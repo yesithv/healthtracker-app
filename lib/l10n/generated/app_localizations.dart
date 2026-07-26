@@ -2114,12 +2114,6 @@ abstract class AppLocalizations {
   /// **'Get Started!'**
   String get onboardingFinish;
 
-  /// No description provided for @onboardingSkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip'**
-  String get onboardingSkip;
-
   /// No description provided for @onboardingStep.
   ///
   /// In en, this message translates to:

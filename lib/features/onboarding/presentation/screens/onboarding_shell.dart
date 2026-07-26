@@ -331,17 +331,11 @@ class _OnboardingShellState extends State<OnboardingShell> {
                     ],
                   ),
 
-                  // Skip text (only on the last step —avatar—, fully optional)
-                  if (isLastPage) ...[
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: _registering ? null : _finishOnboarding,
-                      child: Text(
-                        l10n.onboardingSkip,
-                        style: theme.type.meta.copyWith(fontSize: 13),
-                      ),
-                    ),
-                  ],
+                  // Antes había aquí un enlace de «omitir» en el paso del avatar.
+                  // Se retira: hacía exactamente lo mismo que «Finalizar» —la
+                  // foto siempre fue opcional y sigue siéndolo—, así que eran dos
+                  // botones para la misma acción, uno de ellos insinuando que el
+                  // otro obligaba a poner foto.
                 ],
               ),
             ),
