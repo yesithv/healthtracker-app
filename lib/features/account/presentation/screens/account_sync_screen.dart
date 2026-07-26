@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/pending_account_banner.dart';
 import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dart';
@@ -68,6 +70,28 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     }
   }
 
+  /// Sincroniza. Si el alta seguía pendiente, primero crea la cuenta: sin
+  /// identidad de paciente el servidor no acepta registros, así que sincronizar
+  /// sin ese paso no haría nada. Al crearse la sesión, SyncService se dispara
+  /// solo, pero se llama igual para que el usuario vea respuesta inmediata.
+  Future<void> _syncNow() async {
+    final profile = context.read<UserProfileProvider>();
+    final sync = context.read<SyncService>();
+
+    if (PendingAccountStore.instance.isPending) {
+      final result = await flushPendingAccount(
+        AccountDraft.fromProfile(profile),
+      );
+      if (!mounted) return;
+      if (!result.created) {
+        setState(() => _error = result.message);
+        return;
+      }
+      setState(() => _error = null);
+    }
+    await sync.syncNow();
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = context.watch<PatientSession>();
@@ -86,16 +110,28 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   // ---------------------------------------------------------------- logged out
 
   Widget _loggedOut() {
+    // Con un alta pendiente, el usuario ya rellenó sus datos: lo que necesita es
+    // que salgan al servidor, no volver a registrarse desde cero. El aviso va
+    // primero y trae su propio botón para intentarlo.
+    final pending = context.watch<PendingAccountStore>().isPending;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Text('Tu cuenta',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: _blue)),
         const SizedBox(height: 4),
-        const Text('Inicia sesión si ya eres paciente, o regístrate para empezar.',
-            style: TextStyle(color: Color(0xFF64748B))),
+        Text(
+            pending
+                ? 'Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.'
+                : 'Inicia sesión si ya eres paciente, o regístrate para empezar.',
+            style: const TextStyle(color: Color(0xFF64748B))),
         if (_error != null) _errorBanner(_error!),
         const SizedBox(height: 20),
+        if (pending) ...[
+          const PendingAccountBanner(),
+          const SizedBox(height: 4),
+        ],
         _LoginCard(busy: _busy, onSubmit: (id, pass) => _run(() => _auth.login(identifier: id, password: pass))),
         const SizedBox(height: 16),
         _RegisterCard(busy: _busy, onSubmit: (first, email, doc) => _run(() => _auth.register(
@@ -145,7 +181,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
           const SizedBox(height: 12),
           FilledButton.icon(
             style: FilledButton.styleFrom(backgroundColor: _blue),
-            onPressed: sync.isSyncing ? null : () => context.read<SyncService>().syncNow(),
+            onPressed: sync.isSyncing ? null : _syncNow,
             icon: sync.isSyncing
                 ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                 : const Icon(Icons.cloud_upload_outlined),

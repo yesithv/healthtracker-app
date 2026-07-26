@@ -1470,4 +1470,25 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get logOutConfirm =>
       'Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert.';
+
+  @override
+  String get pendingAccountTitle => 'Konto ausstehend';
+
+  @override
+  String get pendingAccountBody =>
+      'Deine Daten sind auf diesem Gerät gespeichert. Wir erstellen dein Konto, sobald eine Verbindung besteht.';
+
+  @override
+  String get pendingAccountCreateNow => 'Mein Konto jetzt erstellen';
+
+  @override
+  String get pendingAccountCreating => 'Dein Konto wird erstellt…';
+
+  @override
+  String get pendingAccountCreated =>
+      'Konto erstellt. Deine Einträge werden hochgeladen.';
+
+  @override
+  String get pendingAccountStillOffline =>
+      'Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät.';
 }

@@ -1467,4 +1467,25 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get logOutConfirm =>
       'Terminar sessão neste dispositivo? Os seus registos ficam no dispositivo e voltarão a sincronizar quando iniciar sessão de novo.';
+
+  @override
+  String get pendingAccountTitle => 'Conta pendente';
+
+  @override
+  String get pendingAccountBody =>
+      'Os seus dados estão guardados neste dispositivo. Criaremos a sua conta assim que houver ligação.';
+
+  @override
+  String get pendingAccountCreateNow => 'Criar a minha conta agora';
+
+  @override
+  String get pendingAccountCreating => 'A criar a sua conta…';
+
+  @override
+  String get pendingAccountCreated =>
+      'Conta criada. A enviar os seus registos.';
+
+  @override
+  String get pendingAccountStillOffline =>
+      'Ainda sem ligação. Os seus dados continuam seguros neste dispositivo.';
 }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
@@ -12,6 +13,18 @@ import 'package:myvitals_healthtracker_app/features/profile/presentation/screens
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'onboarding_avatar_page.dart';
 
+/// Cómo terminó el intento de crear la cuenta al cerrar el asistente.
+enum _RegisterOutcome {
+  /// Cuenta creada y sesión guardada.
+  created,
+
+  /// No se pudo hablar con el servidor: queda pendiente y el usuario entra.
+  deferred,
+
+  /// El servidor rechazó los datos: el usuario tiene que corregir algo.
+  rejected,
+}
+
 /// Asistente de alta en 3 pasos (datos → unidades → avatar).
 ///
 /// La portada vive en /intro; el idioma se autodetecta del dispositivo
@@ -19,10 +32,19 @@ import 'onboarding_avatar_page.dart';
 /// Envuelve un [PageView] con indicadores de paso y botones Siguiente/Finalizar,
 /// y reutiliza pantallas de Perfil vía sus parámetros `onNext` / `showAppBar`.
 ///
-/// La cuenta es OBLIGATORIA: al terminar, el asistente CREA la cuenta del
-/// paciente y solo entra a la app si el registro sale bien. Antes existía un
-/// modo local («usar sin cuenta») que completaba el asistente sin servidor; ese
-/// camino se ha eliminado, así que ya no hay bandera que elegir.
+/// La cuenta es OBLIGATORIA, pero su CREACIÓN puede diferirse:
+///
+///   · El servidor acepta  → cuenta creada, sesión guardada, al panel.
+///   · Falla la RED        → los datos quedan en el dispositivo, el alta se marca
+///                           pendiente y el usuario entra igual. La cuenta se
+///                           crea en el primer intento que funcione (al arrancar
+///                           la app o al pulsar «Sincronizar»).
+///   · El servidor RECHAZA → correo duplicado, dato inválido… Reintentar no
+///                           ayuda: se muestra el motivo y se queda en el paso.
+///
+/// La diferencia entre los dos fallos la da [AuthNetworkException]; sin ella,
+/// un corte de red y un correo duplicado serían indistinguibles y habría que
+/// tratarlos igual.
 class OnboardingShell extends StatefulWidget {
   const OnboardingShell({super.key});
 
@@ -98,10 +120,11 @@ class _OnboardingShellState extends State<OnboardingShell> {
     }
   }
 
-  /// Cierra el asistente creando la cuenta. Si el registro falla, NO entra:
-  /// muestra el motivo y deja al usuario en el último paso para reintentar.
-  /// Antes se entraba igualmente en modo local; ahora la cuenta es obligatoria,
-  /// así que dejar pasar un registro fallido daría una sesión inexistente.
+  /// Cierra el asistente creando la cuenta.
+  ///
+  /// Solo se queda en el paso cuando el servidor RECHAZA los datos, porque eso
+  /// el usuario sí puede arreglarlo. Si lo que falla es la red, entra: sus datos
+  /// están en el dispositivo y la cuenta se creará luego.
   Future<void> _finishOnboarding() async {
     if (_registering) return;
     setState(() {
@@ -110,10 +133,10 @@ class _OnboardingShellState extends State<OnboardingShell> {
     });
 
     final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
-    final registered = await _register();
+    final outcome = await _register();
     if (!mounted) return;
 
-    if (!registered) {
+    if (outcome == _RegisterOutcome.rejected) {
       setState(() => _registering = false);
       return;
     }
@@ -123,8 +146,7 @@ class _OnboardingShellState extends State<OnboardingShell> {
   }
 
   /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido.
-  /// Devuelve `true` solo si la cuenta quedó creada y la sesión guardada.
-  Future<bool> _register() async {
+  Future<_RegisterOutcome> _register() async {
     final l10n = AppLocalizations.of(context)!;
     final profile = Provider.of<UserProfileProvider>(context, listen: false);
     final email = profile.userEmail.trim();
@@ -132,7 +154,7 @@ class _OnboardingShellState extends State<OnboardingShell> {
       // Red de seguridad: el paso 1 ya exige el correo, pero si llegara vacío
       // no hay identificador con el que crear la cuenta.
       setState(() => _registerError = l10n.validationEnterEmail);
-      return false;
+      return _RegisterOutcome.rejected;
     }
 
     // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
@@ -159,16 +181,27 @@ class _OnboardingShellState extends State<OnboardingShell> {
         firstName: account.firstName,
         source: account.source,
       );
-      return true;
+      // Cuenta creada: nada queda pendiente.
+      await PendingAccountStore.instance.clear();
+      return _RegisterOutcome.created;
+    } on AuthNetworkException catch (e) {
+      // Sin red o servidor caído: los datos ya están guardados en el perfil
+      // local, así que basta con recordar que el alta sigue pendiente.
+      await PendingAccountStore.instance.markPending(reason: e.message);
+      return _RegisterOutcome.deferred;
     } on AuthException catch (e) {
-      // Motivo que da el servidor (correo duplicado, dato inválido…): es lo más
-      // útil que se le puede mostrar al usuario.
+      // El servidor rechaza el dato (correo duplicado, formato inválido…):
+      // reintentar no arregla nada, hay que decírselo al usuario.
       if (mounted) setState(() => _registerError = e.message);
-      return false;
+      return _RegisterOutcome.rejected;
     } catch (e) {
       debugPrint('Registro al terminar onboarding falló: $e');
-      if (mounted) setState(() => _registerError = l10n.commonRegisterFailed);
-      return false;
+      // Causa desconocida: se trata como diferible en lugar de dejar al usuario
+      // fuera con sus datos ya escritos.
+      await PendingAccountStore.instance.markPending(
+        reason: l10n.commonRegisterFailed,
+      );
+      return _RegisterOutcome.deferred;
     } finally {
       auth.close();
     }

@@ -72,6 +72,16 @@ class AuthException implements Exception {
   String toString() => message;
 }
 
+/// Fallo de TRANSPORTE, no de datos: sin conexión, timeout, o el servidor caído
+/// (5xx). Reintentarlo más tarde puede funcionar sin que el usuario cambie nada.
+///
+/// Extiende [AuthException] a propósito, para que todo el código que ya hacía
+/// `on AuthException` siga capturándolo igual. Quien necesite decidir entre
+/// «reintenta luego» y «corrige el dato» captura primero este tipo.
+class AuthNetworkException extends AuthException {
+  const AuthNetworkException(super.message);
+}
+
 /// Cliente de los endpoints públicos de cuenta (`/api/v1/auth/*`).
 class AuthApiClient {
   final http.Client _http;
@@ -137,11 +147,13 @@ class AuthApiClient {
               headers: {'Content-Type': 'application/json'}, body: jsonEncode(body))
           .timeout(timeoutOverride ?? timeout);
     } catch (e) {
-      throw AuthException('No se pudo conectar con el servidor: $e');
+      throw AuthNetworkException('No se pudo conectar con el servidor: $e');
     }
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
       return jsonDecode(resp.body) as Map<String, dynamic>;
     }
+    // 5xx = el servidor está caído o falló por su cuenta: reintentable.
+    if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
     throw AuthException(_messageFrom(resp));
   }
 
@@ -158,12 +170,13 @@ class AuthApiClient {
           .post(uri, headers: {'Content-Type': 'application/json'}, body: jsonEncode(body))
           .timeout(timeout);
     } catch (e) {
-      throw AuthException('No se pudo conectar con el servidor: $e');
+      throw AuthNetworkException('No se pudo conectar con el servidor: $e');
     }
 
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
       return PatientAccount.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
     }
+    if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
     throw AuthException(_messageFrom(resp));
   }
 

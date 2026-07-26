@@ -1468,4 +1468,24 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get logOutConfirm =>
       '¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.';
+
+  @override
+  String get pendingAccountTitle => 'Cuenta pendiente';
+
+  @override
+  String get pendingAccountBody =>
+      'Tus datos están guardados en este dispositivo. Crearemos tu cuenta en cuanto haya conexión.';
+
+  @override
+  String get pendingAccountCreateNow => 'Crear mi cuenta ahora';
+
+  @override
+  String get pendingAccountCreating => 'Creando tu cuenta…';
+
+  @override
+  String get pendingAccountCreated => 'Cuenta creada. Subiendo tus registros.';
+
+  @override
+  String get pendingAccountStillOffline =>
+      'Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo.';
 }

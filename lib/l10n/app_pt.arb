@@ -484,5 +484,11 @@
   "emailLabel": "Email",
   "validationEnterEmail": "Introduza o seu email",
   "commonRegisterFailed": "Não foi possível criar a sua conta. Verifique a ligação e tente novamente.",
-  "logOutConfirm": "Terminar sessão neste dispositivo? Os seus registos ficam no dispositivo e voltarão a sincronizar quando iniciar sessão de novo."
+  "logOutConfirm": "Terminar sessão neste dispositivo? Os seus registos ficam no dispositivo e voltarão a sincronizar quando iniciar sessão de novo.",
+  "pendingAccountTitle": "Conta pendente",
+  "pendingAccountBody": "Os seus dados estão guardados neste dispositivo. Criaremos a sua conta assim que houver ligação.",
+  "pendingAccountCreateNow": "Criar a minha conta agora",
+  "pendingAccountCreating": "A criar a sua conta…",
+  "pendingAccountCreated": "Conta criada. A enviar os seus registos.",
+  "pendingAccountStillOffline": "Ainda sem ligação. Os seus dados continuam seguros neste dispositivo."
 }

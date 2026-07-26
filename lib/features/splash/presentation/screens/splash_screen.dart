@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
@@ -65,16 +66,26 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     // ── PUERTA DE ACCESO ──────────────────────────────────────────────
-    // La cuenta es OBLIGATORIA: solo una sesión activa da paso a la app. Antes
-    // bastaba con haber completado el asistente en local («usar sin cuenta»),
-    // y ese camino ya no existe.
+    // La cuenta es OBLIGATORIA, pero su CREACIÓN puede quedar diferida: si el
+    // alta no pudo salir al servidor por falta de red, el usuario entra igual y
+    // la cuenta se crea en el primer intento que funcione. Exigir servidor
+    // disponible en ese instante convertiría un corte de red en un muro.
     //
-    // Consecuencia deliberada: quien venía usando la app en modo local acaba
-    // aquí en /intro. Sus datos NO se pierden —siguen en la base local— y
-    // suben al servidor en cuanto se registra o inicia sesión.
-    if (!PatientSession.instance.isAuthenticated) {
+    // Da paso, por tanto, una sesión activa O un alta pendiente.
+    final pending = PendingAccountStore.instance;
+    if (!PatientSession.instance.isAuthenticated && !pending.isPending) {
       context.go('/intro');
       return;
+    }
+
+    // Con un alta pendiente se reintenta AQUÍ, en cada arranque: es el momento
+    // natural de «apenas haya internet» sin añadir un vigilante de conectividad.
+    // No se espera el resultado —entrar no debe depender de la red— y si sale
+    // bien, guardar la sesión despierta a SyncService, que sube lo acumulado.
+    if (pending.isPending) {
+      final profile = Provider.of<UserProfileProvider>(context, listen: false);
+      // ignore: discarded_futures
+      flushPendingAccount(AccountDraft.fromProfile(profile));
     }
 
     // ── BIOMETRIC AUTH ────────────────────────────────────────────────

@@ -484,5 +484,11 @@
   "emailLabel": "E-Mail",
   "validationEnterEmail": "Gib deine E-Mail-Adresse ein",
   "commonRegisterFailed": "Wir konnten dein Konto nicht erstellen. Prüfe die Verbindung und versuche es erneut.",
-  "logOutConfirm": "Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert."
+  "logOutConfirm": "Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert.",
+  "pendingAccountTitle": "Konto ausstehend",
+  "pendingAccountBody": "Deine Daten sind auf diesem Gerät gespeichert. Wir erstellen dein Konto, sobald eine Verbindung besteht.",
+  "pendingAccountCreateNow": "Mein Konto jetzt erstellen",
+  "pendingAccountCreating": "Dein Konto wird erstellt…",
+  "pendingAccountCreated": "Konto erstellt. Deine Einträge werden hochgeladen.",
+  "pendingAccountStillOffline": "Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät."
 }

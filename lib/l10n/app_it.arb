@@ -501,5 +501,11 @@
   "emailLabel": "Email",
   "validationEnterEmail": "Inserisci la tua email",
   "commonRegisterFailed": "Non abbiamo potuto creare il tuo account. Controlla la connessione e riprova.",
-  "logOutConfirm": "Uscire su questo dispositivo? I tuoi dati restano sul dispositivo e si sincronizzeranno di nuovo al prossimo accesso."
+  "logOutConfirm": "Uscire su questo dispositivo? I tuoi dati restano sul dispositivo e si sincronizzeranno di nuovo al prossimo accesso.",
+  "pendingAccountTitle": "Account in attesa",
+  "pendingAccountBody": "I tuoi dati sono salvati su questo dispositivo. Creeremo il tuo account appena ci sarà connessione.",
+  "pendingAccountCreateNow": "Crea il mio account adesso",
+  "pendingAccountCreating": "Creazione del tuo account…",
+  "pendingAccountCreated": "Account creato. Caricamento dei tuoi dati.",
+  "pendingAccountStillOffline": "Ancora nessuna connessione. I tuoi dati restano al sicuro sul dispositivo."
 }

@@ -133,7 +133,7 @@ La **cuenta es obligatoria**: no hay modo local. El recorrido es
 
 ```
 /                → selector de tema (temporal; su sitio es Perfil → Tema de la app)
-/splash          → arranque; solo pasa quien tiene SESIÓN ACTIVA
+/splash          → arranque; pasa quien tiene SESIÓN ACTIVA o ALTA PENDIENTE
 /intro           → portada: logotipo, tres características, dos caminos
    ├─ Iniciar sesión → /identify → /verify        → /dashboard
    └─ Registrarse    → /onboarding (3 pasos)      → /dashboard
@@ -141,11 +141,7 @@ La **cuenta es obligatoria**: no hay modo local. El recorrido es
 
 Reglas que sostienen esa promesa, y dónde viven:
 
-- **Solo una sesión da paso.** `splash_screen.dart` comprueba
-  `PatientSession.isAuthenticated` y nada más. Antes bastaba con haber
-  completado el asistente en local.
-- **El alta tiene que registrar.** `onboarding_shell.dart` solo entra al panel si
-  el registro sale bien; si falla, muestra el motivo y se queda en el paso.
+- **Da paso una sesión activa O un alta pendiente** (`splash_screen.dart`).
 - **El correo es obligatorio en el alta**, porque es el identificador con el que
   se crea la cuenta (`PersonalInfoScreen.requireEmail`). Desde Perfil sigue
   siendo opcional: ahí solo se edita.
@@ -155,6 +151,44 @@ Reglas que sostienen esa promesa, y dónde viven:
 `test/core/router/auth_required_test.dart` fija el invariante: falla si alguien
 vuelve a enrutar la portada antigua, si una pantalla navega al asistente
 esquivando el registro, o si reaparece la bandera que lo permitía.
+
+## Sin conexión: el alta se difiere, no se pierde
+
+La cuenta es obligatoria, pero exigir que el servidor esté disponible **en ese
+instante** convertiría un corte de red en un muro: el usuario rellena sus datos,
+se queda fuera y los pierde. Así que el alta distingue tres desenlaces, y la
+diferencia la da `AuthNetworkException`:
+
+| Qué pasó | Qué hace la app |
+|---|---|
+| El servidor acepta | Cuenta creada, sesión guardada, al panel |
+| Falla la RED o el servidor está caído (5xx) | Datos en el dispositivo, alta marcada pendiente, **el usuario entra** |
+| El servidor RECHAZA el dato (4xx) | Muestra el motivo y se queda en el paso: reintentar no arregla un correo duplicado |
+
+Sin esa distinción, un corte de red y un correo duplicado serían el mismo error y
+habría que tratarlos igual — mal en los dos casos.
+
+El alta pendiente vive en `core/auth/pending_account.dart`:
+
+- `PendingAccountStore` — la bandera y el último motivo, persistidos. **No guarda
+  copia del perfil**: los datos ya están en `UserProfileProvider`, así que si el
+  usuario corrige un correo mal escrito, el reintento usa el corregido.
+- `AccountDraft` — los campos que necesita `register`, ya resueltos. La función
+  recibe esto y no el provider, porque el provider carga la foto por canales de
+  plataforma y dependerlo haría la lógica imposible de probar.
+- `flushPendingAccount(draft)` — el intento. Devuelve el desenlace.
+
+**Cuándo se reintenta:** en cada arranque de la app (`splash_screen`, sin
+bloquear la entrada) y cuando el usuario pulsa el botón del aviso o
+«Sincronizar ahora». Al crearse la sesión, `SyncService` despierta solo y sube
+todo lo que se acumuló mientras no había cuenta.
+
+Los **registros de salud** ya eran local-first y no cambian: los repositorios
+escriben en SQLite sin mirar la sesión.
+
+`test/core/auth/pending_account_test.dart` cubre los cuatro desenlaces con un
+cliente HTTP simulado —incluyendo que un 5xx cuente como reintentable y un 4xx
+no— más que el estado sobreviva al reinicio.
 
 La migración es incremental a propósito: había ~1.160 colores a mano repartidos
 por la app, y hacerlo de golpe garantizaba dejar media interfaz a medias. Al

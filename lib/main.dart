@@ -19,6 +19,7 @@ import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
 
@@ -54,6 +55,14 @@ void main() {
         await PatientSession.instance.load();
       } catch (e, st) {
         debugPrint('=== SESSION LOAD ERROR: $e\n$st');
+      }
+
+      // 3b. Alta que quedó pendiente de crear por falta de red. Se lee junto a
+      // la sesión porque la puerta de arranque necesita las dos cosas.
+      try {
+        await PendingAccountStore.instance.load();
+      } catch (e, st) {
+        debugPrint('=== PENDING ACCOUNT LOAD ERROR: $e\n$st');
       }
 
       // 4. Rangos de referencia del servidor (fuente de verdad de los semáforos):
@@ -115,6 +124,11 @@ void main() {
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(
               value: PatientSession.instance,
+            ),
+            // Alta diferida: la UI reacciona para avisar de que la cuenta aún
+            // no existe en el servidor.
+            ChangeNotifierProvider<PendingAccountStore>.value(
+              value: PendingAccountStore.instance,
             ),
             // Sincronización bidireccional (app ↔ API). `lazy: false` es OBLIGATORIO:
             // el servicio escucha la sesión y los repositorios para auto-sincronizar

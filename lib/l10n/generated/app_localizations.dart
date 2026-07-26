@@ -2833,6 +2833,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out on this device? Your records stay on the device and will sync again when you sign back in.'**
   String get logOutConfirm;
+
+  /// No description provided for @pendingAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account pending'**
+  String get pendingAccountTitle;
+
+  /// No description provided for @pendingAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is saved on this device. We will create your account as soon as there is a connection.'**
+  String get pendingAccountBody;
+
+  /// No description provided for @pendingAccountCreateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my account now'**
+  String get pendingAccountCreateNow;
+
+  /// No description provided for @pendingAccountCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account…'**
+  String get pendingAccountCreating;
+
+  /// No description provided for @pendingAccountCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created. Uploading your records.'**
+  String get pendingAccountCreated;
+
+  /// No description provided for @pendingAccountStillOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Still no connection. Your data is safe on this device.'**
+  String get pendingAccountStillOffline;
 }
 
 class _AppLocalizationsDelegate

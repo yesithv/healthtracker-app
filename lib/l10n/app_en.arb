@@ -536,5 +536,11 @@
   "emailLabel": "Email",
   "validationEnterEmail": "Enter your email",
   "commonRegisterFailed": "We couldn't create your account. Check your connection and try again.",
-  "logOutConfirm": "Sign out on this device? Your records stay on the device and will sync again when you sign back in."
+  "logOutConfirm": "Sign out on this device? Your records stay on the device and will sync again when you sign back in.",
+  "pendingAccountTitle": "Account pending",
+  "pendingAccountBody": "Your data is saved on this device. We will create your account as soon as there is a connection.",
+  "pendingAccountCreateNow": "Create my account now",
+  "pendingAccountCreating": "Creating your account…",
+  "pendingAccountCreated": "Account created. Uploading your records.",
+  "pendingAccountStillOffline": "Still no connection. Your data is safe on this device."
 }

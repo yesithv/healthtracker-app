@@ -503,5 +503,11 @@
   "emailLabel": "Correo",
   "validationEnterEmail": "Ingresa tu correo",
   "commonRegisterFailed": "No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.",
-  "logOutConfirm": "¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo."
+  "logOutConfirm": "¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.",
+  "pendingAccountTitle": "Cuenta pendiente",
+  "pendingAccountBody": "Tus datos están guardados en este dispositivo. Crearemos tu cuenta en cuanto haya conexión.",
+  "pendingAccountCreateNow": "Crear mi cuenta ahora",
+  "pendingAccountCreating": "Creando tu cuenta…",
+  "pendingAccountCreated": "Cuenta creada. Subiendo tus registros.",
+  "pendingAccountStillOffline": "Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo."
 }

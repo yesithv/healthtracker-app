@@ -1466,4 +1466,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get logOutConfirm =>
       'Sign out on this device? Your records stay on the device and will sync again when you sign back in.';
+
+  @override
+  String get pendingAccountTitle => 'Account pending';
+
+  @override
+  String get pendingAccountBody =>
+      'Your data is saved on this device. We will create your account as soon as there is a connection.';
+
+  @override
+  String get pendingAccountCreateNow => 'Create my account now';
+
+  @override
+  String get pendingAccountCreating => 'Creating your account…';
+
+  @override
+  String get pendingAccountCreated =>
+      'Account created. Uploading your records.';
+
+  @override
+  String get pendingAccountStillOffline =>
+      'Still no connection. Your data is safe on this device.';
 }
