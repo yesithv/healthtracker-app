@@ -30,6 +30,7 @@ import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
+import '../../features/welcome/presentation/screens/intro_screen.dart';
 import '../../features/auth/presentation/screens/identify_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
@@ -54,6 +55,12 @@ class AppRouter {
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
       ),
+      // Portada del flujo real: logotipo, las tres características y los dos
+      // caminos de entrada. Es a donde manda el arranque a quien no tiene
+      // sesión ni perfil local.
+      GoRoute(path: '/intro', builder: (context, state) => const IntroScreen()),
+      // Portada anterior (logotipo + un solo CTA). Ya NO está en el flujo; se
+      // deja enrutada para poder compararlas sin recompilar.
       GoRoute(
         path: '/welcome',
         builder: (context, state) => const WelcomeScreen(),

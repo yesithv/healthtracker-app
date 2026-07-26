@@ -2803,6 +2803,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show {count} more'**
   String historyShowMore(int count);
+
+  /// No description provided for @introSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get introSignIn;
+
+  /// No description provided for @introRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get introRegister;
+
+  /// No description provided for @introExploreOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore without an account'**
+  String get introExploreOffline;
 }
 
 class _AppLocalizationsDelegate

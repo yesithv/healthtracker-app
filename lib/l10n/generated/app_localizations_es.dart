@@ -1451,4 +1451,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String historyShowMore(int count) {
     return 'Ver $count más';
   }
+
+  @override
+  String get introSignIn => 'Iniciar sesión';
+
+  @override
+  String get introRegister => 'Registrarse';
+
+  @override
+  String get introExploreOffline => 'Explorar sin cuenta';
 }

@@ -1450,4 +1450,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String historyShowMore(int count) {
     return 'Ver mais $count';
   }
+
+  @override
+  String get introSignIn => 'Iniciar sessão';
+
+  @override
+  String get introRegister => 'Criar conta';
+
+  @override
+  String get introExploreOffline => 'Explorar sem conta';
 }

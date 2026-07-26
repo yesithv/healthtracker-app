@@ -26,8 +26,12 @@
   "xpForNextLevel": "{current} / {total} XP per il prossimo livello",
   "@xpForNextLevel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "levelProgress": "Progresso Livello",
@@ -119,7 +123,9 @@
   "historyWeightLoss": "Hai perso {weight}kg questo mese, avvicinandoti al tuo obiettivo di benessere.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "TENDENZA IMC",
@@ -211,15 +217,15 @@
   "fatNormal": "NORMALE",
   "fatElevated": "ELEVATO",
   "fatHigh": "ALTO",
-
   "infoBannerAnthro": "Cerca di prendere le misure sempre nelle stesse condizioni, ad esempio: ogni mattina dopo esserti svegliato, essere andato in bagno e prima di colazione.",
   "infoBannerVitals": "Cerca di misurare i segni vitali dopo aver riposato per mezz'ora.",
-
   "compositionSavedSuccess": "Profilo corporeo salvato con successo.",
   "discoverGreeting": "Buongiorno, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Cerca consigli...",
@@ -266,7 +272,6 @@
   "targetMuscleMass": "Massa Muscolare Obiettivo",
   "targetVisceralFat": "Grasso Viscerale Obiettivo",
   "goalsSavedSuccess": "Obiettivi salvati con successo.",
-
   "helpSupportPageTitle": "Aiuto e Supporto",
   "helpSupportPageDescription": "Tutto ciò che devi sapere su My Vitals.",
   "helpFaqTitle": "Domande Frequenti",
@@ -277,15 +282,12 @@
   "helpLegalDescription": "Termini di utilizzo e privacy dei dati.",
   "helpContactTitle": "Contatto e Feedback",
   "helpContactDescription": "Scrivici, miglioriamo insieme.",
-
   "helpSearchHint": "Cerca...",
   "helpNoResults": "Nessun risultato per la tua ricerca.",
-
   "helpFaqCatGeneral": "Generale",
   "helpFaqCatData": "I miei dati",
   "helpFaqCatBiometrics": "Biometria",
   "helpFaqCatExport": "Esporta",
-
   "helpFaqQ1": "Cos'è My Vitals?",
   "helpFaqA1": "My Vitals è un'app di monitoraggio personale della salute che ti permette di registrare e monitorare i tuoi indicatori di benessere: misure antropometriche, segni vitali, profilo lipidico e composizione corporea.",
   "helpFaqQ2": "I miei dati vengono salvati nel cloud?",
@@ -302,14 +304,12 @@
   "helpFaqA7": "La disinstallazione dell'app eliminerà definitivamente tutti i dati archiviati localmente. Ti consigliamo di esportare la cronologia in PDF o CSV prima di disinstallare.",
   "helpFaqQ8": "Questa app sostituisce il mio medico?",
   "helpFaqA8": "No. My Vitals è uno strumento di monitoraggio personale per aiutarti a tenere un registro organizzato. Consulta sempre un professionista sanitario per l'interpretazione e la diagnosi medica.",
-
   "helpGlossarySearchHint": "Cerca termine...",
   "helpGlossaryGroupAnthropo": "Misure Antropometriche",
   "helpGlossaryGroupVitals": "Segni Vitali",
   "helpGlossaryGroupLipid": "Profilo Lipidico",
   "helpGlossaryGroupBody": "Composizione Corporea",
   "helpGlossaryNormalRange": "Intervallo normale",
-
   "helpLegalPurposeTitle": "Scopo dell'applicazione",
   "helpLegalPurposeBody": "My Vitals è un'applicazione di monitoraggio personale della salute progettata per aiutare gli utenti a registrare e visualizzare i propri indicatori di benessere. Non è un dispositivo medico certificato.",
   "helpLegalNotMedicalTitle": "Non è un dispositivo medico",
@@ -320,7 +320,6 @@
   "helpLegalPrivacyBody": "Tutti i dati vengono archiviati localmente sul dispositivo dell'utente. My Vitals non raccoglie, trasmette o condivide informazioni personali con terze parti. Non esistono account utente o server di dati.",
   "helpLegalContactTitle": "Contatto sviluppatore",
   "helpLegalContactBody": "Per richieste legali o sulla privacy, puoi contattare lo sviluppatore all'indirizzo: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Segnala un errore",
   "helpContactReportBugDesc": "Hai trovato qualcosa che non funziona bene? Dimmelo.",
   "helpContactSuggest": "Invia un suggerimento",
@@ -359,7 +358,6 @@
   "backupIncludesPhoto": "Foto Profilo",
   "backupIncludesPreferences": "Preferenze (lingua, unità)",
   "backupCancel": "Annulla",
-
   "onboardingWelcomeTitle": "Benvenuto in My Vitals",
   "onboardingWelcomeSubtitle": "Il tuo compagno di salute personale",
   "onboardingWelcomeFeature1": "Registra i tuoi segni vitali e le misure corporee",
@@ -371,8 +369,12 @@
   "onboardingStep": "Passo {current} di {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "La tua foto profilo",
@@ -392,12 +394,13 @@
   "goalRemainingWeight": "{weight}kg mancanti all'obiettivo",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Obiettivo raggiunto!",
   "noGoalDefined": "Nessun obiettivo definito",
-
   "validationRequiredFields": "Campi obbligatori",
   "validationCompleteBeforeContinue": "Per favore compila questi campi prima di continuare:",
   "validationSelectLanguage": "Seleziona una lingua",
@@ -493,5 +496,8 @@
   "deleteRecordConfirm": "Elimina",
   "recordDeleted": "Record eliminato",
   "anthropoSavedSuccess": "Misurazione salvata con successo.",
-  "historyShowMore": "Mostra altri {count}"
+  "historyShowMore": "Mostra altri {count}",
+  "introSignIn": "Accedi",
+  "introRegister": "Crea un account",
+  "introExploreOffline": "Esplora senza account"
 }

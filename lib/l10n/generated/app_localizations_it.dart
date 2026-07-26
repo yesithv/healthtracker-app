@@ -1451,4 +1451,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String historyShowMore(int count) {
     return 'Mostra altri $count';
   }
+
+  @override
+  String get introSignIn => 'Accedi';
+
+  @override
+  String get introRegister => 'Crea un account';
+
+  @override
+  String get introExploreOffline => 'Esplora senza account';
 }

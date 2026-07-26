@@ -26,8 +26,12 @@
   "xpForNextLevel": "{current} / {total} XP for next level",
   "@xpForNextLevel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "levelProgress": "Level Progress",
@@ -119,7 +123,9 @@
   "historyWeightLoss": "You lost {weight}kg this month, getting closer to your wellness goal.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "BMI TREND",
@@ -211,15 +217,15 @@
   "fatNormal": "NORMAL",
   "fatElevated": "ELEVATED",
   "fatHigh": "HIGH",
-
   "infoBannerAnthro": "Try to take the measurement every time under the same conditions, for example: every morning after waking up, going to the bathroom, and before breakfast.",
   "infoBannerVitals": "Try to take your vital signs after resting for half an hour.",
-
   "compositionSavedSuccess": "Body profile saved successfully.",
   "discoverGreeting": "Good morning, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Search for tips...",
@@ -249,11 +255,29 @@
   "discoverStatusFinished": "Finished",
   "discoverEmpty": "No content available yet.",
   "discoverExercises": "{count} exercises",
-  "@discoverExercises": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverExercises": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "discoverParticipants": "{count} participants",
-  "@discoverParticipants": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverParticipants": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "discoverDaysShort": "{count} days",
-  "@discoverDaysShort": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverDaysShort": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "privacySecurityDescription": "Manage how your medical and personal information is protected.",
   "biometricLockTitle": "Biometric Lock",
   "biometricLockSubtitle": "Requires Fingerprint or FaceID on app startup",
@@ -269,7 +293,6 @@
   "targetMuscleMass": "Target Muscle Mass",
   "targetVisceralFat": "Target Visceral Fat",
   "goalsSavedSuccess": "Goals saved successfully.",
-
   "helpSupportPageTitle": "Help & Support",
   "helpSupportPageDescription": "Everything you need to know about My Vitals.",
   "helpFaqTitle": "Frequently Asked Questions",
@@ -280,15 +303,12 @@
   "helpLegalDescription": "Terms of use and data privacy.",
   "helpContactTitle": "Contact & Feedback",
   "helpContactDescription": "Write to us, we improve together.",
-
   "helpSearchHint": "Search...",
   "helpNoResults": "No results for your search.",
-
   "helpFaqCatGeneral": "General",
   "helpFaqCatData": "My Data",
   "helpFaqCatBiometrics": "Biometrics",
   "helpFaqCatExport": "Export",
-
   "helpFaqQ1": "What is My Vitals?",
   "helpFaqA1": "My Vitals is a personal health tracking app that lets you record and monitor your wellness indicators: anthropometric measurements, vital signs, lipid profile, and body composition.",
   "helpFaqQ2": "Is my data saved to the cloud?",
@@ -305,14 +325,12 @@
   "helpFaqA7": "Uninstalling the app will permanently delete all locally stored data. We recommend exporting your history to PDF or CSV before uninstalling.",
   "helpFaqQ8": "Does this app replace my doctor?",
   "helpFaqA8": "No. My Vitals is a personal tracking tool to help you keep an organized record. Always consult a healthcare professional for medical interpretation and diagnosis.",
-
   "helpGlossarySearchHint": "Search term...",
   "helpGlossaryGroupAnthropo": "Anthropometric Measurements",
   "helpGlossaryGroupVitals": "Vital Signs",
   "helpGlossaryGroupLipid": "Lipid Profile",
   "helpGlossaryGroupBody": "Body Composition",
   "helpGlossaryNormalRange": "Normal range",
-
   "helpLegalPurposeTitle": "Purpose of the application",
   "helpLegalPurposeBody": "My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.",
   "helpLegalNotMedicalTitle": "Not a medical device",
@@ -323,7 +341,6 @@
   "helpLegalPrivacyBody": "All data is stored locally on the user's device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.",
   "helpLegalContactTitle": "Developer contact",
   "helpLegalContactBody": "For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Report a bug",
   "helpContactReportBugDesc": "Found something that's not working? Tell us.",
   "helpContactSuggest": "Send a suggestion",
@@ -362,7 +379,6 @@
   "backupIncludesPhoto": "Profile Photo",
   "backupIncludesPreferences": "Preferences (language, units)",
   "backupCancel": "Cancel",
-
   "onboardingWelcomeTitle": "Welcome to My Vitals",
   "onboardingWelcomeSubtitle": "Your personal health companion",
   "onboardingWelcomeFeature1": "Record your vital signs and body measurements",
@@ -374,8 +390,12 @@
   "onboardingStep": "Step {current} of {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Your profile picture",
@@ -395,12 +415,13 @@
   "goalRemainingWeight": "{weight}kg remaining for target",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Goal achieved!",
   "noGoalDefined": "No goal defined",
-
   "validationRequiredFields": "Required fields",
   "validationCompleteBeforeContinue": "Please complete these fields before continuing:",
   "validationSelectLanguage": "Select a language",
@@ -414,7 +435,9 @@
   "dashboardCompositionLevel": "Lv. {level}",
   "@dashboardCompositionLevel": {
     "placeholders": {
-      "level": { "type": "int" }
+      "level": {
+        "type": "int"
+      }
     }
   },
   "vitalsPdfTitle": "Vital Signs History",
@@ -504,8 +527,12 @@
   "historyShowMore": "Show {count} more",
   "@historyShowMore": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "introSignIn": "Sign in",
+  "introRegister": "Create account",
+  "introExploreOffline": "Explore without an account"
 }
-

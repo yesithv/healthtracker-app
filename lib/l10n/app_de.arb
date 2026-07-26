@@ -106,7 +106,9 @@
   "historyWeightLoss": "Sie haben diesen Monat {weight}kg abgenommen und kommen Ihrem Wellness-Ziel näher.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "BMI-TREND",
@@ -198,15 +200,15 @@
   "fatNormal": "NORMAL",
   "fatElevated": "ERHÖHT",
   "fatHigh": "HOCH",
-
   "infoBannerAnthro": "Versuchen Sie, die Messung immer unter den gleichen Bedingungen durchzuführen, zum Beispiel: jeden Morgen nach dem Aufwachen, dem Toilettengang und vor dem Frühstück.",
   "infoBannerVitals": "Versuchen Sie, Ihre Vitalwerte nach einer halben Stunde Ruhezeit zu messen.",
-
   "compositionSavedSuccess": "Körperprofil erfolgreich gespeichert.",
   "discoverGreeting": "Guten Morgen, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Nach Tipps suchen...",
@@ -253,7 +255,6 @@
   "targetMuscleMass": "Ziel-Muskelmasse",
   "targetVisceralFat": "Ziel-Viszeralfett",
   "goalsSavedSuccess": "Ziele erfolgreich gespeichert.",
-
   "helpSupportPageTitle": "Hilfe & Support",
   "helpSupportPageDescription": "Alles was du über My Vitals wissen musst.",
   "helpFaqTitle": "Häufig gestellte Fragen",
@@ -264,15 +265,12 @@
   "helpLegalDescription": "Nutzungsbedingungen und Datenschutz.",
   "helpContactTitle": "Kontakt & Feedback",
   "helpContactDescription": "Schreib uns, wir verbessern uns gemeinsam.",
-
   "helpSearchHint": "Suche...",
   "helpNoResults": "Keine Ergebnisse für deine Suche.",
-
   "helpFaqCatGeneral": "Allgemein",
   "helpFaqCatData": "Meine Daten",
   "helpFaqCatBiometrics": "Biometrie",
   "helpFaqCatExport": "Exportieren",
-
   "helpFaqQ1": "Was ist My Vitals?",
   "helpFaqA1": "My Vitals ist eine persönliche Gesundheits-Tracking-App, mit der du deine Wohlbefindensindikatoren aufzeichnen und überwachen kannst: anthropometrische Messungen, Vitalzeichen, Lipidprofil und Körperzusammensetzung.",
   "helpFaqQ2": "Werden meine Daten in der Cloud gespeichert?",
@@ -289,14 +287,12 @@
   "helpFaqA7": "Beim Deinstallieren der App werden alle lokal gespeicherten Daten dauerhaft gelöscht. Wir empfehlen, deinen Verlauf vor der Deinstallation als PDF oder CSV zu exportieren.",
   "helpFaqQ8": "Ersetzt diese App meinen Arzt?",
   "helpFaqA8": "Nein. My Vitals ist ein persönliches Tracking-Tool, das dir hilft, einen organisierten Datensatz zu führen. Konsultiere immer einen Gesundheitsfachmann für medizinische Interpretation und Diagnose.",
-
   "helpGlossarySearchHint": "Begriff suchen...",
   "helpGlossaryGroupAnthropo": "Anthropometrische Messungen",
   "helpGlossaryGroupVitals": "Vitalzeichen",
   "helpGlossaryGroupLipid": "Lipidprofil",
   "helpGlossaryGroupBody": "Körperzusammensetzung",
   "helpGlossaryNormalRange": "Normaler Bereich",
-
   "helpLegalPurposeTitle": "Zweck der Anwendung",
   "helpLegalPurposeBody": "My Vitals ist eine persönliche Gesundheits-Tracking-Anwendung, die Nutzern hilft, ihre Wohlbefindensindikatoren aufzuzeichnen und zu visualisieren. Es ist kein zertifiziertes Medizinprodukt.",
   "helpLegalNotMedicalTitle": "Kein Medizinprodukt",
@@ -307,7 +303,6 @@
   "helpLegalPrivacyBody": "Alle Daten werden lokal auf dem Gerät des Nutzers gespeichert. My Vitals erfasst, übermittelt oder teilt keine persönlichen Informationen mit Dritten. Es gibt keine Benutzerkonten oder Datenserver.",
   "helpLegalContactTitle": "Entwicklerkontakt",
   "helpLegalContactBody": "Für rechtliche Anfragen oder Datenschutzfragen können Sie den Entwickler kontaktieren unter: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Fehler melden",
   "helpContactReportBugDesc": "Etwas funktioniert nicht richtig? Sag es uns.",
   "helpContactSuggest": "Vorschlag senden",
@@ -346,7 +341,6 @@
   "backupIncludesPhoto": "Profilfoto",
   "backupIncludesPreferences": "Einstellungen (Sprache, Einheiten)",
   "backupCancel": "Abbrechen",
-
   "onboardingWelcomeTitle": "Willkommen bei My Vitals",
   "onboardingWelcomeSubtitle": "Dein persönlicher Gesundheitsbegleiter",
   "onboardingWelcomeFeature1": "Erfasse deine Vitalzeichen und Körpermaße",
@@ -358,8 +352,12 @@
   "onboardingStep": "Schritt {current} von {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Dein Profilbild",
@@ -379,12 +377,13 @@
   "goalRemainingWeight": "{weight}kg bis zum Ziel",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Ziel erreicht!",
   "noGoalDefined": "Kein Ziel definiert",
-
   "validationRequiredFields": "Pflichtfelder",
   "validationCompleteBeforeContinue": "Bitte fülle diese Felder aus, bevor du fortfährst:",
   "validationSelectLanguage": "Wähle eine Sprache",
@@ -480,6 +479,8 @@
   "deleteRecordConfirm": "Löschen",
   "recordDeleted": "Eintrag gelöscht",
   "anthropoSavedSuccess": "Messung erfolgreich gespeichert.",
-  "historyShowMore": "{count} weitere anzeigen"
+  "historyShowMore": "{count} weitere anzeigen",
+  "introSignIn": "Anmelden",
+  "introRegister": "Konto erstellen",
+  "introExploreOffline": "Ohne Konto erkunden"
 }
-

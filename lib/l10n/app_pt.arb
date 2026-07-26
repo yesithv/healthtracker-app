@@ -106,7 +106,9 @@
   "historyWeightLoss": "Você perdeu {weight}kg este mês, aproximando-se da sua meta de bem-estar.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "TENDÊNCIA DE IMC",
@@ -204,7 +206,9 @@
   "discoverGreeting": "Bom dia, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Procurar dicas...",
@@ -251,7 +255,6 @@
   "targetMuscleMass": "Massa Muscular Alvo",
   "targetVisceralFat": "Gordura Visceral Alvo",
   "goalsSavedSuccess": "Metas salvas com sucesso.",
-
   "helpSupportPageTitle": "Ajuda e Suporte",
   "helpSupportPageDescription": "Tudo o que você precisa saber sobre o My Vitals.",
   "helpFaqTitle": "Perguntas Frequentes",
@@ -262,15 +265,12 @@
   "helpLegalDescription": "Termos de uso e privacidade de dados.",
   "helpContactTitle": "Contato e Feedback",
   "helpContactDescription": "Escreva para nós, melhoramos juntos.",
-
   "helpSearchHint": "Pesquisar...",
   "helpNoResults": "Sem resultados para sua pesquisa.",
-
   "helpFaqCatGeneral": "Geral",
   "helpFaqCatData": "Meus Dados",
   "helpFaqCatBiometrics": "Biometria",
   "helpFaqCatExport": "Exportar",
-
   "helpFaqQ1": "O que é o My Vitals?",
   "helpFaqA1": "My Vitals é um aplicativo de acompanhamento pessoal de saúde que permite registrar e monitorar seus indicadores de bem-estar: medidas antropométricas, sinais vitais, perfil lipídico e composição corporal.",
   "helpFaqQ2": "Meus dados são salvos na nuvem?",
@@ -287,14 +287,12 @@
   "helpFaqA7": "Ao desinstalar o aplicativo, todos os dados armazenados localmente serão excluídos permanentemente. Recomendamos exportar seu histórico em PDF ou CSV antes de desinstalar.",
   "helpFaqQ8": "Este aplicativo substitui meu médico?",
   "helpFaqA8": "Não. O My Vitals é uma ferramenta de acompanhamento pessoal para ajudá-lo a manter um registro organizado. Sempre consulte um profissional de saúde para interpretação e diagnóstico médico.",
-
   "helpGlossarySearchHint": "Buscar termo...",
   "helpGlossaryGroupAnthropo": "Medidas Antropométricas",
   "helpGlossaryGroupVitals": "Sinais Vitais",
   "helpGlossaryGroupLipid": "Perfil Lipídico",
   "helpGlossaryGroupBody": "Composição Corporal",
   "helpGlossaryNormalRange": "Intervalo normal",
-
   "helpLegalPurposeTitle": "Propósito do aplicativo",
   "helpLegalPurposeBody": "My Vitals é um aplicativo de acompanhamento pessoal de saúde projetado para ajudar os usuários a registrar e visualizar seus indicadores de bem-estar. Não é um dispositivo médico certificado.",
   "helpLegalNotMedicalTitle": "Não é um dispositivo médico",
@@ -305,7 +303,6 @@
   "helpLegalPrivacyBody": "Todos os dados são armazenados localmente no dispositivo do usuário. O My Vitals não coleta, transmite ou compartilha informações pessoais com terceiros. Não existem contas de usuário ou servidores de dados.",
   "helpLegalContactTitle": "Contato do desenvolvedor",
   "helpLegalContactBody": "Para consultas legais ou de privacidade, você pode contatar o desenvolvedor em: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Relatar um erro",
   "helpContactReportBugDesc": "Encontrou algo que não está funcionando bem? Conte para nós.",
   "helpContactSuggest": "Enviar sugestão",
@@ -344,7 +341,6 @@
   "backupIncludesPhoto": "Foto de Perfil",
   "backupIncludesPreferences": "Preferências (idioma, unidades)",
   "backupCancel": "Cancelar",
-
   "onboardingWelcomeTitle": "Bem-vindo ao My Vitals",
   "onboardingWelcomeSubtitle": "Seu companheiro de saúde pessoal",
   "onboardingWelcomeFeature1": "Registre seus sinais vitais e medidas corporais",
@@ -356,8 +352,12 @@
   "onboardingStep": "Passo {current} de {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Sua foto de perfil",
@@ -377,12 +377,13 @@
   "goalRemainingWeight": "Faltam {weight}kg para a meta",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Meta alcançada!",
   "noGoalDefined": "Meta não definida",
-
   "validationRequiredFields": "Campos obrigatórios",
   "validationCompleteBeforeContinue": "Por favor preencha estes campos antes de continuar:",
   "validationSelectLanguage": "Selecione um idioma",
@@ -478,6 +479,8 @@
   "deleteRecordConfirm": "Excluir",
   "recordDeleted": "Registro excluído",
   "anthropoSavedSuccess": "Medida salva com sucesso.",
-  "historyShowMore": "Ver mais {count}"
+  "historyShowMore": "Ver mais {count}",
+  "introSignIn": "Iniciar sessão",
+  "introRegister": "Criar conta",
+  "introExploreOffline": "Explorar sem conta"
 }
-

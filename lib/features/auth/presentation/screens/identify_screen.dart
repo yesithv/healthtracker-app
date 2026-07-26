@@ -110,7 +110,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
         foregroundColor: surfaces.brand,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => context.go('/welcome'),
+          onPressed: () => context.go('/intro'),
         ),
       ),
       body: SafeArea(
