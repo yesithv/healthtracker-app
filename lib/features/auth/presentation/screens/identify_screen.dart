@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 
 /// Paso ÚNICO de identificación. El usuario ingresa un solo dato (documento del paciente
 /// migrado, o email) y el backend decide el camino:
@@ -18,8 +19,6 @@ class IdentifyScreen extends StatefulWidget {
 }
 
 class _IdentifyScreenState extends State<IdentifyScreen> {
-  static const _blue = Color(0xFF0D48A0);
-
   final _auth = AuthApiClient();
   final _idController = TextEditingController();
   bool _busy = false;
@@ -98,12 +97,17 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Hallazgo positivo («encontramos tu historial») = estado óptimo del tema.
+    final found = theme.clinical.optimal;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: _blue,
+        foregroundColor: surfaces.brand,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.go('/welcome'),
@@ -116,19 +120,19 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              const Icon(Icons.badge_outlined, size: 56, color: _blue),
+              Icon(Icons.badge_outlined, size: 56, color: surfaces.brand),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Traigamos tu historial',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: theme.type.screenTitle.copyWith(fontSize: 24),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'Ingresa tu documento (o email). Si ya eres paciente, cargamos tus datos; '
                 'si no, creamos tu cuenta.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF64748B)),
+                style: theme.type.body,
               ),
               const SizedBox(height: 28),
               TextField(
@@ -138,11 +142,11 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 decoration: InputDecoration(
                   labelText: 'Documento o email',
                   hintText: 'Ej. 1032456789',
-                  prefixIcon: const Icon(Icons.person_outline, color: _blue),
+                  prefixIcon: Icon(Icons.person_outline, color: surfaces.brand),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: surfaces.card,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(surfaces.radiusControl),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -157,55 +161,67 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFECFDF5),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF10B981), width: 1.2),
+                    color: found.surface,
+                    borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                    border: Border.all(color: found.accent, width: 1.2),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.folder_shared_outlined, color: Color(0xFF047857)),
-                          SizedBox(width: 10),
+                        children: [
+                          Icon(Icons.folder_shared_outlined, color: found.accent),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               'Encontramos un historial clínico asociado a este documento.',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Color(0xFF065F46)),
+                              style: theme.type.button.copyWith(
+                                fontSize: 14,
+                                color: found.accent,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Podemos traerlo y activar tu cuenta para que veas tus datos desde el primer día.',
-                        style: TextStyle(color: Color(0xFF047857), fontSize: 13),
+                        style: theme.type.body.copyWith(
+                          fontSize: 13,
+                          color: found.accent,
+                        ),
                       ),
                       const SizedBox(height: 14),
                       FilledButton.icon(
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF10B981),
+                          backgroundColor: found.accent,
+                          foregroundColor: found.onAccent,
                           padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              surfaces.radiusControl,
+                            ),
+                          ),
                         ),
                         onPressed: _activating ? null : _activate,
                         icon: _activating
-                            ? const SizedBox(
-                                width: 16, height: 16,
+                            ? SizedBox(
+                                width: 16,
+                                height: 16,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white))
+                                    strokeWidth: 2, color: found.onAccent))
                             : const Icon(Icons.cloud_download_outlined),
                         label: Text(
                           _activating ? 'Trayendo tu historial…' : 'Traer mi historial y continuar',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: theme.type.button.copyWith(color: found.onAccent),
                         ),
                       ),
                       TextButton(
                         onPressed: _activating
                             ? null
                             : () => context.go('/onboarding?mode=account'),
-                        child: const Text('No soy yo — registrarme como nuevo',
-                            style: TextStyle(fontSize: 13)),
+                        child: Text('No soy yo — registrarme como nuevo',
+                            style: theme.type.body.copyWith(fontSize: 13)),
                       ),
                     ],
                   ),
@@ -215,9 +231,14 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                    Icon(Icons.error_outline,
+                        color: theme.clinical.alert.accent, size: 18),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C)))),
+                    Expanded(
+                      child: Text(_error!,
+                          style: theme.type.body.copyWith(
+                              color: theme.clinical.alert.accent)),
+                    ),
                   ],
                 ),
               ],
@@ -225,20 +246,31 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
               if (!_legacyFound)
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    backgroundColor: _blue,
+                    backgroundColor: surfaces.brand,
+                    foregroundColor: surfaces.onBrand,
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        surfaces.radiusControl,
+                      ),
+                    ),
                   ),
                   onPressed: _busy ? null : _continue,
                   child: _busy
-                      ? const SizedBox(
-                          width: 20, height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Text('Continuar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: surfaces.onBrand))
+                      : Text('Continuar',
+                          style: theme.type.button.copyWith(
+                              fontSize: 16, color: surfaces.onBrand)),
                 ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: _busy ? null : () => context.go('/onboarding?mode=offline'),
-                child: const Text('Explorar sin cuenta'),
+                child: Text('Explorar sin cuenta',
+                    style: theme.type.button.copyWith(color: surfaces.brand)),
               ),
             ],
           ),

@@ -106,13 +106,29 @@ tokens, así que no puede desincronizarse.
 
 ## Estado de la migración
 
-Migrado: arranque, asistente de alta (3 pasos), panel y los widgets compartidos
-que usan (`ActionButton`, `StatusChip`, `BmiStatusBadge`, `MainAppBar`,
-`DashedBorderContainer`, `ProfileSettingsLayout`…).
+Migrado: **todo el flujo de arranque** —splash, bienvenida, identificación,
+verificación, asistente de alta (3 pasos) y panel—, la barra de navegación y los
+widgets compartidos que usan (`ActionButton`, `StatusChip`, `BmiStatusBadge`,
+`MainAppBar`, `DashedBorderContainer`, `ProfileSettingsLayout`…).
+
+En las pantallas de bienvenida, identificación y verificación se aplicó **solo el
+tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
+(verificado comparando literales y rutas contra `origin/main`). El rediseño del
+sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
+descargo médico— está pendiente de decidir aparte.
 
 Sin migrar: historial, Descubre, perfil y ajustes — siguen con colores escritos
-a mano y se ven igual en ambos temas. **`WelcomeScreen` es la costura visible**:
-está en medio del flujo de un usuario nuevo y sigue en azul fijo.
+a mano y se ven igual en ambos temas.
+
+Dos deudas conocidas, ambas anteriores a este trabajo:
+
+- `identify_screen.dart` y `verify_screen.dart` tienen **todos sus textos en
+  español escritos a mano**, sin pasar por `l10n`. Como el resto de la app sigue
+  el idioma del dispositivo, en un móvil en inglés esas dos pantallas se ven en
+  español mientras las demás están en inglés.
+- `onboarding_welcome_page.dart` (la portada con las tres características de la
+  app) existe y tiene sus cadenas traducidas a los 5 idiomas, pero **está
+  huérfana**: ninguna ruta la referencia.
 
 La migración es incremental a propósito: había ~1.160 colores a mano repartidos
 por la app, y hacerlo de golpe garantizaba dejar media interfaz a medias. Al
