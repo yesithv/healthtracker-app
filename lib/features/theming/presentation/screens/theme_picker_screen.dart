@@ -55,7 +55,7 @@ class ThemePickerScreen extends StatelessWidget {
               child: ListView.separated(
                 padding: EdgeInsets.fromLTRB(24, 12, 24, _isSettings ? 32 : 24),
                 itemCount: AppThemeCatalog.specs.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 20),
+                separatorBuilder: (_, _) => const SizedBox(height: 14),
                 itemBuilder: (context, i) {
                   final spec = AppThemeCatalog.specs[i];
                   return ThemePreviewCard(

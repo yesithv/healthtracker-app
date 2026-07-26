@@ -12,6 +12,21 @@ import '../../../../core/widgets/status_chip.dart';
 /// los mismos widgets que usa la app real se pintan aquí con sus tokens. No es
 /// una maqueta que haya que mantener en paralelo — es la cosa real, en pequeño.
 /// Si mañana cambia un token, esta ficha cambia con él y no puede mentir.
+///
+/// Es deliberadamente COMPACTA: cabe entera en pantalla junto a las demás, para
+/// que elegir sea comparar de un vistazo y no recorrer una lista larga. Cada
+/// pieza que sobrevive gana su sitio mostrando algo que las otras no:
+///
+/// - la **barra de paleta** — los ocho colores del tema, de un tirón;
+/// - la **cifra** — donde más se nota el cambio de tipografía;
+/// - el **botón** — la marca sobre su propio relleno, y el radio de control;
+/// - la **tarjeta que los contiene** — plana o con sombra, según el tema;
+/// - las **cuatro insignias** — que el significado no cambia aunque cambie el
+///   acabado. Es la fila que justifica la pantalla entera.
+///
+/// Lo que se cayó al acortar —rótulos de panel, hexadecimales, botón secundario,
+/// casilla de dato y conmutador segmentado— o repetía una señal ya presente, o
+/// hablaba a un diseñador y no a quien está eligiendo cómo quiere ver su app.
 class ThemePreviewCard extends StatelessWidget {
   const ThemePreviewCard({
     super.key,
@@ -34,7 +49,7 @@ class ThemePreviewCard extends StatelessWidget {
       child: Semantics(
         button: true,
         selected: isSelected,
-        label: '${spec.name}. ${spec.tagline}',
+        label: '${spec.name}. ${spec.tagline} ${spec.typeNote}',
         child: Container(
           decoration: BoxDecoration(
             color: surfaces.canvas,
@@ -50,29 +65,21 @@ class ThemePreviewCard extends StatelessWidget {
             child: InkWell(
               onTap: onSelect,
               child: Padding(
-                padding: const EdgeInsets.all(18),
+                padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _Header(spec: spec, isSelected: isSelected),
-                    const SizedBox(height: 18),
-                    // El muestrario es inerte: los botones y conmutadores de
+                    const SizedBox(height: 12),
+                    // El muestrario es inerte: los botones y las insignias de
                     // ejemplo no deben capturar el toque que selecciona la ficha.
                     IgnorePointer(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _PanelLabel('Paleta'),
-                          const SizedBox(height: 10),
-                          _PaletteGrid(id: spec.id),
-                          const SizedBox(height: 20),
-                          _PanelLabel('Tipografía'),
-                          const SizedBox(height: 10),
-                          _TypeSample(typeNote: spec.typeNote),
-                          const SizedBox(height: 20),
-                          _PanelLabel('Componentes'),
-                          const SizedBox(height: 10),
-                          const _ComponentSample(),
+                          _PaletteBar(id: spec.id),
+                          const SizedBox(height: 12),
+                          const _Sample(),
                         ],
                       ),
                     ),
@@ -109,18 +116,25 @@ class _Header extends StatelessWidget {
             children: [
               Text(
                 spec.name,
-                style: theme.type.screenTitle.copyWith(fontSize: 21),
+                style: theme.type.screenTitle.copyWith(fontSize: 18),
               ),
-              const SizedBox(height: 6),
-              Text(spec.tagline, style: theme.type.body.copyWith(fontSize: 13)),
+              const SizedBox(height: 3),
+              Text(
+                spec.tagline,
+                style: theme.type.body.copyWith(fontSize: 12.5, height: 1.3),
+              ),
+              const SizedBox(height: 2),
+              // La nota tipográfica va aquí, no en un panel propio: es una línea
+              // de texto, y darle rótulo y hueco costaba más alto que informar.
+              Text(spec.typeNote, style: theme.type.meta),
             ],
           ),
         ),
         const SizedBox(width: 12),
         // Marca de selección: forma + color, nunca color a solas.
         Container(
-          width: 26,
-          height: 26,
+          width: 22,
+          height: 22,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isSelected ? surfaces.brand : Colors.transparent,
@@ -130,7 +144,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           child: isSelected
-              ? Icon(Icons.check_rounded, size: 16, color: surfaces.onBrand)
+              ? Icon(Icons.check_rounded, size: 14, color: surfaces.onBrand)
               : null,
         ),
       ],
@@ -138,91 +152,64 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// Rótulo de panel, en el idioma de rótulos del propio tema.
-class _PanelLabel extends StatelessWidget {
-  const _PanelLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text.toUpperCase(), style: Theme.of(context).type.sectionLabel);
-  }
-}
-
 // ── PALETA ────────────────────────────────────────────────────────────────────
 
-class _PaletteGrid extends StatelessWidget {
-  const _PaletteGrid({required this.id});
+/// Los colores del tema en una sola barra.
+///
+/// Antes era una rejilla de cuatro columnas con nombre y hexadecimal debajo de
+/// cada muestra: tres líneas de alto por fila, dos filas, para decir algo que el
+/// color ya dice solo. El hexadecimal servía a quien construye el tema, no a
+/// quien lo elige — y quien lo construye lo tiene en `themes/*.dart`.
+class _PaletteBar extends StatelessWidget {
+  const _PaletteBar({required this.id});
 
   final AppThemeId id;
 
-  static String _hex(Color c) =>
-      '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6, '0')}';
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
+    final surfaces = Theme.of(context).surfaces;
     final swatches = AppThemeCatalog.swatchesOf(id);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Cuatro columnas, como la lámina del sistema de diseño. Se calcula el
-        // ancho en vez de fijarlo para que la ficha aguante cualquier pantalla.
-        const columns = 4;
-        const gap = 10.0;
-        final tile = (constraints.maxWidth - gap * (columns - 1)) / columns;
-
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: [
-            for (final s in swatches)
-              SizedBox(
-                width: tile,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: s.color,
-                        borderRadius: BorderRadius.circular(10),
-                        // Filete siempre: sin él, la muestra «Tarjeta» blanca
-                        // desaparecería sobre un lienzo claro.
-                        border: Border.all(color: surfaces.divider),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      s.label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.type.numeralUnit.copyWith(fontSize: 10),
-                    ),
-                    Text(
-                      _hex(s.color),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.type.numeralUnit.copyWith(fontSize: 9),
-                    ),
-                  ],
+    return Container(
+      height: 26,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        // Filete y separadores siempre: sin ellos, los tramos claros —«Lienzo»,
+        // «Tarjeta»— se fundirían entre sí y con el fondo de la ficha.
+        border: Border.all(color: surfaces.divider),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        children: [
+          for (final (i, s) in swatches.indexed)
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: s.color,
+                  border: i == 0
+                      ? null
+                      : Border(left: BorderSide(color: surfaces.divider)),
                 ),
+                // Sin hijo no hay nada que medir: el alto lo fija el Container y
+                // el ancho lo reparte el Expanded.
+                child: const SizedBox.expand(),
               ),
-          ],
-        );
-      },
+            ),
+        ],
+      ),
     );
   }
 }
 
-// ── TIPOGRAFÍA ────────────────────────────────────────────────────────────────
+// ── MUESTRARIO ────────────────────────────────────────────────────────────────
 
-class _TypeSample extends StatelessWidget {
-  const _TypeSample({required this.typeNote});
-
-  final String typeNote;
+/// Cifra, botón e insignias dentro de una tarjeta del propio tema.
+///
+/// Van juntos a propósito: la tarjeta que los contiene ya comunica si el tema
+/// usa sombra o superficie plana, así que no hace falta una muestra aparte para
+/// eso.
+class _Sample extends StatelessWidget {
+  const _Sample();
 
   @override
   Widget build(BuildContext context) {
@@ -231,153 +218,61 @@ class _TypeSample extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: surfaces.cardDecoration(radius: surfaces.radiusControl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // La cifra: el elemento donde más se nota el cambio de tema.
           Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
             children: [
-              Text('68,4', style: theme.type.numeral),
-              const SizedBox(width: 6),
-              Text('kg', style: theme.type.numeralUnit),
+              // La cifra: el elemento donde más se nota el cambio de tema.
+              Text(
+                '68,4',
+                style: theme.type.numeralSmall.copyWith(fontSize: 24),
+              ),
+              const SizedBox(width: 5),
+              Padding(
+                // Alinea la unidad con la base de la cifra sin pagar el coste de
+                // una fila con línea de base, que aquí obligaría a más alto.
+                padding: const EdgeInsets.only(top: 6),
+                child: Text('kg', style: theme.type.numeralUnit),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: surfaces.brand,
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                ),
+                child: Text(
+                  'Registrar',
+                  style: theme.type.button.copyWith(
+                    fontSize: 13,
+                    color: surfaces.onBrand,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
-          Text('Registrar indicador', style: theme.type.button),
-          const SizedBox(height: 8),
-          Text(typeNote, style: theme.type.meta),
-        ],
-      ),
-    );
-  }
-}
-
-// ── COMPONENTES ───────────────────────────────────────────────────────────────
-
-class _ComponentSample extends StatelessWidget {
-  const _ComponentSample();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Botón primario.
-        Container(
-          height: 46,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: surfaces.brand,
-            borderRadius: BorderRadius.circular(surfaces.radiusControl),
-          ),
-          child: Text(
-            'Botón primario',
-            style: theme.type.button.copyWith(color: surfaces.onBrand),
-          ),
-        ),
-        const SizedBox(height: 10),
-        // Botón secundario.
-        Container(
-          height: 46,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: surfaces.card,
-            borderRadius: BorderRadius.circular(surfaces.radiusControl),
-            border: Border.all(
-              color: Color.lerp(surfaces.card, surfaces.brand, 0.28)!,
-            ),
-          ),
-          child: Text(
-            'Botón secundario',
-            style: theme.type.button.copyWith(color: surfaces.ink),
-          ),
-        ),
-        const SizedBox(height: 12),
-        // Los cuatro estados clínicos, con el idioma de insignia del tema.
-        // Es la fila más importante de la ficha: aquí se ve que el significado
-        // de los colores no cambia aunque cambie el acabado.
-        const Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            StatusChip(status: ClinicalStatus.optimal, label: 'Óptimo'),
-            StatusChip(status: ClinicalStatus.caution, label: 'Elevada'),
-            StatusChip(status: ClinicalStatus.alert, label: 'Alto'),
-            StatusChip(status: ClinicalStatus.info, label: 'Bajo'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        // Casilla de dato.
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: surfaces.inset,
-            borderRadius: BorderRadius.circular(surfaces.radiusControl),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          // Los cuatro estados clínicos, con el idioma de insignia del tema.
+          // Es la fila más importante de la ficha: aquí se ve que el significado
+          // de los colores no cambia aunque cambie el acabado.
+          const Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
-              Text('PESO', style: theme.type.sectionLabel),
-              const SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    '68,4',
-                    style: theme.type.numeralSmall.copyWith(fontSize: 26),
-                  ),
-                  const SizedBox(width: 6),
-                  Text('kg', style: theme.type.numeralUnit),
-                ],
-              ),
+              StatusChip(status: ClinicalStatus.optimal, label: 'Óptimo'),
+              StatusChip(status: ClinicalStatus.caution, label: 'Elevada'),
+              StatusChip(status: ClinicalStatus.alert, label: 'Alto'),
+              StatusChip(status: ClinicalStatus.info, label: 'Bajo'),
             ],
           ),
-        ),
-        const SizedBox(height: 12),
-        // Conmutador segmentado.
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                decoration: BoxDecoration(
-                  color: surfaces.ink,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  'Métrico',
-                  style: theme.type.badge.copyWith(
-                    fontSize: 12.5,
-                    color: surfaces.card,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                child: Text(
-                  'Imperial',
-                  style: theme.type.badge.copyWith(
-                    fontSize: 12.5,
-                    color: surfaces.inkSecondary,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

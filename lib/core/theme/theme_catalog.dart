@@ -63,17 +63,13 @@ class AppThemeCatalog {
     AppThemeSpec(
       id: AppThemeId.pulsoClinico,
       name: 'Pulso Clínico',
-      tagline:
-          'Azul hospitalario, tarjetas que flotan y cifras rotundas. '
-          'Denso y enérgico: todo a la vista.',
+      tagline: 'Azul hospitalario, tarjetas que flotan, cifras rotundas.',
       typeNote: 'Inter · 400 a 700 · jerarquía por peso',
     ),
     AppThemeSpec(
       id: AppThemeId.consultaSerena,
       name: 'Consulta Serena',
-      tagline:
-          'Lienzo cálido, tarjetas planas y cifras en serif. '
-          'Calmado y espacioso: una lectura por tarjeta.',
+      tagline: 'Lienzo cálido, tarjetas planas, cifras en serif.',
       typeNote: 'Newsreader · IBM Plex Sans · IBM Plex Mono',
     ),
   ];
