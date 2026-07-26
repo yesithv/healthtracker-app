@@ -18,7 +18,17 @@ class PersonalInfoScreen extends StatefulWidget {
   /// Whether to show the SecondaryAppBar. Defaults to true (Profile mode).
   final bool showAppBar;
 
-  const PersonalInfoScreen({super.key, this.onNext, this.showAppBar = true});
+  /// Cuando es true, el correo pasa a ser obligatorio. Lo activa el asistente de
+  /// alta, porque la cuenta es obligatoria y el registro necesita el correo como
+  /// identificador. Desde Perfil sigue siendo opcional: ahí solo se edita.
+  final bool requireEmail;
+
+  const PersonalInfoScreen({
+    super.key,
+    this.onNext,
+    this.showAppBar = true,
+    this.requireEmail = false,
+  });
 
   @override
   State<PersonalInfoScreen> createState() => PersonalInfoScreenState();
@@ -41,6 +51,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   bool _nameError = false;
   bool _dateError = false;
   bool _genderError = false;
+  bool _emailError = false;
 
   @override
   void initState() {
@@ -137,15 +148,21 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
     final nameEmpty = _nameController.text.trim().isEmpty;
     final dateEmpty = _selectedDate == null;
     final genderEmpty = _selectedGender.isEmpty;
+    // El correo solo es obligatorio en el alta: es el identificador con el que
+    // se crea la cuenta.
+    final emailEmpty =
+        widget.requireEmail && _emailController.text.trim().isEmpty;
 
     if (nameEmpty) errors.add(l10n.validationEnterName);
     if (dateEmpty) errors.add(l10n.validationSelectBirthDate);
     if (genderEmpty) errors.add(l10n.validationSelectGender);
+    if (emailEmpty) errors.add(l10n.validationEnterEmail);
 
     setState(() {
       _nameError = nameEmpty;
       _dateError = dateEmpty;
       _genderError = genderEmpty;
+      _emailError = emailEmpty;
     });
 
     return errors;
@@ -265,18 +282,26 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
 
                 const SizedBox(height: 20),
 
-                // --- Email (optional) ---
-                _buildLabel(l10n.emailOptional, required: false),
+                // --- Correo: obligatorio en el alta, opcional en Perfil ---
+                _buildLabel(
+                  widget.requireEmail ? l10n.emailLabel : l10n.emailOptional,
+                  required: widget.requireEmail,
+                ),
                 TextFormField(
                   controller: _emailController,
-                  onChanged: (_) => _saveCurrentState(),
+                  onChanged: (_) {
+                    _saveCurrentState();
+                    if (_emailError) setState(() => _emailError = false);
+                  },
                   keyboardType: TextInputType.emailAddress,
                   decoration: _inputDecoration(
                     'email@ejemplo.com',
                     Icons.email_outlined,
                     surfaces.brand,
+                    hasError: _emailError,
                   ),
                 ),
+                if (_emailError) _buildInlineError(l10n.validationEnterEmail),
 
                 const SizedBox(height: 20),
 

@@ -1461,5 +1461,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get introRegister => 'Konto erstellen';
 
   @override
-  String get introExploreOffline => 'Ohne Konto erkunden';
+  String get emailLabel => 'E-Mail';
+
+  @override
+  String get validationEnterEmail => 'Gib deine E-Mail-Adresse ein';
+
+  @override
+  String get commonRegisterFailed =>
+      'Wir konnten dein Konto nicht erstellen. Prüfe die Verbindung und versuche es erneut.';
+
+  @override
+  String get logOutConfirm =>
+      'Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert.';
 }

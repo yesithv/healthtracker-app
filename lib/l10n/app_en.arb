@@ -534,5 +534,8 @@
   },
   "introSignIn": "Sign in",
   "introRegister": "Create account",
-  "introExploreOffline": "Explore without an account"
+  "emailLabel": "Email",
+  "validationEnterEmail": "Enter your email",
+  "commonRegisterFailed": "We couldn't create your account. Check your connection and try again.",
+  "logOutConfirm": "Sign out on this device? Your records stay on the device and will sync again when you sign back in."
 }

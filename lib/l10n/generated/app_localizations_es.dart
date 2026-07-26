@@ -1459,5 +1459,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get introRegister => 'Registrarse';
 
   @override
-  String get introExploreOffline => 'Explorar sin cuenta';
+  String get emailLabel => 'Correo';
+
+  @override
+  String get validationEnterEmail => 'Ingresa tu correo';
+
+  @override
+  String get commonRegisterFailed =>
+      'No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get logOutConfirm =>
+      '¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.';
 }

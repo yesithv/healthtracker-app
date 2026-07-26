@@ -499,5 +499,8 @@
   "historyShowMore": "Mostra altri {count}",
   "introSignIn": "Accedi",
   "introRegister": "Crea un account",
-  "introExploreOffline": "Esplora senza account"
+  "emailLabel": "Email",
+  "validationEnterEmail": "Inserisci la tua email",
+  "commonRegisterFailed": "Non abbiamo potuto creare il tuo account. Controlla la connessione e riprova.",
+  "logOutConfirm": "Uscire su questo dispositivo? I tuoi dati restano sul dispositivo e si sincronizzeranno di nuovo al prossimo accesso."
 }

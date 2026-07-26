@@ -29,7 +29,6 @@ import '../../features/profile/presentation/screens/data_backup_screen.dart';
 import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
-import '../../features/welcome/presentation/screens/welcome_screen.dart';
 import '../../features/welcome/presentation/screens/intro_screen.dart';
 import '../../features/auth/presentation/screens/identify_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
@@ -59,12 +58,6 @@ class AppRouter {
       // caminos de entrada. Es a donde manda el arranque a quien no tiene
       // sesión ni perfil local.
       GoRoute(path: '/intro', builder: (context, state) => const IntroScreen()),
-      // Portada anterior (logotipo + un solo CTA). Ya NO está en el flujo; se
-      // deja enrutada para poder compararlas sin recompilar.
-      GoRoute(
-        path: '/welcome',
-        builder: (context, state) => const WelcomeScreen(),
-      ),
       GoRoute(
         path: '/identify',
         builder: (context, state) => const IdentifyScreen(),
@@ -79,13 +72,11 @@ class AppRouter {
               : VerifyScreen(identifier: id);
         },
       ),
+      // Alta de paciente nuevo. Ya no admite parámetro `mode`: el asistente
+      // siempre crea la cuenta, porque el modo local se ha eliminado.
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => OnboardingShell(
-          // 'account' = al terminar el wizard se crea la cuenta (register);
-          // cualquier otro valor (o ninguno) = modo local sin cuenta.
-          createAccount: state.uri.queryParameters['mode'] == 'account',
-        ),
+        builder: (context, state) => const OnboardingShell(),
       ),
       // Mismo selector que la pantalla 0, en modo ajuste: con vuelta atrás y
       // sin CTA, porque la elección ya se guarda al tocar la ficha.

@@ -2816,11 +2816,29 @@ abstract class AppLocalizations {
   /// **'Create account'**
   String get introRegister;
 
-  /// No description provided for @introExploreOffline.
+  /// No description provided for @emailLabel.
   ///
   /// In en, this message translates to:
-  /// **'Explore without an account'**
-  String get introExploreOffline;
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @validationEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get validationEnterEmail;
+
+  /// No description provided for @commonRegisterFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t create your account. Check your connection and try again.'**
+  String get commonRegisterFailed;
+
+  /// No description provided for @logOutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out on this device? Your records stay on the device and will sync again when you sign back in.'**
+  String get logOutConfirm;
 }
 
 class _AppLocalizationsDelegate

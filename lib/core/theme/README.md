@@ -120,15 +120,41 @@ descargo médico— está pendiente de decidir aparte.
 Sin migrar: historial, Descubre, perfil y ajustes — siguen con colores escritos
 a mano y se ven igual en ambos temas.
 
-Dos deudas conocidas, ambas anteriores a este trabajo:
+Una deuda conocida, anterior a este trabajo:
 
 - `identify_screen.dart` y `verify_screen.dart` tienen **todos sus textos en
   español escritos a mano**, sin pasar por `l10n`. Como el resto de la app sigue
   el idioma del dispositivo, en un móvil en inglés esas dos pantallas se ven en
   español mientras las demás están en inglés.
-- `onboarding_welcome_page.dart` (la portada con las tres características de la
-  app) existe y tiene sus cadenas traducidas a los 5 idiomas, pero **está
-  huérfana**: ninguna ruta la referencia.
+
+## El flujo de entrada
+
+La **cuenta es obligatoria**: no hay modo local. El recorrido es
+
+```
+/                → selector de tema (temporal; su sitio es Perfil → Tema de la app)
+/splash          → arranque; solo pasa quien tiene SESIÓN ACTIVA
+/intro           → portada: logotipo, tres características, dos caminos
+   ├─ Iniciar sesión → /identify → /verify        → /dashboard
+   └─ Registrarse    → /onboarding (3 pasos)      → /dashboard
+```
+
+Reglas que sostienen esa promesa, y dónde viven:
+
+- **Solo una sesión da paso.** `splash_screen.dart` comprueba
+  `PatientSession.isAuthenticated` y nada más. Antes bastaba con haber
+  completado el asistente en local.
+- **El alta tiene que registrar.** `onboarding_shell.dart` solo entra al panel si
+  el registro sale bien; si falla, muestra el motivo y se queda en el paso.
+- **El correo es obligatorio en el alta**, porque es el identificador con el que
+  se crea la cuenta (`PersonalInfoScreen.requireEmail`). Desde Perfil sigue
+  siendo opcional: ahí solo se edita.
+- **Cerrar sesión devuelve a la portada** y NO borra los registros locales:
+  siguen en la base del dispositivo y vuelven a subir al reentrar.
+
+`test/core/router/auth_required_test.dart` fija el invariante: falla si alguien
+vuelve a enrutar la portada antigua, si una pantalla navega al asistente
+esquivando el registro, o si reaparece la bandera que lo permitía.
 
 La migración es incremental a propósito: había ~1.160 colores a mano repartidos
 por la app, y hacerlo de golpe garantizaba dejar media interfaz a medias. Al

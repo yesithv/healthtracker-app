@@ -64,16 +64,15 @@ class _SplashScreenState extends State<SplashScreen>
     await onboarding.ready;
     if (!mounted) return;
 
-    // ── AUTH / ONBOARDING GATE ────────────────────────────────────────
-    // Priority: an active patient session (migrated/created) goes straight in.
-    // Otherwise, a locally-configured profile (onboarding done) also goes in.
-    // A fresh install with neither lands on the Welcome gate to choose between
-    // logging in (migrated patient), creating an account, or using it offline.
-    final hasSession = PatientSession.instance.isAuthenticated;
-    final hasLocalProfile =
-        onboarding.isComplete && prefs.userName.trim().isNotEmpty;
-
-    if (!hasSession && !hasLocalProfile) {
+    // ── PUERTA DE ACCESO ──────────────────────────────────────────────
+    // La cuenta es OBLIGATORIA: solo una sesión activa da paso a la app. Antes
+    // bastaba con haber completado el asistente en local («usar sin cuenta»),
+    // y ese camino ya no existe.
+    //
+    // Consecuencia deliberada: quien venía usando la app en modo local acaba
+    // aquí en /intro. Sus datos NO se pierden —siguen en la base local— y
+    // suben al servidor en cuanto se registra o inicia sesión.
+    if (!PatientSession.instance.isAuthenticated) {
       context.go('/intro');
       return;
     }

@@ -482,5 +482,8 @@
   "historyShowMore": "Ver mais {count}",
   "introSignIn": "Iniciar sessão",
   "introRegister": "Criar conta",
-  "introExploreOffline": "Explorar sem conta"
+  "emailLabel": "Email",
+  "validationEnterEmail": "Introduza o seu email",
+  "commonRegisterFailed": "Não foi possível criar a sua conta. Verifique a ligação e tente novamente.",
+  "logOutConfirm": "Terminar sessão neste dispositivo? Os seus registos ficam no dispositivo e voltarão a sincronizar quando iniciar sessão de novo."
 }

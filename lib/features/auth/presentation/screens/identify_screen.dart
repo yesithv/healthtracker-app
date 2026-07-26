@@ -59,7 +59,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
         setState(() => _legacyFound = true);
       } else {
         // Paciente nuevo: al terminar el onboarding se crea la cuenta.
-        router.go('/onboarding?mode=account');
+        router.go('/onboarding');
       }
     } on AuthException catch (e) {
       setState(() => _error = e.message);
@@ -219,7 +219,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                       TextButton(
                         onPressed: _activating
                             ? null
-                            : () => context.go('/onboarding?mode=account'),
+                            : () => context.go('/onboarding'),
                         child: Text('No soy yo — registrarme como nuevo',
                             style: theme.type.body.copyWith(fontSize: 13)),
                       ),
@@ -266,12 +266,6 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                           style: theme.type.button.copyWith(
                               fontSize: 16, color: surfaces.onBrand)),
                 ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: _busy ? null : () => context.go('/onboarding?mode=offline'),
-                child: Text('Explorar sin cuenta',
-                    style: theme.type.button.copyWith(color: surfaces.brand)),
-              ),
             ],
           ),
         ),

@@ -12,18 +12,19 @@ import 'package:myvitals_healthtracker_app/features/profile/presentation/screens
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'onboarding_avatar_page.dart';
 
-/// The 3-step onboarding wizard shell (datos → unidades → avatar).
-/// La portada de bienvenida vive en /welcome; el idioma se autodetecta del
-/// dispositivo (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
-/// Wraps a [PageView] with step indicators, Next/Finish buttons,
-/// and embeds shared profile screens via their `onNext` / `showAppBar` params.
+/// Asistente de alta en 3 pasos (datos → unidades → avatar).
+///
+/// La portada vive en /intro; el idioma se autodetecta del dispositivo
+/// (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
+/// Envuelve un [PageView] con indicadores de paso y botones Siguiente/Finalizar,
+/// y reutiliza pantallas de Perfil vía sus parámetros `onNext` / `showAppBar`.
+///
+/// La cuenta es OBLIGATORIA: al terminar, el asistente CREA la cuenta del
+/// paciente y solo entra a la app si el registro sale bien. Antes existía un
+/// modo local («usar sin cuenta») que completaba el asistente sin servidor; ese
+/// camino se ha eliminado, así que ya no hay bandera que elegir.
 class OnboardingShell extends StatefulWidget {
-  /// When true, finishing the wizard creates the patient account (register,
-  /// source=APP) with the collected profile. When false the wizard is local-only
-  /// ("usar sin cuenta"): the account can be linked later from Profile.
-  final bool createAccount;
-
-  const OnboardingShell({super.key, this.createAccount = false});
+  const OnboardingShell({super.key});
 
   @override
   State<OnboardingShell> createState() => _OnboardingShellState();
@@ -37,6 +38,12 @@ class _OnboardingShellState extends State<OnboardingShell> {
   // GlobalKey to access the embedded Personal Info screen state and call validate()
   final GlobalKey<PersonalInfoScreenState> _personalInfoKey =
       GlobalKey<PersonalInfoScreenState>();
+
+  /// Registro en curso: bloquea el botón para no crear dos cuentas.
+  bool _registering = false;
+
+  /// Motivo por el que falló el último intento de registro, si falló.
+  String? _registerError;
 
   @override
   void dispose() {
@@ -91,22 +98,42 @@ class _OnboardingShellState extends State<OnboardingShell> {
     }
   }
 
+  /// Cierra el asistente creando la cuenta. Si el registro falla, NO entra:
+  /// muestra el motivo y deja al usuario en el último paso para reintentar.
+  /// Antes se entraba igualmente en modo local; ahora la cuenta es obligatoria,
+  /// así que dejar pasar un registro fallido daría una sesión inexistente.
   Future<void> _finishOnboarding() async {
+    if (_registering) return;
+    setState(() {
+      _registering = true;
+      _registerError = null;
+    });
+
     final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
-    if (widget.createAccount) {
-      await _tryRegister();
+    final registered = await _register();
+    if (!mounted) return;
+
+    if (!registered) {
+      setState(() => _registering = false);
+      return;
     }
+
     await onboarding.setComplete();
     if (mounted) context.go('/dashboard');
   }
 
-  /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido. No
-  /// bloquea: si no hay email o el registro falla (offline, email duplicado), el
-  /// usuario entra en modo local y puede vincular la cuenta luego desde Perfil.
-  Future<void> _tryRegister() async {
+  /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido.
+  /// Devuelve `true` solo si la cuenta quedó creada y la sesión guardada.
+  Future<bool> _register() async {
+    final l10n = AppLocalizations.of(context)!;
     final profile = Provider.of<UserProfileProvider>(context, listen: false);
     final email = profile.userEmail.trim();
-    if (email.isEmpty) return; // sin identificador no se puede crear la cuenta
+    if (email.isEmpty) {
+      // Red de seguridad: el paso 1 ya exige el correo, pero si llegara vacío
+      // no hay identificador con el que crear la cuenta.
+      setState(() => _registerError = l10n.validationEnterEmail);
+      return false;
+    }
 
     // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
     // locale del dispositivo (captura silenciosa; el backend valida el código).
@@ -132,17 +159,16 @@ class _OnboardingShellState extends State<OnboardingShell> {
         firstName: account.firstName,
         source: account.source,
       );
+      return true;
+    } on AuthException catch (e) {
+      // Motivo que da el servidor (correo duplicado, dato inválido…): es lo más
+      // útil que se le puede mostrar al usuario.
+      if (mounted) setState(() => _registerError = e.message);
+      return false;
     } catch (e) {
       debugPrint('Registro al terminar onboarding falló: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'No se pudo crear la cuenta ahora; puedes vincularla luego en Perfil.',
-            ),
-          ),
-        );
-      }
+      if (mounted) setState(() => _registerError = l10n.commonRegisterFailed);
+      return false;
     } finally {
       auth.close();
     }
@@ -186,6 +212,9 @@ class _OnboardingShellState extends State<OnboardingShell> {
                     key: _personalInfoKey,
                     showAppBar: false,
                     onNext: _nextPage,
+                    // La cuenta es obligatoria y el registro necesita un
+                    // identificador: aquí el correo deja de ser opcional.
+                    requireEmail: true,
                   ),
 
                   // Step 2 — Measurement Units (shared with Profile)
@@ -211,6 +240,41 @@ class _OnboardingShellState extends State<OnboardingShell> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Motivo del fallo de registro, si lo hubo. Va aquí y no en
+                  // un SnackBar porque es un error bloqueante: el usuario tiene
+                  // que verlo y reintentar, no verlo pasar.
+                  if (_registerError != null) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.clinical.alert.surface,
+                        borderRadius: BorderRadius.circular(
+                          surfaces.radiusControl,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: theme.clinical.alert.accent,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _registerError!,
+                              style: theme.type.body.copyWith(
+                                fontSize: 13,
+                                color: theme.clinical.alert.accent,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   // Step indicator dots
                   _StepIndicators(
                     total: _totalPages,
@@ -261,7 +325,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
                             ? l10n.onboardingFinish
                             : l10n.onboardingNext,
                         isLight: _isWelcomeStep,
-                        onTap: _nextPage,
+                        busy: _registering,
+                        onTap: _registering ? null : _nextPage,
                       ),
                     ],
                   ),
@@ -270,7 +335,7 @@ class _OnboardingShellState extends State<OnboardingShell> {
                   if (isLastPage) ...[
                     const SizedBox(height: 8),
                     TextButton(
-                      onPressed: _finishOnboarding,
+                      onPressed: _registering ? null : _finishOnboarding,
                       child: Text(
                         l10n.onboardingSkip,
                         style: theme.type.meta.copyWith(fontSize: 13),
@@ -335,12 +400,14 @@ class _StepIndicators extends StatelessWidget {
 class _NextButton extends StatelessWidget {
   final String label;
   final bool isLight;
-  final VoidCallback onTap;
+  final bool busy;
+  final VoidCallback? onTap;
 
   const _NextButton({
     required this.label,
     required this.isLight,
     required this.onTap,
+    this.busy = false,
   });
 
   @override
@@ -380,7 +447,17 @@ class _NextButton extends StatelessWidget {
             children: [
               Text(label, style: theme.type.button.copyWith(color: onFill)),
               const SizedBox(width: 6),
-              Icon(Icons.arrow_forward_ios_rounded, size: 14, color: onFill),
+              if (busy)
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: onFill,
+                  ),
+                )
+              else
+                Icon(Icons.arrow_forward_ios_rounded, size: 14, color: onFill),
             ],
           ),
         ),

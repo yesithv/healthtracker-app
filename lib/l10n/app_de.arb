@@ -482,5 +482,8 @@
   "historyShowMore": "{count} weitere anzeigen",
   "introSignIn": "Anmelden",
   "introRegister": "Konto erstellen",
-  "introExploreOffline": "Ohne Konto erkunden"
+  "emailLabel": "E-Mail",
+  "validationEnterEmail": "Gib deine E-Mail-Adresse ein",
+  "commonRegisterFailed": "Wir konnten dein Konto nicht erstellen. Prüfe die Verbindung und versuche es erneut.",
+  "logOutConfirm": "Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert."
 }

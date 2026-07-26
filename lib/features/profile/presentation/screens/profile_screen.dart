@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/providers/user_profile_provider.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
+import '../../../../core/auth/patient_session.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -91,6 +92,39 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Cierra la sesión y devuelve al usuario a la portada.
+  ///
+  /// La cuenta es obligatoria para usar la app, así que cerrar sesión es salir
+  /// del todo: por eso se confirma antes. NO borra los registros locales —siguen
+  /// en la base del dispositivo y vuelven a subir al reentrar—, y el diálogo lo
+  /// dice para que nadie crea que está perdiendo sus datos.
+  Future<void> _confirmLogOut(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final router = GoRouter.of(context);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.logOut),
+        content: Text(l10n.logOutConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.logOut),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    await PatientSession.instance.clear();
+    router.go('/intro');
   }
 
   Widget _buildSourceOption(
@@ -427,7 +461,7 @@ class ProfileScreen extends StatelessWidget {
 
                 // --- LOG OUT BUTTON ---
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => _confirmLogOut(context),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),

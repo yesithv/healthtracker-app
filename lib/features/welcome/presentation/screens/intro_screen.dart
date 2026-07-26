@@ -19,11 +19,11 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 ///   · «Iniciar sesión» → `/identify`, el paso único que busca el identificador:
 ///     si hay historial en el legacy lo trae, y si no existe la cuenta manda al
 ///     registro. El usuario no se autoclasifica, lo resuelve el lookup.
-///   · «Registrarse» → `/onboarding?mode=account`, que recoge los datos y crea
+///   · «Registrarse» → `/onboarding`, que recoge los datos y crea
 ///     la cuenta al terminar el asistente.
 ///
-/// El enlace de explorar sin cuenta se mantiene porque el modo local es una
-/// función existente: sin él quedaría inalcanzable desde el arranque.
+/// No hay tercera vía: la cuenta es OBLIGATORIA para usar la app, así que el
+/// antiguo «explorar sin cuenta» ya no existe en ninguna pantalla.
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -219,7 +219,7 @@ class _IntroScreenState extends State<IntroScreen>
                               ),
                             ),
                             onPressed: () =>
-                                context.go('/onboarding?mode=account'),
+                                context.go('/onboarding'),
                             child: Text(
                               l10n.introRegister,
                               textAlign: TextAlign.center,
@@ -227,20 +227,6 @@ class _IntroScreenState extends State<IntroScreen>
                                 fontSize: 16,
                                 color: surfaces.onBrand,
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        // Escape terciario: el modo local sigue alcanzable.
-                        TextButton(
-                          onPressed: () =>
-                              context.go('/onboarding?mode=offline'),
-                          child: Text(
-                            l10n.introExploreOffline,
-                            textAlign: TextAlign.center,
-                            style: theme.type.button.copyWith(
-                              fontSize: 14,
-                              color: surfaces.onBrand.withValues(alpha: 0.85),
                             ),
                           ),
                         ),
