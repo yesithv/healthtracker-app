@@ -377,6 +377,16 @@ class ProfileScreen extends StatelessWidget {
                   iconColor: const Color(0xFFEF4444),
                   onTap: () => context.push('/profile/goals'),
                 ),
+                // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
+                // El color del icono va fijo como el de sus vecinas: esta
+                // pantalla todavía no está migrada a tokens, y teñir una sola
+                // fila la dejaría descolgada del resto.
+                _MenuTile(
+                  icon: Icons.palette_outlined,
+                  title: 'Tema de la app',
+                  iconColor: const Color(0xFF8B5CF6),
+                  onTap: () => context.push('/profile/theme'),
+                ),
                 _MenuTile(
                   icon: Icons.language,
                   title: l10n.language,

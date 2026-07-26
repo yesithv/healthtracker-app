@@ -47,7 +47,8 @@ class AppRouter {
       // temas. Al reubicarla en Perfil, basta devolver '/' a SplashScreen.
       GoRoute(
         path: '/',
-        builder: (context, state) => const ThemePickerScreen(),
+        builder: (context, state) =>
+            const ThemePickerScreen(mode: ThemePickerMode.onboarding),
       ),
       GoRoute(
         path: '/splash',
@@ -78,6 +79,13 @@ class AppRouter {
           // cualquier otro valor (o ninguno) = modo local sin cuenta.
           createAccount: state.uri.queryParameters['mode'] == 'account',
         ),
+      ),
+      // Mismo selector que la pantalla 0, en modo ajuste: con vuelta atrás y
+      // sin CTA, porque la elección ya se guarda al tocar la ficha.
+      GoRoute(
+        path: '/profile/theme',
+        builder: (context, state) =>
+            const ThemePickerScreen(mode: ThemePickerMode.settings),
       ),
       GoRoute(
         path: '/profile/language',
