@@ -109,10 +109,12 @@ tokens, así que no puede desincronizarse.
 Migrado: **todo el flujo de arranque** —splash, bienvenida, identificación,
 verificación, asistente de alta (3 pasos) y panel—, **el camino de registrar un
 indicador completo** —la hoja «Registrar indicadores» y las cuatro pantallas:
-antropometría, signos vitales, perfil lipídico y composición corporal—, la barra
-de navegación y los widgets compartidos que usan (`ActionButton`, `StatusChip`,
-`BmiStatusBadge`, `MainAppBar`, `DashedBorderContainer`,
-`DismissibleInfoBanner`, `ProfileSettingsLayout`…).
+antropometría, signos vitales, perfil lipídico y composición corporal—, **el
+historial completo** —el índice y las cuatro vistas de categoría con sus
+gráficas—, la barra de navegación y los widgets compartidos que usan
+(`ActionButton`, `StatusChip`, `BmiStatusBadge`, `MainAppBar`,
+`SecondaryAppBar`, `DashedBorderContainer`, `DismissibleInfoBanner`,
+`ProfileSettingsLayout`…).
 
 En las pantallas de registro, tres sustituciones cargan con casi todo el
 trabajo, y las tres consisten en pedir el SIGNIFICADO en vez del color:
@@ -137,16 +139,46 @@ Cuando un ayudante necesita un color, recibe un [Tone] ya resuelto y no un
 `Color`. Así el filete, la cifra y el pulgar de un control salen del mismo sitio
 por construcción, y no por acordarse de pasar el mismo valor tres veces.
 
+### Las gráficas
+
+`core/ranges/chart_bands.dart` pinta las zonas de referencia del paciente.
+Tenía su propia tabla de hexadecimales, documentada como «la MISMA paleta
+semántica de los clasificadores» —copiada a mano, o sea: podía dejar de serlo sin
+que nada avisara, y el fondo de la gráfica pintaba un ámbar mientras la insignia
+de al lado pintaba otro—. Ahora traduce el código de banda del servidor a
+[ClinicalStatus] y recibe la `ClinicalPalette` del tema.
+
+Tres reglas para las series de datos, que las cuatro gráficas cumplen:
+
+- **La serie va en el acento de SU familia.** Una serie no está «bien» ni «mal»,
+  así que NO sale de la paleta clínica. (Antes la de IMC era un azul suelto con
+  puntos verde oscuro: ni la familia —antropometría es ámbar— ni un estado.)
+- **Los umbrales y las zonas sí son clínicos.** La franja saludable de IMC es
+  `optimal`; el corte de colesterol ≥ 200 es `alert`. El corte lo fija el
+  clasificador; el color, el tema.
+- **Con dos series** —sistólica y diastólica— la primera lleva el acento de la
+  familia y la segunda el tono frío (`info`), que el contrato garantiza separado
+  en matiz de los cálidos. Cuando haya más gráficas de varias series, lo que
+  falta es un token de «serie secundaria», no repetir esta decisión.
+
 En las pantallas de bienvenida, identificación y verificación se aplicó **solo el
 tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
 (verificado comparando literales y rutas contra `origin/main`). El rediseño del
 sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
 descargo médico— está pendiente de decidir aparte.
 
-Sin migrar: historial, Descubre, perfil y ajustes — siguen con colores escritos a
-mano y se ven igual en ambos temas. `core/constants/metric_colors.dart` ya solo
-lo usa `health_goals_screen.dart`: cuando esa pantalla se migre, el archivo
-desaparece.
+Sin migrar: Descubre, perfil y ajustes — siguen con colores escritos a mano y se
+ven igual en ambos temas, aunque su cabecera (`SecondaryAppBar`) ya sigue al
+tema. `core/constants/metric_colors.dart` ya solo lo usa
+`health_goals_screen.dart`: cuando esa pantalla se migre, el archivo desaparece.
+
+Dos cosas que se quedan a propósito con color fijo:
+
+- Los **PDF y CSV exportados**. Son documentos, no interfaz: el informe que le
+  llevas al médico no debería cambiar de aspecto según el tema que tengas puesto.
+- Los **botones «Exportar a PDF» y «Excel (CSV)»**, en el rojo y el verde de esos
+  dos formatos. Mapearlos a `alert` y `optimal` sería mentir: exportar un archivo
+  no es una alerta ni un resultado óptimo.
 
 Deudas conocidas, anteriores a este trabajo:
 

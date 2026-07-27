@@ -3,6 +3,10 @@ import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -30,6 +34,13 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   static const int _pageSize = 15;
   int _visibleCount = _pageSize;
 
+  // ── Tokens ────────────────────────────────────────────────────────────────
+
+  ThemeData get _theme => Theme.of(context);
+
+  /// Identidad de la familia «perfil lipídico»: el matiz no cambia con el tema.
+  Tone get _family => _theme.metrics.tone(MetricFamily.lipids);
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -37,6 +48,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     if (!repo.isLoaded) {
       return const Center(child: CircularProgressIndicator());
     }
+    final surfaces = _theme.surfaces;
 
     final recordsListTemp = repo.items;
 
@@ -63,17 +75,17 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.bloodtype, size: 60, color: Colors.grey),
+              Icon(Icons.bloodtype, size: 60, color: surfaces.inkMuted),
               const SizedBox(height: 16),
               Text(
                 l10n.noDataYet,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey, fontSize: 16),
+                style: _theme.type.body.copyWith(fontSize: 16),
               ),
               const SizedBox(height: 24),
               ActionButton(
                 text: l10n.recordLabResults,
-                color: const Color(0xFF00897B),
+                color: _family.accent,
                 solid: true,
                 onPressed: () => context.push('/record-lipid'),
               ),
@@ -107,18 +119,18 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
           children: [
             DropdownButton<String>(
               value: _selectedFilter,
-              icon: const Icon(
+              icon: Icon(
                 Icons.filter_list,
                 size: 18,
-                color: Color(0xFF64748B),
+                color: surfaces.inkSecondary,
               ),
               underline: const SizedBox(),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              borderRadius: BorderRadius.circular(12),
-              style: const TextStyle(
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
+              dropdownColor: surfaces.card,
+              style: _theme.type.button.copyWith(
                 fontSize: 13,
-                color: Color(0xFF64748B),
-                fontWeight: FontWeight.bold,
+                color: surfaces.inkSecondary,
               ),
               onChanged: (String? newValue) {
                 if (newValue != null) {
@@ -176,11 +188,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
 
         Text(
           l10n.historyMeasurements,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 12,
-            color: Color(0xFF64748B),
-            letterSpacing: 1.0,
+          style: _theme.type.sectionLabel.copyWith(
+            color: surfaces.inkSecondary,
           ),
         ),
         const SizedBox(height: 16),
@@ -211,30 +220,39 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   /// item widgets are built at once.
   Widget _buildShowMoreButton(int total, AppLocalizations l10n) {
     final remaining = total - _visibleCount;
+    final surfaces = _theme.surfaces;
     return Center(
       child: TextButton.icon(
         onPressed: () => setState(() => _visibleCount += _pageSize),
-        icon: const Icon(Icons.expand_more, size: 18),
-        label: Text(l10n.historyShowMore(remaining)),
+        icon: Icon(Icons.expand_more, size: 18, color: surfaces.brand),
+        label: Text(
+          l10n.historyShowMore(remaining),
+          style: _theme.type.button.copyWith(color: surfaces.brand),
+        ),
       ),
     );
   }
 
   Widget _buildGoodJobBanner(AppLocalizations l10n, String text) {
+    final theme = _theme;
+    // El aviso va del color de la FAMILIA, no de la paleta clínica: no
+    // afirma nada sobre la salud del usuario, solo dice de qué indicador
+    // habla. Eran cinco tonos a mano; ahora salen los tres del mismo tono.
+    final family = _family;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF1F2),
+        color: family.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE4E6)),
+        border: Border.all(color: family.accent.withValues(alpha: 0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-            backgroundColor: Color(0xFFFFE4E6),
+          CircleAvatar(
+            backgroundColor: family.accent.withValues(alpha: 0.15),
             radius: 16,
-            child: Icon(Icons.bloodtype, color: Color(0xFFE11D48), size: 18),
+            child: Icon(Icons.bloodtype, color: family.accent, size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -243,18 +261,17 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
               children: [
                 Text(
                   l10n.historyGoodJob,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  style: theme.type.cardTitle.copyWith(
                     fontSize: 16,
-                    color: Color(0xFFBE123C),
+                    color: family.accent,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   text,
-                  style: const TextStyle(
+                  style: theme.type.body.copyWith(
                     fontSize: 13,
-                    color: Color(0xFFBE123C),
+                    color: family.accent,
                   ),
                 ),
               ],
@@ -270,6 +287,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     List<LipidRecord> records,
     String filterLabel,
   ) {
+    final surfaces = _theme.surfaces;
+    final family = _family;
     // We only plot records that have Total Cholesterol
     final validRecords = records
         .where((r) => r.totalCholesterol != null)
@@ -295,17 +314,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
 
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -314,25 +323,22 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
             children: [
               Text(
                 'COLESTEROL TOTAL',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
+                style: _theme.type.sectionLabel.copyWith(
                   fontSize: 11,
-                  color: Color(0xFF64748B),
-                  letterSpacing: 1.0,
+                  color: surfaces.inkSecondary,
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
+                  color: surfaces.inset,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   filterLabel,
-                  style: const TextStyle(
+                  style: _theme.type.badge.copyWith(
                     fontSize: 10,
-                    color: Color(0xFF64748B),
-                    fontWeight: FontWeight.bold,
+                    color: surfaces.inkSecondary,
                   ),
                 ),
               ),
@@ -350,7 +356,9 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                   horizontalLines: [
                     HorizontalLine(
                       y: 200.0,
-                      color: const Color(0xFFEF4444).withValues(alpha: 0.6),
+                      // Corte clínico (colesterol total ≥ 200): ALERTA.
+                      color: _theme.clinical.alert.accent
+                          .withValues(alpha: 0.6),
                       strokeWidth: 1.5,
                       dashArray: [4, 4],
                     ),
@@ -360,7 +368,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                   show: true,
                   drawVerticalLine: false,
                   getDrawingHorizontalLine: (value) =>
-                      FlLine(color: const Color(0xFFF1F5F9), strokeWidth: 1),
+                      FlLine(color: surfaces.divider, strokeWidth: 1),
                 ),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
@@ -376,10 +384,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               format.format(recentRecords[index].date),
-                              style: const TextStyle(
-                                color: Color(0xFF94A3B8),
+                              style: _theme.type.numeralUnit.copyWith(
                                 fontSize: 10,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           );
@@ -395,8 +401,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                       interval: 50,
                       getTitlesWidget: (value, meta) => Text(
                         value.toInt().toString(),
-                        style: const TextStyle(
-                          color: Color(0xFF94A3B8),
+                        style: _theme.type.numeralUnit.copyWith(
                           fontSize: 10,
                         ),
                       ),
@@ -414,14 +419,14 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                   LineChartBarData(
                     spots: spotsTc,
                     isCurved: true,
-                    color: const Color(0xFFE11D48),
+                    color: family.accent,
                     barWidth: 3,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (s, p, b, i) => FlDotCirclePainter(
                         radius: 4,
-                        color: const Color(0xFFE11D48),
+                        color: family.accent,
                         strokeWidth: 0,
                       ),
                     ),
@@ -441,18 +446,21 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     Color color,
     VoidCallback onTap,
   ) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 3,
+      color: surfaces.card,
+      borderRadius: BorderRadius.circular(surfaces.radiusCard),
+      // Los temas planos no elevan los controles.
+      elevation: surfaces.cardShadow.isEmpty ? 0 : 3,
       shadowColor: color.withValues(alpha: 0.3),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(surfaces.radiusCard),
             border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
             gradient: LinearGradient(
               colors: [
@@ -471,9 +479,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
               Flexible(
                 child: Text(
                   label,
-                  style: TextStyle(
+                  style: theme.type.button.copyWith(
                     color: color,
-                    fontWeight: FontWeight.bold,
                     fontSize: 13,
                     letterSpacing: 0.5,
                   ),
@@ -613,15 +620,17 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
 
   /// Red background revealed when swiping a history item left to delete it.
   Widget _deleteSwipeBackground() {
+    final surfaces = _theme.surfaces;
+    final danger = _theme.clinical.alert;
     return Container(
       alignment: Alignment.centerRight,
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.only(right: 24),
       decoration: BoxDecoration(
-        color: const Color(0xFFEF4444),
-        borderRadius: BorderRadius.circular(16),
+        color: danger.accent,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
       ),
-      child: const Icon(Icons.delete_outline, color: Colors.white),
+      child: Icon(Icons.delete_outline, color: danger.onAccent),
     );
   }
 
@@ -630,28 +639,34 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   /// re-fetches the list and drops the row, which is what updates the UI.
   Future<bool> _confirmDelete(AppLocalizations l10n, String id) async {
     final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
+    final surfaces = theme.surfaces;
+    final danger = theme.clinical.alert;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(l10n.deleteRecordTitle),
-        content: Text(l10n.deleteRecordBody),
+        backgroundColor: surfaces.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        ),
+        title: Text(l10n.deleteRecordTitle, style: theme.type.cardTitle),
+        content: Text(l10n.deleteRecordBody, style: theme.type.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(color: Color(0xFF64748B)),
+              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(
               l10n.deleteRecordConfirm,
-              style: const TextStyle(
-                color: Color(0xFFEF4444),
-                fontWeight: FontWeight.bold,
-              ),
+              // Borrar es la acción destructiva: va en el rojo de ALERTA, el
+              // mismo que un valor fuera de rango. Aquí también significa
+              // «esto no se deshace».
+              style: theme.type.button.copyWith(color: danger.accent),
             ),
           ),
         ],
@@ -659,10 +674,14 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     );
     if (confirmed == true) {
       await LipidRepository.instance.delete(id);
+      final ok = theme.clinical.optimal;
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.recordDeleted),
-          backgroundColor: const Color(0xFF10B981),
+          content: Text(
+            l10n.recordDeleted,
+            style: theme.type.body.copyWith(color: ok.onAccent),
+          ),
+          backgroundColor: ok.accent,
         ),
       );
     }
@@ -670,9 +689,10 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   }
 
   Widget _buildHistoryItem(LipidRecord record, AppLocalizations l10n) {
+    final theme = _theme;
+    final surfaces = theme.surfaces;
     final LipidStatus overall = overallLipidStatus(record);
     final String statusLabel = overall.label(l10n);
-    final Color statusColor = overall.color;
     final dateFormat = DateFormat(
       'dd MMM yyyy',
     ).format(record.date).toUpperCase();
@@ -680,17 +700,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+      decoration: surfaces.cardDecoration().copyWith(
+        border: Border.all(color: surfaces.divider),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -700,10 +711,9 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
             children: [
               Text(
                 dateFormat,
-                style: const TextStyle(
+                style: theme.type.sectionLabel.copyWith(
                   fontSize: 10,
-                  color: Color(0xFF94A3B8),
-                  fontWeight: FontWeight.bold,
+                  color: surfaces.inkMuted,
                 ),
               ),
               const SizedBox(height: 6),
@@ -714,45 +724,27 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                     record.totalCholesterol != null
                         ? '${record.totalCholesterol}'
                         : 'N/A',
-                    style: const TextStyle(
+                    style: theme.type.numeralSmall.copyWith(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E293B),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Text(
+                  Text(
                     'mg/dL (CT)',
-                    style: TextStyle(
+                    style: theme.type.numeralUnit.copyWith(
                       fontSize: 11,
-                      color: Color(0xFF64748B),
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: statusColor.withValues(alpha: 0.35),
-                width: 1.2,
-              ),
-            ),
-            child: Text(
-              statusLabel,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: statusColor,
-                letterSpacing: 0.4,
-              ),
-            ),
-          ),
+          // Era una insignia calcada a mano con el color de FÁBRICA del
+          // clasificador (`overall.color`), que ignoraba el tema y
+          // además siempre se dibujaba suave. StatusChip pide el ESTADO y deja
+          // que el tema resuelva el acabado: sólido en «Pulso Clínico», suave en
+          // «Consulta Serena». Mismo texto, mismo sitio.
+          StatusChip(status: overall.status, label: statusLabel, icon: iconForStatus(overall.status)),
         ],
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/main_app_bar.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -9,9 +11,10 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final surfaces = Theme.of(context).surfaces;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           MainAppBar(title: l10n.history.toUpperCase()),
@@ -23,25 +26,25 @@ class HistoryScreen extends StatelessWidget {
                 _HistoryMenuTile(
                   icon: Icons.straighten,
                   title: l10n.anthropometry,
-                  iconColor: const Color(0xFFF57C00),
+                  family: MetricFamily.anthropometry,
                   onTap: () => context.push('/history/anthropometry'),
                 ),
                 _HistoryMenuTile(
                   icon: Icons.favorite,
                   title: l10n.vitalSigns,
-                  iconColor: const Color(0xFFE53935),
+                  family: MetricFamily.vitals,
                   onTap: () => context.push('/history/vital-signs'),
                 ),
                 _HistoryMenuTile(
                   icon: Icons.bloodtype,
                   title: l10n.lipidProfile,
-                  iconColor: const Color(0xFF00897B),
+                  family: MetricFamily.lipids,
                   onTap: () => context.push('/history/lipid'),
                 ),
                 _HistoryMenuTile(
                   icon: Icons.accessibility_new,
                   title: l10n.bodyComposition,
-                  iconColor: const Color(0xFF5C6BC0),
+                  family: MetricFamily.bodyComposition,
                   onTap: () => context.push('/history/body-composition'),
                 ),
               ],
@@ -56,29 +59,37 @@ class HistoryScreen extends StatelessWidget {
 class _HistoryMenuTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final Color iconColor;
+
+  /// Familia del indicador. La fila pide la IDENTIDAD y el tema resuelve el
+  /// color, igual que en la hoja de registro.
+  final MetricFamily family;
   final VoidCallback? onTap;
 
   const _HistoryMenuTile({
     required this.icon,
     required this.title,
-    required this.iconColor,
+    required this.family,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final tone = theme.metrics.tone(family);
+    final radius = surfaces.radiusCard;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D48A0).withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
+        color: surfaces.brand.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(radius),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(radius),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
@@ -86,28 +97,23 @@ class _HistoryMenuTile extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: 0.1),
+                    color: tone.accent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(icon, color: iconColor, size: 20),
+                  child: Icon(icon, color: tone.accent, size: 20),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(
+                    style: theme.type.cardTitle.copyWith(
                       fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0D48A0),
+                      color: surfaces.brand,
                       letterSpacing: 0.3,
                     ),
                   ),
                 ),
-                const Icon(
-                  Icons.chevron_right,
-                  color: Color(0xFF0D48A0),
-                  size: 20,
-                ),
+                Icon(Icons.chevron_right, color: surfaces.brand, size: 20),
               ],
             ),
           ),
