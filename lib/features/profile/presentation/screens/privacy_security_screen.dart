@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
-import 'package:myvitals_healthtracker_app/features/profile/presentation/widgets/profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 class PrivacySecurityScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: SingleChildScrollView(
-        child: ProfileSettingsLayout(
+        child: SettingsPageLayout(
           icon: Icons.security_outlined,
           title: l10n.privacySecurity,
           description: l10n.privacySecurityDescription,
@@ -59,13 +59,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                 decoration: BoxDecoration(
                   color: surfaces.card,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: surfaces.ink.withValues(alpha: 0.03),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: surfaces.cardShadow,
                 ),
                 child: Column(
                   children: [

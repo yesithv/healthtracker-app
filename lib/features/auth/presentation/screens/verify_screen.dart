@@ -72,12 +72,14 @@ class _VerifyScreenState extends State<VerifyScreen> {
       );
 
       // Hidrata el perfil local con lo que el servidor ya sabe (solo campos vacíos).
-      final fullName = [account.firstName, account.lastName]
-          .where((s) => s != null && s.trim().isNotEmpty)
-          .join(' ');
+      final fullName = [
+        account.firstName,
+        account.lastName,
+      ].where((s) => s != null && s.trim().isNotEmpty).join(' ');
       await profile.hydrateIdentity(
         name: fullName,
-        email: account.email ??
+        email:
+            account.email ??
             (widget.identifier.contains('@') ? widget.identifier : null),
         birthDate: account.birthDate,
         gender: account.genderForApp,
@@ -87,7 +89,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
       // báscula Omron (la de la consulta). Solo si el usuario no eligió antes.
       if (account.migrated) {
         await localeUnits.ensureDefaults(
-            languageCode: 'es', unit: MeasurementUnit.metric);
+          languageCode: 'es',
+          unit: MeasurementUnit.metric,
+        );
         await profile.setDefaultDeviceIfUnset('Omron');
       }
 
@@ -98,7 +102,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
+      setState(
+        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -129,8 +135,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              Icon(Icons.verified_user_outlined,
-                  size: 56, color: surfaces.brand),
+              Icon(
+                Icons.verified_user_outlined,
+                size: 56,
+                color: surfaces.brand,
+              ),
               const SizedBox(height: 16),
               Text(
                 l10n.verifyTitle,
@@ -153,10 +162,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 onSubmitted: (_) => _verify(),
               ),
               const SizedBox(height: 6),
-              Text(
-                l10n.verifyTestNotice,
-                style: theme.type.meta,
-              ),
+              Text(l10n.verifyTestNotice, style: theme.type.meta),
               if (_error != null) ...[
                 const SizedBox(height: 16),
                 Container(
@@ -167,13 +173,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.error_outline,
-                          color: theme.clinical.alert.accent, size: 18),
+                      Icon(
+                        Icons.error_outline,
+                        color: theme.clinical.alert.accent,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Text(_error!,
-                            style: theme.type.body.copyWith(
-                                color: theme.clinical.alert.accent)),
+                        child: Text(
+                          _error!,
+                          style: theme.type.body.copyWith(
+                            color: theme.clinical.alert.accent,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -195,10 +207,17 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: surfaces.onBrand))
-                    : Text(l10n.verifySubmit,
+                          strokeWidth: 2,
+                          color: surfaces.onBrand,
+                        ),
+                      )
+                    : Text(
+                        l10n.verifySubmit,
                         style: theme.type.button.copyWith(
-                            fontSize: 16, color: surfaces.onBrand)),
+                          fontSize: 16,
+                          color: surfaces.onBrand,
+                        ),
+                      ),
               ),
             ],
           ),
@@ -208,9 +227,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 8),
-        child: Text(text, style: Theme.of(context).type.fieldLabel),
-      );
+    padding: const EdgeInsets.only(left: 4, bottom: 8),
+    child: Text(text, style: Theme.of(context).type.fieldLabel),
+  );
 
   InputDecoration _decoration(String hint, IconData icon) {
     final surfaces = Theme.of(context).surfaces;

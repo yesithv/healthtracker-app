@@ -37,7 +37,7 @@ class CompositionIndicatorCard extends StatelessWidget {
     final knobColor = clinical.tone(BmiCategory.of(bmi).status).accent;
 
     return DashedBorderContainer(
-      color: Color.lerp(surfaces.card, surfaces.brand, 0.30)!,
+      color: surfaces.brand.withValues(alpha: 0.35),
       borderRadius: surfaces.radiusControl,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -85,13 +85,12 @@ class CompositionIndicatorCard extends StatelessWidget {
                         color: surfaces.card,
                         shape: BoxShape.circle,
                         border: Border.all(color: knobColor, width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: knobColor.withValues(alpha: 0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+                        boxShadow: surfaces.glow(
+                          knobColor,
+                          alpha: 0.3,
+                          blur: 6,
+                          offset: const Offset(0, 2),
+                        ),
                       ),
                     ),
                   ),

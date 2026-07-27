@@ -22,6 +22,7 @@ class FeaturedArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final style = DiscoverPalette.of(context, article.category);
     // Todo lo de dentro va sobre el acento sólido de la categoría, así que se
     // pinta con SU `onAccent` en vez de blanco: si un tema usara un acento
@@ -39,13 +40,12 @@ class FeaturedArticleCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: style.gradient(),
               borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: style.accent.withValues(alpha: 0.30),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                ),
-              ],
+              boxShadow: surfaces.glow(
+                style.accent,
+                alpha: 0.30,
+                blur: 18,
+                offset: const Offset(0, 10),
+              ),
             ),
             child: Stack(
               children: [
@@ -65,7 +65,9 @@ class FeaturedArticleCard extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
                           color: on.withValues(alpha: 0.22),
                           borderRadius: BorderRadius.circular(20),

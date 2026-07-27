@@ -222,13 +222,7 @@ class ProfileScreen extends StatelessWidget {
                                   color: surfaces.card,
                                   width: 2,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: surfaces.ink.withValues(alpha: 0.1),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                ],
+                                boxShadow: surfaces.cardShadow,
                               ),
                               child: _buildAvatar(
                                 context,
@@ -498,17 +492,12 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         width: 1.5,
                       ),
-                      boxShadow: surfaces.cardShadow.isEmpty
-                          ? const []
-                          : [
-                              BoxShadow(
-                                color: theme.clinical.alert.accent.withValues(
-                                  alpha: 0.05,
-                                ),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                      boxShadow: surfaces.glow(
+                        theme.clinical.alert.accent,
+                        alpha: 0.05,
+                        blur: 10,
+                        offset: const Offset(0, 4),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -628,15 +617,11 @@ class _BadgeItem extends StatelessWidget {
                       : color.withValues(alpha: 0.3),
                   width: 2,
                 ),
+                // Una insignia bloqueada no brilla; una ganada sí, salvo en
+                // los temas planos, que es lo que decide `glow`.
                 boxShadow: isLocked
-                    ? []
-                    : [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                    ? const []
+                    : surfaces.glow(color, alpha: 0.2, blur: 10),
               ),
               child: isLocked
                   ? ColorFiltered(
@@ -714,7 +699,7 @@ class _MenuTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: surfaces.brand.withValues(alpha: 0.05),
+        color: surfaces.selection,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: InkWell(

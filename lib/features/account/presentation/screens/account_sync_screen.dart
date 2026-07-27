@@ -69,7 +69,9 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
+      setState(
+        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -136,9 +138,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          pending
-              ? l10n.accountPendingBody
-              : l10n.accountLoggedOutBody,
+          pending ? l10n.accountPendingBody : l10n.accountLoggedOutBody,
           style: TextStyle(color: surfaces.inkSecondary),
         ),
         if (_error != null) _errorBanner(_error!),

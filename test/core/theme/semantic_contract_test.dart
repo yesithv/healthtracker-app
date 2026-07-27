@@ -356,6 +356,78 @@ void main() {
         );
       });
 
+      // ── ESTADO SELECCIONADO ───────────────────────────────────────────────
+      //
+      // El realce de «esto es lo que tienes elegido» se calculaba con un
+      // porcentaje fijo de mezcla con la marca. Eso lo hacía depender de lo
+      // OSCURA que fuera la marca del tema: claro en «Pulso Clínico», casi
+      // invisible en «Consulta Serena», y potencialmente inexistente en un tema
+      // futuro con una marca más clara. Estas tres pruebas son la razón por la
+      // que ahora es un token y no una cuenta.
+
+      test('el realce de selección se ve sobre la tarjeta', () {
+        final s = theme.surfaces;
+        final ratio = SemanticContract.contrast(s.selection, s.card);
+        expect(
+          ratio,
+          greaterThanOrEqualTo(SemanticContract.minSelectionStep),
+          reason:
+              '${spec.name}: `selection` da ${ratio.toStringAsFixed(3)}:1 sobre '
+              'la tarjeta. Por debajo de ${SemanticContract.minSelectionStep} '
+              'el usuario no ve qué pestaña o fila tiene elegida.',
+        );
+      });
+
+      test('el realce de selección se ve sobre el lienzo', () {
+        final s = theme.surfaces;
+        // En el lienzo el realce puede ser más tenue —ahí suele acompañarlo un
+        // cambio de color de icono y texto—, pero no puede ser el propio lienzo.
+        expect(
+          s.selection,
+          isNot(equals(s.canvas)),
+          reason: '${spec.name}: `selection` es idéntico al lienzo',
+        );
+        expect(
+          s.selection,
+          isNot(equals(s.card)),
+          reason: '${spec.name}: `selection` es idéntico a la tarjeta',
+        );
+      });
+
+      test('el realce de selección no tapa el contenido que lleva encima', () {
+        final s = theme.surfaces;
+        // Sobre el realce se pintan el icono y el rótulo del elemento elegido.
+        // Es texto pequeño —9 px en la barra—, así que le toca el umbral de
+        // texto, no el de gráfico.
+        final ratio = SemanticContract.contrast(s.onSelection, s.selection);
+        expect(
+          ratio,
+          greaterThanOrEqualTo(SemanticContract.minTextContrast),
+          reason:
+              '${spec.name}: onSelection sobre selection da '
+              '${ratio.toStringAsFixed(2)}:1',
+        );
+      });
+
+      test('onSelection no se aleja de la marca: sigue siendo el mismo color',
+          () {
+        final s = theme.surfaces;
+        // El par existe para resolver contraste, no para que un tema meta un
+        // color nuevo por la puerta de atrás: el realce tiene que seguir
+        // leyéndose como «la marca», no como otra cosa.
+        final d = SemanticContract.hueDistance(
+          SemanticContract.hueOf(s.onSelection),
+          SemanticContract.hueOf(s.brand),
+        );
+        expect(
+          d,
+          lessThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
+          reason:
+              '${spec.name}: onSelection está a ${d.toStringAsFixed(1)}° de la '
+              'marca; debería ser un paso del mismo color, no otro.',
+        );
+      });
+
       test('la tarjeta se separa del lienzo por color o por sombra', () {
         final s = theme.surfaces;
         final separable =

@@ -131,8 +131,9 @@ Future<void> showDiscoverDetailSheet(
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(surfaces.radiusControl),
+                            borderRadius: BorderRadius.circular(
+                              surfaces.radiusControl,
+                            ),
                           ),
                         ),
                         child: Text(

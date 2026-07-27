@@ -357,8 +357,9 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                     HorizontalLine(
                       y: 200.0,
                       // Corte clínico (colesterol total ≥ 200): ALERTA.
-                      color: _theme.clinical.alert.accent
-                          .withValues(alpha: 0.6),
+                      color: _theme.clinical.alert.accent.withValues(
+                        alpha: 0.6,
+                      ),
                       strokeWidth: 1.5,
                       dashArray: [4, 4],
                     ),
@@ -401,9 +402,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                       interval: 50,
                       getTitlesWidget: (value, meta) => Text(
                         value.toInt().toString(),
-                        style: _theme.type.numeralUnit.copyWith(
-                          fontSize: 10,
-                        ),
+                        style: _theme.type.numeralUnit.copyWith(fontSize: 10),
                       ),
                     ),
                   ),
@@ -724,16 +723,12 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                     record.totalCholesterol != null
                         ? '${record.totalCholesterol}'
                         : 'N/A',
-                    style: theme.type.numeralSmall.copyWith(
-                      fontSize: 18,
-                    ),
+                    style: theme.type.numeralSmall.copyWith(fontSize: 18),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     'mg/dL (CT)',
-                    style: theme.type.numeralUnit.copyWith(
-                      fontSize: 11,
-                    ),
+                    style: theme.type.numeralUnit.copyWith(fontSize: 11),
                   ),
                 ],
               ),
@@ -744,7 +739,11 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
           // además siempre se dibujaba suave. StatusChip pide el ESTADO y deja
           // que el tema resuelva el acabado: sólido en «Pulso Clínico», suave en
           // «Consulta Serena». Mismo texto, mismo sitio.
-          StatusChip(status: overall.status, label: statusLabel, icon: iconForStatus(overall.status)),
+          StatusChip(
+            status: overall.status,
+            label: statusLabel,
+            icon: iconForStatus(overall.status),
+          ),
         ],
       ),
     );

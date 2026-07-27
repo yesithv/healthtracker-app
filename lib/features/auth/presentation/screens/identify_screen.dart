@@ -65,7 +65,9 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
+      setState(
+        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -90,7 +92,9 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
+      setState(
+        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+      );
     } finally {
       if (mounted) setState(() => _activating = false);
     }
@@ -171,7 +175,10 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.folder_shared_outlined, color: found.accent),
+                          Icon(
+                            Icons.folder_shared_outlined,
+                            color: found.accent,
+                          ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
@@ -210,21 +217,28 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: found.onAccent))
+                                  strokeWidth: 2,
+                                  color: found.onAccent,
+                                ),
+                              )
                             : const Icon(Icons.cloud_download_outlined),
                         label: Text(
                           _activating
                               ? l10n.identifyBringingHistory
                               : l10n.identifyBringHistory,
-                          style: theme.type.button.copyWith(color: found.onAccent),
+                          style: theme.type.button.copyWith(
+                            color: found.onAccent,
+                          ),
                         ),
                       ),
                       TextButton(
                         onPressed: _activating
                             ? null
                             : () => context.go('/onboarding'),
-                        child: Text(l10n.identifyNotMe,
-                            style: theme.type.body.copyWith(fontSize: 13)),
+                        child: Text(
+                          l10n.identifyNotMe,
+                          style: theme.type.body.copyWith(fontSize: 13),
+                        ),
                       ),
                     ],
                   ),
@@ -234,13 +248,19 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    Icon(Icons.error_outline,
-                        color: theme.clinical.alert.accent, size: 18),
+                    Icon(
+                      Icons.error_outline,
+                      color: theme.clinical.alert.accent,
+                      size: 18,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(_error!,
-                          style: theme.type.body.copyWith(
-                              color: theme.clinical.alert.accent)),
+                      child: Text(
+                        _error!,
+                        style: theme.type.body.copyWith(
+                          color: theme.clinical.alert.accent,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -264,10 +284,17 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: surfaces.onBrand))
-                      : Text(l10n.continueAction,
+                            strokeWidth: 2,
+                            color: surfaces.onBrand,
+                          ),
+                        )
+                      : Text(
+                          l10n.continueAction,
                           style: theme.type.button.copyWith(
-                              fontSize: 16, color: surfaces.onBrand)),
+                            fontSize: 16,
+                            color: surfaces.onBrand,
+                          ),
+                        ),
                 ),
             ],
           ),

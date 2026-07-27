@@ -53,11 +53,13 @@ RangeAnnotations bandRangeAnnotations(
     // hay una zona sin afirmar nada clínico sobre ella.
     final status =
         _bandStatus[b.bandCode.toUpperCase()] ?? ClinicalStatus.neutral;
-    zones.add(HorizontalRangeAnnotation(
-      y1: lo,
-      y2: hi,
-      color: palette.tone(status).accent.withValues(alpha: opacity),
-    ));
+    zones.add(
+      HorizontalRangeAnnotation(
+        y1: lo,
+        y2: hi,
+        color: palette.tone(status).accent.withValues(alpha: opacity),
+      ),
+    );
   }
   return RangeAnnotations(horizontalRangeAnnotations: zones);
 }

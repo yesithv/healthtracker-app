@@ -39,13 +39,7 @@ class RoutineCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: surfaces.card,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: surfaces.ink.withValues(alpha: 0.06),
-              blurRadius: 14,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          boxShadow: surfaces.cardShadow,
         ),
         child: Material(
           color: Colors.transparent,
@@ -71,7 +65,9 @@ class RoutineCard extends StatelessWidget {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: levelTone.accent.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
@@ -121,8 +117,11 @@ class RoutineCard extends StatelessWidget {
                       ),
                       if (routine.exercises > 0) ...[
                         const SizedBox(width: 10),
-                        Icon(Icons.fitness_center_rounded,
-                            size: 14, color: style.accent),
+                        Icon(
+                          Icons.fitness_center_rounded,
+                          size: 14,
+                          color: style.accent,
+                        ),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(

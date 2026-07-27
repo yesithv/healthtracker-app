@@ -120,15 +120,20 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ? feed.featuredArticles
         : const <Article>[];
     final articles = feed.standardArticles
-        .where((a) => _inCategory(a.category) && _matchesQuery(a.title, a.subtitle))
+        .where(
+          (a) => _inCategory(a.category) && _matchesQuery(a.title, a.subtitle),
+        )
         .toList();
     final routines = feed.routines
-        .where((r) => _inCategory(r.category) && _matchesQuery(r.title, r.subtitle))
+        .where(
+          (r) => _inCategory(r.category) && _matchesQuery(r.title, r.subtitle),
+        )
         .toList();
     // Challenges are general (no category); show them on "all" or when searching.
     final challenges = feed.challenges
-        .where((c) =>
-            (_selectedCategory == 'all') && _matchesQuery(c.title, c.goal))
+        .where(
+          (c) => (_selectedCategory == 'all') && _matchesQuery(c.title, c.goal),
+        )
         .toList();
 
     final tip = _dailyTip(feed);
@@ -138,7 +143,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         : l10n.discoverGreeting(userName);
     final base64Image = prefs.profileImageBase64;
 
-    final nothingToShow = featured.isEmpty &&
+    final nothingToShow =
+        featured.isEmpty &&
         articles.isEmpty &&
         routines.isEmpty &&
         challenges.isEmpty;
@@ -159,8 +165,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   ),
                 ),
                 CircleAvatar(
-                  backgroundColor:
-                      theme.metrics.tone(MetricFamily.anthropometry).surface,
+                  backgroundColor: theme.metrics
+                      .tone(MetricFamily.anthropometry)
+                      .surface,
                   radius: 20,
                   backgroundImage: base64Image != null
                       ? MemoryImage(base64Decode(base64Image))
@@ -314,8 +321,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.search_off_rounded,
-                      size: 56, color: surfaces.inkMuted),
+                  Icon(
+                    Icons.search_off_rounded,
+                    size: 56,
+                    color: surfaces.inkMuted,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     l10n.discoverEmpty,
@@ -389,7 +399,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  void _openChallenge(BuildContext context, AppLocalizations l10n, Challenge c) {
+  void _openChallenge(
+    BuildContext context,
+    AppLocalizations l10n,
+    Challenge c,
+  ) {
     final tone = DiscoverPalette.statusTone(context, c.status);
     final status = switch (c.status) {
       ChallengeStatus.activo => l10n.discoverStatusActive,
@@ -411,8 +425,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             label: l10n.discoverDaysShort('${c.durationDays}'),
           ),
       ],
-      ctaLabel:
-          c.status == ChallengeStatus.finalizado ? null : l10n.discoverJoin,
+      ctaLabel: c.status == ChallengeStatus.finalizado
+          ? null
+          : l10n.discoverJoin,
     );
   }
 }

@@ -7,10 +7,7 @@ import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 class HistoryCategoryScreen extends StatelessWidget {
   final Widget child;
 
-  const HistoryCategoryScreen({
-    super.key,
-    required this.child,
-  });
+  const HistoryCategoryScreen({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

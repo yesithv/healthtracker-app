@@ -9,8 +9,10 @@ String toTitleCase(String? input) {
       .trim()
       .split(RegExp(r'\s+'))
       .where((w) => w.isNotEmpty)
-      .map((w) => w.length == 1
-          ? w.toUpperCase()
-          : w[0].toUpperCase() + w.substring(1).toLowerCase())
+      .map(
+        (w) => w.length == 1
+            ? w.toUpperCase()
+            : w[0].toUpperCase() + w.substring(1).toLowerCase(),
+      )
       .join(' ');
 }

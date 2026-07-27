@@ -186,9 +186,7 @@ class _RecordAnthropometricScreenState
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10n.cancel,
-                style: theme.type.button.copyWith(
-                  color: surfaces.inkSecondary,
-                ),
+                style: theme.type.button.copyWith(color: surfaces.inkSecondary),
               ),
             ),
             ElevatedButton(
@@ -274,12 +272,16 @@ class _RecordAnthropometricScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!context.watch<UIPreferencesProvider>().isAnthropoInfoDismissed) ...[
+                  if (!context
+                      .watch<UIPreferencesProvider>()
+                      .isAnthropoInfoDismissed) ...[
                     DismissibleInfoBanner(
                       text: l10n.infoBannerAnthro,
                       baseColor: _family.accent,
                       onDismiss: () {
-                        context.read<UIPreferencesProvider>().dismissAnthropoInfo();
+                        context
+                            .read<UIPreferencesProvider>()
+                            .dismissAnthropoInfo();
                       },
                     ),
                     const SizedBox(height: 16),
@@ -713,9 +715,7 @@ class _RecordAnthropometricScreenState
                 // La rampa de severidad del tema, en orden clínico:
                 // bajo → normal → sobrepeso → obesidad. El orden lo fija la
                 // paleta, no esta pantalla, así que no puede quedar al revés.
-                gradient: LinearGradient(
-                  colors: theme.clinical.severityRamp,
-                ),
+                gradient: LinearGradient(colors: theme.clinical.severityRamp),
               ),
             ),
             Positioned(
@@ -764,23 +764,36 @@ class _RecordAnthropometricScreenState
       decoration: _theme.surfaces.cardDecoration(),
       child: Column(
         children: [
-          Row(children: [
-            Expanded(child: _buildCmField(l10n.circWaist, _waistController)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildCmField(l10n.circHip, _hipController)),
-          ]),
+          Row(
+            children: [
+              Expanded(child: _buildCmField(l10n.circWaist, _waistController)),
+              const SizedBox(width: 12),
+              Expanded(child: _buildCmField(l10n.circHip, _hipController)),
+            ],
+          ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(child: _buildCmField(l10n.circLowerAbdomen, _lowerAbdomenController)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildCmField(l10n.circArm, _armController)),
-          ]),
+          Row(
+            children: [
+              Expanded(
+                child: _buildCmField(
+                  l10n.circLowerAbdomen,
+                  _lowerAbdomenController,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: _buildCmField(l10n.circArm, _armController)),
+            ],
+          ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(child: _buildCmField(l10n.circLeg, _legController)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildCmField(l10n.circChestBust, _chestBustController)),
-          ]),
+          Row(
+            children: [
+              Expanded(child: _buildCmField(l10n.circLeg, _legController)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildCmField(l10n.circChestBust, _chestBustController),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -818,8 +831,10 @@ class _RecordAnthropometricScreenState
               borderRadius: BorderRadius.circular(surfaces.radiusControl),
               borderSide: BorderSide.none,
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
           ),
         ),
       ],

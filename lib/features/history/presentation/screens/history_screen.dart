@@ -82,7 +82,7 @@ class _HistoryMenuTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: surfaces.brand.withValues(alpha: 0.05),
+        color: surfaces.selection,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: Material(

@@ -26,13 +26,7 @@ class ArticleCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -79,8 +73,11 @@ class ArticleCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.schedule_rounded,
-                              size: 13, color: style.accent),
+                          Icon(
+                            Icons.schedule_rounded,
+                            size: 13,
+                            color: style.accent,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${article.readTime} ${l10n.discoverMinRead}',

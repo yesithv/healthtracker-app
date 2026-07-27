@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
-class ProfileSettingsLayout extends StatelessWidget {
+/// LA MAQUETA COMÚN de una pantalla de ajuste: icono redondo, título,
+/// descripción, contenido y —si hace falta— un botón de confirmar.
+///
+/// Vivía dentro de `features/profile`, pero es el template general de la app:
+/// cualquier pantalla que presente una decisión al usuario se ve así. Al
+/// moverla a `core/widgets` puede usarla también el selector de tema, que no
+/// cuelga de Perfil.
+class SettingsPageLayout extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
@@ -10,7 +17,12 @@ class ProfileSettingsLayout extends StatelessWidget {
   final VoidCallback onConfirm;
   final bool showConfirmButton;
 
-  const ProfileSettingsLayout({
+  /// Texto del botón de confirmar. Por defecto «Guardar preferencias», que es
+  /// lo que dicen casi todas; el selector de tema lo cambia porque ahí el botón
+  /// no guarda nada —la elección ya se aplicó— sino que sigue adelante.
+  final String? confirmLabel;
+
+  const SettingsPageLayout({
     super.key,
     required this.icon,
     required this.title,
@@ -18,6 +30,7 @@ class ProfileSettingsLayout extends StatelessWidget {
     required this.child,
     required this.onConfirm,
     this.showConfirmButton = true,
+    this.confirmLabel,
   });
 
   @override
@@ -36,7 +49,7 @@ class ProfileSettingsLayout extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: Color.lerp(surfaces.canvas, surfaces.brand, 0.12),
+              color: surfaces.selection,
               shape: BoxShape.circle,
             ),
             child: Center(child: Icon(icon, size: 32, color: surfaces.brand)),
@@ -70,7 +83,7 @@ class ProfileSettingsLayout extends StatelessWidget {
                 elevation: 0,
               ),
               label: Text(
-                l10n.savePreferences,
+                confirmLabel ?? l10n.savePreferences,
                 style: theme.type.button.copyWith(fontSize: 16),
               ),
             ),

@@ -20,6 +20,10 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     required this.inset,
     required this.track,
     required this.divider,
+
+    required this.selection,
+
+    required this.onSelection,
     required this.ink,
     required this.inkSecondary,
     required this.inkMuted,
@@ -53,6 +57,28 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
 
   /// Separadores y filetes finos.
   final Color divider;
+
+  /// Relleno que marca algo como ELEGIDO o agrupado: la pestaña activa de la
+  /// barra, la fila del menú de ajustes, el idioma seleccionado.
+  ///
+  /// Existe porque antes cada sitio lo improvisaba con `Color.lerp(card, brand,
+  /// 0.08)` y variantes. Ese porcentaje fijo NO da el mismo escalón en todos los
+  /// temas: mezclar un 8 % de un azul oscuro aparta el blanco mucho más que un
+  /// 8 % de un verde medio, así que el mismo código dibujaba un realce claro en
+  /// «Pulso Clínico» y algo casi invisible en «Consulta Serena». El tema tiene
+  /// que ELEGIR este color, no heredarlo de un accidente aritmético, y el
+  /// contrato semántico comprueba que se distinga de la tarjeta y del lienzo.
+  final Color selection;
+
+  /// Contenido —icono y rótulo— que se dibuja ENCIMA de [selection].
+  ///
+  /// Va en par con él por la misma razón que [Tone] lleva `accent` y `onAccent`
+  /// juntos: hacer el realce más visible oscurece el fondo, y eso baja el
+  /// contraste de lo que lleva encima. Las dos exigencias chocan si un tema
+  /// tiene la marca clara — el salvia de «Consulta Serena» da 4,79:1 sobre
+  /// blanco, así que cualquier tinte la deja por debajo de AA—. Con el par, cada
+  /// tema resuelve su propio compromiso en vez de heredar el de otro.
+  final Color onSelection;
 
   /// Tinta principal: títulos y cifras.
   final Color ink;
@@ -91,6 +117,31 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
   BorderRadius get cardRadius => BorderRadius.circular(radiusCard);
   BorderRadius get controlRadius => BorderRadius.circular(radiusControl);
 
+  /// Halo de color alrededor de un elemento destacado: el botón elegido, la
+  /// tarjeta en primer plano.
+  ///
+  /// **Devuelve una lista vacía en los temas planos.** Esa es toda la razón de
+  /// que exista: media app escribía su halo a mano con un `BoxShadow(...)`, y
+  /// un `BoxShadow` escrito a mano no sabe si el tema levanta las cosas del
+  /// lienzo o las deja planas. El resultado era que «Consulta Serena» —que no
+  /// tiene ni una sombra en sus tarjetas— sí las tenía sueltas por dentro, y no
+  /// había forma de notarlo salvo mirando pantalla por pantalla.
+  List<BoxShadow> glow(
+    Color color, {
+    double alpha = 0.25,
+    double blur = 12,
+    Offset offset = const Offset(0, 4),
+  }) {
+    if (cardShadow.isEmpty) return const [];
+    return [
+      BoxShadow(
+        color: color.withValues(alpha: alpha),
+        blurRadius: blur,
+        offset: offset,
+      ),
+    ];
+  }
+
   /// Decoración de tarjeta ya montada. Que exista un único sitio donde se
   /// construye evita que cada pantalla reinvente la sombra y el radio, que es
   /// precisamente cómo se acumularon los cientos de colores sueltos que este
@@ -111,6 +162,10 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     Color? inset,
     Color? track,
     Color? divider,
+
+    Color? selection,
+
+    Color? onSelection,
     Color? ink,
     Color? inkSecondary,
     Color? inkMuted,
@@ -130,6 +185,10 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       inset: inset ?? this.inset,
       track: track ?? this.track,
       divider: divider ?? this.divider,
+
+      selection: selection ?? this.selection,
+
+      onSelection: onSelection ?? this.onSelection,
       ink: ink ?? this.ink,
       inkSecondary: inkSecondary ?? this.inkSecondary,
       inkMuted: inkMuted ?? this.inkMuted,
@@ -155,6 +214,10 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       inset: Color.lerp(inset, other.inset, t)!,
       track: Color.lerp(track, other.track, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
+
+      selection: Color.lerp(selection, other.selection, t)!,
+
+      onSelection: Color.lerp(onSelection, other.onSelection, t)!,
       ink: Color.lerp(ink, other.ink, t)!,
       inkSecondary: Color.lerp(inkSecondary, other.inkSecondary, t)!,
       inkMuted: Color.lerp(inkMuted, other.inkMuted, t)!,

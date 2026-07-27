@@ -284,9 +284,9 @@ class _RecordBodyCompositionScreenState
   Future<void> _saveRecord() async {
     // Dispositivo: en edición se conserva el del registro; en uno nuevo se usa la
     // báscula por defecto del perfil (p. ej. 'Omron' para pacientes del legacy).
-    final defaultDevice =
-        context.read<UserProfileProvider>().defaultDeviceName;
-    final deviceName = widget.recordToEdit?.deviceName ??
+    final defaultDevice = context.read<UserProfileProvider>().defaultDeviceName;
+    final deviceName =
+        widget.recordToEdit?.deviceName ??
         (defaultDevice.isEmpty ? null : defaultDevice);
 
     final record = BodyCompositionRecord(
@@ -361,12 +361,16 @@ class _RecordBodyCompositionScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ── Info banner ─────────────────────────────────────────
-                  if (!context.watch<UIPreferencesProvider>().isBodyCompInfoDismissed) ...[
+                  if (!context
+                      .watch<UIPreferencesProvider>()
+                      .isBodyCompInfoDismissed) ...[
                     DismissibleInfoBanner(
                       text: l10n.compositionInfoBanner,
                       baseColor: family.accent,
                       onDismiss: () {
-                        context.read<UIPreferencesProvider>().dismissBodyCompInfo();
+                        context
+                            .read<UIPreferencesProvider>()
+                            .dismissBodyCompInfo();
                       },
                     ),
                     const SizedBox(height: 20),
@@ -406,7 +410,10 @@ class _RecordBodyCompositionScreenState
                   _buildSectionCard(
                     icon: Icons.pie_chart_outline,
                     title: l10n.compositionBodyFat,
-                    badge: StatusChip(status: fatCat.status, label: fatCat.label(l10n)),
+                    badge: StatusChip(
+                      status: fatCat.status,
+                      label: fatCat.label(l10n),
+                    ),
                     child: _buildSliderField(
                       value: bodyFat,
                       unit: '%',
@@ -701,10 +708,7 @@ class _RecordBodyCompositionScreenState
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  value,
-                  style: theme.type.cardTitle.copyWith(fontSize: 14),
-                ),
+                Text(value, style: theme.type.cardTitle.copyWith(fontSize: 14)),
                 Icon(icon, color: surfaces.inkSecondary, size: 16),
               ],
             ),
@@ -921,15 +925,11 @@ class _RecordBodyCompositionScreenState
                   filled: true,
                   fillColor: surfaces.inset,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      surfaces.radiusControl,
-                    ),
+                    borderRadius: BorderRadius.circular(surfaces.radiusControl),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      surfaces.radiusControl,
-                    ),
+                    borderRadius: BorderRadius.circular(surfaces.radiusControl),
                     borderSide: BorderSide(color: family.accent, width: 1.5),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -962,15 +962,12 @@ class _RecordBodyCompositionScreenState
       decoration: BoxDecoration(
         color: family.accent,
         borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        boxShadow: surfaces.cardShadow.isEmpty
-            ? const []
-            : [
-                BoxShadow(
-                  color: family.accent.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+        boxShadow: surfaces.glow(
+          family.accent,
+          alpha: 0.3,
+          blur: 15,
+          offset: const Offset(0, 6),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1041,10 +1038,7 @@ class _RecordBodyCompositionScreenState
           const SizedBox(height: 6),
           Text(
             l10n.compositionBmrSubtitle,
-            style: theme.type.meta.copyWith(
-              color: onAccentFaint,
-              fontSize: 10,
-            ),
+            style: theme.type.meta.copyWith(color: onAccentFaint, fontSize: 10),
           ),
         ],
       ),

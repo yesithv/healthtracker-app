@@ -37,14 +37,14 @@ class IngestItem {
   });
 
   Map<String, dynamic> toJson() => {
-        'clientId': clientId,
-        'indicatorCode': indicatorCode,
-        // El servidor espera un instante UTC (Instant ISO-8601).
-        'measuredAt': measuredAt.toUtc().toIso8601String(),
-        'value': value,
-        if (note != null && note!.trim().isNotEmpty) 'note': note!.trim(),
-        if (context.isNotEmpty) 'context': context,
-      };
+    'clientId': clientId,
+    'indicatorCode': indicatorCode,
+    // El servidor espera un instante UTC (Instant ISO-8601).
+    'measuredAt': measuredAt.toUtc().toIso8601String(),
+    'value': value,
+    if (note != null && note!.trim().isNotEmpty) 'note': note!.trim(),
+    if (context.isNotEmpty) 'context': context,
+  };
 }
 
 /// Aplana los registros locales (SQLite) en items de ingest. Es una traducción
@@ -58,42 +58,52 @@ class MeasurementMapper {
   const MeasurementMapper._();
 
   static List<IngestItem> fromAnthropometric(AnthropometricRecord r) => [
-        IngestItem(
-            clientId: r.id,
-            indicatorCode: 'WEIGHT',
-            measuredAt: r.date,
-            value: r.weight,
-            note: r.comment),
-        IngestItem(
-            clientId: r.id,
-            indicatorCode: 'HEIGHT',
-            measuredAt: r.date,
-            // El modelo local guarda cm; el indicador HEIGHT del catálogo es en
-            // METROS (0.3–2.6): sin esta conversión el servidor rechaza la talla.
-            value: r.height > 3
-                ? double.parse((r.height / 100).toStringAsFixed(2))
-                : r.height,
-            note: r.comment),
-        IngestItem(
-            clientId: r.id,
-            indicatorCode: 'BMI',
-            measuredAt: r.date,
-            value: r.bmi,
-            note: r.comment),
-        // Perímetros corporales (cm), mismos códigos que cura el legacy.
-        if (r.waistCm != null)
-          _item(r.id, 'WAIST', r.date, r.waistCm!, r.comment, const {}),
-        if (r.hipCm != null)
-          _item(r.id, 'HIP', r.date, r.hipCm!, r.comment, const {}),
-        if (r.lowerAbdomenCm != null)
-          _item(r.id, 'LOWER_ABDOMEN', r.date, r.lowerAbdomenCm!, r.comment, const {}),
-        if (r.armCm != null)
-          _item(r.id, 'ARM', r.date, r.armCm!, r.comment, const {}),
-        if (r.legCm != null)
-          _item(r.id, 'LEG', r.date, r.legCm!, r.comment, const {}),
-        if (r.chestBustCm != null)
-          _item(r.id, 'CHEST_BUST', r.date, r.chestBustCm!, r.comment, const {}),
-      ];
+    IngestItem(
+      clientId: r.id,
+      indicatorCode: 'WEIGHT',
+      measuredAt: r.date,
+      value: r.weight,
+      note: r.comment,
+    ),
+    IngestItem(
+      clientId: r.id,
+      indicatorCode: 'HEIGHT',
+      measuredAt: r.date,
+      // El modelo local guarda cm; el indicador HEIGHT del catálogo es en
+      // METROS (0.3–2.6): sin esta conversión el servidor rechaza la talla.
+      value: r.height > 3
+          ? double.parse((r.height / 100).toStringAsFixed(2))
+          : r.height,
+      note: r.comment,
+    ),
+    IngestItem(
+      clientId: r.id,
+      indicatorCode: 'BMI',
+      measuredAt: r.date,
+      value: r.bmi,
+      note: r.comment,
+    ),
+    // Perímetros corporales (cm), mismos códigos que cura el legacy.
+    if (r.waistCm != null)
+      _item(r.id, 'WAIST', r.date, r.waistCm!, r.comment, const {}),
+    if (r.hipCm != null)
+      _item(r.id, 'HIP', r.date, r.hipCm!, r.comment, const {}),
+    if (r.lowerAbdomenCm != null)
+      _item(
+        r.id,
+        'LOWER_ABDOMEN',
+        r.date,
+        r.lowerAbdomenCm!,
+        r.comment,
+        const {},
+      ),
+    if (r.armCm != null)
+      _item(r.id, 'ARM', r.date, r.armCm!, r.comment, const {}),
+    if (r.legCm != null)
+      _item(r.id, 'LEG', r.date, r.legCm!, r.comment, const {}),
+    if (r.chestBustCm != null)
+      _item(r.id, 'CHEST_BUST', r.date, r.chestBustCm!, r.comment, const {}),
+  ];
 
   static List<IngestItem> fromVitalSign(VitalSignRecord r) {
     final context = <String, Object?>{
@@ -114,12 +124,29 @@ class MeasurementMapper {
     };
     return [
       if (r.totalCholesterol != null)
-        _item(r.id, 'CHOLESTEROL_TOTAL', r.date, r.totalCholesterol!, r.comment, context),
-      if (r.ldl != null) _item(r.id, 'CHOLESTEROL_LDL', r.date, r.ldl!, r.comment, context),
-      if (r.hdl != null) _item(r.id, 'CHOLESTEROL_HDL', r.date, r.hdl!, r.comment, context),
-      if (r.vldl != null) _item(r.id, 'CHOLESTEROL_VLDL', r.date, r.vldl!, r.comment, context),
+        _item(
+          r.id,
+          'CHOLESTEROL_TOTAL',
+          r.date,
+          r.totalCholesterol!,
+          r.comment,
+          context,
+        ),
+      if (r.ldl != null)
+        _item(r.id, 'CHOLESTEROL_LDL', r.date, r.ldl!, r.comment, context),
+      if (r.hdl != null)
+        _item(r.id, 'CHOLESTEROL_HDL', r.date, r.hdl!, r.comment, context),
+      if (r.vldl != null)
+        _item(r.id, 'CHOLESTEROL_VLDL', r.date, r.vldl!, r.comment, context),
       if (r.triglycerides != null)
-        _item(r.id, 'TRIGLYCERIDES', r.date, r.triglycerides!, r.comment, context),
+        _item(
+          r.id,
+          'TRIGLYCERIDES',
+          r.date,
+          r.triglycerides!,
+          r.comment,
+          context,
+        ),
     ];
   }
 
@@ -136,24 +163,45 @@ class MeasurementMapper {
       if (r.musclePct != null)
         _item(r.id, 'MUSCLE_PCT', r.date, r.musclePct!, r.comment, context),
       if (r.visceralFatLevel != null)
-        _item(r.id, 'VISCERAL_FAT_LEVEL', r.date, r.visceralFatLevel!, r.comment, context),
+        _item(
+          r.id,
+          'VISCERAL_FAT_LEVEL',
+          r.date,
+          r.visceralFatLevel!,
+          r.comment,
+          context,
+        ),
       if (r.metabolicAge != null)
         _item(r.id, 'BODY_AGE', r.date, r.metabolicAge!, r.comment, context),
-      if (r.bmrKcal != null) _item(r.id, 'KCAL', r.date, r.bmrKcal!, r.comment, context),
+      if (r.bmrKcal != null)
+        _item(r.id, 'KCAL', r.date, r.bmrKcal!, r.comment, context),
       if (r.bodyWaterPercent != null)
-        _item(r.id, 'BODY_WATER', r.date, r.bodyWaterPercent!, r.comment, context),
+        _item(
+          r.id,
+          'BODY_WATER',
+          r.date,
+          r.bodyWaterPercent!,
+          r.comment,
+          context,
+        ),
       if (r.boneMassKg != null)
         _item(r.id, 'BONE_MASS', r.date, r.boneMassKg!, r.comment, context),
     ];
   }
 
-  static IngestItem _item(String id, String code, DateTime date, num value,
-          String? note, Map<String, Object?> context) =>
-      IngestItem(
-          clientId: id,
-          indicatorCode: code,
-          measuredAt: date,
-          value: value,
-          note: note,
-          context: context);
+  static IngestItem _item(
+    String id,
+    String code,
+    DateTime date,
+    num value,
+    String? note,
+    Map<String, Object?> context,
+  ) => IngestItem(
+    clientId: id,
+    indicatorCode: code,
+    measuredAt: date,
+    value: value,
+    note: note,
+    context: context,
+  );
 }

@@ -84,13 +84,7 @@ class _FaqScreenState extends State<FaqScreen> {
                           decoration: BoxDecoration(
                             color: selected ? surfaces.brand : surfaces.card,
                             borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: surfaces.ink.withValues(alpha: 0.05),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                            boxShadow: surfaces.cardShadow,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -147,13 +141,7 @@ class _FaqScreenState extends State<FaqScreen> {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

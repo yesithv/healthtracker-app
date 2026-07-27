@@ -52,12 +52,16 @@ class ThemePreviewCard extends StatelessWidget {
         label: '${spec.name}. ${spec.tagline} ${spec.typeNote}',
         child: Container(
           decoration: BoxDecoration(
-            color: surfaces.canvas,
+            // La ficha se dibuja sobre la TARJETA del tema, no sobre su
+            // lienzo: en la maqueta de ajustes cada opción es una tarjeta
+            // blanca sobre el fondo de la pantalla, y esta es una opción más.
+            color: surfaces.card,
             borderRadius: BorderRadius.circular(surfaces.radiusCard + 4),
             border: Border.all(
               color: isSelected ? surfaces.brand : surfaces.divider,
               width: isSelected ? 2.5 : 1,
             ),
+            boxShadow: surfaces.cardShadow,
           ),
           clipBehavior: Clip.antiAlias,
           child: Material(
@@ -108,8 +112,25 @@ class _Header extends StatelessWidget {
     final surfaces = theme.surfaces;
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        // Mismo icono redondo que abre cada fila de «Recordatorios» o
+        // «Idioma»: es la anatomía de fila de la app, y aquí además muestra de
+        // un golpe la marca del tema que describe.
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: surfaces.selection,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.palette_outlined,
+            color: surfaces.onSelection,
+            size: 22,
+          ),
+        ),
+        const SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,8 +154,8 @@ class _Header extends StatelessWidget {
         const SizedBox(width: 12),
         // Marca de selección: forma + color, nunca color a solas.
         Container(
-          width: 22,
-          height: 22,
+          width: 24,
+          height: 24,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isSelected ? surfaces.brand : Colors.transparent,
@@ -144,7 +165,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           child: isSelected
-              ? Icon(Icons.check_rounded, size: 14, color: surfaces.onBrand)
+              ? Icon(Icons.check_rounded, size: 15, color: surfaces.onBrand)
               : null,
         ),
       ],

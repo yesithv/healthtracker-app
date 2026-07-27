@@ -62,13 +62,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                   decoration: BoxDecoration(
                     color: surfaces.card,
                     borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: surfaces.ink.withValues(alpha: 0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    boxShadow: surfaces.cardShadow,
                   ),
                   child: TextField(
                     controller: _searchCtrl,
@@ -182,13 +176,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

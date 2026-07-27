@@ -70,7 +70,7 @@ core/theme/
 │   ├── clinical_palette.dart ClinicalStatus → Tone
 │   ├── metric_palette.dart   MetricFamily → Tone
 │   ├── content_palette.dart  ContentCategory → Tone (+ nivel y estado)
-│   ├── app_surfaces.dart     Lienzo, tarjeta, tinta, radios, idiomas
+│   ├── app_surfaces.dart     Lienzo, tarjeta, tinta, radios, realce, idiomas
 │   └── app_typography.dart   Roles: numeral, sectionLabel, meta…
 └── themes/
     ├── pulso_clinico.dart    Azul clínico, denso, insignias sólidas
@@ -96,6 +96,11 @@ Reglas:
   que necesitas, el token es lo que falta.
 - **Nunca** preguntes qué tema está activo. Si el comportamiento debe cambiar
   entre temas, eso es un token (así nacieron `badgeIdiom` y `monitorBezel`).
+- **Nunca** calcules un efecto con un porcentaje fijo. Un `Color.lerp(card,
+  brand, 0.08)` no da el mismo escalón en todos los temas, y un `BoxShadow`
+  escrito a mano no sabe si el tema es plano. Usa `surfaces.selection`,
+  `surfaces.cardShadow` o `surfaces.glow(color)`, que sí lo saben.
+  `test/core/theme/no_theme_anchored_styles_test.dart` lo vigila.
 - Para un estado clínico usa `StatusChip`, que ya resuelve el idioma del tema.
 - El color nunca va solo: acompáñalo de forma, icono o texto.
 
@@ -169,6 +174,36 @@ realidad era índigo, y dos categorías a 19,6° de matiz —que el usuario habr
 confundido de un vistazo—. De paso quedó claro que el 12 % de mezcla que usaba
 `Tone.from` para derivar tintes deja el acento en 4,3–4,5:1 sobre su propio
 tinte: al 8 % pasa con margen.
+
+### Estilos anclados a un tema
+
+El defecto más difícil de ver de todo este trabajo: el realce de la pestaña
+activa se calculaba con `Color.lerp(card, brand, 0.08)`. Ese 8 % fijo aparta el
+blanco MÁS cuanto más oscura sea la marca, así que dibujaba un realce claro con
+el azul de «Pulso Clínico» (1,14:1) y algo casi invisible con el salvia de
+«Consulta Serena» (1,11:1). Con una marca más clara habría desaparecido.
+
+El patrón se repetía en 23 sitios: sombras escritas a mano —que no saben si el
+tema es plano— y tintes de marca improvisados. La respuesta son tres tokens:
+
+| Token | Para |
+|---|---|
+| `selection` / `onSelection` | El relleno de «esto está elegido», y lo que va encima |
+| `cardShadow` | La elevación normal de una tarjeta. Vacía = tema plano |
+| `glow(color)` | Un halo de acento. **Devuelve vacío en los temas planos** |
+
+`selection` va en PAR con `onSelection` por la misma razón que [Tone] lleva
+`accent` y `onAccent`: hacer el realce más visible oscurece el fondo, y eso baja
+el contraste de lo que lleva encima. Las dos exigencias chocan si la marca del
+tema es clara —el salvia da 4,79:1 sobre blanco, así que cualquier tinte lo deja
+por debajo de AA—. Con el par, cada tema resuelve su propio compromiso.
+
+Dos archivos lo vigilan. `semantic_contract_test.dart` comprueba los VALORES: que
+el realce se vea sobre la tarjeta, que no sea igual al lienzo, que lo de encima
+se lea, y que `onSelection` siga siendo el mismo color que la marca y no otro
+colado por la puerta de atrás. `no_theme_anchored_styles_test.dart` comprueba el
+MECANISMO leyendo el código: que nadie escriba una sombra a mano, improvise el
+realce ni pregunte qué tema está activo.
 
 ### Las gráficas
 

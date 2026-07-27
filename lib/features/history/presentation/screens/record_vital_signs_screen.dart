@@ -250,12 +250,16 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!context.watch<UIPreferencesProvider>().isVitalInfoDismissed) ...[
+                  if (!context
+                      .watch<UIPreferencesProvider>()
+                      .isVitalInfoDismissed) ...[
                     DismissibleInfoBanner(
                       text: l10n.infoBannerVitals,
                       baseColor: _family.accent,
                       onDismiss: () {
-                        context.read<UIPreferencesProvider>().dismissVitalInfo();
+                        context
+                            .read<UIPreferencesProvider>()
+                            .dismissVitalInfo();
                       },
                     ),
                     const SizedBox(height: 16),
@@ -297,7 +301,10 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
                     icon: Icons.monitor_heart_outlined,
                     iconColor: _family.accent,
                     title: l10n.bloodPressureTitle,
-                    badge: StatusChip(status: bpCat.status, label: bpCat.label(l10n)),
+                    badge: StatusChip(
+                      status: bpCat.status,
+                      label: bpCat.label(l10n),
+                    ),
                     child: Column(
                       children: [
                         Row(
@@ -651,10 +658,7 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  value,
-                  style: theme.type.cardTitle.copyWith(fontSize: 14),
-                ),
+                Text(value, style: theme.type.cardTitle.copyWith(fontSize: 14)),
                 Icon(icon, color: surfaces.inkSecondary, size: 16),
               ],
             ),

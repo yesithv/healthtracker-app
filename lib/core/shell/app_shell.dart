@@ -60,7 +60,7 @@ class AppShell extends StatelessWidget {
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Color.lerp(surfaces.card, surfaces.brand, 0.08),
+                        color: surfaces.selection,
                         borderRadius: BorderRadius.circular(
                           surfaces.radiusControl,
                         ),
@@ -141,7 +141,9 @@ class _NavBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
-    final color = isSelected ? surfaces.brand : surfaces.inkMuted;
+    // Sobre el realce, el contenido va en `onSelection`: es el otro lado del
+    // par, y el contrato garantiza que se lea en cualquier tema.
+    final color = isSelected ? surfaces.onSelection : surfaces.inkMuted;
     return Expanded(
       child: InkWell(
         onTap: onTap,

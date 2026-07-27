@@ -33,13 +33,12 @@ class DiscoverHeroCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(surfaces.radiusCard + 6),
-        boxShadow: surfaces.cardShadow.isEmpty ? const [] : [
-          BoxShadow(
-            color: brand.withValues(alpha: 0.28),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
+        boxShadow: surfaces.glow(
+          brand,
+          alpha: 0.28,
+          blur: 24,
+          offset: const Offset(0, 12),
+        ),
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -68,8 +67,11 @@ class DiscoverHeroCard extends StatelessWidget {
                       color: onBrand.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.wb_sunny_rounded,
-                        color: onBrand, size: 20),
+                    child: Icon(
+                      Icons.wb_sunny_rounded,
+                      color: onBrand,
+                      size: 20,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Text(
@@ -100,7 +102,9 @@ class DiscoverHeroCard extends StatelessWidget {
                   onTap: onReadMore,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 18, vertical: 11),
+                      horizontal: 18,
+                      vertical: 11,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -112,8 +116,11 @@ class DiscoverHeroCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Icon(Icons.arrow_forward_rounded,
-                            color: brand, size: 18),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: brand,
+                          size: 18,
+                        ),
                       ],
                     ),
                   ),

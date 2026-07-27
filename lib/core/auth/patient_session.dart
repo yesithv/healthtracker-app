@@ -76,7 +76,11 @@ class PatientSession extends ChangeNotifier {
     await prefs.remove(_kSource);
   }
 
-  Future<void> _setOrRemove(SharedPreferences prefs, String key, String? value) async {
+  Future<void> _setOrRemove(
+    SharedPreferences prefs,
+    String key,
+    String? value,
+  ) async {
     if (value == null || value.isEmpty) {
       await prefs.remove(key);
     } else {

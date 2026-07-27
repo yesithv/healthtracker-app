@@ -5,7 +5,7 @@ import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/language_selection_screen.dart'
     show WizardValidatable;
-import 'package:myvitals_healthtracker_app/features/profile/presentation/widgets/profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
@@ -180,7 +180,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
       backgroundColor: surfaces.canvas,
       appBar: widget.showAppBar ? const SecondaryAppBar() : null,
       body: SingleChildScrollView(
-        child: ProfileSettingsLayout(
+        child: SettingsPageLayout(
           icon: Icons.badge_outlined,
           title: l10n.personalInfoTitle,
           description: l10n.personalInfoDescription,
@@ -636,14 +636,8 @@ class _ActivityLevelOption extends StatelessWidget {
             width: 1.5,
           ),
           boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: selectedColor.withValues(alpha: 0.30),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [],
+              ? surfaces.glow(selectedColor, alpha: 0.30, blur: 10)
+              : const [],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

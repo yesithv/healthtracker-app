@@ -34,8 +34,9 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
     final provider = context.read<MeasuringDeviceProvider>();
     // El texto se resuelve ANTES del await: después, usar el context para
     // leerlo sería usarlo cruzando un hueco asíncrono.
-    final message = AppLocalizations.of(context)!
-        .deviceSelectedSaved(device.name);
+    final message = AppLocalizations.of(
+      context,
+    )!.deviceSelectedSaved(device.name);
     await provider.select(device);
     _confirm(message, provider.pendingSync);
   }
@@ -81,15 +82,12 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
               child: LinearProgressIndicator(minHeight: 3),
             ),
           if (provider.catalogError != null)
-            _noticeBanner(
-              l10n.deviceCatalogError,
-            ),
+            _noticeBanner(l10n.deviceCatalogError),
 
           // Opción "ninguna".
           _deviceTile(
             title: l10n.deviceNoneTitle,
-            subtitle:
-                l10n.deviceNoneSubtitle,
+            subtitle: l10n.deviceNoneSubtitle,
             icon: Icons.block,
             selected: provider.usesNoDevice,
             onTap: _selectNone,

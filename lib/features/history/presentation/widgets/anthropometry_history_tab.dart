@@ -271,11 +271,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
           CircleAvatar(
             backgroundColor: ok.accent.withValues(alpha: 0.15),
             radius: 16,
-            child: Icon(
-              Icons.check_circle_outline,
-              color: ok.accent,
-              size: 20,
-            ),
+            child: Icon(Icons.check_circle_outline, color: ok.accent, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -342,9 +338,13 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     // (offline/invitado): fallback a la zona saludable OMS de siempre.
     final clinical = _theme.clinical;
     final family = _family;
-    final serverZones = bandRangeAnnotations('BMI',
-        palette: clinical, minY: minDisplayBmi, maxY: maxDisplayBmi,
-        opacity: 0.10);
+    final serverZones = bandRangeAnnotations(
+      'BMI',
+      palette: clinical,
+      minY: minDisplayBmi,
+      maxY: maxDisplayBmi,
+      opacity: 0.10,
+    );
     final hasServerZones = serverZones.horizontalRangeAnnotations.isNotEmpty;
 
     return Container(
@@ -395,8 +395,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                             y2: 24.9,
                             // Zona saludable = ÓPTIMO. El corte (18,5–24,9) es
                             // de la OMS; el color, del tema.
-                            color: clinical.optimal.accent
-                                .withValues(alpha: 0.15),
+                            color: clinical.optimal.accent.withValues(
+                              alpha: 0.15,
+                            ),
                           ),
                         ],
                       ),
@@ -409,15 +410,17 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                         horizontalLines: [
                           HorizontalLine(
                             y: 18.5,
-                            color: clinical.optimal.accent
-                                .withValues(alpha: 0.6),
+                            color: clinical.optimal.accent.withValues(
+                              alpha: 0.6,
+                            ),
                             strokeWidth: 1.5,
                             dashArray: [4, 4],
                           ),
                           HorizontalLine(
                             y: 24.9,
-                            color: clinical.optimal.accent
-                                .withValues(alpha: 0.6),
+                            color: clinical.optimal.accent.withValues(
+                              alpha: 0.6,
+                            ),
                             strokeWidth: 1.5,
                             dashArray: [4, 4],
                           ),
@@ -462,9 +465,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                       getTitlesWidget: (value, meta) {
                         return Text(
                           value.toInt().toString(),
-                          style: _theme.type.numeralUnit.copyWith(
-                            fontSize: 10,
-                          ),
+                          style: _theme.type.numeralUnit.copyWith(fontSize: 10),
                         );
                       },
                     ),
@@ -826,16 +827,12 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                 children: [
                   Text(
                     '${record.weight} kg',
-                    style: theme.type.numeralSmall.copyWith(
-                      fontSize: 16,
-                    ),
+                    style: theme.type.numeralSmall.copyWith(fontSize: 16),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     '(${l10n.historyBmiLabel}: ${record.bmi.toStringAsFixed(1)})',
-                    style: theme.type.numeralUnit.copyWith(
-                      fontSize: 12,
-                    ),
+                    style: theme.type.numeralUnit.copyWith(fontSize: 12),
                   ),
                 ],
               ),

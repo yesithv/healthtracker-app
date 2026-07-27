@@ -27,18 +27,12 @@ class DismissibleInfoBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: baseColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        border: Border.all(
-          color: baseColor.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: baseColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.info_outline,
-            color: baseColor,
-            size: 20,
-          ),
+          Icon(Icons.info_outline, color: baseColor, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Padding(

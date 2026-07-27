@@ -211,12 +211,16 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     String? labCode;
     String? labName;
     if (_selectedLab == _kOther) {
-      labName = _labController.text.trim().isEmpty ? null : _labController.text.trim();
+      labName = _labController.text.trim().isEmpty
+          ? null
+          : _labController.text.trim();
     } else if (_selectedLab != _kNone) {
       labCode = _selectedLab;
       labName = _labs
-          .firstWhere((l) => l.code == _selectedLab,
-              orElse: () => Lab(code: _selectedLab, name: _selectedLab))
+          .firstWhere(
+            (l) => l.code == _selectedLab,
+            orElse: () => Lab(code: _selectedLab, name: _selectedLab),
+          )
           .name;
     }
 
@@ -349,8 +353,6 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                     ),
                   ),
 
-
-
                   // ── Laboratorio ──────────────────────────────────────────
                   _buildSectionCard(
                     icon: Icons.science_outlined,
@@ -371,8 +373,10 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidTotalCholesterol,
                           hint: 'Ej: 180',
                           refRange: l10n.lipidTcRef,
-                          statusFn: (v) => LipidStatus.totalCholesterol(v,
-                              labCode: _labCodeForRanges),
+                          statusFn: (v) => LipidStatus.totalCholesterol(
+                            v,
+                            labCode: _labCodeForRanges,
+                          ),
                           l10n: l10n,
                         ),
                         const SizedBox(height: 16),
@@ -412,8 +416,10 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           label: l10n.lipidTriglycerides,
                           hint: 'Ej: 140',
                           refRange: l10n.lipidTrigsRef,
-                          statusFn: (v) => LipidStatus.triglycerides(v,
-                              labCode: _labCodeForRanges),
+                          statusFn: (v) => LipidStatus.triglycerides(
+                            v,
+                            labCode: _labCodeForRanges,
+                          ),
                           l10n: l10n,
                         ),
                       ],
@@ -576,10 +582,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  value,
-                  style: theme.type.cardTitle.copyWith(fontSize: 14),
-                ),
+                Text(value, style: theme.type.cardTitle.copyWith(fontSize: 14)),
                 Icon(icon, color: surfaces.inkSecondary, size: 16),
               ],
             ),
@@ -608,9 +611,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
         final status = val != null ? statusFn(val) : null;
         // El tono clínico del valor escrito. Quién decide que un LDL de 145 es
         // «límite» son los rangos del laboratorio elegido, no el tema.
-        final tone = status == null
-            ? null
-            : theme.clinical.tone(status.status);
+        final tone = status == null ? null : theme.clinical.tone(status.status);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -769,26 +770,19 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
           width: 1.5,
         ),
         // Los temas planos no llevan sombra: el filete ya delimita la tarjeta.
-        boxShadow: surfaces.cardShadow.isEmpty
-            ? const []
-            : [
-                BoxShadow(
-                  color: tone.accent.withValues(alpha: 0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+        boxShadow: surfaces.glow(
+          tone.accent,
+          alpha: 0.08,
+          blur: 15,
+          offset: const Offset(0, 5),
+        ),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 26,
             backgroundColor: tone.accent.withValues(alpha: 0.15),
-            child: Icon(
-              Icons.analytics_outlined,
-              color: tone.accent,
-              size: 28,
-            ),
+            child: Icon(Icons.analytics_outlined, color: tone.accent, size: 28),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -826,15 +820,18 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       return Row(
         children: [
           SizedBox(
-            width: 16, height: 16,
+            width: 16,
+            height: 16,
             child: CircularProgressIndicator(
               strokeWidth: 2,
               color: _family.accent,
             ),
           ),
           const SizedBox(width: 10),
-          Text(l10n.lipidLabLoading,
-              style: theme.type.body.copyWith(fontSize: 13)),
+          Text(
+            l10n.lipidLabLoading,
+            style: theme.type.body.copyWith(fontSize: 13),
+          ),
         ],
       );
     }
@@ -863,13 +860,23 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
               style: theme.type.body.copyWith(color: surfaces.ink),
               iconEnabledColor: surfaces.inkSecondary,
               items: [
-                DropdownMenuItem(value: _kNone, child: Text(l10n.lipidLabNotSpecified)),
-                ..._labs.map((l) => DropdownMenuItem(
-                      value: l.code,
-                      child: Text(l.city == null ? l.name : '${l.name} · ${l.city}',
-                          overflow: TextOverflow.ellipsis),
-                    )),
-                DropdownMenuItem(value: _kOther, child: Text(l10n.lipidLabOther)),
+                DropdownMenuItem(
+                  value: _kNone,
+                  child: Text(l10n.lipidLabNotSpecified),
+                ),
+                ..._labs.map(
+                  (l) => DropdownMenuItem(
+                    value: l.code,
+                    child: Text(
+                      l.city == null ? l.name : '${l.name} · ${l.city}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: _kOther,
+                  child: Text(l10n.lipidLabOther),
+                ),
               ],
               onChanged: (v) {
                 setState(() => _selectedLab = v ?? _kNone);
@@ -913,9 +920,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
           ),
           child: TextField(
             controller: controller,
-            keyboardType: isNumeric
-                ? TextInputType.number
-                : TextInputType.text,
+            keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
             style: theme.type.body.copyWith(color: surfaces.ink),
             decoration: InputDecoration(
               hintText: hint,
@@ -962,4 +967,3 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
     );
   }
 }
-

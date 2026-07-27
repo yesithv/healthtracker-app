@@ -37,6 +37,21 @@ class SemanticContract {
   /// Por debajo de esto el usuario dejaría de distinguirlas de un vistazo.
   static const double minFamilyHueSeparation = 20.0;
 
+  /// Escalón mínimo entre un relleno SUTIL y el fondo sobre el que se dibuja:
+  /// el realce de la pestaña activa, la fila elegida de un menú.
+  ///
+  /// Es mucho más bajo que los umbrales de texto a propósito —un realce que
+  /// llegara a 3:1 gritaría—, pero no puede ser 1,0: eso es que no se ve. El
+  /// número sale de medir el realce que la app ya tenía en «Pulso Clínico»
+  /// (1,14:1) y dejar un poco de margen por encima.
+  ///
+  /// Existe porque el realce se calculaba con `Color.lerp(card, brand, 0.08)`,
+  /// y ese porcentaje fijo aparta el blanco MÁS cuanto más oscura sea la marca.
+  /// Resultado: visible con el azul de «Pulso Clínico», casi invisible con el
+  /// salvia de «Consulta Serena». Un tema con una marca aún más clara lo habría
+  /// borrado del todo sin que nada avisara.
+  static const double minSelectionStep = 1.15;
+
   /// Franja de matiz admisible para cada estado clínico. Es la regla que
   /// mantiene el significado estable entre temas: un tema puede elegir QUÉ
   /// verde usa para «óptimo», no puede decidir que «óptimo» sea morado.

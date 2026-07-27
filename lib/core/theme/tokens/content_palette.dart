@@ -84,8 +84,14 @@ class ContentPalette extends ThemeExtension<ContentPalette> {
 
   /// Todas las categorías, para que el contrato semántico las recorra sin tener
   /// que enumerarlas otra vez.
-  List<Tone> get categories =>
-      [heart, nutrition, emotional, sports, sleep, daily];
+  List<Tone> get categories => [
+    heart,
+    nutrition,
+    emotional,
+    sports,
+    sleep,
+    daily,
+  ];
 
   /// Traduce una clave de la taxonomía del backoffice. Devuelve null si no la
   /// reconoce, para que el llamador use su color por defecto en vez de fallar:

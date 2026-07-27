@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
-import 'profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 
 class UnitOfMeasureSelection extends StatefulWidget {
   final MeasurementUnit initialUnit;
@@ -35,7 +35,7 @@ class _UnitOfMeasureSelectionState extends State<UnitOfMeasureSelection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ProfileSettingsLayout(
+    return SettingsPageLayout(
       icon: Icons.straighten_rounded,
       title: l10n.unitOfMeasureTitle,
       description: l10n.unitOfMeasureDescription,

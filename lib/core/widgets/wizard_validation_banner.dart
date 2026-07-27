@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+
+import '../theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 /// A premium animated validation banner that slides up between the page
@@ -23,8 +25,7 @@ class WizardValidationBanner extends StatefulWidget {
   });
 
   @override
-  State<WizardValidationBanner> createState() =>
-      _WizardValidationBannerState();
+  State<WizardValidationBanner> createState() => _WizardValidationBannerState();
 }
 
 class _WizardValidationBannerState extends State<WizardValidationBanner>
@@ -49,30 +50,30 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
       vsync: this,
       duration: const Duration(milliseconds: 350),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOut),
-    );
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
 
     // --- Shake ---
     _shakeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _shakeAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0, end: -6), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: -6, end: 6), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: 6, end: -4), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: -4, end: 4), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: 4, end: 0), weight: 1),
-    ]).animate(
-      CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
-    );
+    _shakeAnimation =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 0, end: -6), weight: 1),
+          TweenSequenceItem(tween: Tween(begin: -6, end: 6), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: 6, end: -4), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: -4, end: 4), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: 4, end: 0), weight: 1),
+        ]).animate(
+          CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
+        );
 
     // Start entrance
     _slideController.forward();
@@ -102,6 +103,11 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Faltan campos obligatorios: es la ALERTA de la paleta clínica, el mismo
+    // rojo que un valor fuera de rango. Eran seis rojos y un ámbar sueltos.
+    final alert = theme.clinical.alert;
 
     return GestureDetector(
       onTap: _dismiss,
@@ -112,19 +118,18 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
           child: Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF5F5),
-              borderRadius: BorderRadius.circular(16),
+              color: alert.surface,
+              borderRadius: BorderRadius.circular(surfaces.radiusCard),
               border: Border.all(
-                color: const Color(0xFFFCA5A5),
+                color: alert.accent.withValues(alpha: 0.35),
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFEF4444).withValues(alpha: 0.12),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: surfaces.glow(
+                alert.accent,
+                alpha: 0.12,
+                blur: 20,
+                offset: const Offset(0, 4),
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
@@ -143,12 +148,12 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                        color: alert.accent.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.warning_amber_rounded,
-                        color: Color(0xFFEF4444),
+                        color: alert.accent,
                         size: 20,
                       ),
                     ),
@@ -162,19 +167,19 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                       children: [
                         Text(
                           l10n.validationRequiredFields,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF991B1B),
+                            color: alert.accent,
                             height: 1.2,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           l10n.validationCompleteBeforeContinue,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFFB45309),
+                            color: theme.clinical.caution.accent,
                             fontWeight: FontWeight.w500,
                             height: 1.3,
                           ),
@@ -187,21 +192,21 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Padding(
+                                Padding(
                                   padding: EdgeInsets.only(top: 4),
                                   child: Icon(
                                     Icons.circle,
                                     size: 5,
-                                    color: Color(0xFFEF4444),
+                                    color: alert.accent,
                                   ),
                                 ),
                                 const SizedBox(width: 7),
                                 Expanded(
                                   child: Text(
                                     error,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
-                                      color: Color(0xFF7F1D1D),
+                                      color: alert.accent,
                                       height: 1.4,
                                     ),
                                   ),
@@ -222,7 +227,7 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                       child: Icon(
                         Icons.close_rounded,
                         size: 18,
-                        color: const Color(0xFFEF4444).withValues(alpha: 0.6),
+                        color: alert.accent.withValues(alpha: 0.6),
                       ),
                     ),
                   ),

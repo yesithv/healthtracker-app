@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/theme/theme_catalog.dart';
 import '../../../../core/theme/theme_context.dart';
+import '../../../../core/widgets/secondary_app_bar.dart';
+import '../../../../core/widgets/settings_page_layout.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../widgets/theme_preview_card.dart';
 
@@ -26,6 +28,12 @@ enum ThemePickerMode {
 /// comportamiento viven en un único lugar, y [ThemePickerMode] solo decide si
 /// se remata con un CTA o con una flecha de volver.
 ///
+/// Usa [SettingsPageLayout], la MISMA maqueta que «Recordatorios», «Idioma» o
+/// «Privacidad»: icono redondo, título, descripción y contenido. Antes tenía
+/// una cabecera propia —un rótulo pequeño arriba y el título a la izquierda—,
+/// así que era la única pantalla de ajuste de la app que no se parecía a las
+/// demás.
+///
 /// El listado se construye desde [AppThemeCatalog.specs], así que un tema nuevo
 /// aparece aquí sin tocar esta pantalla.
 ///
@@ -40,123 +48,64 @@ class ThemePickerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // `watch` es correcto aquí: al elegir, esta pantalla debe repintar la marca
     // de selección al instante.
-    final l10n = AppLocalizations.of(context)!;
     final themeProvider = context.watch<ThemeProvider>();
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
+    final surfaces = Theme.of(context).surfaces;
 
     return Scaffold(
       backgroundColor: surfaces.canvas,
       body: SafeArea(
+        // La cabecera de ajustes trae su propio SafeArea.
+        top: !_isSettings,
         child: Column(
           children: [
-            _Header(mode: mode),
+            // En Perfil se entra desde una fila, así que lleva la cabecera de
+            // la app con su flecha; en la pantalla 0 no hay a dónde volver.
+            if (_isSettings) const SecondaryAppBar(),
             Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.fromLTRB(24, 12, 24, _isSettings ? 32 : 24),
-                itemCount: AppThemeCatalog.specs.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 14),
-                itemBuilder: (context, i) {
-                  final spec = AppThemeCatalog.specs[i];
-                  return ThemePreviewCard(
-                    spec: spec,
-                    isSelected: spec.id == themeProvider.themeId,
-                    // Aplica al instante: el usuario ve el cambio en la propia
-                    // pantalla —cabecera y textos incluidos— antes de continuar.
-                    onSelect: () => themeProvider.select(spec.id),
-                  );
-                },
-              ),
-            ),
-            // En Perfil no hay CTA: la elección ya quedó guardada al tocar la
-            // ficha, y añadir un «guardar» sugeriría que sin él no se aplica.
-            if (!_isSettings)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: surfaces.brand,
-                      foregroundColor: surfaces.onBrand,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          surfaces.radiusControl,
+              child: SingleChildScrollView(
+                child: SettingsPageLayout(
+                  icon: Icons.palette_outlined,
+                  title: _isSettings
+                      ? l10n.profileAppTheme
+                      : l10n.themePickTitle,
+                  description: _isSettings
+                      ? l10n.themeSettingsBody
+                      : l10n.themePickBody,
+                  // En Perfil no hay botón: la elección ya quedó guardada al
+                  // tocar la ficha, y añadir un «guardar» sugeriría que sin él
+                  // no se aplica.
+                  showConfirmButton: !_isSettings,
+                  confirmLabel: l10n.themeContinueWith(themeProvider.spec.name),
+                  onConfirm: () {
+                    // Deja constancia de que el usuario ya eligió, aunque no
+                    // haya tocado ninguna ficha, y sigue al arranque normal.
+                    themeProvider.select(themeProvider.themeId);
+                    context.go('/splash');
+                  },
+                  child: Column(
+                    children: [
+                      for (final spec in AppThemeCatalog.specs) ...[
+                        ThemePreviewCard(
+                          spec: spec,
+                          isSelected: spec.id == themeProvider.themeId,
+                          // Aplica al instante: el usuario ve el cambio en la
+                          // propia pantalla —cabecera y textos incluidos— antes
+                          // de continuar.
+                          onSelect: () => themeProvider.select(spec.id),
                         ),
-                      ),
-                    ),
-                    onPressed: () {
-                      // Deja constancia de que el usuario ya eligió, aunque no
-                      // haya tocado ninguna ficha, y sigue al arranque normal.
-                      themeProvider.select(themeProvider.themeId);
-                      context.go('/splash');
-                    },
-                    child: Text(
-                      l10n.themeContinueWith(themeProvider.spec.name),
-                      textAlign: TextAlign.center,
-                      style: theme.type.button.copyWith(
-                        fontSize: 16,
-                        color: surfaces.onBrand,
-                      ),
-                    ),
+                        if (spec != AppThemeCatalog.specs.last)
+                          const SizedBox(height: 14),
+                      ],
+                    ],
                   ),
                 ),
               ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({required this.mode});
-
-  final ThemePickerMode mode;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
-    final isSettings = mode == ThemePickerMode.settings;
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(24, isSettings ? 8 : 24, 24, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (isSettings) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 20,
-                  color: surfaces.brand,
-                ),
-                onPressed: () => context.pop(),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-          Text(l10n.themeBankLabel, style: theme.type.sectionLabel),
-          const SizedBox(height: 10),
-          Text(
-            isSettings ? l10n.profileAppTheme : l10n.themePickTitle,
-            style: theme.type.screenTitle,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            isSettings ? l10n.themeSettingsBody : l10n.themePickBody,
-            style: theme.type.body,
-          ),
-        ],
       ),
     );
   }

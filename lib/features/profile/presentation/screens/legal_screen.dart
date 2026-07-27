@@ -115,13 +115,7 @@ class LegalScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

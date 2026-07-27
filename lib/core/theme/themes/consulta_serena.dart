@@ -62,6 +62,13 @@ class ConsultaSerena {
       inset: Color(0xFFF4F5F0),
       track: Color(0xFFEDEFE9),
       divider: Color(0xFFE4E1DB),
+      // Elegido: salvia al 16 % sobre la tarjeta. Hace falta más mezcla que en
+      // «Pulso Clínico» porque el salvia es más claro que su azul; con el mismo
+      // 8 % el realce se perdía. Ese es justo el accidente que el token evita.
+      selection: Color(0xFFE5EAE3),
+      // El salvia de marca daría 3,9:1 sobre este tinte: aquí va un paso más
+      // profundo del mismo verde, que llega a 5,8:1 sin cambiar de familia.
+      onSelection: Color(0xFF46603A),
       ink: _tinta,
       inkSecondary: _inkSecondary,
       inkMuted: _inkMuted,
@@ -148,30 +155,78 @@ class ConsultaSerena {
     // familia de indicador a propósito: un artículo del corazón y la tarjeta de
     // signos vitales hablan de lo mismo.
     final content = ContentPalette(
-      heart: Tone.from(const Color(0xFFA04A3C), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      nutrition: Tone.from(const Color(0xFF4C6B3C), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      emotional: Tone.from(const Color(0xFF6B5075), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      sports: Tone.from(const Color(0xFF8A5F16), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      sleep: Tone.from(const Color(0xFF4F5B7A), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      daily: Tone.from(const Color(0xFF2F6B63), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      levelEasy: Tone.from(const Color(0xFF3D6B4A), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      levelMedium: Tone.from(const Color(0xFF8A5F16), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      levelHard: Tone.from(const Color(0xFFA04A3C), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      statusActive: Tone.from(const Color(0xFF3D6B4A), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      statusScheduled: Tone.from(const Color(0xFF2F6B63), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
-      statusClosed: Tone.from(const Color(0xFF63676A), canvas: _tarjeta,
-          onAccent: _onSalvia, surfaceBlend: _tint),
+      heart: Tone.from(
+        const Color(0xFFA04A3C),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      nutrition: Tone.from(
+        const Color(0xFF4C6B3C),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      emotional: Tone.from(
+        const Color(0xFF6B5075),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      sports: Tone.from(
+        const Color(0xFF8A5F16),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      sleep: Tone.from(
+        const Color(0xFF4F5B7A),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      daily: Tone.from(
+        const Color(0xFF2F6B63),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      levelEasy: Tone.from(
+        const Color(0xFF3D6B4A),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      levelMedium: Tone.from(
+        const Color(0xFF8A5F16),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      levelHard: Tone.from(
+        const Color(0xFFA04A3C),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      statusActive: Tone.from(
+        const Color(0xFF3D6B4A),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      statusScheduled: Tone.from(
+        const Color(0xFF2F6B63),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
+      statusClosed: Tone.from(
+        const Color(0xFF63676A),
+        canvas: _tarjeta,
+        onAccent: _onSalvia,
+        surfaceBlend: _tint,
+      ),
     );
 
     final typography = AppTypography(

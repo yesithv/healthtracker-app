@@ -68,9 +68,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          // El lavado parte del realce del tema y se disuelve en el lienzo.
+          // Antes eran dos mezclas al 10 % y al 5 % con la marca, así que en un
+          // tema de marca clara el degradado no se veía.
           colors: [
-            Color.lerp(surfaces.canvas, surfaces.brand, 0.10)!,
-            Color.lerp(surfaces.canvas, surfaces.brand, 0.05)!,
+            surfaces.selection,
+            Color.lerp(surfaces.selection, surfaces.canvas, 0.5)!,
             surfaces.canvas,
           ],
         ),
@@ -141,14 +144,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                                 : surfaces.inkMuted,
                             width: 3,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: surfaces.brand.withValues(alpha: 0.15),
-                              blurRadius: 20,
-                              spreadRadius: 2,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                          boxShadow: surfaces.glow(
+                            surfaces.brand,
+                            alpha: 0.15,
+                            blur: 20,
+                            offset: const Offset(0, 6),
+                          ),
                         ),
                         child: ClipOval(
                           child: _isLoading
@@ -173,13 +174,12 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
                             color: surfaces.brand,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 3),
-                            boxShadow: [
-                              BoxShadow(
-                                color: surfaces.brand.withValues(alpha: 0.4),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            boxShadow: surfaces.glow(
+                              surfaces.brand,
+                              alpha: 0.4,
+                              blur: 10,
+                              offset: const Offset(0, 3),
+                            ),
                           ),
                           child: const Icon(
                             Icons.camera_alt_rounded,

@@ -23,23 +23,32 @@ class BackupService {
   /// Generates the backup JSON and shares/downloads it.
   Future<bool> exportBackup(String userName) async {
     try {
-      
       // Fetch all records
       final anthropometric = await AnthropometricRepository.instance.getAll();
       final vitalSigns = await VitalSignsRepository.instance.getAll();
       final lipids = await LipidRepository.instance.getAll();
-      final bodyCompositions = await BodyCompositionRepository.instance.getAll();
+      final bodyCompositions = await BodyCompositionRepository.instance
+          .getAll();
 
       // Fetch all preferences
       final prefs = await SharedPreferences.getInstance();
       final prefsMap = <String, dynamic>{};
-      
+
       // Keys matching the preference providers (profile, goals, locale/units)
       final preferenceKeys = [
-        'user_language', 'user_measurement_unit',
-        'user_name', 'user_birth_date', 'user_email', 'user_gender',
-        'user_activity_level', 'user_biometric_enabled', 'medical_goals_enabled',
-        'target_weight', 'target_body_fat', 'target_muscle_mass', 'target_visceral_fat'
+        'user_language',
+        'user_measurement_unit',
+        'user_name',
+        'user_birth_date',
+        'user_email',
+        'user_gender',
+        'user_activity_level',
+        'user_biometric_enabled',
+        'medical_goals_enabled',
+        'target_weight',
+        'target_body_fat',
+        'target_muscle_mass',
+        'target_visceral_fat',
       ];
 
       for (var key in preferenceKeys) {
@@ -63,21 +72,27 @@ class BackupService {
           "vital_signs": vitalSigns.map((e) => e.toMap()).toList(),
           "lipid": lipids.map((e) => e.toMap()).toList(),
           "body_composition": bodyCompositions.map((e) => e.toMap()).toList(),
-        }
+        },
       };
 
       final jsonString = jsonEncode(backupData);
-      
+
       // Formatting the filename
       final dateStr = DateFormat("ddMMMMyyyy", "en").format(now);
       final timeStr = DateFormat("hh-mm-a").format(now).toUpperCase();
-      final sanitizedName = userName.isNotEmpty ? userName.replaceAll(RegExp(r'\s+'), '') : "User";
+      final sanitizedName = userName.isNotEmpty
+          ? userName.replaceAll(RegExp(r'\s+'), '')
+          : "User";
       final fileName = "myvitals-$sanitizedName-$dateStr-$timeStr.json";
 
       if (kIsWeb) {
         // Use XFile.fromData on Web to trigger a download via the share sheet.
         final bytes = utf8.encode(jsonString);
-        final xFile = XFile.fromData(Uint8List.fromList(bytes), name: fileName, mimeType: 'application/json');
+        final xFile = XFile.fromData(
+          Uint8List.fromList(bytes),
+          name: fileName,
+          mimeType: 'application/json',
+        );
         await SharePlus.instance.share(ShareParams(files: [xFile]));
       } else {
         final directory = await getApplicationDocumentsDirectory();
@@ -131,7 +146,7 @@ class BackupService {
       if (backupData.containsKey('preferences')) {
         final prefsMap = backupData['preferences'] as Map<String, dynamic>;
         final prefs = await SharedPreferences.getInstance();
-        
+
         for (var entry in prefsMap.entries) {
           final key = entry.key;
           final value = entry.value;
@@ -160,28 +175,34 @@ class BackupService {
       // Restore records
       if (backupData.containsKey('records')) {
         final records = backupData['records'] as Map<String, dynamic>;
-        
+
         if (records.containsKey('anthropometric')) {
           for (var item in records['anthropometric']) {
-            await AnthropometricRepository.instance.insert(AnthropometricRecord.fromMap(item));
+            await AnthropometricRepository.instance.insert(
+              AnthropometricRecord.fromMap(item),
+            );
           }
         }
-        
+
         if (records.containsKey('vital_signs')) {
           for (var item in records['vital_signs']) {
-            await VitalSignsRepository.instance.insert(VitalSignRecord.fromMap(item));
+            await VitalSignsRepository.instance.insert(
+              VitalSignRecord.fromMap(item),
+            );
           }
         }
-        
+
         if (records.containsKey('lipid')) {
           for (var item in records['lipid']) {
             await LipidRepository.instance.insert(LipidRecord.fromMap(item));
           }
         }
-        
+
         if (records.containsKey('body_composition')) {
           for (var item in records['body_composition']) {
-            await BodyCompositionRepository.instance.insert(BodyCompositionRecord.fromMap(item));
+            await BodyCompositionRepository.instance.insert(
+              BodyCompositionRecord.fromMap(item),
+            );
           }
         }
       }

@@ -32,13 +32,12 @@ class _RegisterModalContent extends StatelessWidget {
           topLeft: Radius.circular(surfaces.radiusCard + 8),
           topRight: Radius.circular(surfaces.radiusCard + 8),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 30,
-            offset: const Offset(0, -6),
-          ),
-        ],
+        boxShadow: surfaces.glow(
+          Colors.black,
+          alpha: 0.2,
+          blur: 30,
+          offset: const Offset(0, -6),
+        ),
       ),
       child: SafeArea(
         top: false,
@@ -88,14 +87,13 @@ class _RegisterModalContent extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              // 2x2 Grid — smaller cards, more gap
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 2.0, // wide cards → shorter height
+              // LISTADO, no rejilla. En dos columnas los rótulos largos
+              // («Body Composition», «Antropometría») partían en dos o tres
+              // líneas y cada tarjeta quedaba de una altura distinta. A lo
+              // ancho, el texto cabe entero y las cuatro filas se recorren de
+              // arriba abajo, que es como se lee una lista de opciones.
+              Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _RegisterOption(
                     icon: Icons.straighten,
@@ -106,6 +104,7 @@ class _RegisterModalContent extends StatelessWidget {
                       context.push('/record-anthropometric');
                     },
                   ),
+                  const SizedBox(height: 10),
                   _RegisterOption(
                     icon: Icons.favorite,
                     label: l10n.vitalSigns,
@@ -115,6 +114,7 @@ class _RegisterModalContent extends StatelessWidget {
                       context.push('/record-vital-signs');
                     },
                   ),
+                  const SizedBox(height: 10),
                   _RegisterOption(
                     icon: Icons.bloodtype,
                     label: l10n.lipidProfile,
@@ -124,6 +124,7 @@ class _RegisterModalContent extends StatelessWidget {
                       context.push('/record-lipid');
                     },
                   ),
+                  const SizedBox(height: 10),
                   _RegisterOption(
                     icon: Icons.accessibility_new,
                     label: l10n.bodyComposition,
@@ -169,7 +170,7 @@ class _RegisterOption extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(radius),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: tone.surface,
           borderRadius: BorderRadius.circular(radius),
@@ -185,16 +186,25 @@ class _RegisterOption extends StatelessWidget {
               ),
               child: Icon(icon, color: tone.accent, size: 22),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 14),
             Expanded(
               child: Text(
                 label,
+                // Una sola línea: a lo ancho siempre cabe, y si algún idioma
+                // trae un rótulo larguísimo se recorta en vez de descuadrar la
+                // fila.
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: theme.type.cardTitle.copyWith(
-                  fontSize: 12.5,
+                  fontSize: 15,
                   color: tone.accent,
-                  height: 1.25,
                 ),
               ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: tone.accent.withValues(alpha: 0.55),
+              size: 20,
             ),
           ],
         ),

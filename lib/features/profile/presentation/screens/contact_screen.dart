@@ -68,20 +68,14 @@ class ContactScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: surfaces.card,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: surfaces.ink.withValues(alpha: 0.04),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    boxShadow: surfaces.cardShadow,
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: surfaces.brand.withValues(alpha: 0.08),
+                          color: surfaces.selection,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
@@ -187,13 +181,7 @@ class _ContactCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,20 +259,12 @@ class _ChangelogCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: isCurrent
-            ? surfaces.brand.withValues(alpha: 0.04)
-            : surfaces.card,
+        color: isCurrent ? surfaces.selection : surfaces.card,
         borderRadius: BorderRadius.circular(16),
         border: isCurrent
             ? Border.all(color: surfaces.brand.withValues(alpha: 0.2))
             : Border.all(color: surfaces.inset),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

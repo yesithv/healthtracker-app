@@ -65,13 +65,12 @@ class HelpSupportScreen extends StatelessWidget {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: surfaces.brand.withValues(alpha: 0.25),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    boxShadow: surfaces.glow(
+                      surfaces.brand,
+                      alpha: 0.25,
+                      blur: 16,
+                      offset: const Offset(0, 6),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -134,13 +133,7 @@ class HelpSupportScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Material(
         color: surfaces.card,

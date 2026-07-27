@@ -459,15 +459,12 @@ class _NextButton extends StatelessWidget {
             borderRadius: radius,
             // El halo del botón lo hereda del tema: en «Consulta Serena» las
             // superficies son planas y aquí no se dibuja sombra ninguna.
-            boxShadow: surfaces.cardShadow.isEmpty
-                ? const []
-                : [
-                    BoxShadow(
-                      color: fill.withValues(alpha: 0.35),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+            boxShadow: surfaces.glow(
+              fill,
+              alpha: 0.35,
+              blur: 12,
+              offset: const Offset(0, 4),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

@@ -55,15 +55,25 @@ class DatabaseService {
     }
     if (oldVersion < 3) {
       for (final col in [
-        'waist_cm', 'hip_cm', 'lower_abdomen_cm', 'arm_cm', 'leg_cm', 'chest_bust_cm',
+        'waist_cm',
+        'hip_cm',
+        'lower_abdomen_cm',
+        'arm_cm',
+        'leg_cm',
+        'chest_bust_cm',
       ]) {
-        await db.execute('ALTER TABLE anthropometric_records ADD COLUMN $col REAL');
+        await db.execute(
+          'ALTER TABLE anthropometric_records ADD COLUMN $col REAL',
+        );
       }
-      await db.execute('ALTER TABLE body_composition_records ADD COLUMN muscle_pct REAL');
+      await db.execute(
+        'ALTER TABLE body_composition_records ADD COLUMN muscle_pct REAL',
+      );
       // Normaliza tallas importadas del servidor en METROS (< 3) al canon local en cm:
       // la captura siempre produjo cm (mínimo 50), así que < 3 solo puede ser metros.
       await db.execute(
-          'UPDATE anthropometric_records SET height = height * 100 WHERE height < 3');
+        'UPDATE anthropometric_records SET height = height * 100 WHERE height < 3',
+      );
     }
   }
 

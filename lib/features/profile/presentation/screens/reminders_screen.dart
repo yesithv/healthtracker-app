@@ -229,13 +229,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                                   : surfaces.inkMuted.withValues(alpha: 0.1),
                               width: 2,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: surfaces.ink.withValues(alpha: 0.03),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                            boxShadow: surfaces.cardShadow,
                           ),
                           child: Material(
                             color: Colors.transparent,

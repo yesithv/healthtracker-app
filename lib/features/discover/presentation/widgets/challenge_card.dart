@@ -12,7 +12,11 @@ class ChallengeCard extends StatelessWidget {
   final Challenge challenge;
   final VoidCallback onTap;
 
-  const ChallengeCard({super.key, required this.challenge, required this.onTap});
+  const ChallengeCard({
+    super.key,
+    required this.challenge,
+    required this.onTap,
+  });
 
   String _statusLabel(AppLocalizations l10n, ChallengeStatus status) {
     switch (status) {
@@ -49,13 +53,7 @@ class ChallengeCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -76,8 +74,11 @@ class ChallengeCard extends StatelessWidget {
                         color: statusTone.accent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(Icons.emoji_events_rounded,
-                          color: statusTone.accent, size: 24),
+                      child: Icon(
+                        Icons.emoji_events_rounded,
+                        color: statusTone.accent,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -86,9 +87,7 @@ class ChallengeCard extends StatelessWidget {
                         children: [
                           Text(
                             challenge.title,
-                            style: theme.type.cardTitle.copyWith(
-                              fontSize: 16,
-                            ),
+                            style: theme.type.cardTitle.copyWith(fontSize: 16),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -108,7 +107,9 @@ class ChallengeCard extends StatelessWidget {
                     const SizedBox(width: 10),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 9, vertical: 4),
+                        horizontal: 9,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: statusTone.accent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
@@ -127,11 +128,16 @@ class ChallengeCard extends StatelessWidget {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Icon(Icons.people_alt_rounded,
-                        size: 15, color: surfaces.inkMuted),
+                    Icon(
+                      Icons.people_alt_rounded,
+                      size: 15,
+                      color: surfaces.inkMuted,
+                    ),
                     const SizedBox(width: 5),
                     Text(
-                      l10n.discoverParticipants(_participants(challenge.participants)),
+                      l10n.discoverParticipants(
+                        _participants(challenge.participants),
+                      ),
                       style: theme.type.button.copyWith(
                         fontSize: 12,
                         color: surfaces.inkSecondary,
@@ -139,8 +145,11 @@ class ChallengeCard extends StatelessWidget {
                     ),
                     if (challenge.durationDays > 0) ...[
                       const SizedBox(width: 12),
-                      Icon(Icons.event_rounded,
-                          size: 15, color: surfaces.inkMuted),
+                      Icon(
+                        Icons.event_rounded,
+                        size: 15,
+                        color: surfaces.inkMuted,
+                      ),
                       const SizedBox(width: 5),
                       Text(
                         l10n.discoverDaysShort('${challenge.durationDays}'),

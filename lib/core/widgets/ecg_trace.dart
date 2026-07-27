@@ -70,7 +70,11 @@ class _EcgTraceState extends State<EcgTrace>
 
     if (!bezel) {
       // Temas planos: el trazo respira sobre el lienzo de marca.
-      return SizedBox(width: widget.width, height: widget.bareHeight, child: trace);
+      return SizedBox(
+        width: widget.width,
+        height: widget.bareHeight,
+        child: trace,
+      );
     }
 
     return Container(

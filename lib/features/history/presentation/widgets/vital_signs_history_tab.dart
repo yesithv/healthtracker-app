@@ -388,9 +388,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
                       interval: 20,
                       getTitlesWidget: (value, meta) => Text(
                         value.toInt().toString(),
-                        style: _theme.type.numeralUnit.copyWith(
-                          fontSize: 10,
-                        ),
+                        style: _theme.type.numeralUnit.copyWith(fontSize: 10),
                       ),
                     ),
                   ),
@@ -747,25 +745,19 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
                 children: [
                   Text(
                     '${record.systolic}/${record.diastolic}',
-                    style: theme.type.numeralSmall.copyWith(
-                      fontSize: 18,
-                    ),
+                    style: theme.type.numeralSmall.copyWith(fontSize: 18),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     'mmHg',
-                    style: theme.type.numeralUnit.copyWith(
-                      fontSize: 11,
-                    ),
+                    style: theme.type.numeralUnit.copyWith(fontSize: 11),
                   ),
                   const SizedBox(width: 12),
                   Icon(Icons.favorite, size: 12, color: _family.accent),
                   const SizedBox(width: 2),
                   Text(
                     '${record.heartRate} bpm',
-                    style: theme.type.numeralUnit.copyWith(
-                      fontSize: 12,
-                    ),
+                    style: theme.type.numeralUnit.copyWith(fontSize: 12),
                   ),
                 ],
               ),
@@ -776,7 +768,11 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           // además siempre se dibujaba suave. StatusChip pide el ESTADO y deja
           // que el tema resuelva el acabado: sólido en «Pulso Clínico», suave en
           // «Consulta Serena». Mismo texto, mismo sitio.
-          StatusChip(status: bpCat.status, label: statusLabel, icon: iconForStatus(bpCat.status)),
+          StatusChip(
+            status: bpCat.status,
+            label: statusLabel,
+            icon: iconForStatus(bpCat.status),
+          ),
         ],
       ),
     );

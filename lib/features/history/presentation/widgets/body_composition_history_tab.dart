@@ -360,10 +360,12 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                 maxY: maxDisplay,
                 // Zonas de referencia del paciente (su báscula/sexo/edad, desde el
                 // servidor): la gráfica se pinta como el CRM la ve en "Vista del paciente".
-                rangeAnnotations: bandRangeAnnotations('BODY_FAT',
-                    palette: _theme.clinical,
-                    minY: minDisplay,
-                    maxY: maxDisplay),
+                rangeAnnotations: bandRangeAnnotations(
+                  'BODY_FAT',
+                  palette: _theme.clinical,
+                  minY: minDisplay,
+                  maxY: maxDisplay,
+                ),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
@@ -401,9 +403,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                       interval: 10,
                       getTitlesWidget: (value, meta) => Text(
                         '${value.toInt()}%',
-                        style: _theme.type.numeralUnit.copyWith(
-                          fontSize: 10,
-                        ),
+                        style: _theme.type.numeralUnit.copyWith(fontSize: 10),
                       ),
                     ),
                   ),
@@ -741,16 +741,12 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                     record.bodyFatPercent != null
                         ? '${record.bodyFatPercent}'
                         : 'N/A',
-                    style: theme.type.numeralSmall.copyWith(
-                      fontSize: 18,
-                    ),
+                    style: theme.type.numeralSmall.copyWith(fontSize: 18),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '% Grasa',
-                    style: theme.type.numeralUnit.copyWith(
-                      fontSize: 11,
-                    ),
+                    style: theme.type.numeralUnit.copyWith(fontSize: 11),
                   ),
                 ],
               ),

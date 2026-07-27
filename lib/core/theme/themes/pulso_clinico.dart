@@ -65,6 +65,12 @@ class PulsoClinico {
       inset: Color(0xFFF8FAFC),
       track: Color(0xFFE2E8F0),
       divider: Color(0xFFE2E8F0),
+      // Elegido: azul de marca al 11 % sobre la tarjeta. No es «brand al 8 %»
+      // como antes: el porcentaje se eligió para que el escalón se vea, y el
+      // contrato comprueba que se vea también en cualquier tema nuevo.
+      selection: Color(0xFFE4EBF5),
+      // La marca aguanta de sobra sobre su propio tinte (7,1:1).
+      onSelection: Color(0xFF0D48A0),
       ink: _ink,
       inkSecondary: _inkSecondary,
       inkMuted: _inkMuted,
@@ -138,20 +144,68 @@ class PulsoClinico {
     // sección ya usaba —vivos, porque este tema es enérgico—, con las
     // superficies derivadas del lienzo en vez de escritas a mano.
     final content = ContentPalette(
-      heart: Tone.from(const Color(0xFFC2373C), canvas: _card, surfaceBlend: _tint),
-      nutrition: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
-      emotional: Tone.from(const Color(0xFF7E22CE), canvas: _card, surfaceBlend: _tint),
-      sports: Tone.from(const Color(0xFFB34700), canvas: _card, surfaceBlend: _tint),
-      sleep: Tone.from(const Color(0xFF4338CA), canvas: _card, surfaceBlend: _tint),
-      daily: Tone.from(const Color(0xFF0F766E), canvas: _card, surfaceBlend: _tint),
+      heart: Tone.from(
+        const Color(0xFFC2373C),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      nutrition: Tone.from(
+        const Color(0xFF127A38),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      emotional: Tone.from(
+        const Color(0xFF7E22CE),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      sports: Tone.from(
+        const Color(0xFFB34700),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      sleep: Tone.from(
+        const Color(0xFF4338CA),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      daily: Tone.from(
+        const Color(0xFF0F766E),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
       // Intensidad de una rutina. Comparte matices con la rampa de severidad
       // por convención visual (suave → exigente), no por significado clínico.
-      levelEasy: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
-      levelMedium: Tone.from(const Color(0xFFB45309), canvas: _card, surfaceBlend: _tint),
-      levelHard: Tone.from(const Color(0xFFC2373C), canvas: _card, surfaceBlend: _tint),
-      statusActive: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
-      statusScheduled: Tone.from(const Color(0xFF0F766E), canvas: _card, surfaceBlend: _tint),
-      statusClosed: Tone.from(const Color(0xFF5C6B82), canvas: _card, surfaceBlend: _tint),
+      levelEasy: Tone.from(
+        const Color(0xFF127A38),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      levelMedium: Tone.from(
+        const Color(0xFFB45309),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      levelHard: Tone.from(
+        const Color(0xFFC2373C),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      statusActive: Tone.from(
+        const Color(0xFF127A38),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      statusScheduled: Tone.from(
+        const Color(0xFF0F766E),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
+      statusClosed: Tone.from(
+        const Color(0xFF5C6B82),
+        canvas: _card,
+        surfaceBlend: _tint,
+      ),
     );
 
     final typography = AppTypography(

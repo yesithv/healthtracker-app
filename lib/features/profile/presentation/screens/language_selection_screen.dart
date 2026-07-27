@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
-import '../widgets/profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 
 /// Mixin that exposes a [validate] method for wizard-embedded screens.
 mixin WizardValidatable {
@@ -76,7 +76,7 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     final prefs = Provider.of<LocaleUnitsProvider>(context, listen: false);
 
     final content = SingleChildScrollView(
-      child: ProfileSettingsLayout(
+      child: SettingsPageLayout(
         icon: Icons.language_rounded,
         title: l10n.languageTitle,
         description: l10n.languageDescription,
@@ -149,21 +149,13 @@ class _LanguageTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           decoration: BoxDecoration(
-            color: isSelected
-                ? surfaces.brand.withValues(alpha: 0.05)
-                : surfaces.card,
+            color: isSelected ? surfaces.selection : surfaces.card,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected ? surfaces.brand : Colors.transparent,
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: surfaces.ink.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: surfaces.cardShadow,
           ),
           child: Row(
             children: [

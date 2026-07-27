@@ -36,9 +36,7 @@ class _PendingAccountBannerState extends State<PendingAccountBanner> {
       _notice = null;
     });
 
-    final result = await flushPendingAccount(
-      AccountDraft.fromProfile(profile),
-    );
+    final result = await flushPendingAccount(AccountDraft.fromProfile(profile));
     if (!mounted) return;
 
     setState(() {

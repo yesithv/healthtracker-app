@@ -311,13 +311,7 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: surfaces.ink.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
         border: Border.all(color: surfaces.inset, width: 1.5),
       ),
       child: Column(

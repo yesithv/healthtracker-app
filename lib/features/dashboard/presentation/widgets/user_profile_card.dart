@@ -56,7 +56,7 @@ class UserProfileCard extends StatelessWidget {
     final surfaces = Theme.of(context).surfaces;
     return CircleAvatar(
       radius: 36,
-      backgroundColor: Color.lerp(surfaces.card, surfaces.brand, 0.12),
+      backgroundColor: surfaces.selection,
       // Mismo icono en todos los temas; sólo cambia cómo se viste.
       child: Icon(Icons.person, size: 40, color: surfaces.brand),
     );
