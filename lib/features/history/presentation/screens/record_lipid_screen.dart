@@ -833,7 +833,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
             ),
           ),
           const SizedBox(width: 10),
-          Text('Cargando laboratorios…',
+          Text(l10n.lipidLabLoading,
               style: theme.type.body.copyWith(fontSize: 13)),
         ],
       );
@@ -843,7 +843,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '¿En qué laboratorio te hiciste el examen?',
+          l10n.lipidLabQuestion,
           style: theme.type.fieldLabel.copyWith(fontSize: 12),
         ),
         const SizedBox(height: 6),
@@ -863,13 +863,13 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
               style: theme.type.body.copyWith(color: surfaces.ink),
               iconEnabledColor: surfaces.inkSecondary,
               items: [
-                const DropdownMenuItem(value: _kNone, child: Text('No indicado / no sé')),
+                DropdownMenuItem(value: _kNone, child: Text(l10n.lipidLabNotSpecified)),
                 ..._labs.map((l) => DropdownMenuItem(
                       value: l.code,
                       child: Text(l.city == null ? l.name : '${l.name} · ${l.city}',
                           overflow: TextOverflow.ellipsis),
                     )),
-                const DropdownMenuItem(value: _kOther, child: Text('Otro (especificar)')),
+                DropdownMenuItem(value: _kOther, child: Text(l10n.lipidLabOther)),
               ],
               onChanged: (v) {
                 setState(() => _selectedLab = v ?? _kNone);

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/theme/theme_catalog.dart';
 import '../../../../core/theme/theme_context.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../widgets/theme_preview_card.dart';
 
 /// Desde dónde se ha abierto el selector. Cambia el remate de la pantalla, no
@@ -41,6 +42,7 @@ class ThemePickerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // `watch` es correcto aquí: al elegir, esta pantalla debe repintar la marca
     // de selección al instante.
+    final l10n = AppLocalizations.of(context)!;
     final themeProvider = context.watch<ThemeProvider>();
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
@@ -93,7 +95,7 @@ class ThemePickerScreen extends StatelessWidget {
                       context.go('/splash');
                     },
                     child: Text(
-                      'Continuar con ${themeProvider.spec.name}',
+                      l10n.themeContinueWith(themeProvider.spec.name),
                       textAlign: TextAlign.center,
                       style: theme.type.button.copyWith(
                         fontSize: 16,
@@ -117,6 +119,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
     final isSettings = mode == ThemePickerMode.settings;
@@ -142,19 +145,15 @@ class _Header extends StatelessWidget {
             ),
             const SizedBox(height: 16),
           ],
-          Text('BANCO DE TEMAS', style: theme.type.sectionLabel),
+          Text(l10n.themeBankLabel, style: theme.type.sectionLabel),
           const SizedBox(height: 10),
           Text(
-            isSettings ? 'Tema de la app' : 'Elige el aspecto',
+            isSettings ? l10n.profileAppTheme : l10n.themePickTitle,
             style: theme.type.screenTitle,
           ),
           const SizedBox(height: 10),
           Text(
-            isSettings
-                ? 'El cambio se aplica al instante y se recuerda. La navegación, '
-                      'los iconos y el significado de cada color se mantienen intactos.'
-                : 'Cambia colores y tipografía. La navegación, los iconos y '
-                      'el significado de cada color se mantienen intactos.',
+            isSettings ? l10n.themeSettingsBody : l10n.themePickBody,
             style: theme.type.body,
           ),
         ],

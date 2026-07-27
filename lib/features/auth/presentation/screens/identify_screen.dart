@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
@@ -64,7 +65,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = 'Error inesperado: $e');
+      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -89,7 +90,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = 'Error inesperado: $e');
+      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
     } finally {
       if (mounted) setState(() => _activating = false);
     }
@@ -97,6 +98,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
     // Hallazgo positivo («encontramos tu historial») = estado óptimo del tema.
@@ -123,14 +125,13 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
               Icon(Icons.badge_outlined, size: 56, color: surfaces.brand),
               const SizedBox(height: 16),
               Text(
-                'Traigamos tu historial',
+                l10n.identifyTitle,
                 textAlign: TextAlign.center,
                 style: theme.type.screenTitle.copyWith(fontSize: 24),
               ),
               const SizedBox(height: 8),
               Text(
-                'Ingresa tu documento (o email). Si ya eres paciente, cargamos tus datos; '
-                'si no, creamos tu cuenta.',
+                l10n.identifyBody,
                 textAlign: TextAlign.center,
                 style: theme.type.body,
               ),
@@ -140,8 +141,8 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 autofocus: true,
                 textInputAction: TextInputAction.go,
                 decoration: InputDecoration(
-                  labelText: 'Documento o email',
-                  hintText: 'Ej. 1032456789',
+                  labelText: l10n.identifyFieldLabel,
+                  hintText: l10n.identifyFieldHint,
                   prefixIcon: Icon(Icons.person_outline, color: surfaces.brand),
                   filled: true,
                   fillColor: surfaces.card,
@@ -174,7 +175,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Encontramos un historial clínico asociado a este documento.',
+                              l10n.identifyFoundTitle,
                               style: theme.type.button.copyWith(
                                 fontSize: 14,
                                 color: found.accent,
@@ -185,7 +186,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Podemos traerlo y activar tu cuenta para que veas tus datos desde el primer día.',
+                        l10n.identifyFoundBody,
                         style: theme.type.body.copyWith(
                           fontSize: 13,
                           color: found.accent,
@@ -212,7 +213,9 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                                     strokeWidth: 2, color: found.onAccent))
                             : const Icon(Icons.cloud_download_outlined),
                         label: Text(
-                          _activating ? 'Trayendo tu historial…' : 'Traer mi historial y continuar',
+                          _activating
+                              ? l10n.identifyBringingHistory
+                              : l10n.identifyBringHistory,
                           style: theme.type.button.copyWith(color: found.onAccent),
                         ),
                       ),
@@ -220,7 +223,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                         onPressed: _activating
                             ? null
                             : () => context.go('/onboarding'),
-                        child: Text('No soy yo — registrarme como nuevo',
+                        child: Text(l10n.identifyNotMe,
                             style: theme.type.body.copyWith(fontSize: 13)),
                       ),
                     ],
@@ -262,7 +265,7 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                               strokeWidth: 2, color: surfaces.onBrand))
-                      : Text('Continuar',
+                      : Text(l10n.continueAction,
                           style: theme.type.button.copyWith(
                               fontSize: 16, color: surfaces.onBrand)),
                 ),

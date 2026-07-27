@@ -1488,4 +1488,214 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get pendingAccountStillOffline =>
       'Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo.';
+
+  @override
+  String get identifyTitle => 'Traigamos tu historial';
+
+  @override
+  String get identifyBody =>
+      'Ingresa tu documento (o email). Si ya eres paciente, cargamos tus datos; si no, creamos tu cuenta.';
+
+  @override
+  String get identifyFieldLabel => 'Documento o email';
+
+  @override
+  String get identifyFieldHint => 'Ej. 1032456789';
+
+  @override
+  String get identifyFoundTitle =>
+      'Encontramos un historial clínico asociado a este documento.';
+
+  @override
+  String get identifyFoundBody =>
+      'Podemos traerlo y activar tu cuenta para que veas tus datos desde el primer día.';
+
+  @override
+  String get identifyBringHistory => 'Traer mi historial y continuar';
+
+  @override
+  String get identifyBringingHistory => 'Trayendo tu historial…';
+
+  @override
+  String get identifyNotMe => 'No soy yo — registrarme como nuevo';
+
+  @override
+  String get verifyAppBarTitle => 'Verificación';
+
+  @override
+  String get verifyTitle => 'Encontramos tu cuenta';
+
+  @override
+  String verifyBody(String identifier) {
+    return 'Verifica tu identidad para continuar con\n$identifier.';
+  }
+
+  @override
+  String get verifyPasswordLabel => 'Contraseña';
+
+  @override
+  String get verifyTestNotice =>
+      'Fase de pruebas: la contraseña es 1234. (Aquí irá el código OTP en producción.)';
+
+  @override
+  String get verifySubmit => 'Ingresar';
+
+  @override
+  String unexpectedError(String details) {
+    return 'Error inesperado: $details';
+  }
+
+  @override
+  String get accountSyncTitle => 'Cuenta y sincronización';
+
+  @override
+  String get accountYourAccount => 'Tu cuenta';
+
+  @override
+  String get accountPendingBody =>
+      'Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.';
+
+  @override
+  String get accountLoggedOutBody =>
+      'Inicia sesión si ya eres paciente, o regístrate para empezar.';
+
+  @override
+  String get accountFallbackName => 'Paciente';
+
+  @override
+  String get accountFromLegacy => 'Cuenta migrada del legacy';
+
+  @override
+  String get accountCreatedInApp => 'Cuenta creada en la app';
+
+  @override
+  String get accountSignOut => 'Salir';
+
+  @override
+  String get accountSyncSection => 'Sincronización';
+
+  @override
+  String get accountSyncBody => 'Sube tus registros locales al servidor.';
+
+  @override
+  String get accountSyncing => 'Sincronizando…';
+
+  @override
+  String get accountSyncNow => 'Sincronizar ahora';
+
+  @override
+  String get accountHaveAccount => 'Ya tengo cuenta (paciente migrado)';
+
+  @override
+  String get accountImNew => 'Soy nuevo (registrarme)';
+
+  @override
+  String get accountCreateAccount => 'Crear cuenta';
+
+  @override
+  String get accountNameLabel => 'Nombre';
+
+  @override
+  String get accountEmailLabel => 'Email';
+
+  @override
+  String get deviceScreenTitle => 'Mi dispositivo de medición';
+
+  @override
+  String get deviceNoneTitle => 'No uso ninguna';
+
+  @override
+  String get deviceNoneSubtitle =>
+      'Solo registraré medidas manuales (peso, cintura, talla).';
+
+  @override
+  String get deviceNoneSaved => 'Guardado: no usas bioimpedancia.';
+
+  @override
+  String get deviceCatalogError =>
+      'No se pudo actualizar el catálogo. Mostrando las opciones guardadas.';
+
+  @override
+  String get deviceAvailableScales => 'BÁSCULAS DISPONIBLES';
+
+  @override
+  String get deviceWhyItMatters =>
+      'Cada báscula de bioimpedancia interpreta la grasa, el músculo y la grasa visceral con rangos propios. Dinos cuál usas para mostrarte si tus valores están bajos, normales o altos. Puedes cambiarlo cuando quieras.';
+
+  @override
+  String get circumferencesSection => 'PERÍMETROS CORPORALES (OPCIONAL)';
+
+  @override
+  String get circWaist => 'Cintura';
+
+  @override
+  String get circHip => 'Cadera';
+
+  @override
+  String get circLowerAbdomen => 'Abdomen bajo';
+
+  @override
+  String get circArm => 'Brazo';
+
+  @override
+  String get circLeg => 'Pierna';
+
+  @override
+  String get circChestBust => 'Pecho/Busto';
+
+  @override
+  String get circAbdomenShort => 'Abd.';
+
+  @override
+  String get lipidLabQuestion => '¿En qué laboratorio te hiciste el examen?';
+
+  @override
+  String get lipidLabLoading => 'Cargando laboratorios…';
+
+  @override
+  String get lipidLabNotSpecified => 'No indicado / no sé';
+
+  @override
+  String get lipidLabOther => 'Otro (especificar)';
+
+  @override
+  String get compositionSkeletalMuscle => 'Músculo esquelético';
+
+  @override
+  String get compositionSkeletalMuscleRef => 'Como lo reporta tu báscula (%)';
+
+  @override
+  String get profileAppTheme => 'Tema de la app';
+
+  @override
+  String get profileRankObserver => 'Observador Vital';
+
+  @override
+  String get themeBankLabel => 'BANCO DE TEMAS';
+
+  @override
+  String get themePickTitle => 'Elige el aspecto';
+
+  @override
+  String get themePickBody =>
+      'Cambia colores y tipografía. La navegación, los iconos y el significado de cada color se mantienen intactos.';
+
+  @override
+  String get themeSettingsBody =>
+      'El cambio se aplica al instante y se recuerda. La navegación, los iconos y el significado de cada color se mantienen intactos.';
+
+  @override
+  String themeContinueWith(String theme) {
+    return 'Continuar con $theme';
+  }
+
+  @override
+  String deviceSelectedSaved(String device) {
+    return '$device seleccionada.';
+  }
+
+  @override
+  String deviceWillSyncLater(String message) {
+    return '$message Se sincronizará cuando haya conexión.';
+  }
 }

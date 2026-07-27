@@ -509,5 +509,282 @@
   "pendingAccountCreateNow": "Crear mi cuenta ahora",
   "pendingAccountCreating": "Creando tu cuenta…",
   "pendingAccountCreated": "Cuenta creada. Subiendo tus registros.",
-  "pendingAccountStillOffline": "Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo."
+  "pendingAccountStillOffline": "Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo.",
+  "identifyTitle": "Traigamos tu historial",
+  "@identifyTitle": {
+    "description": "identifyTitle"
+  },
+  "identifyBody": "Ingresa tu documento (o email). Si ya eres paciente, cargamos tus datos; si no, creamos tu cuenta.",
+  "@identifyBody": {
+    "description": "identifyBody"
+  },
+  "identifyFieldLabel": "Documento o email",
+  "@identifyFieldLabel": {
+    "description": "identifyFieldLabel"
+  },
+  "identifyFieldHint": "Ej. 1032456789",
+  "@identifyFieldHint": {
+    "description": "identifyFieldHint"
+  },
+  "identifyFoundTitle": "Encontramos un historial clínico asociado a este documento.",
+  "@identifyFoundTitle": {
+    "description": "identifyFoundTitle"
+  },
+  "identifyFoundBody": "Podemos traerlo y activar tu cuenta para que veas tus datos desde el primer día.",
+  "@identifyFoundBody": {
+    "description": "identifyFoundBody"
+  },
+  "identifyBringHistory": "Traer mi historial y continuar",
+  "@identifyBringHistory": {
+    "description": "identifyBringHistory"
+  },
+  "identifyBringingHistory": "Trayendo tu historial…",
+  "@identifyBringingHistory": {
+    "description": "identifyBringingHistory"
+  },
+  "identifyNotMe": "No soy yo — registrarme como nuevo",
+  "@identifyNotMe": {
+    "description": "identifyNotMe"
+  },
+  "verifyAppBarTitle": "Verificación",
+  "@verifyAppBarTitle": {
+    "description": "verifyAppBarTitle"
+  },
+  "verifyTitle": "Encontramos tu cuenta",
+  "@verifyTitle": {
+    "description": "verifyTitle"
+  },
+  "verifyBody": "Verifica tu identidad para continuar con\n{identifier}.",
+  "@verifyBody": {
+    "description": "verifyBody",
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Contraseña",
+  "@verifyPasswordLabel": {
+    "description": "verifyPasswordLabel"
+  },
+  "verifyTestNotice": "Fase de pruebas: la contraseña es 1234. (Aquí irá el código OTP en producción.)",
+  "@verifyTestNotice": {
+    "description": "verifyTestNotice"
+  },
+  "verifySubmit": "Ingresar",
+  "@verifySubmit": {
+    "description": "verifySubmit"
+  },
+  "unexpectedError": "Error inesperado: {details}",
+  "@unexpectedError": {
+    "description": "unexpectedError",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Cuenta y sincronización",
+  "@accountSyncTitle": {
+    "description": "accountSyncTitle"
+  },
+  "accountYourAccount": "Tu cuenta",
+  "@accountYourAccount": {
+    "description": "accountYourAccount"
+  },
+  "accountPendingBody": "Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.",
+  "@accountPendingBody": {
+    "description": "accountPendingBody"
+  },
+  "accountLoggedOutBody": "Inicia sesión si ya eres paciente, o regístrate para empezar.",
+  "@accountLoggedOutBody": {
+    "description": "accountLoggedOutBody"
+  },
+  "accountFallbackName": "Paciente",
+  "@accountFallbackName": {
+    "description": "accountFallbackName"
+  },
+  "accountFromLegacy": "Cuenta migrada del legacy",
+  "@accountFromLegacy": {
+    "description": "accountFromLegacy"
+  },
+  "accountCreatedInApp": "Cuenta creada en la app",
+  "@accountCreatedInApp": {
+    "description": "accountCreatedInApp"
+  },
+  "accountSignOut": "Salir",
+  "@accountSignOut": {
+    "description": "accountSignOut"
+  },
+  "accountSyncSection": "Sincronización",
+  "@accountSyncSection": {
+    "description": "accountSyncSection"
+  },
+  "accountSyncBody": "Sube tus registros locales al servidor.",
+  "@accountSyncBody": {
+    "description": "accountSyncBody"
+  },
+  "accountSyncing": "Sincronizando…",
+  "@accountSyncing": {
+    "description": "accountSyncing"
+  },
+  "accountSyncNow": "Sincronizar ahora",
+  "@accountSyncNow": {
+    "description": "accountSyncNow"
+  },
+  "accountHaveAccount": "Ya tengo cuenta (paciente migrado)",
+  "@accountHaveAccount": {
+    "description": "accountHaveAccount"
+  },
+  "accountImNew": "Soy nuevo (registrarme)",
+  "@accountImNew": {
+    "description": "accountImNew"
+  },
+  "accountCreateAccount": "Crear cuenta",
+  "@accountCreateAccount": {
+    "description": "accountCreateAccount"
+  },
+  "accountNameLabel": "Nombre",
+  "@accountNameLabel": {
+    "description": "accountNameLabel"
+  },
+  "accountEmailLabel": "Email",
+  "@accountEmailLabel": {
+    "description": "accountEmailLabel"
+  },
+  "deviceScreenTitle": "Mi dispositivo de medición",
+  "@deviceScreenTitle": {
+    "description": "deviceScreenTitle"
+  },
+  "deviceNoneTitle": "No uso ninguna",
+  "@deviceNoneTitle": {
+    "description": "deviceNoneTitle"
+  },
+  "deviceNoneSubtitle": "Solo registraré medidas manuales (peso, cintura, talla).",
+  "@deviceNoneSubtitle": {
+    "description": "deviceNoneSubtitle"
+  },
+  "deviceNoneSaved": "Guardado: no usas bioimpedancia.",
+  "@deviceNoneSaved": {
+    "description": "deviceNoneSaved"
+  },
+  "deviceCatalogError": "No se pudo actualizar el catálogo. Mostrando las opciones guardadas.",
+  "@deviceCatalogError": {
+    "description": "deviceCatalogError"
+  },
+  "deviceAvailableScales": "BÁSCULAS DISPONIBLES",
+  "@deviceAvailableScales": {
+    "description": "deviceAvailableScales"
+  },
+  "deviceWhyItMatters": "Cada báscula de bioimpedancia interpreta la grasa, el músculo y la grasa visceral con rangos propios. Dinos cuál usas para mostrarte si tus valores están bajos, normales o altos. Puedes cambiarlo cuando quieras.",
+  "@deviceWhyItMatters": {
+    "description": "deviceWhyItMatters"
+  },
+  "circumferencesSection": "PERÍMETROS CORPORALES (OPCIONAL)",
+  "@circumferencesSection": {
+    "description": "circumferencesSection"
+  },
+  "circWaist": "Cintura",
+  "@circWaist": {
+    "description": "circWaist"
+  },
+  "circHip": "Cadera",
+  "@circHip": {
+    "description": "circHip"
+  },
+  "circLowerAbdomen": "Abdomen bajo",
+  "@circLowerAbdomen": {
+    "description": "circLowerAbdomen"
+  },
+  "circArm": "Brazo",
+  "@circArm": {
+    "description": "circArm"
+  },
+  "circLeg": "Pierna",
+  "@circLeg": {
+    "description": "circLeg"
+  },
+  "circChestBust": "Pecho/Busto",
+  "@circChestBust": {
+    "description": "circChestBust"
+  },
+  "circAbdomenShort": "Abd.",
+  "@circAbdomenShort": {
+    "description": "circAbdomenShort"
+  },
+  "lipidLabQuestion": "¿En qué laboratorio te hiciste el examen?",
+  "@lipidLabQuestion": {
+    "description": "lipidLabQuestion"
+  },
+  "lipidLabLoading": "Cargando laboratorios…",
+  "@lipidLabLoading": {
+    "description": "lipidLabLoading"
+  },
+  "lipidLabNotSpecified": "No indicado / no sé",
+  "@lipidLabNotSpecified": {
+    "description": "lipidLabNotSpecified"
+  },
+  "lipidLabOther": "Otro (especificar)",
+  "@lipidLabOther": {
+    "description": "lipidLabOther"
+  },
+  "compositionSkeletalMuscle": "Músculo esquelético",
+  "@compositionSkeletalMuscle": {
+    "description": "compositionSkeletalMuscle"
+  },
+  "compositionSkeletalMuscleRef": "Como lo reporta tu báscula (%)",
+  "@compositionSkeletalMuscleRef": {
+    "description": "compositionSkeletalMuscleRef"
+  },
+  "profileAppTheme": "Tema de la app",
+  "@profileAppTheme": {
+    "description": "profileAppTheme"
+  },
+  "profileRankObserver": "Observador Vital",
+  "@profileRankObserver": {
+    "description": "profileRankObserver"
+  },
+  "themeBankLabel": "BANCO DE TEMAS",
+  "@themeBankLabel": {
+    "description": "themeBankLabel"
+  },
+  "themePickTitle": "Elige el aspecto",
+  "@themePickTitle": {
+    "description": "themePickTitle"
+  },
+  "themePickBody": "Cambia colores y tipografía. La navegación, los iconos y el significado de cada color se mantienen intactos.",
+  "@themePickBody": {
+    "description": "themePickBody"
+  },
+  "themeSettingsBody": "El cambio se aplica al instante y se recuerda. La navegación, los iconos y el significado de cada color se mantienen intactos.",
+  "@themeSettingsBody": {
+    "description": "themeSettingsBody"
+  },
+  "themeContinueWith": "Continuar con {theme}",
+  "@themeContinueWith": {
+    "description": "themeContinueWith",
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} seleccionada.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    },
+    "description": "deviceSelectedSaved"
+  },
+  "deviceWillSyncLater": "{message} Se sincronizará cuando haya conexión.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    },
+    "description": "deviceWillSyncLater"
+  }
 }

@@ -322,7 +322,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Observador Vital',
+                        l10n.profileRankObserver,
                         style: theme.type.cardTitle.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 12),
@@ -414,7 +414,7 @@ class ProfileScreen extends StatelessWidget {
                 // --- MENU ITEMS ---
                 _MenuTile(
                   icon: Icons.sync,
-                  title: 'Cuenta y sincronización',
+                  title: l10n.accountSyncTitle,
                   tone: Tone.from(surfaces.brand, canvas: surfaces.card),
                   onTap: () => context.push('/profile/account'),
                 ),
@@ -426,7 +426,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 _MenuTile(
                   icon: Icons.monitor_heart_outlined,
-                  title: 'Mi dispositivo de medición',
+                  title: l10n.deviceScreenTitle,
                   tone: Tone.from(surfaces.brand, canvas: surfaces.card),
                   onTap: () => context.push('/profile/device'),
                 ),
@@ -439,7 +439,7 @@ class ProfileScreen extends StatelessWidget {
                 // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
                 _MenuTile(
                   icon: Icons.palette_outlined,
-                  title: 'Tema de la app',
+                  title: l10n.profileAppTheme,
                   tone: _wayfinding(theme, ContentCategory.emotional),
                   onTap: () => context.push('/profile/theme'),
                 ),

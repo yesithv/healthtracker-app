@@ -490,5 +490,103 @@
   "pendingAccountCreateNow": "Criar a minha conta agora",
   "pendingAccountCreating": "A criar a sua conta…",
   "pendingAccountCreated": "Conta criada. A enviar os seus registos.",
-  "pendingAccountStillOffline": "Ainda sem ligação. Os seus dados continuam seguros neste dispositivo."
+  "pendingAccountStillOffline": "Ainda sem ligação. Os seus dados continuam seguros neste dispositivo.",
+  "identifyTitle": "Vamos buscar o seu histórico",
+  "identifyBody": "Introduza o seu documento (ou email). Se já é paciente carregamos os seus dados; caso contrário, criamos a sua conta.",
+  "identifyFieldLabel": "Documento ou email",
+  "identifyFieldHint": "Ex.: 1032456789",
+  "identifyFoundTitle": "Encontrámos um histórico clínico associado a este documento.",
+  "identifyFoundBody": "Podemos trazê-lo e ativar a sua conta para ver os seus dados desde o primeiro dia.",
+  "identifyBringHistory": "Trazer o meu histórico e continuar",
+  "identifyBringingHistory": "A trazer o seu histórico…",
+  "identifyNotMe": "Não sou eu — registar-me como novo",
+  "verifyAppBarTitle": "Verificação",
+  "verifyTitle": "Encontrámos a sua conta",
+  "verifyBody": "Verifique a sua identidade para continuar com\n{identifier}.",
+  "@verifyBody": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Palavra-passe",
+  "verifyTestNotice": "Fase de testes: a palavra-passe é 1234. (Em produção ficará aqui o código OTP.)",
+  "verifySubmit": "Entrar",
+  "unexpectedError": "Erro inesperado: {details}",
+  "@unexpectedError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Conta e sincronização",
+  "accountYourAccount": "A sua conta",
+  "accountPendingBody": "Os seus dados estão neste dispositivo. Falta criar a conta no servidor.",
+  "accountLoggedOutBody": "Inicie sessão se já é paciente, ou registe-se para começar.",
+  "accountFallbackName": "Paciente",
+  "accountFromLegacy": "Conta migrada do sistema anterior",
+  "accountCreatedInApp": "Conta criada na app",
+  "accountSignOut": "Sair",
+  "accountSyncSection": "Sincronização",
+  "accountSyncBody": "Envie os seus registos locais para o servidor.",
+  "accountSyncing": "A sincronizar…",
+  "accountSyncNow": "Sincronizar agora",
+  "accountHaveAccount": "Já tenho conta (paciente migrado)",
+  "accountImNew": "Sou novo (registar-me)",
+  "accountCreateAccount": "Criar conta",
+  "accountNameLabel": "Nome",
+  "accountEmailLabel": "Email",
+  "deviceScreenTitle": "O meu dispositivo de medição",
+  "deviceNoneTitle": "Não uso nenhuma",
+  "deviceNoneSubtitle": "Vou registar apenas medidas manuais (peso, cintura, altura).",
+  "deviceNoneSaved": "Guardado: não usa bioimpedância.",
+  "deviceCatalogError": "Não foi possível atualizar o catálogo. A mostrar as opções guardadas.",
+  "deviceAvailableScales": "BALANÇAS DISPONÍVEIS",
+  "deviceWhyItMatters": "Cada balança de bioimpedância interpreta a gordura, o músculo e a gordura visceral com intervalos próprios. Diga-nos qual usa para lhe mostrarmos se os seus valores estão baixos, normais ou altos. Pode mudar quando quiser.",
+  "circumferencesSection": "PERÍMETROS CORPORAIS (OPCIONAL)",
+  "circWaist": "Cintura",
+  "circHip": "Anca",
+  "circLowerAbdomen": "Abdómen inferior",
+  "circArm": "Braço",
+  "circLeg": "Perna",
+  "circChestBust": "Peito/Busto",
+  "circAbdomenShort": "Abd.",
+  "lipidLabQuestion": "Em que laboratório fez o exame?",
+  "lipidLabLoading": "A carregar laboratórios…",
+  "lipidLabNotSpecified": "Não indicado / não sei",
+  "lipidLabOther": "Outro (especificar)",
+  "compositionSkeletalMuscle": "Músculo esquelético",
+  "compositionSkeletalMuscleRef": "Como reportado pela sua balança (%)",
+  "profileAppTheme": "Tema da app",
+  "profileRankObserver": "Observador Vital",
+  "themeBankLabel": "BIBLIOTECA DE TEMAS",
+  "themePickTitle": "Escolha o aspeto",
+  "themePickBody": "Muda cores e tipografia. A navegação, os ícones e o significado de cada cor mantêm-se intactos.",
+  "themeSettingsBody": "A alteração aplica-se de imediato e fica guardada. A navegação, os ícones e o significado de cada cor mantêm-se intactos.",
+  "themeContinueWith": "Continuar com {theme}",
+  "@themeContinueWith": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} selecionada.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWillSyncLater": "{message} Será sincronizado quando houver ligação.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  }
 }

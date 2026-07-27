@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +69,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = 'Error inesperado: $e');
+      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -115,6 +116,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   // ---------------------------------------------------------------- logged out
 
   Widget _loggedOut() {
+    final l10n = AppLocalizations.of(context)!;
     final surfaces = Theme.of(context).surfaces;
     // Con un alta pendiente, el usuario ya rellenó sus datos: lo que necesita es
     // que salgan al servidor, no volver a registrarse desde cero. El aviso va
@@ -125,7 +127,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Tu cuenta',
+          l10n.accountYourAccount,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -135,8 +137,8 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
         const SizedBox(height: 4),
         Text(
           pending
-              ? 'Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.'
-              : 'Inicia sesión si ya eres paciente, o regístrate para empezar.',
+              ? l10n.accountPendingBody
+              : l10n.accountLoggedOutBody,
           style: TextStyle(color: surfaces.inkSecondary),
         ),
         if (_error != null) _errorBanner(_error!),
@@ -176,6 +178,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   // ----------------------------------------------------------------- logged in
 
   Widget _loggedIn(PatientSession session) {
+    final l10n = AppLocalizations.of(context)!;
     final surfaces = Theme.of(context).surfaces;
     final sync = context.watch<SyncService>();
     final name = [
@@ -199,7 +202,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name.isEmpty ? 'Paciente' : name,
+                        name.isEmpty ? l10n.accountFallbackName : name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -207,8 +210,8 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                       ),
                       Text(
                         session.isMigrated
-                            ? 'Cuenta migrada del legacy'
-                            : 'Cuenta creada en la app',
+                            ? l10n.accountFromLegacy
+                            : l10n.accountCreatedInApp,
                         style: TextStyle(
                           color: surfaces.inkSecondary,
                           fontSize: 12,
@@ -219,7 +222,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                 ),
                 TextButton(
                   onPressed: () => PatientSession.instance.clear(),
-                  child: const Text('Salir'),
+                  child: Text(l10n.accountSignOut),
                 ),
               ],
             ),
@@ -228,13 +231,13 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
         const SizedBox(height: 16),
         _card(
           children: [
-            const Text(
-              'Sincronización',
+            Text(
+              l10n.accountSyncSection,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              sync.message ?? 'Sube tus registros locales al servidor.',
+              sync.message ?? l10n.accountSyncBody,
               style: TextStyle(color: surfaces.inkSecondary),
             ),
             const SizedBox(height: 12),
@@ -252,7 +255,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                     )
                   : const Icon(Icons.cloud_upload_outlined),
               label: Text(
-                sync.isSyncing ? 'Sincronizando…' : 'Sincronizar ahora',
+                sync.isSyncing ? l10n.accountSyncing : l10n.accountSyncNow,
               ),
             ),
           ],
@@ -325,25 +328,26 @@ class _LoginCardState extends State<_LoginCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _Section(
-      title: 'Ya tengo cuenta (paciente migrado)',
+      title: l10n.accountHaveAccount,
       children: [
         TextField(
           controller: _id,
-          decoration: const InputDecoration(labelText: 'Documento o email'),
+          decoration: InputDecoration(labelText: l10n.identifyFieldLabel),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _pass,
           obscureText: true,
-          decoration: const InputDecoration(labelText: 'Contraseña'),
+          decoration: InputDecoration(labelText: l10n.verifyPasswordLabel),
         ),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: widget.busy || _id.text.trim().isEmpty
               ? null
               : () => widget.onSubmit(_id.text.trim(), _pass.text),
-          child: const Text('Iniciar sesión'),
+          child: Text(AppLocalizations.of(context)!.introSignIn),
         ),
       ],
     );

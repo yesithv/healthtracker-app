@@ -350,9 +350,9 @@ class _RecordAnthropometricScreenState
                     );
                   }),
                   const SizedBox(height: 32),
-                  _buildSectionTitle('PERÍMETROS CORPORALES (OPCIONAL)'),
+                  _buildSectionTitle(l10n.circumferencesSection),
                   const SizedBox(height: 12),
-                  _buildCircumferencesCard(),
+                  _buildCircumferencesCard(l10n),
                   const SizedBox(height: 32),
                   _buildSectionTitle(l10n.commentOptional),
                   const SizedBox(height: 12),
@@ -758,28 +758,28 @@ class _RecordAnthropometricScreenState
 
   /// Tarjeta con los 6 perímetros (cm) que también mide la consulta. Todos
   /// opcionales: se guarda solo lo diligenciado.
-  Widget _buildCircumferencesCard() {
+  Widget _buildCircumferencesCard(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: _theme.surfaces.cardDecoration(),
       child: Column(
         children: [
           Row(children: [
-            Expanded(child: _buildCmField('Cintura', _waistController)),
+            Expanded(child: _buildCmField(l10n.circWaist, _waistController)),
             const SizedBox(width: 12),
-            Expanded(child: _buildCmField('Cadera', _hipController)),
+            Expanded(child: _buildCmField(l10n.circHip, _hipController)),
           ]),
           const SizedBox(height: 12),
           Row(children: [
-            Expanded(child: _buildCmField('Abdomen bajo', _lowerAbdomenController)),
+            Expanded(child: _buildCmField(l10n.circLowerAbdomen, _lowerAbdomenController)),
             const SizedBox(width: 12),
-            Expanded(child: _buildCmField('Brazo', _armController)),
+            Expanded(child: _buildCmField(l10n.circArm, _armController)),
           ]),
           const SizedBox(height: 12),
           Row(children: [
-            Expanded(child: _buildCmField('Pierna', _legController)),
+            Expanded(child: _buildCmField(l10n.circLeg, _legController)),
             const SizedBox(width: 12),
-            Expanded(child: _buildCmField('Pecho/Busto', _chestBustController)),
+            Expanded(child: _buildCmField(l10n.circChestBust, _chestBustController)),
           ]),
         ],
       ),

@@ -224,26 +224,23 @@ Dos cosas que se quedan a propósito con color fijo:
   dos formatos. Mapearlos a `alert` y `optimal` sería mentir: exportar un archivo
   no es una alerta ni un resultado óptimo.
 
-Deudas conocidas, anteriores a este trabajo:
+Las dos deudas que arrastraba este trabajo están saldadas:
 
-- `identify_screen.dart` y `verify_screen.dart` tienen **todos sus textos en
-  español escritos a mano**, sin pasar por `l10n`. Como el resto de la app sigue
-  el idioma del dispositivo, en un móvil en inglés esas dos pantallas se ven en
-  español mientras las demás están en inglés.
-- En `record_anthropometric_screen.dart`, el bloque de **perímetros corporales**
-  tiene su rótulo y sus seis etiquetas en español a mano (`'Cintura'`,
-  `'Cadera'`…), con el mismo efecto en un dispositivo en inglés. Lo mismo con el
-  selector de laboratorio de `record_lipid_screen.dart` («¿En qué laboratorio te
-  hiciste el examen?», «No indicado / no sé», «Otro (especificar)») y con
-  «Músculo esquelético» en `record_body_composition_screen.dart`.
-- El aviso de «guardado» de composición corporal usa el color de la FAMILIA,
-  mientras las otras tres pantallas usan el verde de éxito. Se dejó como estaba
-  —solo se cambió el color a mano por su token— porque unificarlo sería cambiar
-  la interfaz, no aplicar el tema.
-- En la hoja «Registrar indicadores», solo **Antropometría** navega; las otras
-  tres tarjetas cierran la hoja sin ir a ninguna parte. Las cuatro rutas existen
-  y las cuatro pantallas se abren desde el panel y desde Historial, así que es
-  un cable sin conectar, no una pantalla que falte.
+- Los **textos en español escritos a mano** —identificación, verificación,
+  cuenta y sincronización, mi dispositivo, perímetros corporales, el selector de
+  laboratorio, «Músculo esquelético» y la propia pantalla 0— pasan por `l10n` en
+  los cinco idiomas. Eran invisibles desde un dispositivo en español, que es
+  justo por lo que duraron tanto.
+- En la hoja «Registrar indicadores», **las cuatro tarjetas navegan**. Solo lo
+  hacía «Antropometría»; las otras tres cerraban la hoja y no iban a ninguna
+  parte, aunque las cuatro rutas existían.
+
+`test/core/l10n/no_hardcoded_strings_test.dart` fija las dos. La primera leyendo
+el código en busca de cadenas visibles que «suenen» a español —por tilde/eñe o
+por palabras funcionales, no por «tiene letras», para que no salte con `mmHg` ni
+con `LDL`—. Ninguna prueba de widget habría encontrado estos dos defectos: no hay
+nada que falle, solo algo que se lee mal en un idioma que el desarrollador no
+tiene puesto.
 
 ## El flujo de entrada
 

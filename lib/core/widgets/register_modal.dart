@@ -110,19 +110,28 @@ class _RegisterModalContent extends StatelessWidget {
                     icon: Icons.favorite,
                     label: l10n.vitalSigns,
                     family: MetricFamily.vitals,
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context.push('/record-vital-signs');
+                    },
                   ),
                   _RegisterOption(
                     icon: Icons.bloodtype,
                     label: l10n.lipidProfile,
                     family: MetricFamily.lipids,
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context.push('/record-lipid');
+                    },
                   ),
                   _RegisterOption(
                     icon: Icons.accessibility_new,
                     label: l10n.bodyComposition,
                     family: MetricFamily.bodyComposition,
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context.push('/record-body-composition');
+                    },
                   ),
                 ],
               ),

@@ -514,8 +514,8 @@ class _RecordBodyCompositionScreenState
                     child: Column(
                       children: [
                         _buildOptionalDoubleField(
-                          label: 'Músculo esquelético',
-                          refText: 'Como lo reporta tu báscula (%)',
+                          label: l10n.compositionSkeletalMuscle,
+                          refText: l10n.compositionSkeletalMuscleRef,
                           value: musclePct,
                           unit: '%',
                           hint: 'Ej: 24.9',

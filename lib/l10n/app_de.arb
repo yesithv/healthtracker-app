@@ -490,5 +490,103 @@
   "pendingAccountCreateNow": "Mein Konto jetzt erstellen",
   "pendingAccountCreating": "Dein Konto wird erstellt…",
   "pendingAccountCreated": "Konto erstellt. Deine Einträge werden hochgeladen.",
-  "pendingAccountStillOffline": "Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät."
+  "pendingAccountStillOffline": "Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät.",
+  "identifyTitle": "Holen wir deine Historie",
+  "identifyBody": "Gib deine Ausweisnummer (oder E-Mail) ein. Wenn du bereits Patient bist, laden wir deine Daten; sonst legen wir dein Konto an.",
+  "identifyFieldLabel": "Ausweisnummer oder E-Mail",
+  "identifyFieldHint": "z. B. 1032456789",
+  "identifyFoundTitle": "Wir haben eine Krankengeschichte zu dieser Ausweisnummer gefunden.",
+  "identifyFoundBody": "Wir können sie übernehmen und dein Konto aktivieren, damit du deine Daten vom ersten Tag an siehst.",
+  "identifyBringHistory": "Historie übernehmen und fortfahren",
+  "identifyBringingHistory": "Historie wird übernommen …",
+  "identifyNotMe": "Das bin nicht ich – neu registrieren",
+  "verifyAppBarTitle": "Verifizierung",
+  "verifyTitle": "Wir haben dein Konto gefunden",
+  "verifyBody": "Bestätige deine Identität, um mit\n{identifier} fortzufahren.",
+  "@verifyBody": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Passwort",
+  "verifyTestNotice": "Testphase: Das Passwort lautet 1234. (In der Produktion steht hier der OTP-Code.)",
+  "verifySubmit": "Anmelden",
+  "unexpectedError": "Unerwarteter Fehler: {details}",
+  "@unexpectedError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Konto und Synchronisierung",
+  "accountYourAccount": "Dein Konto",
+  "accountPendingBody": "Deine Daten liegen auf diesem Gerät. Das Konto muss noch auf dem Server angelegt werden.",
+  "accountLoggedOutBody": "Melde dich an, wenn du bereits Patient bist, oder registriere dich.",
+  "accountFallbackName": "Patient",
+  "accountFromLegacy": "Aus dem Altsystem übernommenes Konto",
+  "accountCreatedInApp": "In der App erstelltes Konto",
+  "accountSignOut": "Abmelden",
+  "accountSyncSection": "Synchronisierung",
+  "accountSyncBody": "Lade deine lokalen Einträge auf den Server.",
+  "accountSyncing": "Wird synchronisiert …",
+  "accountSyncNow": "Jetzt synchronisieren",
+  "accountHaveAccount": "Ich habe bereits ein Konto (übernommener Patient)",
+  "accountImNew": "Ich bin neu (registrieren)",
+  "accountCreateAccount": "Konto erstellen",
+  "accountNameLabel": "Name",
+  "accountEmailLabel": "E-Mail",
+  "deviceScreenTitle": "Mein Messgerät",
+  "deviceNoneTitle": "Ich benutze keine",
+  "deviceNoneSubtitle": "Ich erfasse nur manuelle Messwerte (Gewicht, Taille, Größe).",
+  "deviceNoneSaved": "Gespeichert: Du nutzt keine Bioimpedanz.",
+  "deviceCatalogError": "Katalog konnte nicht aktualisiert werden. Es werden die gespeicherten Optionen angezeigt.",
+  "deviceAvailableScales": "VERFÜGBARE WAAGEN",
+  "deviceWhyItMatters": "Jede Bioimpedanzwaage interpretiert Fett, Muskeln und viszerales Fett mit eigenen Bereichen. Sag uns, welche du nutzt, damit wir zeigen können, ob deine Werte niedrig, normal oder hoch sind. Du kannst das jederzeit ändern.",
+  "circumferencesSection": "KÖRPERUMFÄNGE (OPTIONAL)",
+  "circWaist": "Taille",
+  "circHip": "Hüfte",
+  "circLowerAbdomen": "Unterbauch",
+  "circArm": "Arm",
+  "circLeg": "Bein",
+  "circChestBust": "Brust/Büste",
+  "circAbdomenShort": "Bauch",
+  "lipidLabQuestion": "In welchem Labor wurde der Test gemacht?",
+  "lipidLabLoading": "Labore werden geladen …",
+  "lipidLabNotSpecified": "Nicht angegeben / weiß nicht",
+  "lipidLabOther": "Andere (angeben)",
+  "compositionSkeletalMuscle": "Skelettmuskulatur",
+  "compositionSkeletalMuscleRef": "Wie von deiner Waage angegeben (%)",
+  "profileAppTheme": "App-Design",
+  "profileRankObserver": "Vitaler Beobachter",
+  "themeBankLabel": "DESIGN-BIBLIOTHEK",
+  "themePickTitle": "Wähle das Aussehen",
+  "themePickBody": "Ändert Farben und Typografie. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.",
+  "themeSettingsBody": "Die Änderung wirkt sofort und wird gemerkt. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.",
+  "themeContinueWith": "Weiter mit {theme}",
+  "@themeContinueWith": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} ausgewählt.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWillSyncLater": "{message} Wird synchronisiert, sobald du online bist.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  }
 }

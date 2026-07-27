@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
@@ -31,21 +32,25 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
 
   Future<void> _select(MeasuringDevice device) async {
     final provider = context.read<MeasuringDeviceProvider>();
+    // El texto se resuelve ANTES del await: después, usar el context para
+    // leerlo sería usarlo cruzando un hueco asíncrono.
+    final message = AppLocalizations.of(context)!
+        .deviceSelectedSaved(device.name);
     await provider.select(device);
-    _confirm('${device.name} seleccionada.', provider.pendingSync);
+    _confirm(message, provider.pendingSync);
   }
 
   Future<void> _selectNone() async {
     final provider = context.read<MeasuringDeviceProvider>();
+    final message = AppLocalizations.of(context)!.deviceNoneSaved;
     await provider.selectNone();
-    _confirm('Guardado: no usas bioimpedancia.', provider.pendingSync);
+    _confirm(message, provider.pendingSync);
   }
 
   void _confirm(String message, bool pending) {
     if (!mounted) return;
-    final text = pending
-        ? '$message Se sincronizará cuando haya conexión.'
-        : message;
+    final l10n = AppLocalizations.of(context)!;
+    final text = pending ? l10n.deviceWillSyncLater(message) : message;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(text)));
@@ -53,13 +58,14 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final surfaces = Theme.of(context).surfaces;
     final provider = context.watch<MeasuringDeviceProvider>();
 
     return Scaffold(
       backgroundColor: surfaces.canvas,
       appBar: AppBar(
-        title: const Text('Mi dispositivo de medición'),
+        title: Text(l10n.deviceScreenTitle),
         backgroundColor: surfaces.card,
         foregroundColor: surfaces.ink,
         elevation: 0,
@@ -76,14 +82,14 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
             ),
           if (provider.catalogError != null)
             _noticeBanner(
-              'No se pudo actualizar el catálogo. Mostrando las opciones guardadas.',
+              l10n.deviceCatalogError,
             ),
 
           // Opción "ninguna".
           _deviceTile(
-            title: 'No uso ninguna',
+            title: l10n.deviceNoneTitle,
             subtitle:
-                'Solo registraré medidas manuales (peso, cintura, talla).',
+                l10n.deviceNoneSubtitle,
             icon: Icons.block,
             selected: provider.usesNoDevice,
             onTap: _selectNone,
@@ -92,7 +98,7 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
           Padding(
             padding: EdgeInsets.only(left: 4, bottom: 8, top: 8),
             child: Text(
-              'BÁSCULAS DISPONIBLES',
+              l10n.deviceAvailableScales,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -121,6 +127,7 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
   }
 
   Widget _headerCard() {
+    final l10n = AppLocalizations.of(context)!;
     final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -135,9 +142,7 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Cada báscula de bioimpedancia interpreta la grasa, el músculo y la grasa visceral '
-              'con rangos propios. Dinos cuál usas para mostrarte si tus valores están bajos, '
-              'normales o altos. Puedes cambiarlo cuando quieras.',
+              l10n.deviceWhyItMatters,
               style: TextStyle(fontSize: 13, height: 1.5, color: surfaces.ink),
             ),
           ),

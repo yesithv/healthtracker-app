@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -97,7 +98,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = 'Error inesperado: $e');
+      setState(() => _error = AppLocalizations.of(context)!.unexpectedError('$e'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -105,6 +106,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
 
@@ -118,7 +120,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.go('/identify'),
         ),
-        title: Text('Verificación', style: theme.type.cardTitle),
+        title: Text(l10n.verifyAppBarTitle, style: theme.type.cardTitle),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -131,18 +133,18 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   size: 56, color: surfaces.brand),
               const SizedBox(height: 16),
               Text(
-                'Encontramos tu cuenta',
+                l10n.verifyTitle,
                 textAlign: TextAlign.center,
                 style: theme.type.screenTitle.copyWith(fontSize: 22),
               ),
               const SizedBox(height: 6),
               Text(
-                'Verifica tu identidad para continuar con\n${widget.identifier}.',
+                l10n.verifyBody(widget.identifier),
                 textAlign: TextAlign.center,
                 style: theme.type.body,
               ),
               const SizedBox(height: 28),
-              _label('Contraseña'),
+              _label(l10n.verifyPasswordLabel),
               TextField(
                 controller: _passController,
                 autofocus: true,
@@ -152,7 +154,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Fase de pruebas: la contraseña es 1234. (Aquí irá el código OTP en producción.)',
+                l10n.verifyTestNotice,
                 style: theme.type.meta,
               ),
               if (_error != null) ...[
@@ -194,7 +196,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         height: 20,
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: surfaces.onBrand))
-                    : Text('Ingresar',
+                    : Text(l10n.verifySubmit,
                         style: theme.type.button.copyWith(
                             fontSize: 16, color: surfaces.onBrand)),
               ),

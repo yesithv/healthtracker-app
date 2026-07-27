@@ -1487,4 +1487,215 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pendingAccountStillOffline =>
       'Still no connection. Your data is safe on this device.';
+
+  @override
+  String get identifyTitle => 'Let us bring your history';
+
+  @override
+  String get identifyBody =>
+      'Enter your ID number (or email). If you are already a patient we will load your data; if not, we will create your account.';
+
+  @override
+  String get identifyFieldLabel => 'ID number or email';
+
+  @override
+  String get identifyFieldHint => 'e.g. 1032456789';
+
+  @override
+  String get identifyFoundTitle =>
+      'We found a medical history linked to this ID.';
+
+  @override
+  String get identifyFoundBody =>
+      'We can bring it over and activate your account so you see your data from day one.';
+
+  @override
+  String get identifyBringHistory => 'Bring my history and continue';
+
+  @override
+  String get identifyBringingHistory => 'Bringing your history…';
+
+  @override
+  String get identifyNotMe => 'That\'s not me — sign me up as new';
+
+  @override
+  String get verifyAppBarTitle => 'Verification';
+
+  @override
+  String get verifyTitle => 'We found your account';
+
+  @override
+  String verifyBody(String identifier) {
+    return 'Verify your identity to continue with\n$identifier.';
+  }
+
+  @override
+  String get verifyPasswordLabel => 'Password';
+
+  @override
+  String get verifyTestNotice =>
+      'Test phase: the password is 1234. (An OTP code will go here in production.)';
+
+  @override
+  String get verifySubmit => 'Sign in';
+
+  @override
+  String unexpectedError(String details) {
+    return 'Unexpected error: $details';
+  }
+
+  @override
+  String get accountSyncTitle => 'Account and sync';
+
+  @override
+  String get accountYourAccount => 'Your account';
+
+  @override
+  String get accountPendingBody =>
+      'Your data is on this device. The account still has to be created on the server.';
+
+  @override
+  String get accountLoggedOutBody =>
+      'Sign in if you are already a patient, or register to get started.';
+
+  @override
+  String get accountFallbackName => 'Patient';
+
+  @override
+  String get accountFromLegacy => 'Account migrated from the legacy system';
+
+  @override
+  String get accountCreatedInApp => 'Account created in the app';
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountSyncSection => 'Sync';
+
+  @override
+  String get accountSyncBody => 'Upload your local records to the server.';
+
+  @override
+  String get accountSyncing => 'Syncing…';
+
+  @override
+  String get accountSyncNow => 'Sync now';
+
+  @override
+  String get accountHaveAccount =>
+      'I already have an account (migrated patient)';
+
+  @override
+  String get accountImNew => 'I am new (sign me up)';
+
+  @override
+  String get accountCreateAccount => 'Create account';
+
+  @override
+  String get accountNameLabel => 'Name';
+
+  @override
+  String get accountEmailLabel => 'Email';
+
+  @override
+  String get deviceScreenTitle => 'My measuring device';
+
+  @override
+  String get deviceNoneTitle => 'I don’t use one';
+
+  @override
+  String get deviceNoneSubtitle =>
+      'I will only record manual measurements (weight, waist, height).';
+
+  @override
+  String get deviceNoneSaved => 'Saved: you don’t use bioimpedance.';
+
+  @override
+  String get deviceCatalogError =>
+      'Could not refresh the catalogue. Showing the saved options.';
+
+  @override
+  String get deviceAvailableScales => 'AVAILABLE SCALES';
+
+  @override
+  String get deviceWhyItMatters =>
+      'Every bioimpedance scale interprets fat, muscle and visceral fat with its own ranges. Tell us which one you use so we can show whether your values are low, normal or high. You can change it whenever you like.';
+
+  @override
+  String get circumferencesSection => 'BODY CIRCUMFERENCES (OPTIONAL)';
+
+  @override
+  String get circWaist => 'Waist';
+
+  @override
+  String get circHip => 'Hip';
+
+  @override
+  String get circLowerAbdomen => 'Lower abdomen';
+
+  @override
+  String get circArm => 'Arm';
+
+  @override
+  String get circLeg => 'Leg';
+
+  @override
+  String get circChestBust => 'Chest/Bust';
+
+  @override
+  String get circAbdomenShort => 'Abd.';
+
+  @override
+  String get lipidLabQuestion => 'Which lab ran your test?';
+
+  @override
+  String get lipidLabLoading => 'Loading labs…';
+
+  @override
+  String get lipidLabNotSpecified => 'Not specified / I don’t know';
+
+  @override
+  String get lipidLabOther => 'Other (specify)';
+
+  @override
+  String get compositionSkeletalMuscle => 'Skeletal muscle';
+
+  @override
+  String get compositionSkeletalMuscleRef => 'As reported by your scale (%)';
+
+  @override
+  String get profileAppTheme => 'App theme';
+
+  @override
+  String get profileRankObserver => 'Vital Observer';
+
+  @override
+  String get themeBankLabel => 'THEME LIBRARY';
+
+  @override
+  String get themePickTitle => 'Choose the look';
+
+  @override
+  String get themePickBody =>
+      'Changes colours and typography. Navigation, icons and the meaning of every colour stay exactly the same.';
+
+  @override
+  String get themeSettingsBody =>
+      'The change applies instantly and is remembered. Navigation, icons and the meaning of every colour stay exactly the same.';
+
+  @override
+  String themeContinueWith(String theme) {
+    return 'Continue with $theme';
+  }
+
+  @override
+  String deviceSelectedSaved(String device) {
+    return '$device selected.';
+  }
+
+  @override
+  String deviceWillSyncLater(String message) {
+    return '$message It will sync once you are online.';
+  }
 }
