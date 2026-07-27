@@ -320,7 +320,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commentHint => 'Irgendwelche Beobachtungen zu dieser Messung?';
 
   @override
-  String get saveAndEarnXp => 'Speichern und +10 XP verdienen ✦';
+  String get saveAndEarnXp => 'Speichern und +10 XP verdienen';
 
   @override
   String get historyGoodJob => 'Gute Arbeit!';
@@ -845,7 +845,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpFaqA4 =>
-      'Gehe zu Profil → Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.';
+      'Gehe zu Profil › Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.';
 
   @override
   String get helpFaqQ5 => 'Wie exportiere ich meinen Verlauf?';
@@ -859,7 +859,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpFaqA6 =>
-      'Ja. Gehe zu Profil → Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.';
+      'Ja. Gehe zu Profil › Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.';
 
   @override
   String get helpFaqQ7 => 'Was passiert, wenn ich die App lösche?';

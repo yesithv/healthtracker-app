@@ -528,12 +528,27 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
                         elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
                         shadowColor: _family.accent.withValues(alpha: 0.4),
                       ),
-                      child: Text(
-                        l10n.saveAndEarnXp,
-                        style: theme.type.button.copyWith(
-                          fontSize: 16,
-                          color: _family.onAccent,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            l10n.saveAndEarnXp,
+                            style: theme.type.button.copyWith(
+                              fontSize: 16,
+                              color: _family.onAccent,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // La chispa era un `✦` dentro de la cadena traducida.
+                          // Ninguna de las seis fuentes empaquetadas trae ese
+                          // glifo, así que se dibujaba como un cuadrito vacío.
+                          // Como icono no depende de la fuente de texto.
+                          Icon(
+                            Icons.auto_awesome,
+                            size: 18,
+                            color: _family.onAccent,
+                          ),
+                        ],
                       ),
                     ),
                   ),

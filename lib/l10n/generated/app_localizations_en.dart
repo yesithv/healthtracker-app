@@ -321,7 +321,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commentHint => 'Any observations about this measurement?';
 
   @override
-  String get saveAndEarnXp => 'Save and earn +10 XP ✦';
+  String get saveAndEarnXp => 'Save and earn +10 XP';
 
   @override
   String get historyGoodJob => 'Good job!';
@@ -844,7 +844,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpFaqA4 =>
-      'Go to Profile → Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.';
+      'Go to Profile › Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.';
 
   @override
   String get helpFaqQ5 => 'How do I export my history?';
@@ -858,7 +858,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpFaqA6 =>
-      'Yes. Go to Profile → Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.';
+      'Yes. Go to Profile › Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.';
 
   @override
   String get helpFaqQ7 => 'What happens if I delete the app?';

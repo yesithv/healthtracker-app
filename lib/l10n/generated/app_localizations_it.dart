@@ -320,7 +320,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get commentHint => 'Eventuali osservazioni su questa misurazione?';
 
   @override
-  String get saveAndEarnXp => 'Salva e ottieni +10 XP ✦';
+  String get saveAndEarnXp => 'Salva e ottieni +10 XP';
 
   @override
   String get historyGoodJob => 'Ottimo lavoro!';
@@ -844,7 +844,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get helpFaqA4 =>
-      'Vai su Profilo → Privacy e Sicurezza e attiva l\'interruttore Blocco Biometrico. Il tuo dispositivo deve avere l\'impronta digitale o FaceID configurato.';
+      'Vai su Profilo › Privacy e Sicurezza e attiva l\'interruttore Blocco Biometrico. Il tuo dispositivo deve avere l\'impronta digitale o FaceID configurato.';
 
   @override
   String get helpFaqQ5 => 'Come esporto la mia cronologia?';
@@ -858,7 +858,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get helpFaqA6 =>
-      'Sì. Vai su Profilo → Unità di Misura e scegli tra il sistema Metrico (kg, cm) o Imperiale (lb, ft/in).';
+      'Sì. Vai su Profilo › Unità di Misura e scegli tra il sistema Metrico (kg, cm) o Imperiale (lb, ft/in).';
 
   @override
   String get helpFaqQ7 => 'Cosa succede se elimino l\'app?';

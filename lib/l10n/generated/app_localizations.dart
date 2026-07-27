@@ -713,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @saveAndEarnXp.
   ///
   /// In en, this message translates to:
-  /// **'Save and earn +10 XP ✦'**
+  /// **'Save and earn +10 XP'**
   String get saveAndEarnXp;
 
   /// No description provided for @historyGoodJob.
@@ -1697,7 +1697,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA4.
   ///
   /// In en, this message translates to:
-  /// **'Go to Profile → Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.'**
+  /// **'Go to Profile › Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.'**
   String get helpFaqA4;
 
   /// No description provided for @helpFaqQ5.
@@ -1721,7 +1721,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA6.
   ///
   /// In en, this message translates to:
-  /// **'Yes. Go to Profile → Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.'**
+  /// **'Yes. Go to Profile › Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.'**
   String get helpFaqA6;
 
   /// No description provided for @helpFaqQ7.

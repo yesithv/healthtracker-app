@@ -437,6 +437,16 @@ class _RecordAnthropometricScreenState
                               color: _family.onAccent,
                             ),
                           ),
+                          const SizedBox(width: 8),
+                          // La chispa era un `✦` dentro de la cadena traducida.
+                          // Ninguna de las seis fuentes empaquetadas trae ese
+                          // glifo, así que se dibujaba como un cuadrito vacío.
+                          // Como icono no depende de la fuente de texto.
+                          Icon(
+                            Icons.auto_awesome,
+                            size: 18,
+                            color: _family.onAccent,
+                          ),
                         ],
                       ),
                     ),

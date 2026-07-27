@@ -320,7 +320,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get commentHint => '¿Alguna observación sobre esta toma?';
 
   @override
-  String get saveAndEarnXp => 'Guardar y ganar +10 XP ✦';
+  String get saveAndEarnXp => 'Guardar y ganar +10 XP';
 
   @override
   String get historyGoodJob => '¡Buen trabajo!';
@@ -845,7 +845,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get helpFaqA4 =>
-      'Ve a Perfil → Privacidad y Seguridad y activa el interruptor de Bloqueo Biométrico. Tu dispositivo debe tener huella dactilar o FaceID configurado.';
+      'Ve a Perfil › Privacidad y Seguridad y activa el interruptor de Bloqueo Biométrico. Tu dispositivo debe tener huella dactilar o FaceID configurado.';
 
   @override
   String get helpFaqQ5 => '¿Cómo exporto mi historial?';
@@ -859,7 +859,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get helpFaqA6 =>
-      'Sí. Ve a Perfil → Unidades de Medida y elige entre el sistema Métrico (kg, cm) o Imperial (lb, ft/in).';
+      'Sí. Ve a Perfil › Unidades de Medida y elige entre el sistema Métrico (kg, cm) o Imperial (lb, ft/in).';
 
   @override
   String get helpFaqQ7 => '¿Qué pasa si borro la app?';
