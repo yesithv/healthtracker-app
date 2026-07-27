@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 /// Section title row used across the Discover feed: an accent bar, the title and
 /// an optional "See all" affordance.
 class DiscoverSectionHeader extends StatelessWidget {
@@ -18,6 +20,7 @@ class DiscoverSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 22, 12, 10),
       child: Row(
@@ -34,10 +37,8 @@ class DiscoverSectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: theme.type.screenTitle.copyWith(
                 fontSize: 19,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
                 letterSpacing: 0.2,
               ),
             ),
@@ -53,7 +54,7 @@ class DiscoverSectionHeader extends StatelessWidget {
               ),
               child: Text(
                 actionLabel!,
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                style: theme.type.button.copyWith(fontSize: 13),
               ),
             ),
         ],

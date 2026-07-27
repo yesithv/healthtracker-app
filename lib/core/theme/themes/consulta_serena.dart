@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/app_surfaces.dart';
 import '../tokens/app_typography.dart';
 import '../tokens/clinical_palette.dart';
+import '../tokens/content_palette.dart';
 import '../tokens/metric_palette.dart';
 import '../tokens/tone.dart';
 import 'type_scale.dart';
@@ -44,6 +45,11 @@ class ConsultaSerena {
 
   /// Trazo claro para series de datos sobre fondo salvia (el ECG del arranque).
   static const Color ecgStroke = Color(0xFFCBD8BE);
+
+  /// Mezcla del acento con la tarjeta para derivar su tinte suave. Ver la nota
+  /// equivalente en «Pulso Clínico»: al 8 % el acento sobre su propio tinte
+  /// supera AA con margen.
+  static const double _tint = 0.08;
 
   static ThemeData build() {
     const surfaces = AppSurfaces(
@@ -133,6 +139,39 @@ class ConsultaSerena {
         surface: Color(0xFFE4E7EF),
         onAccent: _onSalvia,
       ),
+    );
+
+    // Categorías editoriales de «Descubre», apagadas hacia tierra como el resto
+    // del tema. Se conserva la FAMILIA DE MATIZ de cada una —el corazón sigue
+    // siendo rojo, el sueño sigue siendo índigo— porque el usuario las reconoce
+    // por el color; lo que baja es el volumen. Varias comparten matiz con su
+    // familia de indicador a propósito: un artículo del corazón y la tarjeta de
+    // signos vitales hablan de lo mismo.
+    final content = ContentPalette(
+      heart: Tone.from(const Color(0xFFA04A3C), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      nutrition: Tone.from(const Color(0xFF4C6B3C), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      emotional: Tone.from(const Color(0xFF6B5075), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      sports: Tone.from(const Color(0xFF8A5F16), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      sleep: Tone.from(const Color(0xFF4F5B7A), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      daily: Tone.from(const Color(0xFF2F6B63), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      levelEasy: Tone.from(const Color(0xFF3D6B4A), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      levelMedium: Tone.from(const Color(0xFF8A5F16), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      levelHard: Tone.from(const Color(0xFFA04A3C), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      statusActive: Tone.from(const Color(0xFF3D6B4A), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      statusScheduled: Tone.from(const Color(0xFF2F6B63), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
+      statusClosed: Tone.from(const Color(0xFF63676A), canvas: _tarjeta,
+          onAccent: _onSalvia, surfaceBlend: _tint),
     );
 
     final typography = AppTypography(
@@ -242,7 +281,7 @@ class ConsultaSerena {
         bodyColor: _tinta,
         displayColor: _tinta,
       ),
-      extensions: [surfaces, clinical, metrics, typography],
+      extensions: [surfaces, clinical, metrics, content, typography],
     );
   }
 }

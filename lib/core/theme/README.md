@@ -33,12 +33,15 @@ vestido y no haya un destello del tema por defecto en cada arranque.
 
 ## Los colores siguen significando lo mismo
 
-Dos vocabularios, y ninguno depende del tema:
+Tres vocabularios, y ninguno depende del tema:
 
 - **`ClinicalStatus`** — `info` · `optimal` · `caution` · `alert` · `neutral`.
   Qué tan bien está un valor.
 - **`MetricFamily`** — `vitals` · `anthropometry` · `lipids` ·
   `bodyComposition`. De qué indicador hablamos.
+- **`ContentCategory`** — `heart` · `nutrition` · `emotional` · `sports` ·
+  `sleep` · `daily`. De qué habla un contenido de «Descubre». Un artículo de
+  nutrición no está «óptimo»: por eso no reutiliza la paleta clínica.
 
 El reparto de responsabilidades es el punto entero:
 
@@ -66,6 +69,7 @@ core/theme/
 │   ├── tone.dart             accent + surface + onAccent, y BadgeIdiom
 │   ├── clinical_palette.dart ClinicalStatus → Tone
 │   ├── metric_palette.dart   MetricFamily → Tone
+│   ├── content_palette.dart  ContentCategory → Tone (+ nivel y estado)
 │   ├── app_surfaces.dart     Lienzo, tarjeta, tinta, radios, idiomas
 │   └── app_typography.dart   Roles: numeral, sectionLabel, meta…
 └── themes/
@@ -83,6 +87,7 @@ theme.surfaces.card                   // superficies y forma
 theme.type.numeral                    // roles tipográficos
 theme.clinical.tone(cat.status)       // estado clínico → color
 theme.metrics.tone(MetricFamily.vitals)  // identidad del indicador
+theme.content.tone(ContentCategory.sleep)  // identidad del contenido
 ```
 
 Reglas:
@@ -96,7 +101,7 @@ Reglas:
 
 ## Añadir un tema
 
-1. Crea `themes/mi_tema.dart` con las cuatro extensiones.
+1. Crea `themes/mi_tema.dart` con las cinco extensiones.
 2. Añade el valor a `AppThemeId` y su ficha a `AppThemeCatalog.specs`.
 3. `flutter test`. El contrato semántico dirá qué falta.
 
@@ -111,7 +116,8 @@ verificación, asistente de alta (3 pasos) y panel—, **el camino de registrar 
 indicador completo** —la hoja «Registrar indicadores» y las cuatro pantallas:
 antropometría, signos vitales, perfil lipídico y composición corporal—, **el
 historial completo** —el índice y las cuatro vistas de categoría con sus
-gráficas—, la barra de navegación y los widgets compartidos que usan
+gráficas—, **Descubre completo** —el muro, sus seis tipos de tarjeta y la hoja de
+detalle—, la barra de navegación y los widgets compartidos que usan
 (`ActionButton`, `StatusChip`, `BmiStatusBadge`, `MainAppBar`,
 `SecondaryAppBar`, `DashedBorderContainer`, `DismissibleInfoBanner`,
 `ProfileSettingsLayout`…).
@@ -138,6 +144,30 @@ lado de la otra en la misma pantalla, y el color dice cuál es cuál.
 Cuando un ayudante necesita un color, recibe un [Tone] ya resuelto y no un
 `Color`. Así el filete, la cifra y el pulgar de un control salen del mismo sitio
 por construcción, y no por acordarse de pasar el mismo valor tres veces.
+
+### Descubre: por qué hizo falta un token nuevo
+
+«Descubre» tenía su propia paleta en
+`features/discover/presentation/theme/discover_palette.dart`: seis acentos
+editoriales escritos a mano —rojo corazón, verde nutrición, violeta emocional,
+naranja deporte, índigo sueño, turquesa día a día— más los del nivel de una
+rutina y el estado de un reto. Ningún tema podía tocarlos, así que era la única
+sección de la app que se veía igual pasara lo que pasara.
+
+Reutilizar la paleta clínica habría sido mentir: un artículo de nutrición no está
+«óptimo». Así que la sección pedía un vocabulario propio, y eso es
+[ContentPalette]. `DiscoverPalette` se queda con lo único que de verdad era suyo
+—el ICONO de cada categoría, que no cambia entre temas— y el color lo pone ahora
+el tema.
+
+El contrato semántico lo cubre igual que a las familias: franja de matiz por
+categoría, las seis mutuamente distinguibles, y 4,5:1 sobre la tarjeta, sobre su
+propio tinte y en relleno sólido. **Al escribirlo cazó cinco defectos** en los
+valores que yo había propuesto: tres tintes por debajo de AA, un violeta que en
+realidad era índigo, y dos categorías a 19,6° de matiz —que el usuario habría
+confundido de un vistazo—. De paso quedó claro que el 12 % de mezcla que usaba
+`Tone.from` para derivar tintes deja el acento en 4,3–4,5:1 sobre su propio
+tinte: al 8 % pasa con margen.
 
 ### Las gráficas
 
@@ -167,9 +197,8 @@ tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
 sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
 descargo médico— está pendiente de decidir aparte.
 
-Sin migrar: Descubre, perfil y ajustes — siguen con colores escritos a mano y se
-ven igual en ambos temas, aunque su cabecera (`SecondaryAppBar`) ya sigue al
-tema. `core/constants/metric_colors.dart` ya solo lo usa
+Sin migrar: perfil y ajustes — siguen con colores escritos a mano, aunque su
+cabecera (`SecondaryAppBar`) ya sigue al tema. `core/constants/metric_colors.dart` ya solo lo usa
 `health_goals_screen.dart`: cuando esa pantalla se migre, el archivo desaparece.
 
 Dos cosas que se quedan a propósito con color fijo:

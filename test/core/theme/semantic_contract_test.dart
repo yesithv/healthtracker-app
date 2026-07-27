@@ -4,7 +4,9 @@ import 'package:myvitals_healthtracker_app/core/theme/semantic_contract.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_catalog.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/clinical_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 
 /// Verifica el CONTRATO SEMÁNTICO contra todos los temas del catálogo.
 ///
@@ -219,6 +221,104 @@ void main() {
             );
           }
         }
+      });
+
+      // ── CATEGORÍAS DE CONTENIDO ───────────────────────────────────────────
+
+      for (final category in ContentCategory.values) {
+        final tone = theme.content.tone(category);
+        final band = SemanticContract.contentHues[category]!;
+
+        test('$category conserva su identidad de matiz ($band)', () {
+          final hue = SemanticContract.hueOf(tone.accent);
+          expect(
+            band.contains(hue),
+            isTrue,
+            reason:
+                '${spec.name}: $category está en ${hue.toStringAsFixed(1)}°, '
+                'fuera de $band.',
+          );
+        });
+
+        test('$category es legible sobre la tarjeta y sobre su tinte', () {
+          expect(
+            SemanticContract.contrast(tone.accent, theme.surfaces.card),
+            greaterThanOrEqualTo(SemanticContract.minTextContrast),
+            reason: '${spec.name}: $category ilegible sobre la tarjeta',
+          );
+          expect(
+            SemanticContract.contrast(tone.accent, tone.surface),
+            greaterThanOrEqualTo(SemanticContract.minTextContrast),
+            reason: '${spec.name}: $category ilegible sobre su propio tinte',
+          );
+          expect(
+            SemanticContract.contrast(tone.onAccent, tone.accent),
+            greaterThanOrEqualTo(SemanticContract.minTextContrast),
+            reason: '${spec.name}: $category ilegible en relleno sólido',
+          );
+        });
+      }
+
+      test('las seis categorías se distinguen entre sí', () {
+        for (var i = 0; i < ContentCategory.values.length; i++) {
+          for (var j = i + 1; j < ContentCategory.values.length; j++) {
+            final a = ContentCategory.values[i];
+            final b = ContentCategory.values[j];
+            final ha = SemanticContract.hueOf(theme.content.tone(a).accent);
+            final hb = SemanticContract.hueOf(theme.content.tone(b).accent);
+            expect(
+              SemanticContract.hueDistance(ha, hb),
+              greaterThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
+              reason:
+                  '${spec.name}: $a y $b se confundirían de un vistazo '
+                  '(${SemanticContract.hueDistance(ha, hb).toStringAsFixed(1)}° '
+                  'de separación)',
+            );
+          }
+        }
+      });
+
+      test('el nivel de una rutina y el estado de un reto son legibles', () {
+        final tones = <String, Tone>{
+          for (final l in ContentLevelStep.values) '$l': theme.content.level(l),
+          for (final s in ContentStatus.values) '$s': theme.content.status(s),
+        };
+        tones.forEach((name, tone) {
+          expect(
+            SemanticContract.contrast(tone.accent, theme.surfaces.card),
+            greaterThanOrEqualTo(SemanticContract.minTextContrast),
+            reason: '${spec.name}: $name ilegible sobre la tarjeta',
+          );
+          expect(
+            SemanticContract.contrast(tone.onAccent, tone.accent),
+            greaterThanOrEqualTo(SemanticContract.minTextContrast),
+            reason: '${spec.name}: $name ilegible en relleno sólido',
+          );
+        });
+      });
+
+      test('los tres niveles suben de intensidad, no de tono al azar', () {
+        // Suave → exigente: verde, ámbar, rojo. Es la convención que el usuario
+        // ya conoce de la escala de IMC; lo que se comprueba es que un tema no
+        // pueda invertirla.
+        final easy = SemanticContract.hueOf(theme.content.levelEasy.accent);
+        final medium = SemanticContract.hueOf(theme.content.levelMedium.accent);
+        final hard = SemanticContract.hueOf(theme.content.levelHard.accent);
+        expect(
+          SemanticContract.statusHues[ClinicalStatus.optimal]!.contains(easy),
+          isTrue,
+          reason: '${spec.name}: «principiante» debería ser verde',
+        );
+        expect(
+          SemanticContract.statusHues[ClinicalStatus.caution]!.contains(medium),
+          isTrue,
+          reason: '${spec.name}: «intermedio» debería ser ámbar',
+        );
+        expect(
+          SemanticContract.statusHues[ClinicalStatus.alert]!.contains(hard),
+          isTrue,
+          reason: '${spec.name}: «avanzado» debería ser rojo',
+        );
       });
 
       // ── TINTA Y SUPERFICIES ───────────────────────────────────────────────

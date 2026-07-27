@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
 import '../theme/discover_palette.dart';
 
 /// Horizontal, icon-led category filter. Works on stable category *keys* so the
@@ -20,6 +21,8 @@ class CategoryChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     return SizedBox(
       height: 40,
       child: ListView.separated(
@@ -31,10 +34,10 @@ class CategoryChips extends StatelessWidget {
           final key = categoryKeys[index];
           final isSelected = key == selectedKey;
           final accent =
-              key == 'all' ? DiscoverPalette.brand : DiscoverPalette.of(key).accent;
+              key == 'all' ? DiscoverPalette.brandOf(context) : DiscoverPalette.of(context, key).accent;
 
           return Material(
-            color: isSelected ? accent : Colors.white,
+            color: isSelected ? accent : surfaces.card,
             borderRadius: BorderRadius.circular(20),
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
@@ -44,7 +47,7 @@ class CategoryChips extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isSelected ? accent : const Color(0xFFE2E8F0),
+                    color: isSelected ? accent : surfaces.divider,
                   ),
                 ),
                 child: Row(
@@ -52,13 +55,13 @@ class CategoryChips extends StatelessWidget {
                     Icon(
                       DiscoverPalette.chipIcon(key),
                       size: 16,
-                      color: isSelected ? Colors.white : accent,
+                      color: isSelected ? surfaces.onBrand : accent,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       labelFor(key),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : const Color(0xFF334155),
+                      style: theme.type.button.copyWith(
+                        color: isSelected ? surfaces.onBrand : surfaces.ink,
                         fontWeight:
                             isSelected ? FontWeight.w700 : FontWeight.w500,
                         fontSize: 13.5,

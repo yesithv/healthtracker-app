@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/models/discover_models.dart';
 import '../theme/discover_palette.dart';
@@ -36,18 +38,20 @@ class ChallengeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final l10n = AppLocalizations.of(context)!;
-    final statusColor = DiscoverPalette.statusColor(challenge.status);
+    final statusTone = DiscoverPalette.statusTone(context, challenge.status);
     final finished = challenge.status == ChallengeStatus.finalizado;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+            color: surfaces.ink.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -69,11 +73,11 @@ class ChallengeCard extends StatelessWidget {
                       width: 46,
                       height: 46,
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.12),
+                        color: statusTone.accent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(Icons.emoji_events_rounded,
-                          color: statusColor, size: 24),
+                          color: statusTone.accent, size: 24),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -82,10 +86,8 @@ class ChallengeCard extends StatelessWidget {
                         children: [
                           Text(
                             challenge.title,
-                            style: const TextStyle(
+                            style: theme.type.cardTitle.copyWith(
                               fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF0F172A),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -93,9 +95,8 @@ class ChallengeCard extends StatelessWidget {
                           const SizedBox(height: 3),
                           Text(
                             challenge.goal,
-                            style: const TextStyle(
+                            style: theme.type.body.copyWith(
                               fontSize: 12.5,
-                              color: Color(0xFF64748B),
                               height: 1.25,
                             ),
                             maxLines: 2,
@@ -109,13 +110,13 @@ class ChallengeCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.12),
+                        color: statusTone.accent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         _statusLabel(l10n, challenge.status),
                         style: TextStyle(
-                          color: statusColor,
+                          color: statusTone.accent,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
@@ -126,28 +127,26 @@ class ChallengeCard extends StatelessWidget {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    const Icon(Icons.people_alt_rounded,
-                        size: 15, color: Color(0xFF94A3B8)),
+                    Icon(Icons.people_alt_rounded,
+                        size: 15, color: surfaces.inkMuted),
                     const SizedBox(width: 5),
                     Text(
                       l10n.discoverParticipants(_participants(challenge.participants)),
-                      style: const TextStyle(
+                      style: theme.type.button.copyWith(
                         fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF64748B),
+                        color: surfaces.inkSecondary,
                       ),
                     ),
                     if (challenge.durationDays > 0) ...[
                       const SizedBox(width: 12),
-                      const Icon(Icons.event_rounded,
-                          size: 15, color: Color(0xFF94A3B8)),
+                      Icon(Icons.event_rounded,
+                          size: 15, color: surfaces.inkMuted),
                       const SizedBox(width: 5),
                       Text(
                         l10n.discoverDaysShort('${challenge.durationDays}'),
-                        style: const TextStyle(
+                        style: theme.type.button.copyWith(
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF64748B),
+                          color: surfaces.inkSecondary,
                         ),
                       ),
                     ],
@@ -156,7 +155,7 @@ class ChallengeCard extends StatelessWidget {
                       Text(
                         l10n.discoverJoin,
                         style: TextStyle(
-                          color: statusColor,
+                          color: statusTone.accent,
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
                         ),

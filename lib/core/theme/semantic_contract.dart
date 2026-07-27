@@ -1,6 +1,7 @@
 import 'package:flutter/painting.dart' show Color, HSLColor;
 
 import 'tokens/clinical_palette.dart';
+import 'tokens/content_palette.dart';
 import 'tokens/metric_palette.dart';
 
 /// El CONTRATO SEMÁNTICO: las reglas que todo tema debe cumplir para poder
@@ -53,6 +54,20 @@ class SemanticContract {
     MetricFamily.anthropometry: HueBand(20, 70), // ámbar — medida corporal
     MetricFamily.lipids: HueBand(150, 200), // verde azulado — laboratorio
     MetricFamily.bodyComposition: HueBand(200, 265), // índigo — estructura
+  };
+
+  /// Franja de matiz admisible para cada categoría editorial de «Descubre».
+  ///
+  /// Misma lógica que las familias: el usuario aprende a reconocer la sección
+  /// por su color, así que un tema puede apagar el naranja de «deporte» pero no
+  /// convertirlo en azul.
+  static const Map<ContentCategory, HueBand> contentHues = {
+    ContentCategory.heart: HueBand(340, 20), // rojo
+    ContentCategory.nutrition: HueBand(90, 175), // verde
+    ContentCategory.emotional: HueBand(265, 320), // violeta
+    ContentCategory.sports: HueBand(15, 50), // naranja
+    ContentCategory.sleep: HueBand(220, 265), // índigo
+    ContentCategory.daily: HueBand(160, 200), // turquesa
   };
 
   /// Razón de contraste WCAG 2.1 entre dos colores opacos.

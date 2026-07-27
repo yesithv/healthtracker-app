@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'tokens/app_surfaces.dart';
 import 'tokens/app_typography.dart';
 import 'tokens/clinical_palette.dart';
+import 'tokens/content_palette.dart';
 import 'tokens/metric_palette.dart';
 
 Never _missing(String name) {
@@ -29,6 +30,9 @@ extension AppThemeTokens on ThemeData {
   MetricPalette get metrics =>
       extension<MetricPalette>() ?? _missing('MetricPalette');
 
+  ContentPalette get content =>
+      extension<ContentPalette>() ?? _missing('ContentPalette');
+
   AppTypography get type =>
       extension<AppTypography>() ?? _missing('AppTypography');
 }
@@ -44,5 +48,6 @@ extension AppThemeContext on BuildContext {
   AppSurfaces get surfaces => Theme.of(this).surfaces;
   ClinicalPalette get clinical => Theme.of(this).clinical;
   MetricPalette get metrics => Theme.of(this).metrics;
+  ContentPalette get content => Theme.of(this).content;
   AppTypography get type => Theme.of(this).type;
 }

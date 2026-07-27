@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/app_surfaces.dart';
 import '../tokens/app_typography.dart';
 import '../tokens/clinical_palette.dart';
+import '../tokens/content_palette.dart';
 import '../tokens/metric_palette.dart';
 import '../tokens/tone.dart';
 import 'type_scale.dart';
@@ -40,6 +41,12 @@ class PulsoClinico {
   // para elementos no textuales. Rotula las unidades («mmHg», «bpm», «kg»), que
   // es justo el texto que uno necesita leer para interpretar la cifra de al lado.
   static const Color _inkMuted = Color(0xFF7C8CA3);
+
+  /// Mezcla del acento con la tarjeta para derivar su tinte suave. Al 12 % el
+  /// tinte queda tan oscuro que el propio acento encima se queda en 4,3–4,5:1,
+  /// justo por debajo de AA; al 8 % pasa con margen y el chip se sigue leyendo
+  /// como del mismo color. Lo verifica el contrato semántico.
+  static const double _tint = 0.08;
 
   static const String _ui = 'Inter';
 
@@ -125,6 +132,26 @@ class PulsoClinico {
         surface: Color(0xFFE8EAF6),
         onAccent: Color(0xFFFFFFFF),
       ),
+    );
+
+    // Categorías editoriales de «Descubre». Conserva los seis matices que la
+    // sección ya usaba —vivos, porque este tema es enérgico—, con las
+    // superficies derivadas del lienzo en vez de escritas a mano.
+    final content = ContentPalette(
+      heart: Tone.from(const Color(0xFFC2373C), canvas: _card, surfaceBlend: _tint),
+      nutrition: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
+      emotional: Tone.from(const Color(0xFF7E22CE), canvas: _card, surfaceBlend: _tint),
+      sports: Tone.from(const Color(0xFFB34700), canvas: _card, surfaceBlend: _tint),
+      sleep: Tone.from(const Color(0xFF4338CA), canvas: _card, surfaceBlend: _tint),
+      daily: Tone.from(const Color(0xFF0F766E), canvas: _card, surfaceBlend: _tint),
+      // Intensidad de una rutina. Comparte matices con la rampa de severidad
+      // por convención visual (suave → exigente), no por significado clínico.
+      levelEasy: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
+      levelMedium: Tone.from(const Color(0xFFB45309), canvas: _card, surfaceBlend: _tint),
+      levelHard: Tone.from(const Color(0xFFC2373C), canvas: _card, surfaceBlend: _tint),
+      statusActive: Tone.from(const Color(0xFF127A38), canvas: _card, surfaceBlend: _tint),
+      statusScheduled: Tone.from(const Color(0xFF0F766E), canvas: _card, surfaceBlend: _tint),
+      statusClosed: Tone.from(const Color(0xFF5C6B82), canvas: _card, surfaceBlend: _tint),
     );
 
     final typography = AppTypography(
@@ -218,7 +245,7 @@ class PulsoClinico {
 
     return base.copyWith(
       textTheme: _textTheme(base.textTheme),
-      extensions: [surfaces, clinical, metrics, typography],
+      extensions: [surfaces, clinical, metrics, content, typography],
     );
   }
 
