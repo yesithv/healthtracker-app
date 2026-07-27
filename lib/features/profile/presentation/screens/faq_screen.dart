@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 
@@ -14,14 +16,35 @@ class _FaqScreenState extends State<FaqScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     final l10n = AppLocalizations.of(context)!;
 
     final categories = [
-      _FaqCategory(id: 'all', label: l10n.discoverCategoryAll, icon: Icons.apps_rounded),
-      _FaqCategory(id: 'general', label: l10n.helpFaqCatGeneral, icon: Icons.info_outline),
-      _FaqCategory(id: 'data', label: l10n.helpFaqCatData, icon: Icons.storage_outlined),
-      _FaqCategory(id: 'biometrics', label: l10n.helpFaqCatBiometrics, icon: Icons.fingerprint),
-      _FaqCategory(id: 'export', label: l10n.helpFaqCatExport, icon: Icons.file_download_outlined),
+      _FaqCategory(
+        id: 'all',
+        label: l10n.discoverCategoryAll,
+        icon: Icons.apps_rounded,
+      ),
+      _FaqCategory(
+        id: 'general',
+        label: l10n.helpFaqCatGeneral,
+        icon: Icons.info_outline,
+      ),
+      _FaqCategory(
+        id: 'data',
+        label: l10n.helpFaqCatData,
+        icon: Icons.storage_outlined,
+      ),
+      _FaqCategory(
+        id: 'biometrics',
+        label: l10n.helpFaqCatBiometrics,
+        icon: Icons.fingerprint,
+      ),
+      _FaqCategory(
+        id: 'export',
+        label: l10n.helpFaqCatExport,
+        icon: Icons.file_download_outlined,
+      ),
     ];
 
     final faqs = _getFaqs(l10n);
@@ -30,7 +53,7 @@ class _FaqScreenState extends State<FaqScreen> {
         : faqs.where((f) => f.category == _selectedCategory).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: Column(
         children: [
@@ -45,7 +68,8 @@ class _FaqScreenState extends State<FaqScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 8),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 8),
                     itemBuilder: (context, i) {
                       final cat = categories[i];
                       final selected = _selectedCategory == cat.id;
@@ -53,15 +77,16 @@ class _FaqScreenState extends State<FaqScreen> {
                         onTap: () => setState(() => _selectedCategory = cat.id),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
-                            color: selected
-                                ? const Color(0xFF0D48A0)
-                                : Colors.white,
+                            color: selected ? surfaces.brand : surfaces.card,
                             borderRadius: BorderRadius.circular(30),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
+                                color: surfaces.ink.withValues(alpha: 0.05),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -74,8 +99,8 @@ class _FaqScreenState extends State<FaqScreen> {
                                 cat.icon,
                                 size: 14,
                                 color: selected
-                                    ? Colors.white
-                                    : const Color(0xFF64748B),
+                                    ? surfaces.onBrand
+                                    : surfaces.inkSecondary,
                               ),
                               const SizedBox(width: 6),
                               Text(
@@ -84,8 +109,8 @@ class _FaqScreenState extends State<FaqScreen> {
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: selected
-                                      ? Colors.white
-                                      : const Color(0xFF64748B),
+                                      ? surfaces.onBrand
+                                      : surfaces.inkSecondary,
                                 ),
                               ),
                             ],
@@ -116,26 +141,29 @@ class _FaqScreenState extends State<FaqScreen> {
   }
 
   Widget _buildFaqTile(_FaqItem faq) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: surfaces.ink.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-        ),
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-          childrenPadding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
+          childrenPadding: const EdgeInsets.only(
+            left: 18,
+            right: 18,
+            bottom: 16,
+          ),
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -146,20 +174,20 @@ class _FaqScreenState extends State<FaqScreen> {
           ),
           title: Text(
             faq.question,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
+              color: surfaces.ink,
             ),
           ),
-          iconColor: const Color(0xFF0D48A0),
-          collapsedIconColor: const Color(0xFF94A3B8),
+          iconColor: surfaces.brand,
+          collapsedIconColor: surfaces.inkMuted,
           children: [
             Text(
               faq.answer,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: Color(0xFF475569),
+                color: surfaces.inkSecondary,
                 height: 1.6,
               ),
             ),
@@ -170,62 +198,65 @@ class _FaqScreenState extends State<FaqScreen> {
   }
 
   List<_FaqItem> _getFaqs(AppLocalizations l10n) {
+    final content = Theme.of(context).content;
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
     return [
       _FaqItem(
         category: 'general',
         question: l10n.helpFaqQ1,
         answer: l10n.helpFaqA1,
         icon: Icons.info_outline,
-        color: const Color(0xFF0D48A0),
+        color: surfaces.brand,
       ),
       _FaqItem(
         category: 'data',
         question: l10n.helpFaqQ2,
         answer: l10n.helpFaqA2,
         icon: Icons.cloud_off_outlined,
-        color: const Color(0xFF10B981),
+        color: clinical.optimal.accent,
       ),
       _FaqItem(
         category: 'data',
         question: l10n.helpFaqQ3,
         answer: l10n.helpFaqA3,
         icon: Icons.wifi_off_outlined,
-        color: const Color(0xFF10B981),
+        color: clinical.optimal.accent,
       ),
       _FaqItem(
         category: 'biometrics',
         question: l10n.helpFaqQ4,
         answer: l10n.helpFaqA4,
         icon: Icons.fingerprint,
-        color: const Color(0xFF8B5CF6),
+        color: content.tone(ContentCategory.emotional).accent,
       ),
       _FaqItem(
         category: 'export',
         question: l10n.helpFaqQ5,
         answer: l10n.helpFaqA5,
         icon: Icons.file_download_outlined,
-        color: const Color(0xFFF59E0B),
+        color: clinical.caution.accent,
       ),
       _FaqItem(
         category: 'general',
         question: l10n.helpFaqQ6,
         answer: l10n.helpFaqA6,
         icon: Icons.straighten,
-        color: const Color(0xFF0D48A0),
+        color: surfaces.brand,
       ),
       _FaqItem(
         category: 'data',
         question: l10n.helpFaqQ7,
         answer: l10n.helpFaqA7,
         icon: Icons.delete_outline,
-        color: const Color(0xFFEF4444),
+        color: clinical.alert.accent,
       ),
       _FaqItem(
         category: 'general',
         question: l10n.helpFaqQ8,
         answer: l10n.helpFaqA8,
         icon: Icons.local_hospital_outlined,
-        color: const Color(0xFFEF4444),
+        color: clinical.alert.accent,
       ),
     ];
   }
@@ -235,7 +266,11 @@ class _FaqCategory {
   final String id;
   final String label;
   final IconData icon;
-  const _FaqCategory({required this.id, required this.label, required this.icon});
+  const _FaqCategory({
+    required this.id,
+    required this.label,
+    required this.icon,
+  });
 }
 
 class _FaqItem {

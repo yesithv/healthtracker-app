@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
@@ -25,7 +26,9 @@ class AccountSyncScreen extends StatefulWidget {
 }
 
 class _AccountSyncScreenState extends State<AccountSyncScreen> {
-  static const _blue = Color(0xFF0D48A0);
+  /// La marca del tema activo. Era una constante de clase con el azul de
+  /// «Pulso Clínico» escrito a mano.
+  Color get _blue => Theme.of(context).surfaces.brand;
 
   final _auth = AuthApiClient();
   bool _busy = false;
@@ -52,9 +55,10 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
         source: account.source,
       );
       // Igual que en /verify: el perfil local se llena con lo que el servidor sabe.
-      final fullName = [account.firstName, account.lastName]
-          .where((s) => s != null && s.trim().isNotEmpty)
-          .join(' ');
+      final fullName = [
+        account.firstName,
+        account.lastName,
+      ].where((s) => s != null && s.trim().isNotEmpty).join(' ');
       await profile.hydrateIdentity(
         name: fullName,
         email: account.email,
@@ -94,9 +98,10 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     final session = context.watch<PatientSession>();
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -110,6 +115,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   // ---------------------------------------------------------------- logged out
 
   Widget _loggedOut() {
+    final surfaces = Theme.of(context).surfaces;
     // Con un alta pendiente, el usuario ya rellenó sus datos: lo que necesita es
     // que salgan al servidor, no volver a registrarse desde cero. El aviso va
     // primero y trae su propio botón para intentarlo.
@@ -118,33 +124,51 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text('Tu cuenta',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: _blue)),
+        Text(
+          'Tu cuenta',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: _blue,
+          ),
+        ),
         const SizedBox(height: 4),
         Text(
-            pending
-                ? 'Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.'
-                : 'Inicia sesión si ya eres paciente, o regístrate para empezar.',
-            style: const TextStyle(color: Color(0xFF64748B))),
+          pending
+              ? 'Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.'
+              : 'Inicia sesión si ya eres paciente, o regístrate para empezar.',
+          style: TextStyle(color: surfaces.inkSecondary),
+        ),
         if (_error != null) _errorBanner(_error!),
         const SizedBox(height: 20),
         if (pending) ...[
           const PendingAccountBanner(),
           const SizedBox(height: 4),
         ],
-        _LoginCard(busy: _busy, onSubmit: (id, pass) => _run(() => _auth.login(identifier: id, password: pass))),
+        _LoginCard(
+          busy: _busy,
+          onSubmit: (id, pass) =>
+              _run(() => _auth.login(identifier: id, password: pass)),
+        ),
         const SizedBox(height: 16),
-        _RegisterCard(busy: _busy, onSubmit: (first, email, doc) => _run(() => _auth.register(
+        _RegisterCard(
+          busy: _busy,
+          onSubmit: (first, email, doc) => _run(
+            () => _auth.register(
               firstName: first,
               email: email,
               documentNumber: doc,
               // País del perfil (picker de prefijo) o del locale: captura
               // silenciosa; el backend descarta códigos fuera de catálogo.
-              country: (Countries.byIso(
-                          context.read<UserProfileProvider>().userCountryCode) ??
-                      Countries.deviceDefault())
-                  .iso,
-            ))),
+              country:
+                  (Countries.byIso(
+                            context.read<UserProfileProvider>().userCountryCode,
+                          ) ??
+                          Countries.deviceDefault())
+                      .iso,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -152,42 +176,87 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   // ----------------------------------------------------------------- logged in
 
   Widget _loggedIn(PatientSession session) {
+    final surfaces = Theme.of(context).surfaces;
     final sync = context.watch<SyncService>();
-    final name = [session.firstName, session.lastName].where((s) => s != null && s.isNotEmpty).join(' ');
+    final name = [
+      session.firstName,
+      session.lastName,
+    ].where((s) => s != null && s.isNotEmpty).join(' ');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _card(children: [
-          Row(children: [
-            const CircleAvatar(backgroundColor: _blue, child: Icon(Icons.person, color: Colors.white)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(name.isEmpty ? 'Paciente' : name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text(session.isMigrated ? 'Cuenta migrada del legacy' : 'Cuenta creada en la app',
-                    style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
-              ]),
+        _card(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: _blue,
+                  child: Icon(Icons.person, color: surfaces.onBrand),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name.isEmpty ? 'Paciente' : name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        session.isMigrated
+                            ? 'Cuenta migrada del legacy'
+                            : 'Cuenta creada en la app',
+                        style: TextStyle(
+                          color: surfaces.inkSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => PatientSession.instance.clear(),
+                  child: const Text('Salir'),
+                ),
+              ],
             ),
-            TextButton(onPressed: () => PatientSession.instance.clear(), child: const Text('Salir')),
-          ]),
-        ]),
+          ],
+        ),
         const SizedBox(height: 16),
-        _card(children: [
-          const Text('Sincronización', style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text(sync.message ?? 'Sube tus registros locales al servidor.',
-              style: const TextStyle(color: Color(0xFF64748B))),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            style: FilledButton.styleFrom(backgroundColor: _blue),
-            onPressed: sync.isSyncing ? null : _syncNow,
-            icon: sync.isSyncing
-                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Icon(Icons.cloud_upload_outlined),
-            label: Text(sync.isSyncing ? 'Sincronizando…' : 'Sincronizar ahora'),
-          ),
-        ]),
+        _card(
+          children: [
+            const Text(
+              'Sincronización',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              sync.message ?? 'Sube tus registros locales al servidor.',
+              style: TextStyle(color: surfaces.inkSecondary),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              style: FilledButton.styleFrom(backgroundColor: _blue),
+              onPressed: sync.isSyncing ? null : _syncNow,
+              icon: sync.isSyncing
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: surfaces.onBrand,
+                      ),
+                    )
+                  : const Icon(Icons.cloud_upload_outlined),
+              label: Text(
+                sync.isSyncing ? 'Sincronizando…' : 'Sincronizar ahora',
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
         _ServerDataCard(),
       ],
@@ -196,22 +265,42 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
 
   // --------------------------------------------------------------------- utils
 
-  Widget _errorBanner(String msg) => Container(
-        margin: const EdgeInsets.only(top: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(color: const Color(0xFFFFF1F2), borderRadius: BorderRadius.circular(12)),
-        child: Row(children: [
-          const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+  Widget _errorBanner(String msg) {
+    final theme = Theme.of(context);
+    final clinical = theme.clinical;
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: clinical.alert.surface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline, color: clinical.alert.accent, size: 18),
           const SizedBox(width: 8),
-          Expanded(child: Text(msg, style: const TextStyle(color: Color(0xFFB91C1C)))),
-        ]),
-      );
+          Expanded(
+            child: Text(
+              msg,
+              style: theme.type.body.copyWith(color: clinical.alert.accent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  Widget _card({required List<Widget> children}) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
-      );
+  Widget _card({required List<Widget> children}) {
+    final surfaces = Theme.of(context).surfaces;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: surfaces.cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
+  }
 }
 
 class _LoginCard extends StatefulWidget {
@@ -239,9 +328,16 @@ class _LoginCardState extends State<_LoginCard> {
     return _Section(
       title: 'Ya tengo cuenta (paciente migrado)',
       children: [
-        TextField(controller: _id, decoration: const InputDecoration(labelText: 'Documento o email')),
+        TextField(
+          controller: _id,
+          decoration: const InputDecoration(labelText: 'Documento o email'),
+        ),
         const SizedBox(height: 12),
-        TextField(controller: _pass, obscureText: true, decoration: const InputDecoration(labelText: 'Contraseña')),
+        TextField(
+          controller: _pass,
+          obscureText: true,
+          decoration: const InputDecoration(labelText: 'Contraseña'),
+        ),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: widget.busy || _id.text.trim().isEmpty
@@ -256,7 +352,8 @@ class _LoginCardState extends State<_LoginCard> {
 
 class _RegisterCard extends StatefulWidget {
   final bool busy;
-  final void Function(String firstName, String email, String? documentNumber) onSubmit;
+  final void Function(String firstName, String email, String? documentNumber)
+  onSubmit;
   const _RegisterCard({required this.busy, required this.onSubmit});
 
   @override
@@ -281,17 +378,33 @@ class _RegisterCardState extends State<_RegisterCard> {
     return _Section(
       title: 'Soy nuevo (registrarme)',
       children: [
-        TextField(controller: _name, decoration: const InputDecoration(labelText: 'Nombre')),
+        TextField(
+          controller: _name,
+          decoration: const InputDecoration(labelText: 'Nombre'),
+        ),
         const SizedBox(height: 12),
-        TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'Email')),
+        TextField(
+          controller: _email,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(labelText: 'Email'),
+        ),
         const SizedBox(height: 12),
-        TextField(controller: _doc, decoration: const InputDecoration(labelText: 'Documento (opcional)')),
+        TextField(
+          controller: _doc,
+          decoration: const InputDecoration(labelText: 'Documento (opcional)'),
+        ),
         const SizedBox(height: 12),
         FilledButton(
-          onPressed: widget.busy || _name.text.trim().isEmpty || _email.text.trim().isEmpty
+          onPressed:
+              widget.busy ||
+                  _name.text.trim().isEmpty ||
+                  _email.text.trim().isEmpty
               ? null
-              : () => widget.onSubmit(_name.text.trim(), _email.text.trim(),
-                  _doc.text.trim().isEmpty ? null : _doc.text.trim()),
+              : () => widget.onSubmit(
+                  _name.text.trim(),
+                  _email.text.trim(),
+                  _doc.text.trim().isEmpty ? null : _doc.text.trim(),
+                ),
           child: const Text('Crear cuenta'),
         ),
       ],
@@ -306,13 +419,23 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+        color: surfaces.card,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0D48A0))),
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: surfaces.brand,
+            ),
+          ),
           const SizedBox(height: 12),
           ...children,
         ],
@@ -356,32 +479,69 @@ class _ServerDataCardState extends State<_ServerDataCard> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+        color: surfaces.card,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(children: [
-            const Expanded(child: Text('Mi data en el servidor', style: TextStyle(fontWeight: FontWeight.bold))),
-            TextButton(onPressed: _loading ? null : _load, child: const Text('Cargar')),
-          ]),
-          if (_loading) const Padding(padding: EdgeInsets.all(8), child: Center(child: CircularProgressIndicator())),
-          if (_error != null) Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C))),
-          if (_data != null && _data!.isEmpty) const Text('Sin datos en el servidor todavía.', style: TextStyle(color: Color(0xFF64748B))),
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Mi data en el servidor',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              TextButton(
+                onPressed: _loading ? null : _load,
+                child: const Text('Cargar'),
+              ),
+            ],
+          ),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.all(8),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          if (_error != null)
+            Text(_error!, style: TextStyle(color: clinical.alert.accent)),
+          if (_data != null && _data!.isEmpty)
+            Text(
+              'Sin datos en el servidor todavía.',
+              style: TextStyle(color: surfaces.inkSecondary),
+            ),
           if (_data != null && _data!.isNotEmpty)
-            ..._data!.take(50).map((m) => ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text('${m.indicatorName}: ${m.value ?? '—'} ${m.unit ?? ''}'.trim()),
-                  subtitle: Text('${m.measuredAt.toLocal()}'.split('.').first),
-                  trailing: Chip(
-                    label: Text(m.isFromLegacy ? 'legacy' : m.source.toLowerCase(),
-                        style: const TextStyle(fontSize: 11)),
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: m.isFromLegacy ? const Color(0xFFE0F2FE) : const Color(0xFFDCFCE7),
+            ..._data!
+                .take(50)
+                .map(
+                  (m) => ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      '${m.indicatorName}: ${m.value ?? '—'} ${m.unit ?? ''}'
+                          .trim(),
+                    ),
+                    subtitle: Text(
+                      '${m.measuredAt.toLocal()}'.split('.').first,
+                    ),
+                    trailing: Chip(
+                      label: Text(
+                        m.isFromLegacy ? 'legacy' : m.source.toLowerCase(),
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: m.isFromLegacy
+                          ? clinical.info.surface
+                          : clinical.optimal.surface,
+                    ),
                   ),
-                )),
+                ),
         ],
       ),
     );

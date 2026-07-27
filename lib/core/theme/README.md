@@ -117,7 +117,8 @@ indicador completo** —la hoja «Registrar indicadores» y las cuatro pantallas
 antropometría, signos vitales, perfil lipídico y composición corporal—, **el
 historial completo** —el índice y las cuatro vistas de categoría con sus
 gráficas—, **Descubre completo** —el muro, sus seis tipos de tarjeta y la hoja de
-detalle—, la barra de navegación y los widgets compartidos que usan
+detalle— y **Perfil y ajustes al completo** —las 18 pantallas—, la barra de
+navegación y los widgets compartidos que usan
 (`ActionButton`, `StatusChip`, `BmiStatusBadge`, `MainAppBar`,
 `SecondaryAppBar`, `DashedBorderContainer`, `DismissibleInfoBanner`,
 `ProfileSettingsLayout`…).
@@ -197,9 +198,23 @@ tema**: textos, botones, rutas y comportamiento son idénticos a los de `main`
 sistema para esas pantallas —lámina A2, con el párrafo de beneficios y el
 descargo médico— está pendiente de decidir aparte.
 
-Sin migrar: perfil y ajustes — siguen con colores escritos a mano, aunque su
-cabecera (`SecondaryAppBar`) ya sigue al tema. `core/constants/metric_colors.dart` ya solo lo usa
-`health_goals_screen.dart`: cuando esa pantalla se migre, el archivo desaparece.
+**No queda nada sin migrar.** `core/constants/metric_colors.dart` ya no existe:
+su último usuario era `health_goals_screen.dart`. `reminders_screen.dart` era el
+último de `AppTheme`, la fachada obsoleta.
+
+En Perfil apareció un caso que no encajaba en ningún vocabulario: las **once
+filas de ajustes**, cada una con su cuadradito de color. Eso no es semántica —un
+ajuste no está «óptimo» ni pertenece a una familia de indicador— sino
+ORIENTACIÓN: el color es lo que te permite volver a encontrar «Idioma» sin leer
+las once. Salen de la paleta de CONTENIDO, que es el único juego de acentos que
+la app ya garantiza mutuamente distinguibles y legibles en cualquier tema. Cada
+fila conserva la familia de matiz que tenía, así que se reconoce igual.
+
+Y un hallazgo: los cuatro grupos del **glosario** llevaban su color escrito a
+mano en `glossary_data.dart` —un archivo de DATOS—, y encima uno distinto del
+resto de la app: los lípidos eran ámbar allí y teal en el panel. Ahora el dato
+dice de qué `MetricFamily` habla y el color lo pone el tema, así que ya no
+pueden discrepar.
 
 Dos cosas que se quedan a propósito con color fijo:
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/reminders_provider.dart';
-import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
@@ -31,16 +32,17 @@ class _RemindersScreenState extends State<RemindersScreen> {
   }
 
   Future<void> _pickTime(Reminder reminder, int index) async {
+    final surfaces = Theme.of(context).surfaces;
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: reminder.time,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppTheme.primaryColor,
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1E293B),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: surfaces.brand,
+              onPrimary: surfaces.onBrand,
+              onSurface: surfaces.ink,
             ),
           ),
           child: child!,
@@ -49,24 +51,17 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
 
     if (picked != null) {
-      _updateReminder(
-        index,
-        reminder.copyWith(time: picked, isEnabled: true),
-      );
+      _updateReminder(index, reminder.copyWith(time: picked, isEnabled: true));
     }
   }
 
-  Future<void> _toggleReminder(
-      Reminder reminder, int index, bool value) async {
-    _updateReminder(
-      index,
-      reminder.copyWith(isEnabled: value),
-    );
+  Future<void> _toggleReminder(Reminder reminder, int index, bool value) async {
+    _updateReminder(index, reminder.copyWith(isEnabled: value));
   }
 
   Future<void> _updateReminder(int index, Reminder updatedReminder) async {
     setState(() => _isLoading = true);
-    
+
     final remindersProvider = Provider.of<RemindersProvider>(
       context,
       listen: false,
@@ -83,8 +78,11 @@ class _RemindersScreenState extends State<RemindersScreen> {
     final notifId = index + 100; // Unique ID per reminder
     if (updatedReminder.isEnabled) {
       String title = l10n.reminderTitle;
-      String body = _getTranslatedReminder(updatedReminder.translationKey, l10n);
-      
+      String body = _getTranslatedReminder(
+        updatedReminder.translationKey,
+        l10n,
+      );
+
       await _notificationService.scheduleDailyReminder(
         id: notifId,
         title: title,
@@ -129,28 +127,32 @@ class _RemindersScreenState extends State<RemindersScreen> {
   }
 
   Color _getColorForReminder(String key) {
+    final clinical = Theme.of(context).clinical;
+    final content = Theme.of(context).content;
     switch (key) {
       case 'reminderVitals':
-        return const Color(0xFFEF4444); // Rojo
+        return clinical.alert.accent; // Rojo
       case 'reminderMeds':
-        return const Color(0xFF10B981); // Esmeralda
+        return clinical.optimal.accent; // Esmeralda
       case 'reminderWorkout':
-        return const Color(0xFF3B82F6); // Azul
+        return clinical.info.accent; // Azul
       case 'reminderWater':
-        return const Color(0xFF0EA5E9); // Celeste
+        return clinical.info.accent; // Celeste
       default:
-        return const Color(0xFF8B5CF6);
+        return content.tone(ContentCategory.emotional).accent;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final content = Theme.of(context).content;
     final l10n = AppLocalizations.of(context)!;
     final remindersProvider = Provider.of<RemindersProvider>(context);
     final reminders = remindersProvider.reminders;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           const SecondaryAppBar(),
@@ -159,19 +161,26 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : ListView(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 24),
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
                     children: [
                       Center(
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8B5CF6).withValues(alpha: 0.1),
+                            color: content
+                                .tone(ContentCategory.emotional)
+                                .accent
+                                .withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.notifications_active_outlined,
                             size: 40,
-                            color: Color(0xFF8B5CF6),
+                            color: content
+                                .tone(ContentCategory.emotional)
+                                .accent,
                           ),
                         ),
                       ),
@@ -179,10 +188,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Text(
                         l10n.remindersTitle,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
+                          color: surfaces.ink,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -191,135 +200,139 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[600],
+                          color: surfaces.inkSecondary,
                           height: 1.5,
                         ),
                       ),
                       const SizedBox(height: 32),
-                      ...List.generate(
-                        reminders.length,
-                        (index) {
-                          final reminder = reminders[index];
-                          final label = _getTranslatedReminder(
-                              reminder.translationKey, l10n);
-                          final icon =
-                              _getIconForReminder(reminder.translationKey);
-                          final color =
-                              _getColorForReminder(reminder.translationKey);
+                      ...List.generate(reminders.length, (index) {
+                        final reminder = reminders[index];
+                        final label = _getTranslatedReminder(
+                          reminder.translationKey,
+                          l10n,
+                        );
+                        final icon = _getIconForReminder(
+                          reminder.translationKey,
+                        );
+                        final color = _getColorForReminder(
+                          reminder.translationKey,
+                        );
 
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: reminder.isEnabled
-                                    ? color.withValues(alpha: 0.3)
-                                    : Colors.grey.withValues(alpha: 0.1),
-                                width: 2,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.03),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                )
-                              ],
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: surfaces.card,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: reminder.isEnabled
+                                  ? color.withValues(alpha: 0.3)
+                                  : surfaces.inkMuted.withValues(alpha: 0.1),
+                              width: 2,
                             ),
-                            child: Material(
-                              color: Colors.transparent,
+                            boxShadow: [
+                              BoxShadow(
+                                color: surfaces.ink.withValues(alpha: 0.03),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
+                            child: InkWell(
                               borderRadius: BorderRadius.circular(20),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => _pickTime(reminder, index),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 20),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: reminder.isEnabled
-                                              ? color.withValues(alpha: 0.1)
-                                              : Colors.grey.withValues(alpha: 0.1),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          icon,
-                                          color: reminder.isEnabled
-                                              ? color
-                                              : Colors.grey[500],
-                                          size: 24,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              label,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: reminder.isEnabled
-                                                    ? const Color(0xFF1E293B)
-                                                    : Colors.grey[500],
+                              onTap: () => _pickTime(reminder, index),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 20,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: reminder.isEnabled
+                                            ? color.withValues(alpha: 0.1)
+                                            : surfaces.inkMuted.withValues(
+                                                alpha: 0.1,
                                               ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        icon,
+                                        color: reminder.isEnabled
+                                            ? color
+                                            : surfaces.inkMuted,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            label,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: reminder.isEnabled
+                                                  ? surfaces.ink
+                                                  : surfaces.inkMuted,
                                             ),
-                                            const SizedBox(height: 4),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.access_time,
-                                                  size: 14,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.access_time,
+                                                size: 14,
+                                                color: reminder.isEnabled
+                                                    ? surfaces.brand
+                                                    : surfaces.inkMuted,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                reminder.time.format(context),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
                                                   color: reminder.isEnabled
-                                                      ? AppTheme.primaryColor
-                                                      : Colors.grey[400],
+                                                      ? surfaces.brand
+                                                      : surfaces.inkMuted,
                                                 ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  reminder.time
-                                                      .format(context),
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: reminder.isEnabled
-                                                        ? AppTheme.primaryColor
-                                                        : Colors.grey[400],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      Switch(
-                                        value: reminder.isEnabled,
-                                        onChanged: (val) =>
-                                            _toggleReminder(reminder, index, val),
-                                        activeThumbColor: Colors.white,
-                                        activeTrackColor: color,
-                                        inactiveThumbColor: Colors.grey[400],
-                                        inactiveTrackColor: Colors.grey[200],
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Switch(
+                                      value: reminder.isEnabled,
+                                      onChanged: (val) =>
+                                          _toggleReminder(reminder, index, val),
+                                      activeThumbColor: surfaces.onBrand,
+                                      activeTrackColor: color,
+                                      inactiveThumbColor: surfaces.inkMuted,
+                                      inactiveTrackColor: surfaces.divider,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 40),
                       Text(
                         l10n.remindersNote,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[500],
+                          color: surfaces.inkMuted,
                           fontStyle: FontStyle.italic,
                         ),
                       ),

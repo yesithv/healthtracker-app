@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provider.dart';
@@ -15,7 +16,9 @@ class MeasuringDeviceScreen extends StatefulWidget {
 }
 
 class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
-  static const _primary = Color(0xFF0D48A0);
+  /// La marca del tema activo. Era una constante de clase con el azul de
+  /// «Pulso Clínico» escrito a mano.
+  Color get _primary => Theme.of(context).surfaces.brand;
 
   @override
   void initState() {
@@ -40,7 +43,9 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
 
   void _confirm(String message, bool pending) {
     if (!mounted) return;
-    final text = pending ? '$message Se sincronizará cuando haya conexión.' : message;
+    final text = pending
+        ? '$message Se sincronizará cuando haya conexión.'
+        : message;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(text)));
@@ -48,14 +53,15 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     final provider = context.watch<MeasuringDeviceProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: AppBar(
         title: const Text('Mi dispositivo de medición'),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
+        backgroundColor: surfaces.card,
+        foregroundColor: surfaces.ink,
         elevation: 0,
       ),
       body: ListView(
@@ -69,47 +75,53 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
               child: LinearProgressIndicator(minHeight: 3),
             ),
           if (provider.catalogError != null)
-            _noticeBanner('No se pudo actualizar el catálogo. Mostrando las opciones guardadas.'),
+            _noticeBanner(
+              'No se pudo actualizar el catálogo. Mostrando las opciones guardadas.',
+            ),
 
           // Opción "ninguna".
           _deviceTile(
             title: 'No uso ninguna',
-            subtitle: 'Solo registraré medidas manuales (peso, cintura, talla).',
+            subtitle:
+                'Solo registraré medidas manuales (peso, cintura, talla).',
             icon: Icons.block,
             selected: provider.usesNoDevice,
             onTap: _selectNone,
           ),
           const SizedBox(height: 8),
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 4, bottom: 8, top: 8),
             child: Text(
               'BÁSCULAS DISPONIBLES',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF94A3B8),
+                color: surfaces.inkMuted,
                 letterSpacing: 0.8,
               ),
             ),
           ),
 
           // Catálogo.
-          ...provider.catalog.map((d) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _deviceTile(
-                  title: d.name,
-                  subtitle: '${d.brand} · ${d.model}',
-                  icon: Icons.monitor_heart_outlined,
-                  selected: provider.selectedCode == d.code,
-                  onTap: () => _select(d),
-                ),
-              )),
+          ...provider.catalog.map(
+            (d) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _deviceTile(
+                title: d.name,
+                subtitle: '${d.brand} · ${d.model}',
+                icon: Icons.monitor_heart_outlined,
+                selected: provider.selectedCode == d.code,
+                onTap: () => _select(d),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _headerCard() {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -119,14 +131,14 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, color: _primary, size: 20),
+          Icon(Icons.info_outline, color: _primary, size: 20),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Text(
               'Cada báscula de bioimpedancia interpreta la grasa, el músculo y la grasa visceral '
               'con rangos propios. Dinos cuál usas para mostrarte si tus valores están bajos, '
               'normales o altos. Puedes cambiarlo cuando quieras.',
-              style: TextStyle(fontSize: 13, height: 1.5, color: Color(0xFF334155)),
+              style: TextStyle(fontSize: 13, height: 1.5, color: surfaces.ink),
             ),
           ),
         ],
@@ -135,20 +147,23 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
   }
 
   Widget _noticeBanner(String text) {
+    final clinical = Theme.of(context).clinical;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF3C7),
+        color: clinical.caution.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          const Icon(Icons.wifi_off, color: Color(0xFF92400E), size: 18),
+          Icon(Icons.wifi_off, color: clinical.caution.accent, size: 18),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(text,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF92400E))),
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 12, color: clinical.caution.accent),
+            ),
           ),
         ],
       ),
@@ -162,16 +177,19 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
     required bool selected,
     required VoidCallback onTap,
   }) {
+    final surfaces = Theme.of(context).surfaces;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: selected ? _primary.withValues(alpha: 0.1) : Colors.white,
+          color: selected
+              ? _primary.withValues(alpha: 0.1)
+              : Theme.of(context).surfaces.card,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected ? _primary : const Color(0xFFE2E8F0),
+            color: selected ? _primary : surfaces.divider,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -180,31 +198,41 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: (selected ? _primary : const Color(0xFF94A3B8)).withValues(alpha: 0.12),
+                color: (selected ? _primary : surfaces.inkMuted).withValues(
+                  alpha: 0.12,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: selected ? _primary : const Color(0xFF64748B), size: 20),
+              child: Icon(
+                icon,
+                color: selected ? _primary : surfaces.inkSecondary,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: selected ? _primary : const Color(0xFF1E293B),
-                      )),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: selected ? _primary : surfaces.ink,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 12, color: surfaces.inkMuted),
+                  ),
                 ],
               ),
             ),
             Icon(
               selected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: selected ? _primary : const Color(0xFFCBD5E1),
+              color: selected ? _primary : surfaces.inkMuted,
               size: 22,
             ),
           ],

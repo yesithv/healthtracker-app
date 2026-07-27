@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 class GlossaryTerm {
@@ -16,13 +18,19 @@ class GlossaryTerm {
 class GlossaryGroup {
   final String titleKey; // resolved externally via l10n
   final IconData icon;
-  final Color color;
+
+  /// Familia de indicador del grupo, NO un color. Los cuatro grupos del
+  /// glosario son exactamente las cuatro familias que la app ya registra, así
+  /// que llevaban su color escrito a mano —y encima uno distinto del que usaba
+  /// el resto de la app: aquí los lípidos eran ámbar y en el panel, teal—.
+  /// Ahora el dato dice de qué familia habla y el tema decide con qué color.
+  final MetricFamily family;
   final List<GlossaryTerm> terms;
 
   const GlossaryGroup({
     required this.titleKey,
     required this.icon,
-    required this.color,
+    required this.family,
     required this.terms,
   });
 }
@@ -36,7 +44,7 @@ class GlossaryData {
       GlossaryGroup(
         titleKey: 'helpGlossaryGroupAnthropo',
         icon: Icons.straighten,
-        color: const Color(0xFF0D48A0),
+        family: MetricFamily.anthropometry,
         terms: [
           GlossaryTerm(
             name: l10n.glossaryImcName,
@@ -57,7 +65,7 @@ class GlossaryData {
       GlossaryGroup(
         titleKey: 'helpGlossaryGroupVitals',
         icon: Icons.favorite_border,
-        color: const Color(0xFFEF4444),
+        family: MetricFamily.vitals,
         terms: [
           GlossaryTerm(
             name: l10n.glossarySistolicaName,
@@ -79,7 +87,7 @@ class GlossaryData {
       GlossaryGroup(
         titleKey: 'helpGlossaryGroupLipid',
         icon: Icons.bloodtype_outlined,
-        color: const Color(0xFFF59E0B),
+        family: MetricFamily.lipids,
         terms: [
           GlossaryTerm(
             name: l10n.glossaryColesterolTotalName,
@@ -111,7 +119,7 @@ class GlossaryData {
       GlossaryGroup(
         titleKey: 'helpGlossaryGroupBody',
         icon: Icons.accessibility_new,
-        color: const Color(0xFF10B981),
+        family: MetricFamily.bodyComposition,
         terms: [
           GlossaryTerm(
             name: l10n.glossaryGrasaName,

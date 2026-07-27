@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../data/glossary_data.dart';
@@ -22,6 +23,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     final l10n = AppLocalizations.of(context)!;
     final groups = GlossaryData.getGroups(l10n);
 
@@ -29,21 +31,25 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
     final filteredGroups = _query.isEmpty
         ? groups
         : groups
-            .map((g) => GlossaryGroup(
+              .map(
+                (g) => GlossaryGroup(
                   titleKey: g.titleKey,
                   icon: g.icon,
-                  color: g.color,
+                  family: g.family,
                   terms: g.terms
-                      .where((t) =>
-                          t.name.toLowerCase().contains(_query) ||
-                          t.definition.toLowerCase().contains(_query))
+                      .where(
+                        (t) =>
+                            t.name.toLowerCase().contains(_query) ||
+                            t.definition.toLowerCase().contains(_query),
+                      )
                       .toList(),
-                ))
-            .where((g) => g.terms.isNotEmpty)
-            .toList();
+                ),
+              )
+              .where((g) => g.terms.isNotEmpty)
+              .toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: Column(
         children: [
@@ -54,11 +60,11 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                 // Search bar
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: surfaces.card,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: surfaces.ink.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -69,11 +75,15 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                     onChanged: (v) => setState(() => _query = v.toLowerCase()),
                     decoration: InputDecoration(
                       hintText: l10n.helpGlossarySearchHint,
-                      hintStyle: const TextStyle(color: Color(0xFFCBD5E1)),
-                      prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+                      hintStyle: TextStyle(color: surfaces.inkMuted),
+                      prefixIcon: Icon(Icons.search, color: surfaces.inkMuted),
                       suffixIcon: _query.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.close, color: Color(0xFF94A3B8), size: 18),
+                              icon: Icon(
+                                Icons.close,
+                                color: surfaces.inkMuted,
+                                size: 18,
+                              ),
                               onPressed: () {
                                 _searchCtrl.clear();
                                 setState(() => _query = '');
@@ -93,11 +103,15 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                       padding: const EdgeInsets.only(top: 40),
                       child: Column(
                         children: [
-                          Icon(Icons.search_off, size: 48, color: Colors.grey.shade300),
+                          Icon(
+                            Icons.search_off,
+                            size: 48,
+                            color: surfaces.inkMuted,
+                          ),
                           const SizedBox(height: 12),
                           Text(
                             l10n.helpNoResults,
-                            style: const TextStyle(color: Color(0xFF94A3B8)),
+                            style: TextStyle(color: surfaces.inkMuted),
                           ),
                         ],
                       ),
@@ -115,7 +129,12 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
     );
   }
 
-  Widget _buildGroup(BuildContext context, GlossaryGroup group, AppLocalizations l10n) {
+  Widget _buildGroup(
+    BuildContext context,
+    GlossaryGroup group,
+    AppLocalizations l10n,
+  ) {
+    final groupTone = Theme.of(context).metrics.tone(group.family);
     final title = _resolveGroupTitle(group.titleKey, l10n);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,10 +147,10 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: group.color.withValues(alpha: 0.12),
+                  color: groupTone.accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(group.icon, color: group.color, size: 18),
+                child: Icon(group.icon, color: groupTone.accent, size: 18),
               ),
               const SizedBox(width: 10),
               Text(
@@ -139,7 +158,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: group.color,
+                  color: groupTone.accent,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -148,21 +167,24 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
         ),
 
         // Terms
-        ...group.terms.map((term) => _buildTermCard(term, group.color, l10n)),
+        ...group.terms.map(
+          (term) => _buildTermCard(term, groupTone.accent, l10n),
+        ),
         const SizedBox(height: 20),
       ],
     );
   }
 
   Widget _buildTermCard(GlossaryTerm term, Color color, AppLocalizations l10n) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: surfaces.ink.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -172,7 +194,11 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          childrenPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          childrenPadding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 16,
+          ),
           leading: Container(
             width: 8,
             height: 36,
@@ -183,27 +209,30 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
           ),
           title: Text(
             term.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
+              color: surfaces.ink,
             ),
           ),
           iconColor: color,
-          collapsedIconColor: const Color(0xFFCBD5E1),
+          collapsedIconColor: surfaces.inkMuted,
           children: [
             Text(
               term.definition,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: Color(0xFF475569),
+                color: surfaces.inkSecondary,
                 height: 1.6,
               ),
             ),
             if (term.normalRange != null) ...[
               const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(8),

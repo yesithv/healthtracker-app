@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
@@ -19,10 +20,12 @@ class ContactScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: Column(
         children: [
@@ -38,7 +41,7 @@ class ContactScreen extends StatelessWidget {
                         icon: Icons.bug_report_outlined,
                         title: l10n.helpContactReportBug,
                         description: l10n.helpContactReportBugDesc,
-                        color: const Color(0xFFEF4444),
+                        color: clinical.alert.accent,
                         onTap: () => _launchEmail('Bug Report'),
                         buttonLabel: l10n.helpContactSendEmail,
                       ),
@@ -49,7 +52,7 @@ class ContactScreen extends StatelessWidget {
                         icon: Icons.lightbulb_outline,
                         title: l10n.helpContactSuggest,
                         description: l10n.helpContactSuggestDesc,
-                        color: const Color(0xFFF59E0B),
+                        color: clinical.caution.accent,
                         onTap: () => _launchEmail('Sugerencia'),
                         buttonLabel: l10n.helpContactSendEmail,
                       ),
@@ -63,11 +66,11 @@ class ContactScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: surfaces.card,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
+                        color: surfaces.ink.withValues(alpha: 0.04),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -78,25 +81,25 @@ class ContactScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0D48A0).withValues(alpha: 0.08),
+                          color: surfaces.brand.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.system_update_alt,
-                          color: Color(0xFF0D48A0),
+                          color: surfaces.brand,
                           size: 24,
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      SizedBox(width: 14),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'My Vitals — Health Tracker',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
-                              color: Color(0xFF1E293B),
+                              color: surfaces.ink,
                             ),
                           ),
                           SizedBox(height: 2),
@@ -104,7 +107,7 @@ class ContactScreen extends StatelessWidget {
                             'v1.1.0  •  © 2026 My Vitals Health Inc.',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF94A3B8),
+                              color: surfaces.inkMuted,
                             ),
                           ),
                         ],
@@ -143,14 +146,15 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         label.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF94A3B8),
+          color: surfaces.inkMuted,
           letterSpacing: 1.0,
         ),
       ),
@@ -177,14 +181,15 @@ class _ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: surfaces.ink.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -213,9 +218,9 @@ class _ContactCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             description,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: Color(0xFF94A3B8),
+              color: surfaces.inkMuted,
               height: 1.4,
             ),
           ),
@@ -227,11 +232,14 @@ class _ContactCard extends StatelessWidget {
               icon: const Icon(Icons.send_outlined, size: 14),
               label: Text(
                 buttonLabel,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
-                foregroundColor: Colors.white,
+                foregroundColor: surfaces.onBrand,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -259,19 +267,20 @@ class _ChangelogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: isCurrent
-            ? const Color(0xFF0D48A0).withValues(alpha: 0.04)
-            : Colors.white,
+            ? surfaces.brand.withValues(alpha: 0.04)
+            : surfaces.card,
         borderRadius: BorderRadius.circular(16),
         border: isCurrent
-            ? Border.all(color: const Color(0xFF0D48A0).withValues(alpha: 0.2))
-            : Border.all(color: const Color(0xFFF1F5F9)),
+            ? Border.all(color: surfaces.brand.withValues(alpha: 0.2))
+            : Border.all(color: surfaces.inset),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: surfaces.ink.withValues(alpha: 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -285,9 +294,7 @@ class _ChangelogCard extends StatelessWidget {
               Icon(
                 isCurrent ? Icons.new_releases_outlined : Icons.history,
                 size: 16,
-                color: isCurrent
-                    ? const Color(0xFF0D48A0)
-                    : const Color(0xFF94A3B8),
+                color: isCurrent ? surfaces.brand : surfaces.inkMuted,
               ),
               const SizedBox(width: 8),
               Text(
@@ -295,9 +302,7 @@ class _ChangelogCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: isCurrent
-                      ? const Color(0xFF0D48A0)
-                      : const Color(0xFF64748B),
+                  color: isCurrent ? surfaces.brand : surfaces.inkSecondary,
                 ),
               ),
             ],
@@ -305,9 +310,9 @@ class _ChangelogCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             changes,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: Color(0xFF64748B),
+              color: surfaces.inkSecondary,
               height: 1.7,
             ),
           ),

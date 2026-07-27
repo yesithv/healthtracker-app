@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/providers/user_profile_provider.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/content_palette.dart';
+import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
 import '../../../../core/auth/patient_session.dart';
@@ -12,17 +15,37 @@ import '../../../../core/auth/patient_session.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  /// ACENTOS DE ORIENTACIÓN de las filas de ajustes.
+  ///
+  /// Son once filas seguidas: el cuadradito de color es lo que permite volver a
+  /// encontrar «Idioma» sin leer las once. No es semántica —un ajuste no está
+  /// «óptimo» ni pertenece a una familia de indicador— así que no puede salir de
+  /// la paleta clínica ni de la de métricas.
+  ///
+  /// Salen de la paleta de CONTENIDO porque es el único juego de acentos que la
+  /// app ya garantiza mutuamente distinguibles en matiz y legibles en cualquier
+  /// tema (lo verifica el contrato semántico). Cada fila conserva exactamente la
+  /// familia de matiz que tenía escrita a mano, así que la pantalla se reconoce
+  /// igual; lo que gana es que en «Consulta Serena» ya no aparecen un violeta y
+  /// un cian eléctricos sobre un lienzo cálido.
+  static Tone _wayfinding(ThemeData theme, ContentCategory c) =>
+      theme.content.tone(c);
+
   void _showImageSourceSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context, listen: false);
     final pickerService = ImagePickerService();
 
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
+          backgroundColor: surfaces.card,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(surfaces.radiusCard + 8),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
@@ -31,18 +54,14 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Text(
                   l10n.profileImageTitle,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
-                  ),
+                  style: theme.type.cardTitle.copyWith(fontSize: 20),
                 ),
                 const SizedBox(height: 24),
                 _buildSourceOption(
                   context,
                   icon: Icons.photo_library_outlined,
                   label: l10n.gallery,
-                  color: const Color(0xFF0D48A0),
+                  color: surfaces.brand,
                   onTap: () async {
                     Navigator.pop(context);
                     final base64 = await pickerService.pickImageAsBase64(
@@ -55,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                   context,
                   icon: Icons.camera_alt_outlined,
                   label: l10n.camera,
-                  color: const Color(0xFF0D48A0),
+                  color: surfaces.brand,
                   onTap: () async {
                     Navigator.pop(context);
                     final base64 = await pickerService.pickImageAsBase64(
@@ -69,7 +88,8 @@ class ProfileScreen extends StatelessWidget {
                     context,
                     icon: Icons.delete_outline,
                     label: l10n.deletePhoto,
-                    color: Colors.redAccent,
+                    // Borrar la foto es la acción destructiva del diálogo.
+                    color: theme.clinical.alert.accent,
                     onTap: () {
                       Navigator.pop(context);
                       prefs.setProfileImage(null);
@@ -80,9 +100,8 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     l10n.cancel,
-                    style: const TextStyle(
-                      color: Color(0xFF64748B),
-                      fontWeight: FontWeight.w600,
+                    style: theme.type.button.copyWith(
+                      color: surfaces.inkSecondary,
                     ),
                   ),
                 ),
@@ -104,19 +123,34 @@ class ProfileScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final router = GoRouter.of(context);
 
+    final theme = Theme.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.logOut),
-        content: Text(l10n.logOutConfirm),
+        backgroundColor: theme.surfaces.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(theme.surfaces.radiusCard),
+        ),
+        title: Text(l10n.logOut, style: theme.type.cardTitle),
+        content: Text(l10n.logOutConfirm, style: theme.type.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
+            child: Text(
+              l10n.cancel,
+              style: theme.type.button.copyWith(
+                color: theme.surfaces.inkSecondary,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.logOut),
+            child: Text(
+              l10n.logOut,
+              style: theme.type.button.copyWith(
+                color: theme.clinical.alert.accent,
+              ),
+            ),
           ),
         ],
       ),
@@ -146,10 +180,10 @@ class ProfileScreen extends StatelessWidget {
       ),
       title: Text(
         label,
-        style: const TextStyle(
+        style: Theme.of(context).type.body.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: Color(0xFF334155),
+          color: Theme.of(context).surfaces.ink,
         ),
       ),
       onTap: onTap,
@@ -160,9 +194,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context);
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           MainAppBar(title: l10n.profile.toUpperCase()),
@@ -183,18 +219,21 @@ class ProfileScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: surfaces.card,
                                   width: 2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
+                                    color: surfaces.ink.withValues(alpha: 0.1),
                                     blurRadius: 10,
                                     offset: const Offset(0, 5),
                                   ),
                                 ],
                               ),
-                              child: _buildAvatar(prefs.profileImageBase64),
+                              child: _buildAvatar(
+                                context,
+                                prefs.profileImageBase64,
+                              ),
                             ),
                             Positioned(
                               bottom: 0,
@@ -202,16 +241,16 @@ class ProfileScreen extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF0D48A0),
+                                  color: surfaces.brand,
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: Colors.white,
+                                    color: surfaces.card,
                                     width: 2,
                                   ),
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.camera_alt,
-                                  color: Colors.white,
+                                  color: surfaces.onBrand,
                                   size: 16,
                                 ),
                               ),
@@ -224,22 +263,18 @@ class ProfileScreen extends StatelessWidget {
                         prefs.userName.isNotEmpty
                             ? prefs.userName
                             : l10n.newUserInfo,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
-                        ),
+                        style: theme.type.screenTitle.copyWith(fontSize: 22),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         prefs.userEmail.isNotEmpty
                             ? prefs.userEmail
                             : 'email@ejemplo.com',
-                        style: TextStyle(
+                        style: theme.type.body.copyWith(
                           fontSize: 14,
                           color: prefs.userEmail.isNotEmpty
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFF94A3B8),
+                              ? surfaces.ink
+                              : surfaces.inkMuted,
                         ),
                       ),
                     ],
@@ -250,16 +285,8 @@ class ProfileScreen extends StatelessWidget {
                 // --- ACHIEVEMENTS & XP CARD ---
                 Container(
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+                  decoration: surfaces.cardDecoration(
+                    radius: surfaces.radiusCard + 4,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,11 +296,9 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Text(
                             l10n.selfCareProgress,
-                            style: const TextStyle(
+                            style: theme.type.sectionLabel.copyWith(
                               fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0D48A0),
-                              letterSpacing: 1.0,
+                              color: surfaces.brand,
                             ),
                           ),
                           Container(
@@ -282,28 +307,23 @@ class ProfileScreen extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE3F2FD),
+                              color: surfaces.brand.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
                               l10n.level(1),
-                              style: const TextStyle(
+                              style: theme.type.badge.copyWith(
                                 fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0D48A0),
+                                color: surfaces.brand,
                               ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      const Text(
+                      Text(
                         'Observador Vital',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
-                        ),
+                        style: theme.type.cardTitle.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 12),
                       ClipRRect(
@@ -311,19 +331,18 @@ class ProfileScreen extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: 0.15,
                           minHeight: 8,
-                          backgroundColor: const Color(0xFFF1F5F9),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF0D48A0),
+                          backgroundColor: surfaces.track,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            surfaces.brand,
                           ),
                         ),
                       ),
                       const SizedBox(height: 24),
                       Text(
                         l10n.myHealthAchievements,
-                        style: const TextStyle(
+                        style: theme.type.sectionLabel.copyWith(
                           fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF94A3B8),
+                          color: surfaces.inkMuted,
                           letterSpacing: 0.8,
                         ),
                       ),
@@ -341,42 +360,48 @@ class ProfileScreen extends StatelessWidget {
                             icon: Icons.start,
                             label: l10n.badgeFirstStep,
                             description: l10n.badgeFirstStepDesc,
-                            color: const Color(0xFF0D48A0),
+                            tone: Tone.from(
+                              surfaces.brand,
+                              canvas: surfaces.card,
+                            ),
                             isLocked: false,
                           ),
                           _BadgeItem(
                             icon: Icons.favorite,
                             label: l10n.badgeStrongHeart,
                             description: l10n.badgeStrongHeartDesc,
-                            color: const Color(0xFFEF4444),
+                            tone: _wayfinding(theme, ContentCategory.heart),
                             isLocked: false,
                           ),
                           _BadgeItem(
                             icon: Icons.calendar_month,
                             label: l10n.badgeVitalHabit,
                             description: l10n.badgeVitalHabitDesc,
-                            color: const Color(0xFFF59E0B),
+                            tone: _wayfinding(theme, ContentCategory.sports),
                             isLocked: true,
                           ),
                           _BadgeItem(
                             icon: Icons.visibility,
                             label: l10n.badgeAwareness,
                             description: l10n.badgeAwarenessDesc,
-                            color: const Color(0xFF8B5CF6),
+                            tone: _wayfinding(theme, ContentCategory.emotional),
                             isLocked: false,
                           ),
                           _BadgeItem(
                             icon: Icons.fitness_center,
                             label: l10n.badgeBalance,
                             description: l10n.badgeBalanceDesc,
-                            color: const Color(0xFF10B981),
+                            tone: _wayfinding(theme, ContentCategory.nutrition),
                             isLocked: true,
                           ),
                           _BadgeItem(
                             icon: Icons.verified_user,
                             label: l10n.badgeGuardian,
                             description: l10n.badgeGuardianDesc,
-                            color: const Color(0xFF0D48A0),
+                            tone: Tone.from(
+                              surfaces.brand,
+                              canvas: surfaces.card,
+                            ),
                             isLocked: true,
                           ),
                         ],
@@ -390,71 +415,68 @@ class ProfileScreen extends StatelessWidget {
                 _MenuTile(
                   icon: Icons.sync,
                   title: 'Cuenta y sincronización',
-                  iconColor: const Color(0xFF0D48A0),
+                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
                   onTap: () => context.push('/profile/account'),
                 ),
                 _MenuTile(
                   icon: Icons.badge_outlined,
                   title: l10n.personalInfo,
-                  iconColor: const Color(0xFF0D48A0),
+                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
                   onTap: () => context.push('/profile/info'),
                 ),
                 _MenuTile(
                   icon: Icons.monitor_heart_outlined,
                   title: 'Mi dispositivo de medición',
-                  iconColor: const Color(0xFF0D48A0),
+                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
                   onTap: () => context.push('/profile/device'),
                 ),
                 _MenuTile(
                   icon: Icons.flag_circle_outlined,
                   title: l10n.healthGoalsTitle,
-                  iconColor: const Color(0xFFEF4444),
+                  tone: _wayfinding(theme, ContentCategory.heart),
                   onTap: () => context.push('/profile/goals'),
                 ),
                 // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
-                // El color del icono va fijo como el de sus vecinas: esta
-                // pantalla todavía no está migrada a tokens, y teñir una sola
-                // fila la dejaría descolgada del resto.
                 _MenuTile(
                   icon: Icons.palette_outlined,
                   title: 'Tema de la app',
-                  iconColor: const Color(0xFF8B5CF6),
+                  tone: _wayfinding(theme, ContentCategory.emotional),
                   onTap: () => context.push('/profile/theme'),
                 ),
                 _MenuTile(
                   icon: Icons.language,
                   title: l10n.language,
-                  iconColor: const Color(0xFF10B981),
+                  tone: _wayfinding(theme, ContentCategory.nutrition),
                   onTap: () => context.push('/profile/language'),
                 ),
                 _MenuTile(
                   icon: Icons.straighten,
                   title: l10n.measurementUnits,
-                  iconColor: const Color(0xFFF59E0B),
+                  tone: _wayfinding(theme, ContentCategory.sports),
                   onTap: () => context.push('/profile/units'),
                 ),
                 _MenuTile(
                   icon: Icons.notifications_active_outlined,
                   title: l10n.remindersTitle,
-                  iconColor: const Color(0xFF14B8A6), // Teal
+                  tone: _wayfinding(theme, ContentCategory.daily),
                   onTap: () => context.push('/profile/reminders'),
                 ),
                 _MenuTile(
                   icon: Icons.security_outlined,
                   title: l10n.privacySecurity,
-                  iconColor: const Color(0xFF8B5CF6),
+                  tone: _wayfinding(theme, ContentCategory.emotional),
                   onTap: () => context.push('/profile/privacy'),
                 ),
                 _MenuTile(
                   icon: Icons.cloud_sync,
                   title: l10n.myDataBackup,
-                  iconColor: const Color(0xFF0891B2), // Cyan
+                  tone: _wayfinding(theme, ContentCategory.sleep),
                   onTap: () => context.push('/profile/backup'),
                 ),
                 _MenuTile(
                   icon: Icons.help_outline,
                   title: l10n.helpSupport,
-                  iconColor: const Color(0xFF64748B),
+                  tone: theme.clinical.neutral,
                   onTap: () => context.push('/profile/help'),
                 ),
                 const SizedBox(height: 24),
@@ -466,36 +488,41 @@ class ProfileScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
+                      color: surfaces.card,
+                      borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                      // Salir es la acción destructiva de la pantalla: va en el
+                      // rojo de ALERTA, igual que borrar un registro.
                       border: Border.all(
-                        color: const Color(0xFFFFB2B2),
+                        color: theme.clinical.alert.accent.withValues(
+                          alpha: 0.35,
+                        ),
                         width: 1.5,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(
-                            0xFFEF4444,
-                          ).withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      boxShadow: surfaces.cardShadow.isEmpty
+                          ? const []
+                          : [
+                              BoxShadow(
+                                color: theme.clinical.alert.accent.withValues(
+                                  alpha: 0.05,
+                                ),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.logout,
-                          color: Color(0xFFEF4444),
+                          color: theme.clinical.alert.accent,
                           size: 18,
                         ),
                         const SizedBox(width: 10),
                         Text(
                           l10n.logOut,
-                          style: const TextStyle(
-                            color: Color(0xFFEF4444),
-                            fontWeight: FontWeight.bold,
+                          style: theme.type.button.copyWith(
+                            color: theme.clinical.alert.accent,
                             fontSize: 16,
                           ),
                         ),
@@ -509,10 +536,9 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   l10n.medicalDisclaimerTitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: theme.type.sectionLabel.copyWith(
                     fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF94A3B8),
+                    color: surfaces.inkMuted,
                     letterSpacing: 1.2,
                   ),
                 ),
@@ -520,17 +546,16 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   l10n.medicalDisclaimerText,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF94A3B8),
-                    height: 1.6,
-                  ),
+                  style: theme.type.meta.copyWith(fontSize: 10, height: 1.6),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   '© 2026 My Vitals Health Inc. v1.1.0',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 10, color: Color(0xFFCBD5E1)),
+                  style: theme.type.meta.copyWith(
+                    fontSize: 10,
+                    color: surfaces.inkMuted,
+                  ),
                 ),
                 const SizedBox(height: 40),
               ],
@@ -541,7 +566,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(String? base64String) {
+  Widget _buildAvatar(BuildContext context, String? base64String) {
+    final surfaces = Theme.of(context).surfaces;
     if (base64String != null && base64String.isNotEmpty) {
       try {
         return CircleAvatar(
@@ -552,32 +578,37 @@ class ProfileScreen extends StatelessWidget {
         // Fallback
       }
     }
-    return const CircleAvatar(
+    return CircleAvatar(
       radius: 50,
-      backgroundColor: Color(0xFFE2E8F0),
-      child: Icon(Icons.person, size: 60, color: Color(0xFF64748B)),
+      backgroundColor: surfaces.track,
+      child: Icon(Icons.person, size: 60, color: surfaces.inkSecondary),
     );
   }
-
 }
 
 class _BadgeItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String description;
-  final Color color;
+
+  /// Tono ya resuelto por el tema. Recibe el tono y no un color para que el
+  /// halo, el filete y el icono no puedan salir de sitios distintos.
+  final Tone tone;
   final bool isLocked;
 
   const _BadgeItem({
     required this.icon,
     required this.label,
     required this.description,
-    required this.color,
+    required this.tone,
     required this.isLocked,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final color = tone.accent;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -588,12 +619,12 @@ class _BadgeItem extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isLocked
-                    ? const Color(0xFFF1F5F9)
+                    ? surfaces.inset
                     : color.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isLocked
-                      ? const Color(0xFFE2E8F0)
+                      ? surfaces.divider
                       : color.withValues(alpha: 0.3),
                   width: 2,
                 ),
@@ -608,8 +639,8 @@ class _BadgeItem extends StatelessWidget {
                       ],
               ),
               child: isLocked
-                  ? const ColorFiltered(
-                      colorFilter: ColorFilter.matrix([
+                  ? ColorFiltered(
+                      colorFilter: const ColorFilter.matrix([
                         0.2126,
                         0.7152,
                         0.0722,
@@ -631,11 +662,7 @@ class _BadgeItem extends StatelessWidget {
                         1,
                         0,
                       ]),
-                      child: Icon(
-                        Icons.lock_outline,
-                        color: Color(0xFF94A3B8),
-                        size: 24,
-                      ),
+                      child: Icon(Icons.lock_outline, size: 24),
                     )
                   : Icon(icon, color: color, size: 24),
             ),
@@ -645,19 +672,17 @@ class _BadgeItem extends StatelessWidget {
         Text(
           label,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: theme.type.cardTitle.copyWith(
             fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: isLocked ? const Color(0xFF94A3B8) : const Color(0xFF1E293B),
+            color: isLocked ? surfaces.inkMuted : surfaces.ink,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           description,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: theme.type.meta.copyWith(
             fontSize: 9,
-            color: const Color(0xFF94A3B8),
             fontWeight: isLocked ? FontWeight.normal : FontWeight.w500,
           ),
         ),
@@ -669,27 +694,32 @@ class _BadgeItem extends StatelessWidget {
 class _MenuTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final Color iconColor;
+
+  /// Acento de orientación de la fila. Ver la nota en [ProfileScreen].
+  final Tone tone;
   final VoidCallback? onTap;
 
   const _MenuTile({
     required this.icon,
     required this.title,
-    required this.iconColor,
+    required this.tone,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final radius = surfaces.radiusCard;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D48A0).withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
+        color: surfaces.brand.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(radius),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(radius),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
@@ -697,10 +727,10 @@ class _MenuTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
+                  color: tone.accent.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: iconColor, size: 20),
+                child: Icon(icon, color: tone.accent, size: 20),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -709,21 +739,16 @@ class _MenuTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: theme.type.cardTitle.copyWith(
                         fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0D48A0),
+                        color: surfaces.brand,
                         letterSpacing: 0.3,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: Color(0xFF0D48A0),
-                size: 20,
-              ),
+              Icon(Icons.chevron_right, color: surfaces.brand, size: 20),
             ],
           ),
         ),

@@ -91,11 +91,12 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   /// Bottom sheet con el catálogo de países (bandera + nombre + prefijo) y
   /// búsqueda por nombre o prefijo.
   Future<void> _pickCountry() async {
+    final surfaces = Theme.of(context).surfaces;
     final l10n = AppLocalizations.of(context)!;
     final picked = await showModalBottomSheet<Country>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: surfaces.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -652,13 +653,13 @@ class _ActivityLevelOption extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.20)
+                    ? surfaces.onBrand.withValues(alpha: 0.20)
                     : selectedColor.withValues(alpha: 0.10),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: isSelected ? Colors.white : selectedColor,
+                color: isSelected ? surfaces.onBrand : selectedColor,
                 size: 24,
               ),
             ),
@@ -670,7 +671,7 @@ class _ActivityLevelOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : surfaces.inkSecondary,
+                color: isSelected ? surfaces.onBrand : surfaces.inkSecondary,
                 height: 1.3,
               ),
             ),
@@ -864,7 +865,7 @@ class _GenderOption extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: isSelected ? Colors.white : surfaces.inkSecondary,
+                  color: isSelected ? surfaces.onBrand : surfaces.inkSecondary,
                   size: 26,
                 ),
                 const SizedBox(height: 6),
@@ -874,7 +875,9 @@ class _GenderOption extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.white : surfaces.inkSecondary,
+                    color: isSelected
+                        ? surfaces.onBrand
+                        : surfaces.inkSecondary,
                   ),
                 ),
               ],
