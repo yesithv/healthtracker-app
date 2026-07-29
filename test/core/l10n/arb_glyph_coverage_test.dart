@@ -10,10 +10,18 @@
 // Así se coló un `✦` en `saveAndEarnXp` y una `→` en dos respuestas del FAQ.
 //
 // Esta prueba abre los TTF, lee sus tablas `cmap` y calcula la INTERSECCIÓN de
-// los puntos de código que todas cubren; después recorre los cinco `.arb` y
-// exige que cada carácter esté en esa intersección. La intersección —y no la
-// unión— porque una cadena cualquiera puede acabar pintándose con cualquiera de
-// las familias según el tema activo.
+// los puntos de código que cubren las familias de TEXTO; después recorre los
+// cinco `.arb` y exige que cada carácter esté en esa intersección. La
+// intersección —y no la unión— porque una cadena cualquiera puede acabar
+// pintándose con cualquiera de las familias según el tema activo.
+//
+// El recorte de Noto Color Emoji queda FUERA de esa cuenta, y no por comodidad:
+// no es una familia de texto sino el RESPALDO al que Flutter cae cuando la
+// familia activa no sabe pintar algo (ver `TypeScale.fallback`). Amplía la
+// cobertura, no la limita. Meterlo en la intersección la dejaría en las 24
+// letras que trae y haría fallar la prueba entera; unirlo después es lo que
+// describe de verdad lo que la app puede dibujar. Qué banderas trae ese recorte
+// lo comprueba `flag_glyph_coverage_test.dart`, que es otra pregunta.
 //
 // Se apoya en `no_hardcoded_strings_test.dart`: aquélla garantiza que el texto
 // visible vive en los `.arb`, y ésta que el texto de los `.arb` se puede pintar.
@@ -34,12 +42,13 @@ void main() {
     late final Set<int> shared;
 
     setUpAll(() {
-      final fonts = Directory('assets/fonts')
-          .listSync()
-          .whereType<File>()
-          .where((f) => f.path.toLowerCase().endsWith('.ttf'))
-          .toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+      final fonts =
+          Directory('assets/fonts')
+              .listSync()
+              .whereType<File>()
+              .where((f) => f.path.toLowerCase().endsWith('.ttf'))
+              .toList()
+            ..sort((a, b) => a.path.compareTo(b.path));
 
       expect(
         fonts,
@@ -47,13 +56,28 @@ void main() {
         reason: 'No se encontró ningún .ttf en assets/fonts.',
       );
 
+      final all = {for (final f in fonts) _basename(f.path): _codePointsOf(f)};
+
+      // Las familias de texto son las que TIENEN que cubrirlo todo; el respaldo
+      // sólo suma.
       coveragePerFont = {
-        for (final f in fonts) _basename(f.path): _codePointsOf(f),
+        for (final e in all.entries)
+          if (!_isFallback(e.key)) e.key: e.value,
+      };
+      final fallback = {
+        for (final e in all.entries)
+          if (_isFallback(e.key)) ...e.value,
       };
 
-      shared = coveragePerFont.values.reduce(
-        (a, b) => a.intersection(b),
+      expect(
+        coveragePerFont,
+        isNotEmpty,
+        reason: 'Todas las fuentes quedaron clasificadas como respaldo.',
       );
+
+      shared = coveragePerFont.values
+          .reduce((a, b) => a.intersection(b))
+          .union(fallback);
     });
 
     test('cada TTF empaquetado expone una cmap legible', () {
@@ -69,13 +93,14 @@ void main() {
       });
     });
 
-    test('todo carácter de los .arb lo cubren las seis fuentes', () {
-      final arbs = Directory('lib/l10n')
-          .listSync()
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.arb'))
-          .toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+    test('todo carácter de los .arb se puede dibujar en cualquier tema', () {
+      final arbs =
+          Directory('lib/l10n')
+              .listSync()
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.arb'))
+              .toList()
+            ..sort((a, b) => a.path.compareTo(b.path));
 
       expect(arbs, isNotEmpty, reason: 'No se encontró ningún .arb.');
 
@@ -85,7 +110,8 @@ void main() {
 
       for (final arb in arbs) {
         final locale = _basename(arb.path);
-        final decoded = jsonDecode(arb.readAsStringSync()) as Map<String, dynamic>;
+        final decoded =
+            jsonDecode(arb.readAsStringSync()) as Map<String, dynamic>;
         decoded.forEach((key, value) {
           // Las claves `@algo` son metadatos del propio ARB (descripciones para
           // quien traduce), no llegan a pantalla.
@@ -123,6 +149,10 @@ void main() {
   });
 }
 
+/// Fuentes que NO son familias de texto sino respaldo para lo que aquéllas no
+/// saben pintar. Declaradas en `TypeScale.fallback`.
+bool _isFallback(String name) => name.contains('NotoColorEmoji');
+
 bool _isIgnorable(int rune) =>
     rune == 0x0A || rune == 0x0D || rune == 0x09 || rune == 0x20;
 
@@ -146,9 +176,7 @@ Set<int> _codePointsOf(File file) {
   var cmapOffset = -1;
   for (var i = 0; i < numTables; i++) {
     final rec = 12 + i * 16;
-    final tag = String.fromCharCodes(
-      Uint8List.sublistView(data, rec, rec + 4),
-    );
+    final tag = String.fromCharCodes(Uint8List.sublistView(data, rec, rec + 4));
     if (tag == 'cmap') {
       cmapOffset = data.getUint32(rec + 8);
       break;

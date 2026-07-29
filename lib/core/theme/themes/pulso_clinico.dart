@@ -301,6 +301,9 @@ class PulsoClinico {
     final base = ThemeData(
       useMaterial3: true,
       fontFamily: _ui,
+      // Las banderas no las pinta Inter. Sin este respaldo, los `Text` que no
+      // piden familia —los del selector de país— salen como cuadritos vacíos.
+      fontFamilyFallback: TypeScale.fallback,
       scaffoldBackgroundColor: surfaces.canvas,
       colorScheme: ColorScheme.fromSeed(
         seedColor: _brand,
@@ -325,6 +328,11 @@ class PulsoClinico {
   /// seguridad para los widgets que aún no leen roles: si algo usa
   /// `bodyMedium`, al menos sale en la tipografía correcta.
   static TextTheme _textTheme(TextTheme base) {
-    return base.apply(fontFamily: _ui, bodyColor: _ink, displayColor: _ink);
+    return base.apply(
+      fontFamily: _ui,
+      fontFamilyFallback: TypeScale.fallback,
+      bodyColor: _ink,
+      displayColor: _ink,
+    );
   }
 }

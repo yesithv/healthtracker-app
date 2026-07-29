@@ -339,6 +339,8 @@ class ConsultaSerena {
     final base = ThemeData(
       useMaterial3: true,
       fontFamily: _sans,
+      // Ver `PulsoClinico`: el respaldo de emoji es lo que pinta las banderas.
+      fontFamilyFallback: TypeScale.fallback,
       scaffoldBackgroundColor: surfaces.canvas,
       colorScheme: ColorScheme.fromSeed(
         seedColor: _salvia,
@@ -351,6 +353,7 @@ class ConsultaSerena {
     return base.copyWith(
       textTheme: base.textTheme.apply(
         fontFamily: _sans,
+        fontFamilyFallback: TypeScale.fallback,
         bodyColor: _tinta,
         displayColor: _tinta,
       ),

@@ -16,6 +16,18 @@ import 'package:flutter/material.dart';
 class TypeScale {
   const TypeScale._();
 
+  /// Familia de respaldo para lo que las tipografías de texto NO saben pintar.
+  ///
+  /// Ninguna de las cuatro —Newsreader, Inter, IBM Plex Sans y Mono— trae
+  /// emoji, y al empaquetarlas se perdió el respaldo del sistema, que era quien
+  /// resolvía las banderas del selector de prefijo y del de idioma. Sin esto se
+  /// pintan como cuadritos vacíos.
+  ///
+  /// Va aquí y no en cada `Text` con una bandera porque el respaldo es una
+  /// propiedad del SISTEMA tipográfico, no de una pantalla: cualquier rol de
+  /// cualquier tema lo hereda por construirse desde aquí.
+  static const List<String> fallback = ['NotoColorEmoji'];
+
   /// Escala del sistema de diseño: 11 · 12 · 13 · 15 · 17 · 21 · 27 · 34 · 54.
   /// No se usan tamaños fuera de esta lista.
   static const double xs = 11;
@@ -48,6 +60,7 @@ class TypeScale {
   }) {
     return TextStyle(
       fontFamily: family,
+      fontFamilyFallback: fallback,
       fontSize: size,
       fontWeight: weightOf(weight),
       fontVariations: [ui.FontVariation('wght', weight)],
@@ -68,6 +81,7 @@ class TypeScale {
   }) {
     return TextStyle(
       fontFamily: family,
+      fontFamilyFallback: fallback,
       fontSize: size,
       fontWeight: weight,
       color: color,

@@ -76,3 +76,17 @@ flutter:
           weight: 400
         - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
           weight: 600
+
+    # Banderas. Ninguna de las cuatro familias de arriba trae emoji, así que el
+    # selector de prefijo telefónico y el de idioma pintaban un cuadrito vacío
+    # en vez de la bandera. Al empaquetar las fuentes se perdió el respaldo del
+    # sistema, que es quien las resolvía antes.
+    #
+    # Es un RECORTE de Noto Color Emoji: sólo las 47 banderas que lista
+    # `lib/core/constants/countries.dart`, 159 KB en vez de los 10,8 MB de la
+    # fuente entera. `flag_glyph_coverage_test.dart` comprueba que el catálogo
+    # de países y este recorte no se separen — si mañana se añade un país hay
+    # que rehacer el recorte, y la prueba lo dice con nombre y apellidos.
+    - family: NotoColorEmoji
+      fonts:
+        - asset: assets/fonts/NotoColorEmoji-Flags.ttf
