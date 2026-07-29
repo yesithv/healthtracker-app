@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/models/reminder.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class RemindersScreen extends StatefulWidget {
   const RemindersScreen({super.key});
@@ -166,22 +167,15 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     ),
                     children: [
                       Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: content
-                                .tone(ContentCategory.emotional)
-                                .accent
-                                .withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.notifications_active_outlined,
-                            size: 40,
-                            color: content
-                                .tone(ContentCategory.emotional)
-                                .accent,
-                          ),
+                        child: IconBadge(
+                          Icons.notifications_active_outlined,
+                          color: content.tone(ContentCategory.emotional).accent,
+                          background: content
+                              .tone(ContentCategory.emotional)
+                              .accent
+                              .withValues(alpha: 0.1),
+                          padding: 16,
+                          iconSize: 40,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -244,23 +238,18 @@ class _RemindersScreenState extends State<RemindersScreen> {
                                 ),
                                 child: Row(
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: reminder.isEnabled
-                                            ? color.withValues(alpha: 0.1)
-                                            : surfaces.inkMuted.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        icon,
-                                        color: reminder.isEnabled
-                                            ? color
-                                            : surfaces.inkMuted,
-                                        size: 24,
-                                      ),
+                                    IconBadge(
+                                      icon,
+                                      color: reminder.isEnabled
+                                          ? color
+                                          : surfaces.inkMuted,
+                                      background: reminder.isEnabled
+                                          ? color.withValues(alpha: 0.1)
+                                          : surfaces.inkMuted.withValues(
+                                              alpha: 0.1,
+                                            ),
+                                      padding: 12,
+                                      iconSize: 24,
                                     ),
                                     const SizedBox(width: 16),
                                     Expanded(

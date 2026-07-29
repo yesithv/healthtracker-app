@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -13,6 +12,7 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 // ────────────────────────────────────────────────────────────────────────────
 // Lipid reference ranges (mg/dL)
@@ -146,8 +146,7 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────
-  double? _val(TextEditingController c) =>
-      double.tryParse(c.text.trim().replaceAll(',', '.'));
+  double? _val(TextEditingController c) => InputRules.toNumber(c.text);
 
   /// Formats a stored value for an input field, dropping a trailing ".0".
   String _numToText(double? v) {
@@ -674,18 +673,13 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                           child: TextField(
                             controller: controller,
                             keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'[0-9.,]'),
-                              ),
-                            ],
+                            inputFormatters: InputRules.decimal(
+                              decimals: 1,
+                              integerDigits: 4,
+                            ),
                             onChanged: (_) => setInner(() {}),
                             decoration: InputDecoration(
                               hintText: hint,
-                              hintStyle: theme.type.body.copyWith(
-                                color: surfaces.inkMuted,
-                                fontSize: 14,
-                              ),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 14,
@@ -936,13 +930,13 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
           child: TextField(
             controller: controller,
             keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+            // El teclado numérico es una SUGERENCIA al móvil, no un filtro: en
+            // escritorio, en web y al pegar entra cualquier cosa. Quien pide
+            // número tiene además que filtrar.
+            inputFormatters: isNumeric ? InputRules.decimal() : null,
             style: theme.type.body.copyWith(color: surfaces.ink),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: theme.type.body.copyWith(
-                color: surfaces.inkMuted,
-                fontSize: 13,
-              ),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
@@ -971,10 +965,6 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: theme.type.body.copyWith(
-            color: surfaces.inkMuted,
-            fontSize: 13,
-          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),

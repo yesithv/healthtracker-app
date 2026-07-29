@@ -4,6 +4,7 @@ import '../../../../core/theme/theme_catalog.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/widgets/status_chip.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// Ficha de un tema con su resumen visual: paleta, tipografía y componentes.
 ///
@@ -114,21 +115,15 @@ class _Header extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Mismo icono redondo que abre cada fila de «Recordatorios» o
+        // Misma caja de icono que abre cada fila de «Recordatorios» o
         // «Idioma»: es la anatomía de fila de la app, y aquí además muestra de
         // un golpe la marca del tema que describe.
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: surfaces.selection,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.palette_outlined,
-            color: surfaces.onSelection,
-            size: 22,
-          ),
+        IconBadge(
+          Icons.palette_outlined,
+          color: surfaces.onSelection,
+          background: surfaces.selection,
+          size: 44,
+          iconSize: 22,
         ),
         const SizedBox(width: 14),
         Expanded(

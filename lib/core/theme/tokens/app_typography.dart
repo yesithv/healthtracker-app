@@ -25,6 +25,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
     required this.numeralSmall,
     required this.numeralUnit,
     required this.body,
+    required this.hint,
     required this.meta,
     required this.badge,
     required this.button,
@@ -65,6 +66,21 @@ class AppTypography extends ThemeExtension<AppTypography> {
   /// Texto corrido: descripciones y ayudas.
   final TextStyle body;
 
+  /// TEXTO DE EJEMPLO dentro de un campo vacío («email@ejemplo.com»,
+  /// «300 123 4567»).
+  ///
+  /// Existe porque sin él no se distinguía de un dato ya escrito: el ejemplo
+  /// salía en el gris por defecto de Material, del mismo tamaño y del mismo
+  /// corte que lo que teclea el usuario, así que en el alta la gente daba por
+  /// rellenos campos que estaban vacíos.
+  ///
+  /// Lleva DOS señales, no una. La cursiva marca la diferencia aunque el
+  /// contraste falle —una pantalla al sol, una vista cansada, alguien que no
+  /// distingue bien los grises—, y el gris apagado la marca aunque la
+  /// tipografía del tema no traiga cursiva de verdad y el motor tenga que
+  /// inclinarla él. Con una sola señal, cada tema nuevo vuelve a jugársela.
+  final TextStyle hint;
+
   /// Metadatos: fechas, notas al pie, texto auxiliar.
   final TextStyle meta;
 
@@ -86,6 +102,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
     TextStyle? numeralSmall,
     TextStyle? numeralUnit,
     TextStyle? body,
+    TextStyle? hint,
     TextStyle? meta,
     TextStyle? badge,
     TextStyle? button,
@@ -101,6 +118,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
       numeralSmall: numeralSmall ?? this.numeralSmall,
       numeralUnit: numeralUnit ?? this.numeralUnit,
       body: body ?? this.body,
+      hint: hint ?? this.hint,
       meta: meta ?? this.meta,
       badge: badge ?? this.badge,
       button: button ?? this.button,
@@ -121,6 +139,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
       numeralSmall: TextStyle.lerp(numeralSmall, other.numeralSmall, t)!,
       numeralUnit: TextStyle.lerp(numeralUnit, other.numeralUnit, t)!,
       body: TextStyle.lerp(body, other.body, t)!,
+      hint: TextStyle.lerp(hint, other.hint, t)!,
       meta: TextStyle.lerp(meta, other.meta, t)!,
       badge: TextStyle.lerp(badge, other.badge, t)!,
       button: TextStyle.lerp(button, other.button, t)!,

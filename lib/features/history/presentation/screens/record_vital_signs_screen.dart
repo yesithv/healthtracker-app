@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -13,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 class RecordVitalSignsScreen extends StatefulWidget {
   final VitalSignRecord? recordToEdit;
@@ -126,62 +127,83 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
     final surfaces = theme.surfaces;
     final family = _family;
 
+    // Fuera del builder: tiene que sobrevivir a los repintados del diálogo.
+    String? rangeError;
+
     await showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: surfaces.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        ),
-        title: Text(title, style: theme.type.cardTitle.copyWith(fontSize: 18)),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          style: theme.type.body.copyWith(color: surfaces.ink),
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(
-            suffixText: unit,
-            suffixStyle: theme.type.numeralUnit,
-            filled: true,
-            fillColor: surfaces.inset,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide(color: family.accent, width: 1.5),
-            ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => AlertDialog(
+          backgroundColor: surfaces.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(surfaces.radiusCard),
           ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              l10n.cancel,
-              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
-            ),
+          title: Text(
+            title,
+            style: theme.type.cardTitle.copyWith(fontSize: 18),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final val = int.tryParse(controller.text);
-              if (val != null && val >= min && val <= max) onSaved(val);
-              Navigator.pop(ctx);
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            style: theme.type.body.copyWith(color: surfaces.ink),
+            inputFormatters: InputRules.digits(maxLength: 3),
+            onChanged: (_) {
+              if (rangeError != null) setInner(() => rangeError = null);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: family.accent,
-              foregroundColor: family.onAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(surfaces.radiusControl),
+            decoration: InputDecoration(
+              suffixText: unit,
+              suffixStyle: theme.type.numeralUnit,
+              errorText: rangeError,
+              filled: true,
+              fillColor: surfaces.inset,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide(color: family.accent, width: 1.5),
               ),
             ),
-            child: Text(
-              'OK',
-              style: theme.type.button.copyWith(color: family.onAccent),
-            ),
+            autofocus: true,
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                l10n.cancel,
+                style: theme.type.button.copyWith(color: surfaces.inkSecondary),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final val = int.tryParse(controller.text);
+                // Antes esto era `if (en rango) onSaved(val); Navigator.pop()`:
+                // un valor fuera de rango cerraba el diálogo sin guardar y sin
+                // decir nada. El usuario veía su dato desaparecer.
+                if (val == null || val < min || val > max) {
+                  setInner(
+                    () => rangeError = l10n.validationOutOfRange(min, max),
+                  );
+                  return;
+                }
+                onSaved(val);
+                Navigator.pop(ctx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: family.accent,
+                foregroundColor: family.onAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                ),
+              ),
+              child: Text(
+                'OK',
+                style: theme.type.button.copyWith(color: family.onAccent),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -887,16 +909,13 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
     final surfaces = _theme.surfaces;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: surfaces.inset,
-          shape: BoxShape.circle,
-          border: Border.all(color: surfaces.divider),
-        ),
-        child: Icon(icon, color: _family.accent, size: 20),
+      borderRadius: surfaces.iconRadius,
+      child: IconBadge(
+        icon,
+        color: _family.accent,
+        background: surfaces.inset,
+        size: 40,
+        border: Border.all(color: surfaces.divider),
       ),
     );
   }
@@ -917,10 +936,6 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: theme.type.body.copyWith(
-            color: surfaces.inkMuted,
-            fontSize: 13,
-          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),

@@ -31,6 +31,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     required this.onBrand,
     required this.radiusCard,
     required this.radiusControl,
+    required this.radiusIcon,
     required this.chartLineWidth,
     required this.dataStroke,
     required this.monitorBezel,
@@ -98,6 +99,18 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
   final double radiusCard;
   final double radiusControl;
 
+  /// Redondeo de la CAJA QUE ENCIERRA UN ICONO: la pastilla de color detrás del
+  /// icono de una fila, de una tarjeta o de una cabecera.
+  ///
+  /// Es un cuadrado redondeado, nunca un círculo, y es el mismo gesto en toda la
+  /// app. Existía disperso: el menú de Historial dibujaba su caja con un
+  /// `BorderRadius.circular(10)` escrito a mano y la hoja de «Registrar
+  /// indicadores» dibujaba la suya con `shape: BoxShape.circle`, así que dos
+  /// listas con la misma anatomía —icono, rótulo, chevron— se veían distintas
+  /// según por dónde se entrara. Al ser un token, cada tema decide cuánto
+  /// redondea su caja y ninguna pantalla vuelve a inventarse la forma.
+  final double radiusIcon;
+
   /// Grosor de trazo de las series de datos, para que las gráficas hablen el
   /// mismo idioma que el resto del tema.
   final double chartLineWidth;
@@ -116,6 +129,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
 
   BorderRadius get cardRadius => BorderRadius.circular(radiusCard);
   BorderRadius get controlRadius => BorderRadius.circular(radiusControl);
+  BorderRadius get iconRadius => BorderRadius.circular(radiusIcon);
 
   /// Halo de color alrededor de un elemento destacado: el botón elegido, la
   /// tarjeta en primer plano.
@@ -173,6 +187,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     Color? onBrand,
     double? radiusCard,
     double? radiusControl,
+    double? radiusIcon,
     double? chartLineWidth,
     Color? dataStroke,
     bool? monitorBezel,
@@ -196,6 +211,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       onBrand: onBrand ?? this.onBrand,
       radiusCard: radiusCard ?? this.radiusCard,
       radiusControl: radiusControl ?? this.radiusControl,
+      radiusIcon: radiusIcon ?? this.radiusIcon,
       chartLineWidth: chartLineWidth ?? this.chartLineWidth,
       dataStroke: dataStroke ?? this.dataStroke,
       monitorBezel: monitorBezel ?? this.monitorBezel,
@@ -225,6 +241,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       onBrand: Color.lerp(onBrand, other.onBrand, t)!,
       radiusCard: lerpDouble(radiusCard, other.radiusCard, t),
       radiusControl: lerpDouble(radiusControl, other.radiusControl, t),
+      radiusIcon: lerpDouble(radiusIcon, other.radiusIcon, t),
       chartLineWidth: lerpDouble(chartLineWidth, other.chartLineWidth, t),
       dataStroke: Color.lerp(dataStroke, other.dataStroke, t)!,
       // Discreto: conmuta a mitad de camino en vez de quedar «medio bisel».

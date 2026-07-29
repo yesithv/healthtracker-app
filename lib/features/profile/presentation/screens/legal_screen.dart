@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class LegalScreen extends StatelessWidget {
   const LegalScreen({super.key});
@@ -126,13 +127,12 @@ class LegalScreen extends StatelessWidget {
             right: 16,
             bottom: 18,
           ),
-          leading: Container(
-            padding: const EdgeInsets.all(9),
-            decoration: BoxDecoration(
-              color: s.color.withValues(alpha: 0.10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(s.icon, color: s.color, size: 18),
+          leading: IconBadge(
+            s.icon,
+            color: s.color,
+            background: s.color.withValues(alpha: 0.10),
+            padding: 9,
+            iconSize: 18,
           ),
           title: Text(
             s.title,

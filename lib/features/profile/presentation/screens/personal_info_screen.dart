@@ -9,6 +9,8 @@ import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dar
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   /// When set, called instead of Navigator.pop() on confirm.
@@ -51,7 +53,11 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   bool _nameError = false;
   bool _dateError = false;
   bool _genderError = false;
-  bool _emailError = false;
+
+  /// El mensaje concreto, no un simple «hay error»: el correo puede fallar por
+  /// estar vacío o por estar mal escrito, y decirle «Ingresa tu correo» a quien
+  /// acaba de escribir `perico@` no le ayuda a arreglarlo.
+  String? _emailError;
 
   @override
   void initState() {
@@ -149,21 +155,35 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
     final nameEmpty = _nameController.text.trim().isEmpty;
     final dateEmpty = _selectedDate == null;
     final genderEmpty = _selectedGender.isEmpty;
-    // El correo solo es obligatorio en el alta: es el identificador con el que
-    // se crea la cuenta.
-    final emailEmpty =
-        widget.requireEmail && _emailController.text.trim().isEmpty;
+
+    // Dos comprobaciones distintas sobre el mismo campo.
+    //
+    // Estar VACÍO sólo importa en el alta, donde el correo es el identificador
+    // con el que se crea la cuenta; en Perfil es opcional.
+    //
+    // Estar MAL ESCRITO importa siempre. Antes no se miraba en ninguna parte:
+    // bastaba con que hubiera algo, así que `perico` se guardaba tan campante
+    // como dirección de contacto y no se descubría hasta que alguien intentaba
+    // escribir a ella.
+    final email = _emailController.text.trim();
+    final emailEmpty = widget.requireEmail && email.isEmpty;
+    final emailMalformed = email.isNotEmpty && !InputRules.isEmail(email);
 
     if (nameEmpty) errors.add(l10n.validationEnterName);
     if (dateEmpty) errors.add(l10n.validationSelectBirthDate);
     if (genderEmpty) errors.add(l10n.validationSelectGender);
     if (emailEmpty) errors.add(l10n.validationEnterEmail);
+    if (emailMalformed) errors.add(l10n.validationEmailFormat);
 
     setState(() {
       _nameError = nameEmpty;
       _dateError = dateEmpty;
       _genderError = genderEmpty;
-      _emailError = emailEmpty;
+      _emailError = emailEmpty
+          ? l10n.validationEnterEmail
+          : emailMalformed
+          ? l10n.validationEmailFormat
+          : null;
     });
 
     return errors;
@@ -292,17 +312,21 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                   controller: _emailController,
                   onChanged: (_) {
                     _saveCurrentState();
-                    if (_emailError) setState(() => _emailError = false);
+                    if (_emailError != null) setState(() => _emailError = null);
                   },
                   keyboardType: TextInputType.emailAddress,
+                  // Un correo no lleva espacios ni mayúsculas significativas, y
+                  // el autocorrector del móvil mete ambas cosas.
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
                   decoration: _inputDecoration(
                     'email@ejemplo.com',
                     Icons.email_outlined,
                     surfaces.brand,
-                    hasError: _emailError,
+                    hasError: _emailError != null,
                   ),
                 ),
-                if (_emailError) _buildInlineError(l10n.validationEnterEmail),
+                if (_emailError != null) _buildInlineError(_emailError!),
 
                 const SizedBox(height: 20),
 
@@ -353,6 +377,12 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         controller: _phoneController,
                         onChanged: (_) => _saveCurrentState(),
                         keyboardType: TextInputType.phone,
+                        // El teclado de teléfono no filtra nada en escritorio,
+                        // en web ni al pegar: el filtro tiene que ser explícito.
+                        // El prefijo internacional se elige al lado, así que
+                        // aquí sólo caben cifras y los espacios con los que la
+                        // gente las agrupa.
+                        inputFormatters: InputRules.phone(),
                         decoration: _inputDecoration(
                           '300 123 4567',
                           Icons.phone_outlined,
@@ -642,20 +672,15 @@ class _ActivityLevelOption extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? surfaces.onBrand.withValues(alpha: 0.20)
-                    : selectedColor.withValues(alpha: 0.10),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? surfaces.onBrand : selectedColor,
-                size: 24,
-              ),
+            IconBadge(
+              icon,
+              color: isSelected ? surfaces.onBrand : selectedColor,
+              background: isSelected
+                  ? surfaces.onBrand.withValues(alpha: 0.20)
+                  : selectedColor.withValues(alpha: 0.10),
+              padding: 10,
+              iconSize: 24,
+              animateDuration: const Duration(milliseconds: 200),
             ),
             const SizedBox(height: 10),
             Text(

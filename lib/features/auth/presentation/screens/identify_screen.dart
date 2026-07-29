@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 /// Paso ÚNICO de identificación. El usuario ingresa un solo dato (documento del paciente
 /// migrado, o email) y el backend decide el camino:
@@ -144,6 +145,10 @@ class _IdentifyScreenState extends State<IdentifyScreen> {
                 controller: _idController,
                 autofocus: true,
                 textInputAction: TextInputAction.go,
+                // Documento de identidad: cifras y letras, sin espacios ni
+                // signos. Se admiten letras porque hay países que las usan
+                // (la letra final del DNI español, por ejemplo).
+                inputFormatters: InputRules.documentId(),
                 decoration: InputDecoration(
                   labelText: l10n.identifyFieldLabel,
                   hintText: l10n.identifyFieldHint,

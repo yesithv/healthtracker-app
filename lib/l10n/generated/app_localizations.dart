@@ -2822,6 +2822,18 @@ abstract class AppLocalizations {
   /// **'Enter your email'**
   String get validationEnterEmail;
 
+  /// No description provided for @validationEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the email: the @ or the domain is missing'**
+  String get validationEmailFormat;
+
+  /// No description provided for @validationOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a value between {min} and {max}'**
+  String validationOutOfRange(Object max, Object min);
+
   /// No description provided for @commonRegisterFailed.
   ///
   /// In en, this message translates to:
@@ -3055,6 +3067,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create account'**
   String get accountCreateAccount;
+
+  /// No description provided for @accountNewHere.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m new (sign up)'**
+  String get accountNewHere;
+
+  /// No description provided for @accountDocumentOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Document (optional)'**
+  String get accountDocumentOptional;
 
   /// No description provided for @accountNameLabel.
   ///

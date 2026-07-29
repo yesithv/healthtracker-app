@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/main_app_bar.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -94,13 +95,10 @@ class _HistoryMenuTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: tone.accent.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(icon, color: tone.accent, size: 20),
+                IconBadge(
+                  icon,
+                  color: tone.accent,
+                  background: tone.accent.withValues(alpha: 0.1),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

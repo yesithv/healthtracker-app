@@ -188,7 +188,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               onChanged: (v) => setState(() => _query = v.trim()),
               decoration: InputDecoration(
                 hintText: l10n.discoverSearchHint,
-                hintStyle: theme.type.body,
                 prefixIcon: Icon(Icons.search, color: surfaces.inkSecondary),
                 filled: true,
                 fillColor: surfaces.card,

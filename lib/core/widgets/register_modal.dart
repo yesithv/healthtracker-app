@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../theme/theme_context.dart';
 import '../theme/tokens/metric_palette.dart';
+import 'icon_badge.dart';
 
 /// Shows the register modal with a blurred background.
 void showRegisterModal(BuildContext context) {
@@ -71,17 +72,12 @@ class _RegisterModalContent extends StatelessWidget {
                   InkWell(
                     onTap: () => Navigator.of(context).pop(),
                     borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: surfaces.inset,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: 16,
-                        color: surfaces.inkSecondary,
-                      ),
+                    child: IconBadge(
+                      Icons.close,
+                      color: surfaces.inkSecondary,
+                      background: surfaces.inset,
+                      padding: 5,
+                      iconSize: 16,
                     ),
                   ),
                 ],
@@ -177,14 +173,12 @@ class _RegisterOption extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: tone.accent.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: tone.accent, size: 22),
+            IconBadge(
+              icon,
+              color: tone.accent,
+              background: tone.accent.withValues(alpha: 0.15),
+              size: 40,
+              iconSize: 22,
             ),
             const SizedBox(width: 14),
             Expanded(

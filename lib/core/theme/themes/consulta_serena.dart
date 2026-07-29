@@ -76,6 +76,9 @@ class ConsultaSerena {
       onBrand: _onSalvia,
       radiusCard: 20,
       radiusControl: 14,
+      // Un punto más blando que «Pulso Clínico», en la misma línea que el
+      // resto del tema, pero sigue siendo un cuadrado.
+      radiusIcon: 14,
       chartLineWidth: 2.5,
       dataStroke: ecgStroke,
       monitorBezel: false,
@@ -299,6 +302,21 @@ class ConsultaSerena {
         color: _inkSecondary,
         height: 1.55,
       ),
+      // Ejemplo dentro de un campo vacío: mismo cuerpo que lo que se teclea
+      // —para que no salte el texto al escribir— pero en cursiva y apagado.
+      //
+      // NO usa `_inkMuted`: ese verde grisáceo da 2,99:1 sobre el hundido del
+      // campo, justo por debajo del 3:1 que hace falta para leerlo. Un
+      // ejemplo que no se lee no sirve de ejemplo. Éste es el mismo tono, dos
+      // pasos más oscuro: 3,29:1 sobre el hundido y aún 3,58:1 de separación
+      // con la tinta, que es lo que lo delata como ejemplo y no como dato.
+      hint: TypeScale.static_(
+        _sans,
+        size: TypeScale.base,
+        weight: FontWeight.w400,
+        color: const Color(0xFF848977),
+        height: 1.55,
+      ).copyWith(fontStyle: FontStyle.italic),
       meta: TypeScale.static_(
         _sans,
         size: TypeScale.sm,
@@ -335,6 +353,9 @@ class ConsultaSerena {
         fontFamily: _sans,
         bodyColor: _tinta,
         displayColor: _tinta,
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        hintStyle: typography.hint,
       ),
       extensions: [surfaces, clinical, metrics, content, typography],
     );

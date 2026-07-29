@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/services/image_picker_service.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class OnboardingAvatarPage extends StatefulWidget {
   const OnboardingAvatarPage({super.key});
@@ -322,16 +323,11 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: surfaces.brand.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.photo_library_outlined,
-                  color: surfaces.brand,
-                ),
+              leading: IconBadge(
+                Icons.photo_library_outlined,
+                color: surfaces.brand,
+                background: surfaces.brand.withValues(alpha: 0.1),
+                iconSize: 24,
               ),
               title: Text(l10n.gallery),
               onTap: () {
@@ -340,16 +336,13 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               },
             ),
             ListTile(
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: theme.clinical.optimal.accent.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+              leading: IconBadge(
+                Icons.camera_alt_outlined,
+                color: theme.clinical.optimal.accent,
+                background: theme.clinical.optimal.accent.withValues(
+                  alpha: 0.1,
                 ),
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  color: theme.clinical.optimal.accent,
-                ),
+                iconSize: 24,
               ),
               title: Text(l10n.camera),
               onTap: () {
@@ -400,13 +393,10 @@ class _ActionButton extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Color.lerp(surfaces.card, color, 0.10),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 20),
+              IconBadge(
+                icon,
+                color: color,
+                background: Color.lerp(surfaces.card, color, 0.10)!,
               ),
               const SizedBox(width: 16),
               Text(

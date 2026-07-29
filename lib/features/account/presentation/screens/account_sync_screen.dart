@@ -12,6 +12,7 @@ import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.
 import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 /// Pantalla de cuenta y sincronización (andamio de Fase 0). Reúne los dos flujos:
 ///  - Paciente MIGRADO: inicia sesión con su documento + clave (1234) y ve la data
@@ -334,12 +335,17 @@ class _LoginCardState extends State<_LoginCard> {
       children: [
         TextField(
           controller: _id,
+          // Mismo caso que en el alta: sin `onChanged` el botón se quedaba
+          // deshabilitado para siempre.
+          onChanged: (_) => setState(() {}),
+          inputFormatters: InputRules.documentId(),
           decoration: InputDecoration(labelText: l10n.identifyFieldLabel),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _pass,
           obscureText: true,
+          onChanged: (_) => setState(() {}),
           decoration: InputDecoration(labelText: l10n.verifyPasswordLabel),
         ),
         const SizedBox(height: 12),
@@ -379,37 +385,57 @@ class _RegisterCardState extends State<_RegisterCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final email = _email.text.trim();
+    // El correo mal escrito se avisa mientras se escribe, pero sólo cuando ya
+    // hay algo: nadie quiere que le griten por un campo que aún no ha tocado.
+    final emailMalformed = email.isNotEmpty && !InputRules.isEmail(email);
+    final canSubmit =
+        !widget.busy &&
+        _name.text.trim().isNotEmpty &&
+        InputRules.isEmail(email);
+
     return _Section(
-      title: 'Soy nuevo (registrarme)',
+      title: l10n.accountNewHere,
       children: [
         TextField(
           controller: _name,
-          decoration: const InputDecoration(labelText: 'Nombre'),
+          // Sin esto el botón nunca se habilitaba: su estado se calcula al
+          // construir, y escribir en un `TextEditingController` no reconstruye
+          // nada por sí solo. El formulario estaba muerto.
+          onChanged: (_) => setState(() {}),
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(labelText: l10n.fullName),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _email,
+          onChanged: (_) => setState(() {}),
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(labelText: 'Email'),
+          autocorrect: false,
+          textCapitalization: TextCapitalization.none,
+          decoration: InputDecoration(
+            labelText: l10n.emailLabel,
+            errorText: emailMalformed ? l10n.validationEmailFormat : null,
+          ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _doc,
-          decoration: const InputDecoration(labelText: 'Documento (opcional)'),
+          onChanged: (_) => setState(() {}),
+          inputFormatters: InputRules.documentId(),
+          decoration: InputDecoration(labelText: l10n.accountDocumentOptional),
         ),
         const SizedBox(height: 12),
         FilledButton(
-          onPressed:
-              widget.busy ||
-                  _name.text.trim().isEmpty ||
-                  _email.text.trim().isEmpty
-              ? null
-              : () => widget.onSubmit(
+          onPressed: canSubmit
+              ? () => widget.onSubmit(
                   _name.text.trim(),
-                  _email.text.trim(),
+                  email,
                   _doc.text.trim().isEmpty ? null : _doc.text.trim(),
-                ),
-          child: const Text('Crear cuenta'),
+                )
+              : null,
+          child: Text(l10n.accountCreateAccount),
         ),
       ],
     );

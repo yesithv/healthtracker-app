@@ -1460,6 +1460,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationEnterEmail => 'Enter your email';
 
   @override
+  String get validationEmailFormat =>
+      'Check the email: the @ or the domain is missing';
+
+  @override
+  String validationOutOfRange(Object max, Object min) {
+    return 'Enter a value between $min and $max';
+  }
+
+  @override
   String get commonRegisterFailed =>
       'We couldn\'t create your account. Check your connection and try again.';
 
@@ -1591,6 +1600,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountCreateAccount => 'Create account';
+
+  @override
+  String get accountNewHere => 'I\'m new (sign up)';
+
+  @override
+  String get accountDocumentOptional => 'Document (optional)';
 
   @override
   String get accountNameLabel => 'Name';

@@ -78,6 +78,10 @@ class PulsoClinico {
       onBrand: Color(0xFFFFFFFF),
       radiusCard: 20,
       radiusControl: 30, // cápsulas: el idioma de botón que ya usaba la app
+      // La caja del icono NO sigue a la cápsula del botón: un icono metido
+      // en una cápsula vuelve a leerse como círculo, que es justo lo que se
+      // quiso quitar. Se queda en cuadrado redondeado, como el instrumental.
+      radiusIcon: 12,
       chartLineWidth: 3,
       dataStroke: Color(0xFF22C55E), // verde fósforo del monitor
       monitorBezel: true,
@@ -270,6 +274,15 @@ class PulsoClinico {
         color: _inkSecondary,
         height: 1.5,
       ),
+      // Ejemplo dentro de un campo vacío: mismo cuerpo que lo que se teclea
+      // —para que no salte el texto al escribir— pero en cursiva y apagado.
+      hint: TypeScale.variable(
+        _ui,
+        size: TypeScale.base,
+        weight: 400,
+        color: _inkMuted,
+        height: 1.5,
+      ).copyWith(fontStyle: FontStyle.italic),
       meta: TypeScale.variable(
         _ui,
         size: TypeScale.sm,
@@ -299,6 +312,11 @@ class PulsoClinico {
 
     return base.copyWith(
       textTheme: _textTheme(base.textTheme),
+      // Global a propósito: el ejemplo de un campo tiene que verse igual en
+      // todas las pantallas, y ninguna debería tener que acordarse de pedirlo.
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        hintStyle: typography.hint,
+      ),
       extensions: [surfaces, clinical, metrics, content, typography],
     );
   }

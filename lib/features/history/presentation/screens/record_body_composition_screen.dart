@@ -16,6 +16,8 @@ import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provide
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
 import 'dart:math' as math;
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 class RecordBodyCompositionScreen extends StatefulWidget {
   final BodyCompositionRecord? recordToEdit;
@@ -143,64 +145,82 @@ class _RecordBodyCompositionScreenState
     final surfaces = theme.surfaces;
     final family = _family;
 
+    // Fuera del builder: tiene que sobrevivir a los repintados del diálogo.
+    String? rangeError;
+
     await showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: surfaces.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        ),
-        title: Text(title, style: theme.type.cardTitle.copyWith(fontSize: 18)),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-          ],
-          style: theme.type.body.copyWith(color: surfaces.ink),
-          decoration: InputDecoration(
-            suffixText: unit,
-            suffixStyle: theme.type.numeralUnit,
-            filled: true,
-            fillColor: surfaces.inset,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide(color: family.accent, width: 1.5),
-            ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => AlertDialog(
+          backgroundColor: surfaces.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(surfaces.radiusCard),
           ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              l10n.cancel,
-              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
-            ),
+          title: Text(
+            title,
+            style: theme.type.cardTitle.copyWith(fontSize: 18),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final val = double.tryParse(controller.text);
-              if (val != null && val >= min && val <= max) onSaved(val);
-              Navigator.pop(ctx);
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: InputRules.decimal(decimals: 1, integerDigits: 3),
+            style: theme.type.body.copyWith(color: surfaces.ink),
+            onChanged: (_) {
+              if (rangeError != null) setInner(() => rangeError = null);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: family.accent,
-              foregroundColor: family.onAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(surfaces.radiusControl),
+            decoration: InputDecoration(
+              suffixText: unit,
+              suffixStyle: theme.type.numeralUnit,
+              errorText: rangeError,
+              filled: true,
+              fillColor: surfaces.inset,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide(color: family.accent, width: 1.5),
               ),
             ),
-            child: Text(
-              'OK',
-              style: theme.type.button.copyWith(color: family.onAccent),
-            ),
+            autofocus: true,
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                l10n.cancel,
+                style: theme.type.button.copyWith(color: surfaces.inkSecondary),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final val = InputRules.toNumber(controller.text);
+                // Antes: `if (en rango) onSaved(val); Navigator.pop()`. Un valor
+                // fuera de rango cerraba el diálogo sin guardar y sin avisar.
+                if (val == null || val < min || val > max) {
+                  setInner(
+                    () => rangeError = l10n.validationOutOfRange(min, max),
+                  );
+                  return;
+                }
+                onSaved(val);
+                Navigator.pop(ctx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: family.accent,
+                foregroundColor: family.onAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                ),
+              ),
+              child: Text(
+                'OK',
+                style: theme.type.button.copyWith(color: family.onAccent),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -220,62 +240,79 @@ class _RecordBodyCompositionScreenState
     final surfaces = theme.surfaces;
     final family = _family;
 
+    String? rangeError;
+
     await showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: surfaces.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        ),
-        title: Text(title, style: theme.type.cardTitle.copyWith(fontSize: 18)),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          style: theme.type.body.copyWith(color: surfaces.ink),
-          decoration: InputDecoration(
-            suffixText: unit,
-            suffixStyle: theme.type.numeralUnit,
-            filled: true,
-            fillColor: surfaces.inset,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(surfaces.radiusCard),
-              borderSide: BorderSide(color: family.accent, width: 1.5),
-            ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => AlertDialog(
+          backgroundColor: surfaces.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(surfaces.radiusCard),
           ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              l10n.cancel,
-              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
-            ),
+          title: Text(
+            title,
+            style: theme.type.cardTitle.copyWith(fontSize: 18),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final val = int.tryParse(controller.text);
-              if (val != null && val >= min && val <= max) onSaved(val);
-              Navigator.pop(ctx);
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: InputRules.digits(maxLength: 3),
+            style: theme.type.body.copyWith(color: surfaces.ink),
+            onChanged: (_) {
+              if (rangeError != null) setInner(() => rangeError = null);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: family.accent,
-              foregroundColor: family.onAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(surfaces.radiusControl),
+            decoration: InputDecoration(
+              suffixText: unit,
+              suffixStyle: theme.type.numeralUnit,
+              errorText: rangeError,
+              filled: true,
+              fillColor: surfaces.inset,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(surfaces.radiusCard),
+                borderSide: BorderSide(color: family.accent, width: 1.5),
               ),
             ),
-            child: Text(
-              'OK',
-              style: theme.type.button.copyWith(color: family.onAccent),
-            ),
+            autofocus: true,
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                l10n.cancel,
+                style: theme.type.button.copyWith(color: surfaces.inkSecondary),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final val = int.tryParse(controller.text);
+                if (val == null || val < min || val > max) {
+                  setInner(
+                    () => rangeError = l10n.validationOutOfRange(min, max),
+                  );
+                  return;
+                }
+                onSaved(val);
+                Navigator.pop(ctx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: family.accent,
+                foregroundColor: family.onAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                ),
+              ),
+              child: Text(
+                'OK',
+                style: theme.type.button.copyWith(color: family.onAccent),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -919,20 +956,17 @@ class _RecordBodyCompositionScreenState
               TextField(
                 controller: controller,
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                ],
+                inputFormatters: InputRules.decimal(
+                  decimals: 1,
+                  integerDigits: 3,
+                ),
                 onChanged: (text) {
-                  final v = double.tryParse(text);
+                  final v = InputRules.toNumber(text);
                   if (v != null) onSaved(v);
                 },
                 style: theme.type.body.copyWith(color: surfaces.ink),
                 decoration: InputDecoration(
                   hintText: hint,
-                  hintStyle: theme.type.body.copyWith(
-                    color: surfaces.inkMuted,
-                    fontSize: 13,
-                  ),
                   suffixText: unit,
                   suffixStyle: theme.type.numeralUnit.copyWith(
                     color: family.accent,
@@ -1064,15 +1098,13 @@ class _RecordBodyCompositionScreenState
     final onAccent = _family.onAccent;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: onAccent.withValues(alpha: 0.15),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: onAccent, size: 16),
+      borderRadius: _theme.surfaces.iconRadius,
+      child: IconBadge(
+        icon,
+        color: onAccent,
+        background: onAccent.withValues(alpha: 0.15),
+        size: 32,
+        iconSize: 16,
       ),
     );
   }
@@ -1082,16 +1114,13 @@ class _RecordBodyCompositionScreenState
     final surfaces = _theme.surfaces;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: surfaces.inset,
-          shape: BoxShape.circle,
-          border: Border.all(color: surfaces.divider),
-        ),
-        child: Icon(icon, color: _family.accent, size: 20),
+      borderRadius: surfaces.iconRadius,
+      child: IconBadge(
+        icon,
+        color: _family.accent,
+        background: surfaces.inset,
+        size: 40,
+        border: Border.all(color: surfaces.divider),
       ),
     );
   }
@@ -1100,15 +1129,13 @@ class _RecordBodyCompositionScreenState
     final family = _family;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: family.surface,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: family.accent, size: 16),
+      borderRadius: _theme.surfaces.iconRadius,
+      child: IconBadge(
+        icon,
+        color: family.accent,
+        background: family.surface,
+        size: 32,
+        iconSize: 16,
       ),
     );
   }
@@ -1129,10 +1156,6 @@ class _RecordBodyCompositionScreenState
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: theme.type.body.copyWith(
-            color: surfaces.inkMuted,
-            fontSize: 13,
-          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),

@@ -9,6 +9,7 @@ import '../../../../core/theme/tokens/content_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HealthGoalsScreen extends StatefulWidget {
   const HealthGoalsScreen({super.key});
@@ -101,17 +102,12 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
                       children: [
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: accent.accent.withValues(alpha: 0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.flag_circle_outlined,
-                                color: accent.accent,
-                                size: 28,
-                              ),
+                            IconBadge(
+                              Icons.flag_circle_outlined,
+                              color: accent.accent,
+                              background: accent.accent.withValues(alpha: 0.1),
+                              padding: 10,
+                              iconSize: 28,
                             ),
                             const SizedBox(width: 16),
                             Expanded(

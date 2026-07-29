@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// A premium animated validation banner that slides up between the page
 /// content and the bottom navigation bar of the onboarding wizard.
@@ -145,17 +146,10 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                         child: child,
                       );
                     },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: alert.accent.withValues(alpha: 0.12),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.warning_amber_rounded,
-                        color: alert.accent,
-                        size: 20,
-                      ),
+                    child: IconBadge(
+                      Icons.warning_amber_rounded,
+                      color: alert.accent,
+                      background: alert.accent.withValues(alpha: 0.12),
                     ),
                   ),
                   const SizedBox(width: 12),

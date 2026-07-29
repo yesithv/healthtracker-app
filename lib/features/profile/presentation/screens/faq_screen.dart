@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class FaqScreen extends StatefulWidget {
   const FaqScreen({super.key});
@@ -152,13 +153,11 @@ class _FaqScreenState extends State<FaqScreen> {
             right: 18,
             bottom: 16,
           ),
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: faq.color.withValues(alpha: 0.10),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(faq.icon, color: faq.color, size: 18),
+          leading: IconBadge(
+            faq.icon,
+            color: faq.color,
+            background: faq.color.withValues(alpha: 0.10),
+            iconSize: 18,
           ),
           title: Text(
             faq.question,

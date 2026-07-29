@@ -8,6 +8,7 @@ import 'package:myvitals_healthtracker_app/core/services/backup_service.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class DataBackupScreen extends StatefulWidget {
   const DataBackupScreen({super.key});
@@ -158,19 +159,14 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                         children: [
                           Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: clinical.optimal.accent.withValues(
-                                    alpha: 0.15,
-                                  ),
-                                  shape: BoxShape.circle,
+                              IconBadge(
+                                Icons.shield_outlined,
+                                color: clinical.optimal.accent,
+                                background: clinical.optimal.accent.withValues(
+                                  alpha: 0.15,
                                 ),
-                                child: Icon(
-                                  Icons.shield_outlined,
-                                  color: clinical.optimal.accent,
-                                  size: 22,
-                                ),
+                                padding: 10,
+                                iconSize: 22,
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -316,13 +312,12 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       ),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 32),
+          IconBadge(
+            icon,
+            color: iconColor,
+            background: iconColor.withValues(alpha: 0.1),
+            padding: 16,
+            iconSize: 32,
           ),
           const SizedBox(height: 16),
           Text(
@@ -377,13 +372,12 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: clinical.optimal.surface,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.check, color: clinical.optimal.accent, size: 14),
+          IconBadge(
+            Icons.check,
+            color: clinical.optimal.accent,
+            background: clinical.optimal.surface,
+            padding: 4,
+            iconSize: 14,
           ),
           const SizedBox(width: 12),
           Expanded(

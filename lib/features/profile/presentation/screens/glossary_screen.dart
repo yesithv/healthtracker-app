@@ -69,7 +69,6 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                     onChanged: (v) => setState(() => _query = v.toLowerCase()),
                     decoration: InputDecoration(
                       hintText: l10n.helpGlossarySearchHint,
-                      hintStyle: TextStyle(color: surfaces.inkMuted),
                       prefixIcon: Icon(Icons.search, color: surfaces.inkMuted),
                       suffixIcon: _query.isNotEmpty
                           ? IconButton(

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/ecg_trace.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// PORTADA — primera pantalla del flujo real, tras el arranque.
 ///
@@ -218,8 +219,7 @@ class _IntroScreenState extends State<IntroScreen>
                                 ),
                               ),
                             ),
-                            onPressed: () =>
-                                context.go('/onboarding'),
+                            onPressed: () => context.go('/onboarding'),
                             child: Text(
                               l10n.introRegister,
                               textAlign: TextAlign.center,
@@ -304,13 +304,12 @@ class _FeatureCardState extends State<_FeatureCard>
             // Los tres iconos comparten el mismo tratamiento: antes cada uno
             // llevaba un color suelto (rojo, verde, azul claro) que no era
             // semántico y chocaba con la paleta del tema.
-            Container(
-              padding: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                color: surfaces.onBrand.withValues(alpha: 0.16),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(widget.icon, color: surfaces.onBrand, size: 21),
+            IconBadge(
+              widget.icon,
+              color: surfaces.onBrand,
+              background: surfaces.onBrand.withValues(alpha: 0.16),
+              padding: 9,
+              iconSize: 21,
             ),
             const SizedBox(width: 14),
             Expanded(

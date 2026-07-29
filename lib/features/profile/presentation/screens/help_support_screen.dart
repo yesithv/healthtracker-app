@@ -4,6 +4,7 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dar
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
@@ -74,17 +75,12 @@ class HelpSupportScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: surfaces.onBrand.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.support_agent,
-                          color: surfaces.card,
-                          size: 32,
-                        ),
+                      IconBadge(
+                        Icons.support_agent,
+                        color: surfaces.card,
+                        background: surfaces.onBrand.withValues(alpha: 0.15),
+                        padding: 14,
+                        iconSize: 32,
                       ),
                       const SizedBox(width: 16),
                       Expanded(

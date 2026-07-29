@@ -11,6 +11,7 @@ import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
 import '../../../../core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -170,13 +171,11 @@ class ProfileScreen extends StatelessWidget {
   }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: color, size: 22),
+      leading: IconBadge(
+        icon,
+        color: color,
+        background: color.withValues(alpha: 0.1),
+        iconSize: 22,
       ),
       title: Text(
         label,
@@ -610,7 +609,10 @@ class _BadgeItem extends StatelessWidget {
                 color: isLocked
                     ? surfaces.inset
                     : color.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
+                // Caja de icono: cuadrado redondeado del tema. No usa
+                // `IconBadge` porque la insignia bloqueada envuelve su icono en
+                // un `ColorFiltered`, y el widget sólo recibe un `IconData`.
+                borderRadius: surfaces.iconRadius,
                 border: Border.all(
                   color: isLocked
                       ? surfaces.divider

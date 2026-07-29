@@ -502,6 +502,11 @@
   "introRegister": "Registrarse",
   "emailLabel": "Correo",
   "validationEnterEmail": "Ingresa tu correo",
+  "validationEmailFormat": "Revisa el correo: falta el arroba o el dominio",
+  "validationOutOfRange": "Escribe un valor entre {min} y {max}",
+  "@validationOutOfRange": {
+    "placeholders": { "min": {}, "max": {} }
+  },
   "commonRegisterFailed": "No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.",
   "logOutConfirm": "¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.",
   "pendingAccountTitle": "Cuenta pendiente",
@@ -641,6 +646,8 @@
     "description": "accountImNew"
   },
   "accountCreateAccount": "Crear cuenta",
+  "accountNewHere": "Soy nuevo (registrarme)",
+  "accountDocumentOptional": "Documento (opcional)",
   "@accountCreateAccount": {
     "description": "accountCreateAccount"
   },

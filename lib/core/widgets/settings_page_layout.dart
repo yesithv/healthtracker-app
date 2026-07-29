@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// LA MAQUETA COMÚN de una pantalla de ajuste: icono redondo, título,
 /// descripción, contenido y —si hace falta— un botón de confirmar.
@@ -45,14 +46,12 @@ class SettingsPageLayout extends StatelessWidget {
         children: [
           const SizedBox(height: 24),
           // El ICONO es el mismo en todos los temas; sólo cambia su vestido.
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: surfaces.selection,
-              shape: BoxShape.circle,
-            ),
-            child: Center(child: Icon(icon, size: 32, color: surfaces.brand)),
+          IconBadge(
+            icon,
+            color: surfaces.brand,
+            background: surfaces.selection,
+            size: 80,
+            iconSize: 32,
           ),
           const SizedBox(height: 24),
           Text(

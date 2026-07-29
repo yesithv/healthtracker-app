@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -15,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 class RecordAnthropometricScreen extends StatefulWidget {
   final AnthropometricRecord? recordToEdit;
@@ -82,8 +83,7 @@ class _RecordAnthropometricScreenState
     return v == v.roundToDouble() ? v.toInt().toString() : v.toString();
   }
 
-  double? _cmValue(TextEditingController c) =>
-      double.tryParse(c.text.trim().replaceAll(',', '.'));
+  double? _cmValue(TextEditingController c) => InputRules.toNumber(c.text);
 
   /// Tiñe el selector de Material con la identidad de la familia.
   ///
@@ -164,9 +164,7 @@ class _RecordAnthropometricScreenState
             controller: controller,
             keyboardType: TextInputType.number,
             style: theme.type.body.copyWith(color: surfaces.ink),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-            ],
+            inputFormatters: InputRules.decimal(decimals: 1, integerDigits: 3),
             decoration: InputDecoration(
               filled: true,
               fillColor: surfaces.inset,
@@ -191,9 +189,7 @@ class _RecordAnthropometricScreenState
             ),
             ElevatedButton(
               onPressed: () {
-                final val = double.tryParse(
-                  controller.text.replaceAll(',', '.'),
-                );
+                final val = InputRules.toNumber(controller.text);
                 if (val != null) {
                   onSaved(val);
                 }
@@ -614,16 +610,14 @@ class _RecordAnthropometricScreenState
     final surfaces = _theme.surfaces;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: surfaces.inset,
-          shape: BoxShape.circle,
-          border: Border.all(color: surfaces.divider),
-        ),
-        child: Icon(icon, color: _family.accent),
+      borderRadius: surfaces.iconRadius,
+      child: IconBadge(
+        icon,
+        color: _family.accent,
+        background: surfaces.inset,
+        size: 44,
+        iconSize: 24,
+        border: Border.all(color: surfaces.divider),
       ),
     );
   }
@@ -821,15 +815,9 @@ class _RecordAnthropometricScreenState
           controller: controller,
           keyboardType: TextInputType.number,
           style: theme.type.body.copyWith(color: surfaces.ink),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-          ],
+          inputFormatters: InputRules.decimal(decimals: 1, integerDigits: 3),
           decoration: InputDecoration(
             hintText: '— cm',
-            hintStyle: theme.type.body.copyWith(
-              color: surfaces.inkMuted,
-              fontSize: 13,
-            ),
             suffixText: 'cm',
             suffixStyle: theme.type.numeralUnit.copyWith(
               fontSize: 12,
@@ -866,10 +854,6 @@ class _RecordAnthropometricScreenState
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
-          hintStyle: theme.type.body.copyWith(
-            color: surfaces.inkMuted,
-            fontSize: 13,
-          ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),
