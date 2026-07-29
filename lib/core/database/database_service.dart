@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_mode.dart';
 
 /// Owns the SQLite database lifecycle only: opening the connection and creating
 /// the schema/indexes. All CRUD lives in the per-entity repositories
@@ -14,9 +15,15 @@ class DatabaseService {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('my-vitals-db.db');
+    _database = await _initDB(_fileName);
     return _database!;
   }
+
+  /// La demo escribe en un archivo APARTE. No es cosmético: garantiza que
+  /// sembrar dos años de mediciones de mentira no pueda tocar —ni borrar— el
+  /// historial real de quien tenga la app instalada en el mismo dispositivo.
+  static String get _fileName =>
+      kDemoMode ? 'my-vitals-demo.db' : 'my-vitals-db.db';
 
   Future<Database> _initDB(String filePath) async {
     if (kIsWeb) {

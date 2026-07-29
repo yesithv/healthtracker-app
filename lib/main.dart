@@ -22,6 +22,8 @@ import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_mode.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_seeder.dart';
 
 void main() {
   runZonedGuarded(
@@ -34,6 +36,19 @@ void main() {
         debugPrint('=== FLUTTER ERROR ===');
         debugPrint(details.toString());
       };
+
+      // 0. MODO DEMOSTRACIÓN (sólo si se compiló con --dart-define=DEMO_MODE).
+      // Va PRIMERO, y no por capricho: instala el almacén de preferencias en
+      // memoria, y cualquier provider o store que leyera antes se quedaría con
+      // lo que hubiera en disco. En una build normal `kDemoMode` es `false`
+      // constante y el compilador borra esta rama entera.
+      if (kDemoMode) {
+        try {
+          await DemoSeeder.install();
+        } catch (e, st) {
+          debugPrint('=== DEMO SEED ERROR: $e\n$st');
+        }
+      }
 
       // 1. SQLite / sqflite database initialization
       try {
