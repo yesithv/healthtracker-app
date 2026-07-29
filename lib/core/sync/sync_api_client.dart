@@ -33,14 +33,18 @@ class SyncApiClient {
   final http.Client _http;
   final Duration timeout;
 
-  SyncApiClient({http.Client? httpClient, this.timeout = const Duration(seconds: 20)})
-      : _http = httpClient ?? http.Client();
+  SyncApiClient({
+    http.Client? httpClient,
+    this.timeout = const Duration(seconds: 20),
+  }) : _http = httpClient ?? http.Client();
 
   /// Sube el lote al paciente autenticado. Lanza [SyncException] si la API no
   /// responde 2xx (el llamador NO marca esos registros como sincronizados).
   Future<IngestResult> postMeasurements(List<IngestItem> items) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/v1/me/measurements');
-    final body = jsonEncode({'measurements': items.map((e) => e.toJson()).toList()});
+    final body = jsonEncode({
+      'measurements': items.map((e) => e.toJson()).toList(),
+    });
 
     final http.Response resp;
     try {
@@ -74,7 +78,11 @@ class SyncApiClient {
     }
     final map = jsonDecode(responseBody) as Map<String, dynamic>;
     final rejections = (map['rejections'] as List<dynamic>? ?? [])
-        .map((r) => (r as Map<String, dynamic>)['reason']?.toString() ?? 'desconocido')
+        .map(
+          (r) =>
+              (r as Map<String, dynamic>)['reason']?.toString() ??
+              'desconocido',
+        )
         .toList();
     return IngestResult(
       accepted: (map['accepted'] as num?)?.toInt() ?? 0,

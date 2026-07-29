@@ -100,13 +100,15 @@
   "bmiObesity": "FETTLEIBIGKEIT",
   "commentOptional": "KOMMENTAR (OPTIONAL)",
   "commentHint": "Irgendwelche Beobachtungen zu dieser Messung?",
-  "saveAndEarnXp": "Speichern und +10 XP verdienen ✦",
+  "saveAndEarnXp": "Speichern und +10 XP verdienen",
   "historyGoodJob": "Gute Arbeit!",
   "historyGoalProgress": "Sie haben diesen Monat eine neue Messung aufgezeichnet und bleiben auf Ihrem Wellness-Weg.",
   "historyWeightLoss": "Sie haben diesen Monat {weight}kg abgenommen und kommen Ihrem Wellness-Ziel näher.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "BMI-TREND",
@@ -198,15 +200,15 @@
   "fatNormal": "NORMAL",
   "fatElevated": "ERHÖHT",
   "fatHigh": "HOCH",
-
   "infoBannerAnthro": "Versuchen Sie, die Messung immer unter den gleichen Bedingungen durchzuführen, zum Beispiel: jeden Morgen nach dem Aufwachen, dem Toilettengang und vor dem Frühstück.",
   "infoBannerVitals": "Versuchen Sie, Ihre Vitalwerte nach einer halben Stunde Ruhezeit zu messen.",
-
   "compositionSavedSuccess": "Körperprofil erfolgreich gespeichert.",
   "discoverGreeting": "Guten Morgen, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Nach Tipps suchen...",
@@ -253,7 +255,6 @@
   "targetMuscleMass": "Ziel-Muskelmasse",
   "targetVisceralFat": "Ziel-Viszeralfett",
   "goalsSavedSuccess": "Ziele erfolgreich gespeichert.",
-
   "helpSupportPageTitle": "Hilfe & Support",
   "helpSupportPageDescription": "Alles was du über My Vitals wissen musst.",
   "helpFaqTitle": "Häufig gestellte Fragen",
@@ -264,15 +265,12 @@
   "helpLegalDescription": "Nutzungsbedingungen und Datenschutz.",
   "helpContactTitle": "Kontakt & Feedback",
   "helpContactDescription": "Schreib uns, wir verbessern uns gemeinsam.",
-
   "helpSearchHint": "Suche...",
   "helpNoResults": "Keine Ergebnisse für deine Suche.",
-
   "helpFaqCatGeneral": "Allgemein",
   "helpFaqCatData": "Meine Daten",
   "helpFaqCatBiometrics": "Biometrie",
   "helpFaqCatExport": "Exportieren",
-
   "helpFaqQ1": "Was ist My Vitals?",
   "helpFaqA1": "My Vitals ist eine persönliche Gesundheits-Tracking-App, mit der du deine Wohlbefindensindikatoren aufzeichnen und überwachen kannst: anthropometrische Messungen, Vitalzeichen, Lipidprofil und Körperzusammensetzung.",
   "helpFaqQ2": "Werden meine Daten in der Cloud gespeichert?",
@@ -280,23 +278,21 @@
   "helpFaqQ3": "Kann ich die App ohne Internet nutzen?",
   "helpFaqA3": "Ja. My Vitals funktioniert vollständig offline. Du brauchst nur für App-Updates eine Verbindung.",
   "helpFaqQ4": "Wie aktiviere ich die biometrische Sperre?",
-  "helpFaqA4": "Gehe zu Profil → Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.",
+  "helpFaqA4": "Gehe zu Profil › Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.",
   "helpFaqQ5": "Wie exportiere ich meinen Verlauf?",
   "helpFaqA5": "In jedem Verlaufsbildschirm (Anthropometrisch, Vitalzeichen usw.) findest du oben die Schaltflächen 'PDF exportieren' und 'Excel (CSV)'.",
   "helpFaqQ6": "Kann ich die Maßeinheiten ändern?",
-  "helpFaqA6": "Ja. Gehe zu Profil → Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.",
+  "helpFaqA6": "Ja. Gehe zu Profil › Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.",
   "helpFaqQ7": "Was passiert, wenn ich die App lösche?",
   "helpFaqA7": "Beim Deinstallieren der App werden alle lokal gespeicherten Daten dauerhaft gelöscht. Wir empfehlen, deinen Verlauf vor der Deinstallation als PDF oder CSV zu exportieren.",
   "helpFaqQ8": "Ersetzt diese App meinen Arzt?",
   "helpFaqA8": "Nein. My Vitals ist ein persönliches Tracking-Tool, das dir hilft, einen organisierten Datensatz zu führen. Konsultiere immer einen Gesundheitsfachmann für medizinische Interpretation und Diagnose.",
-
   "helpGlossarySearchHint": "Begriff suchen...",
   "helpGlossaryGroupAnthropo": "Anthropometrische Messungen",
   "helpGlossaryGroupVitals": "Vitalzeichen",
   "helpGlossaryGroupLipid": "Lipidprofil",
   "helpGlossaryGroupBody": "Körperzusammensetzung",
   "helpGlossaryNormalRange": "Normaler Bereich",
-
   "helpLegalPurposeTitle": "Zweck der Anwendung",
   "helpLegalPurposeBody": "My Vitals ist eine persönliche Gesundheits-Tracking-Anwendung, die Nutzern hilft, ihre Wohlbefindensindikatoren aufzuzeichnen und zu visualisieren. Es ist kein zertifiziertes Medizinprodukt.",
   "helpLegalNotMedicalTitle": "Kein Medizinprodukt",
@@ -307,7 +303,6 @@
   "helpLegalPrivacyBody": "Alle Daten werden lokal auf dem Gerät des Nutzers gespeichert. My Vitals erfasst, übermittelt oder teilt keine persönlichen Informationen mit Dritten. Es gibt keine Benutzerkonten oder Datenserver.",
   "helpLegalContactTitle": "Entwicklerkontakt",
   "helpLegalContactBody": "Für rechtliche Anfragen oder Datenschutzfragen können Sie den Entwickler kontaktieren unter: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Fehler melden",
   "helpContactReportBugDesc": "Etwas funktioniert nicht richtig? Sag es uns.",
   "helpContactSuggest": "Vorschlag senden",
@@ -346,7 +341,6 @@
   "backupIncludesPhoto": "Profilfoto",
   "backupIncludesPreferences": "Einstellungen (Sprache, Einheiten)",
   "backupCancel": "Abbrechen",
-
   "onboardingWelcomeTitle": "Willkommen bei My Vitals",
   "onboardingWelcomeSubtitle": "Dein persönlicher Gesundheitsbegleiter",
   "onboardingWelcomeFeature1": "Erfasse deine Vitalzeichen und Körpermaße",
@@ -354,12 +348,15 @@
   "onboardingWelcomeFeature3": "100% privat, alles bleibt auf deinem Gerät",
   "onboardingNext": "Weiter",
   "onboardingFinish": "Loslegen!",
-  "onboardingSkip": "Überspringen",
   "onboardingStep": "Schritt {current} von {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Dein Profilbild",
@@ -379,12 +376,13 @@
   "goalRemainingWeight": "{weight}kg bis zum Ziel",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Ziel erreicht!",
   "noGoalDefined": "Kein Ziel definiert",
-
   "validationRequiredFields": "Pflichtfelder",
   "validationCompleteBeforeContinue": "Bitte fülle diese Felder aus, bevor du fortfährst:",
   "validationSelectLanguage": "Wähle eine Sprache",
@@ -480,6 +478,119 @@
   "deleteRecordConfirm": "Löschen",
   "recordDeleted": "Eintrag gelöscht",
   "anthropoSavedSuccess": "Messung erfolgreich gespeichert.",
-  "historyShowMore": "{count} weitere anzeigen"
+  "historyShowMore": "{count} weitere anzeigen",
+  "introSignIn": "Anmelden",
+  "introRegister": "Konto erstellen",
+  "emailLabel": "E-Mail",
+  "validationEnterEmail": "Gib deine E-Mail-Adresse ein",
+  "validationEmailFormat": "Prüfe die E-Mail-Adresse: @ oder Domain fehlt",
+  "validationOutOfRange": "Gib einen Wert zwischen {min} und {max} ein",
+  "commonRegisterFailed": "Wir konnten dein Konto nicht erstellen. Prüfe die Verbindung und versuche es erneut.",
+  "logOutConfirm": "Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert.",
+  "pendingAccountTitle": "Konto ausstehend",
+  "pendingAccountBody": "Deine Daten sind auf diesem Gerät gespeichert. Wir erstellen dein Konto, sobald eine Verbindung besteht.",
+  "pendingAccountCreateNow": "Mein Konto jetzt erstellen",
+  "pendingAccountCreating": "Dein Konto wird erstellt…",
+  "pendingAccountCreated": "Konto erstellt. Deine Einträge werden hochgeladen.",
+  "pendingAccountStillOffline": "Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät.",
+  "identifyTitle": "Holen wir deine Historie",
+  "identifyBody": "Gib deine Ausweisnummer (oder E-Mail) ein. Wenn du bereits Patient bist, laden wir deine Daten; sonst legen wir dein Konto an.",
+  "identifyFieldLabel": "Ausweisnummer oder E-Mail",
+  "identifyFieldHint": "z. B. 1032456789",
+  "identifyFoundTitle": "Wir haben eine Krankengeschichte zu dieser Ausweisnummer gefunden.",
+  "identifyFoundBody": "Wir können sie übernehmen und dein Konto aktivieren, damit du deine Daten vom ersten Tag an siehst.",
+  "identifyBringHistory": "Historie übernehmen und fortfahren",
+  "identifyBringingHistory": "Historie wird übernommen …",
+  "identifyNotMe": "Das bin nicht ich – neu registrieren",
+  "verifyAppBarTitle": "Verifizierung",
+  "verifyTitle": "Wir haben dein Konto gefunden",
+  "verifyBody": "Bestätige deine Identität, um mit\n{identifier} fortzufahren.",
+  "@verifyBody": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Passwort",
+  "verifyTestNotice": "Testphase: Das Passwort lautet 1234. (In der Produktion steht hier der OTP-Code.)",
+  "verifySubmit": "Anmelden",
+  "unexpectedError": "Unerwarteter Fehler: {details}",
+  "@unexpectedError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Konto und Synchronisierung",
+  "accountYourAccount": "Dein Konto",
+  "accountPendingBody": "Deine Daten liegen auf diesem Gerät. Das Konto muss noch auf dem Server angelegt werden.",
+  "accountLoggedOutBody": "Melde dich an, wenn du bereits Patient bist, oder registriere dich.",
+  "accountFallbackName": "Patient",
+  "accountFromLegacy": "Aus dem Altsystem übernommenes Konto",
+  "accountCreatedInApp": "In der App erstelltes Konto",
+  "accountSignOut": "Abmelden",
+  "accountSyncSection": "Synchronisierung",
+  "accountSyncBody": "Lade deine lokalen Einträge auf den Server.",
+  "accountSyncing": "Wird synchronisiert …",
+  "accountSyncNow": "Jetzt synchronisieren",
+  "accountHaveAccount": "Ich habe bereits ein Konto (übernommener Patient)",
+  "accountImNew": "Ich bin neu (registrieren)",
+  "accountCreateAccount": "Konto erstellen",
+  "accountNewHere": "Ich bin neu (registrieren)",
+  "accountDocumentOptional": "Dokument (optional)",
+  "accountNameLabel": "Name",
+  "accountEmailLabel": "E-Mail",
+  "deviceScreenTitle": "Mein Messgerät",
+  "deviceNoneTitle": "Ich benutze keine",
+  "deviceNoneSubtitle": "Ich erfasse nur manuelle Messwerte (Gewicht, Taille, Größe).",
+  "deviceNoneSaved": "Gespeichert: Du nutzt keine Bioimpedanz.",
+  "deviceCatalogError": "Katalog konnte nicht aktualisiert werden. Es werden die gespeicherten Optionen angezeigt.",
+  "deviceAvailableScales": "VERFÜGBARE WAAGEN",
+  "deviceWhyItMatters": "Jede Bioimpedanzwaage interpretiert Fett, Muskeln und viszerales Fett mit eigenen Bereichen. Sag uns, welche du nutzt, damit wir zeigen können, ob deine Werte niedrig, normal oder hoch sind. Du kannst das jederzeit ändern.",
+  "circumferencesSection": "KÖRPERUMFÄNGE (OPTIONAL)",
+  "circWaist": "Taille",
+  "circHip": "Hüfte",
+  "circLowerAbdomen": "Unterbauch",
+  "circArm": "Arm",
+  "circLeg": "Bein",
+  "circChestBust": "Brust/Büste",
+  "circAbdomenShort": "Bauch",
+  "lipidLabQuestion": "In welchem Labor wurde der Test gemacht?",
+  "lipidLabLoading": "Labore werden geladen …",
+  "lipidLabNotSpecified": "Nicht angegeben / weiß nicht",
+  "lipidLabOther": "Andere (angeben)",
+  "compositionSkeletalMuscle": "Skelettmuskulatur",
+  "compositionSkeletalMuscleRef": "Wie von deiner Waage angegeben (%)",
+  "profileAppTheme": "App-Design",
+  "profileRankObserver": "Vitaler Beobachter",
+  "themeBankLabel": "DESIGN-BIBLIOTHEK",
+  "themePickTitle": "Wähle das Aussehen",
+  "themePickBody": "Ändert Farben und Typografie. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.",
+  "themeSettingsBody": "Die Änderung wirkt sofort und wird gemerkt. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.",
+  "themeContinueWith": "Weiter mit {theme}",
+  "@themeContinueWith": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} ausgewählt.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWillSyncLater": "{message} Wird synchronisiert, sobald du online bist.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  }
 }
-

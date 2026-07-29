@@ -41,10 +41,7 @@ class Reminder {
     return Reminder(
       id: json['id'] as String,
       translationKey: json['translationKey'] as String,
-      time: TimeOfDay(
-        hour: json['hour'] as int,
-        minute: json['minute'] as int,
-      ),
+      time: TimeOfDay(hour: json['hour'] as int, minute: json['minute'] as int),
       isEnabled: json['isEnabled'] as bool,
     );
   }

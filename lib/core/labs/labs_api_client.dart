@@ -12,15 +12,19 @@ class LabsApiClient {
   final http.Client _http;
   final Duration timeout;
 
-  LabsApiClient({http.Client? httpClient, this.timeout = const Duration(seconds: 6)})
-      : _http = httpClient ?? http.Client();
+  LabsApiClient({
+    http.Client? httpClient,
+    this.timeout = const Duration(seconds: 6),
+  }) : _http = httpClient ?? http.Client();
 
   Future<List<Lab>> fetchLabs() async {
     if (ApiConfig.baseUrl.isEmpty) return const [];
     try {
       final uri = Uri.parse('${ApiConfig.baseUrl}/api/v1/labs');
       final resp = await _http.get(uri).timeout(timeout);
-      if (resp.statusCode < 200 || resp.statusCode >= 300 || resp.body.isEmpty) {
+      if (resp.statusCode < 200 ||
+          resp.statusCode >= 300 ||
+          resp.body.isEmpty) {
         return const [];
       }
       final list = jsonDecode(resp.body) as List<dynamic>;

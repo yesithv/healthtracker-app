@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 /// A lightweight shimmer used for the Discover cold-start placeholder. Built with
 /// a single animated gradient (no extra package) so it stays cheap.
 class Shimmer extends StatefulWidget {
@@ -24,6 +26,11 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // El brillo del esqueleto se deriva del lienzo y la tarjeta del tema: era
+    // un par de grises azulados fijos que en un tema cálido se veían fríos.
+    final surfaces = Theme.of(context).surfaces;
+    final base = Color.lerp(surfaces.canvas, surfaces.ink, 0.06)!;
+    final shine = surfaces.card;
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -34,11 +41,7 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
             return LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: const [
-                Color(0xFFE9EEF5),
-                Color(0xFFF6F9FC),
-                Color(0xFFE9EEF5),
-              ],
+              colors: [base, shine, base],
               stops: const [0.35, 0.5, 0.65],
               transform: _SlideGradient(dx),
             ).createShader(bounds);
@@ -77,7 +80,11 @@ class SkeletonBox extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EEF5),
+        color: Color.lerp(
+          Theme.of(context).surfaces.canvas,
+          Theme.of(context).surfaces.ink,
+          0.06,
+        ),
         borderRadius: BorderRadius.circular(radius),
       ),
     );

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import '../../../../core/constants/metric_colors.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
 import '../../../../core/widgets/action_button.dart';
 import '../../../../core/widgets/dashed_border_container.dart';
@@ -23,39 +24,34 @@ class AnthropometricHistoryCard extends StatelessWidget {
     if (!repo.isLoaded) return const SizedBox();
     final list = repo.items;
 
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Identidad de la familia «antropometría»: ámbar en cualquier tema.
+    final family = theme.metrics.tone(MetricFamily.anthropometry);
+
     if (list.isEmpty) {
       return DashedBorderContainer(
-        color: MetricColors.anthropoColor,
-        borderRadius: 20,
+        color: family.accent,
+        borderRadius: surfaces.radiusCard,
         child: Column(
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundColor: MetricColors.anthropoBg,
-              child: const Icon(
-                Icons.straighten,
-                color: MetricColors.anthropoColor,
-              ),
+              backgroundColor: family.surface,
+              child: Icon(Icons.straighten, color: family.accent),
             ),
             const SizedBox(height: 16),
-            Text(
-              l10n.anthropometricHistory,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                letterSpacing: 1.0,
-                color: Color(0xFF1E293B),
-              ),
-            ),
+            Text(l10n.anthropometricHistory, style: theme.type.cardTitle),
             const SizedBox(height: 4),
             Text(
               l10n.anthroSubtitle,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+              style: theme.type.meta,
             ),
             const SizedBox(height: 20),
             ActionButton(
               text: l10n.recordFirstMeasure,
-              color: MetricColors.anthropoColor,
+              color: family.accent,
               solid: false,
               onPressed: () => context.push('/record-anthropometric'),
             ),
@@ -75,6 +71,12 @@ class AnthropometricHistoryCard extends StatelessWidget {
       final diff = (latestRecord.weight - goals.targetWeight!).abs();
       final isAchieved = diff <= 0.5;
 
+      // Objetivo cumplido = «óptimo» (verde semántico); en curso = color de
+      // marca, porque es informativo y no una valoración clínica.
+      final Color goalColor = isAchieved
+          ? theme.clinical.optimal.accent
+          : surfaces.brand;
+
       bmiCard = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -83,18 +85,14 @@ class AnthropometricHistoryCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isAchieved
-                  ? const Color(0xFF10B981).withValues(alpha: 0.1)
-                  : const Color(0xFF0D48A0).withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(16),
+              color: Color.lerp(surfaces.card, goalColor, 0.10),
+              borderRadius: BorderRadius.circular(surfaces.radiusControl),
             ),
             child: Row(
               children: [
                 Icon(
                   isAchieved ? Icons.check_circle : Icons.track_changes,
-                  color: isAchieved
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFF0D48A0),
+                  color: goalColor,
                   size: 20,
                 ),
                 const SizedBox(width: 12),
@@ -103,13 +101,7 @@ class AnthropometricHistoryCard extends StatelessWidget {
                     isAchieved
                         ? l10n.goalAchieved
                         : l10n.goalRemainingWeight(diff.toStringAsFixed(1)),
-                    style: TextStyle(
-                      color: isAchieved
-                          ? const Color(0xFF10B981)
-                          : const Color(0xFF0D48A0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
+                    style: theme.type.button.copyWith(color: goalColor),
                   ),
                 ),
               ],

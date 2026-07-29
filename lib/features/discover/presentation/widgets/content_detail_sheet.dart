@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 /// A single, reusable reader sheet for any Discover item (article, routine or
 /// challenge). Because all content is already in memory, this opens instantly —
 /// there is no network round-trip and therefore no loading state.
@@ -24,10 +26,16 @@ Future<void> showDiscoverDetailSheet(
         maxChildSize: 0.92,
         expand: false,
         builder: (context, scrollController) {
+          final theme = Theme.of(context);
+          final surfaces = theme.surfaces;
+          // La cabecera va sobre el acento sólido de la categoría, así que su
+          // contenido se pinta con el `onAccent` del tema y no con blanco.
+          final on = surfaces.onBrand;
+          final radius = Radius.circular(surfaces.radiusCard + 8);
           return Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            decoration: BoxDecoration(
+              color: surfaces.inset,
+              borderRadius: BorderRadius.vertical(top: radius),
             ),
             child: Column(
               children: [
@@ -41,8 +49,7 @@ Future<void> showDiscoverDetailSheet(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius: BorderRadius.vertical(top: radius),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +59,7 @@ Future<void> showDiscoverDetailSheet(
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: on.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -63,18 +70,17 @@ Future<void> showDiscoverDetailSheet(
                           Container(
                             padding: const EdgeInsets.all(9),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: on.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Icon(icon, color: Colors.white, size: 22),
+                            child: Icon(icon, color: on, size: 22),
                           ),
                           const SizedBox(width: 10),
                           Text(
                             kicker.toUpperCase(),
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
+                            style: theme.type.sectionLabel.copyWith(
+                              color: on.withValues(alpha: 0.9),
                               fontSize: 11,
-                              fontWeight: FontWeight.w800,
                               letterSpacing: 1.1,
                             ),
                           ),
@@ -83,11 +89,10 @@ Future<void> showDiscoverDetailSheet(
                       const SizedBox(height: 14),
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: theme.type.screenTitle.copyWith(
+                          color: on,
                           fontSize: 22,
                           height: 1.25,
-                          fontWeight: FontWeight.w800,
                         ),
                       ),
                       if (chips.isNotEmpty) ...[
@@ -104,10 +109,10 @@ Future<void> showDiscoverDetailSheet(
                     children: [
                       Text(
                         body,
-                        style: const TextStyle(
+                        style: theme.type.body.copyWith(
                           fontSize: 15.5,
                           height: 1.6,
-                          color: Color(0xFF334155),
+                          color: surfaces.ink,
                         ),
                       ),
                     ],
@@ -122,11 +127,13 @@ Future<void> showDiscoverDetailSheet(
                         onPressed: () => Navigator.of(context).pop(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: accent,
-                          foregroundColor: Colors.white,
+                          foregroundColor: on,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(
+                              surfaces.radiusControl,
+                            ),
                           ),
                         ),
                         child: Text(
@@ -156,24 +163,24 @@ class DetailChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // Vive dentro de la cabecera de color, así que se pinta con el mismo
+    // `onBrand` que el resto de esa cabecera.
+    final on = theme.surfaces.onBrand;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
+        color: on.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.white),
+          Icon(icon, size: 14, color: on),
           const SizedBox(width: 5),
           Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+            style: theme.type.badge.copyWith(color: on, fontSize: 12),
           ),
         ],
       ),

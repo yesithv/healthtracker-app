@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import '../../../../core/constants/metric_colors.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/clinical_palette.dart';
+import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
 import '../../../../core/widgets/action_button.dart';
 import '../../../../core/widgets/dashed_border_container.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../../../core/database/record_repositories.dart';
 
 /// Dashboard card summarizing the latest lipid panel.
@@ -20,41 +23,36 @@ class LipidProfileCard extends StatelessWidget {
     if (!repo.isLoaded) return const SizedBox();
     final list = repo.items;
 
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Identidad de la familia «perfil lipídico»: verde azulado en cualquier tema.
+    final family = theme.metrics.tone(MetricFamily.lipids);
+
     if (list.isEmpty) {
       return DashedBorderContainer(
-        color: MetricColors.lipidColor,
-        borderRadius: 20,
+        color: family.accent,
+        borderRadius: surfaces.radiusCard,
         child: Column(
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundColor: MetricColors.lipidBg,
-              child: Icon(Icons.bloodtype, color: MetricColors.lipidColor),
+              backgroundColor: family.surface,
+              child: Icon(Icons.bloodtype, color: family.accent),
             ),
             const SizedBox(height: 16),
-            Text(
-              l10n.lipidProfile,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                letterSpacing: 1.0,
-                color: Color(0xFF1E293B),
-              ),
-            ),
+            Text(l10n.lipidProfile, style: theme.type.cardTitle),
             const SizedBox(height: 4),
             Text(
               l10n.lipidSubtitle,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+              style: theme.type.meta,
             ),
             const SizedBox(height: 12),
-            Text(
-              l10n.noDataYet,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
+            Text(l10n.noDataYet, style: theme.type.meta),
             const SizedBox(height: 20),
             ActionButton(
               text: l10n.recordLabResults,
-              color: MetricColors.lipidColor,
+              color: family.accent,
               solid: false,
               onPressed: () => context.push('/record-lipid'),
             ),
@@ -64,19 +62,51 @@ class LipidProfileCard extends StatelessWidget {
     }
 
     final latest = list.first;
+    final overall = overallLipidStatus(latest);
+
+    // Separador vertical entre lecturas, con el filete del tema.
+    Widget divider() =>
+        Container(width: 1, height: 40, color: surfaces.divider);
+
+    // Se compone la fila de lecturas en una lista para intercalar separadores
+    // sólo entre las que existen: antes, cada `if` añadía su propio separador y
+    // un panel que empezara por HDL abría con una línea suelta.
+    final tiles = <Widget>[
+      if (latest.totalCholesterol != null)
+        _LipidTile(
+          label: l10n.lipidTotalCholesterol,
+          value: latest.totalCholesterol!.toStringAsFixed(0),
+          status: LipidStatus.totalCholesterol(
+            latest.totalCholesterol!,
+            labCode: latest.labCode,
+          ).status,
+        ),
+      if (latest.ldl != null)
+        _LipidTile(
+          label: 'LDL',
+          value: latest.ldl!.toStringAsFixed(0),
+          status: LipidStatus.ldl(latest.ldl!, labCode: latest.labCode).status,
+        ),
+      if (latest.hdl != null)
+        _LipidTile(
+          label: 'HDL',
+          value: latest.hdl!.toStringAsFixed(0),
+          status: LipidStatus.hdl(latest.hdl!, labCode: latest.labCode).status,
+        ),
+      if (latest.triglycerides != null)
+        _LipidTile(
+          label: 'TRIGS',
+          value: latest.triglycerides!.toStringAsFixed(0),
+          status: LipidStatus.triglycerides(
+            latest.triglycerides!,
+            labCode: latest.labCode,
+          ).status,
+        ),
+    ];
+
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -84,103 +114,30 @@ class LipidProfileCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 18,
-                backgroundColor: MetricColors.lipidBg,
-                child: Icon(
-                  Icons.bloodtype,
-                  color: MetricColors.lipidColor,
-                  size: 18,
-                ),
+                backgroundColor: family.surface,
+                child: Icon(Icons.bloodtype, color: family.accent, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  l10n.lipidProfile,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    letterSpacing: 1.0,
-                    color: Color(0xFF1E293B),
-                  ),
-                ),
+                child: Text(l10n.lipidProfile, style: theme.type.cardTitle),
               ),
-              // Overall risk badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: overallLipidStatus(latest).color,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  overallLipidStatus(latest).label(l10n),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              StatusChip(status: overall.status, label: overall.label(l10n)),
             ],
           ),
           const SizedBox(height: 16),
-          // 2-column grid of values
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (latest.totalCholesterol != null)
-                _LipidTile(
-                  label: l10n.lipidTotalCholesterol,
-                  value: latest.totalCholesterol!.toStringAsFixed(0),
-                  color: LipidStatus.totalCholesterol(
-                    latest.totalCholesterol!,
-                  ).color,
-                ),
-              if (latest.totalCholesterol != null && latest.ldl != null)
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-              if (latest.ldl != null)
-                _LipidTile(
-                  label: 'LDL',
-                  value: latest.ldl!.toStringAsFixed(0),
-                  color: LipidStatus.ldl(latest.ldl!).color,
-                ),
-              if (latest.hdl != null) ...[
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-                _LipidTile(
-                  label: 'HDL',
-                  value: latest.hdl!.toStringAsFixed(0),
-                  color: LipidStatus.hdl(latest.hdl!).color,
-                ),
-              ],
-              if (latest.triglycerides != null) ...[
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-                _LipidTile(
-                  label: 'TRIGS',
-                  value: latest.triglycerides!.toStringAsFixed(0),
-                  color: LipidStatus.triglycerides(
-                    latest.triglycerides!,
-                  ).color,
-                ),
+              for (var i = 0; i < tiles.length; i++) ...[
+                if (i > 0) divider(),
+                tiles[i],
               ],
             ],
           ),
           const SizedBox(height: 16),
           ActionButton(
             text: l10n.recordLabResults,
-            color: MetricColors.lipidColor,
+            color: family.accent,
             solid: false,
             onPressed: () => context.push('/record-lipid'),
           ),
@@ -193,44 +150,32 @@ class LipidProfileCard extends StatelessWidget {
 class _LipidTile extends StatelessWidget {
   final String label;
   final String value;
-  final Color color;
+  final ClinicalStatus status;
 
   const _LipidTile({
     required this.label,
     required this.value,
-    required this.color,
+    required this.status,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Text(
           value,
-          style: TextStyle(
+          style: theme.type.numeralSmall.copyWith(
             fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: color,
+            color: theme.clinical.tone(status).accent,
           ),
         ),
-        Text(
-          'mg/dL',
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF94A3B8),
-          ),
-        ),
+        Text('mg/dL', style: theme.type.numeralUnit.copyWith(fontSize: 9)),
         const SizedBox(height: 2),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-            letterSpacing: 0.5,
-          ),
+          style: theme.type.meta.copyWith(fontSize: 9),
         ),
       ],
     );

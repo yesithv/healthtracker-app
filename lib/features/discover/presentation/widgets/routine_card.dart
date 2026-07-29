@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/models/discover_models.dart';
 import '../theme/discover_palette.dart';
@@ -25,23 +27,19 @@ class RoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final l10n = AppLocalizations.of(context)!;
-    final style = DiscoverPalette.of(routine.category);
-    final levelColor = DiscoverPalette.levelColor(routine.level);
+    final style = DiscoverPalette.of(context, routine.category);
+    final levelTone = DiscoverPalette.levelTone(context, routine.level);
 
     return SizedBox(
       width: 200,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: surfaces.card,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.06),
-              blurRadius: 14,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          boxShadow: surfaces.cardShadow,
         ),
         child: Material(
           color: Colors.transparent,
@@ -67,15 +65,17 @@ class RoutineCard extends StatelessWidget {
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: levelColor.withValues(alpha: 0.12),
+                          color: levelTone.accent.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           _levelLabel(l10n, routine.level),
                           style: TextStyle(
-                            color: levelColor,
+                            color: levelTone.accent,
                             fontSize: 10.5,
                             fontWeight: FontWeight.w700,
                           ),
@@ -86,10 +86,8 @@ class RoutineCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text(
                     routine.title,
-                    style: const TextStyle(
+                    style: theme.type.cardTitle.copyWith(
                       fontSize: 15.5,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF0F172A),
                       height: 1.2,
                     ),
                     maxLines: 2,
@@ -98,9 +96,8 @@ class RoutineCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     routine.subtitle,
-                    style: const TextStyle(
+                    style: theme.type.body.copyWith(
                       fontSize: 12.5,
-                      color: Color(0xFF64748B),
                       height: 1.3,
                     ),
                     maxLines: 2,
@@ -113,24 +110,25 @@ class RoutineCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         '${routine.durationMin} ${l10n.discoverMinShort}',
-                        style: const TextStyle(
+                        style: theme.type.button.copyWith(
                           fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF475569),
+                          color: surfaces.inkSecondary,
                         ),
                       ),
                       if (routine.exercises > 0) ...[
                         const SizedBox(width: 10),
-                        Icon(Icons.fitness_center_rounded,
-                            size: 14, color: style.accent),
+                        Icon(
+                          Icons.fitness_center_rounded,
+                          size: 14,
+                          color: style.accent,
+                        ),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(
                             l10n.discoverExercises('${routine.exercises}'),
-                            style: const TextStyle(
+                            style: theme.type.button.copyWith(
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF475569),
+                              color: surfaces.inkSecondary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
-import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart' show ServerBand;
+import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart'
+    show ServerBand;
 
 /// Rangos de referencia POR LABORATORIO (GET /api/v1/labs/{code}/ranges): la fuente de
 /// verdad para interpretar exámenes de laboratorio (lípidos, glucosa...) según el lab
@@ -47,7 +48,9 @@ class LabRangesStore {
   /// Trae (una vez) los rangos del laboratorio; best-effort y deduplicado.
   Future<void> ensureLoaded(String labCode) async {
     await _ensureCache();
-    if (labCode.isEmpty || _byLab.containsKey(labCode) || _fetching.contains(labCode)) {
+    if (labCode.isEmpty ||
+        _byLab.containsKey(labCode) ||
+        _fetching.contains(labCode)) {
       return;
     }
     if (ApiConfig.baseUrl.isEmpty) return;
@@ -57,7 +60,9 @@ class LabRangesStore {
       final resp = await client
           .get(Uri.parse('${ApiConfig.baseUrl}/api/v1/labs/$labCode/ranges'))
           .timeout(const Duration(seconds: 8));
-      if (resp.statusCode >= 200 && resp.statusCode < 300 && resp.body.isNotEmpty) {
+      if (resp.statusCode >= 200 &&
+          resp.statusCode < 300 &&
+          resp.body.isNotEmpty) {
         final list = jsonDecode(resp.body) as List<dynamic>;
         _apply(labCode, list);
         await _persist();
@@ -90,13 +95,15 @@ class LabRangesStore {
       if ((map['sex'] as String? ?? 'ANY') != 'ANY') continue;
       final code = map['indicatorCode'] as String?;
       if (code == null) continue;
-      (parsed[code] ??= []).add(ServerBand(
-        bandCode: map['bandCode'] as String,
-        bandLabel: map['bandLabel'] as String? ?? '',
-        minValue: (map['minValue'] as num).toDouble(),
-        maxValue: (map['maxValue'] as num).toDouble(),
-        sortOrder: (map['sortOrder'] as num?)?.toInt() ?? 0,
-      ));
+      (parsed[code] ??= []).add(
+        ServerBand(
+          bandCode: map['bandCode'] as String,
+          bandLabel: map['bandLabel'] as String? ?? '',
+          minValue: (map['minValue'] as num).toDouble(),
+          maxValue: (map['maxValue'] as num).toDouble(),
+          sortOrder: (map['sortOrder'] as num?)?.toInt() ?? 0,
+        ),
+      );
     }
     for (final bands in parsed.values) {
       bands.sort((a, b) => a.minValue.compareTo(b.minValue));

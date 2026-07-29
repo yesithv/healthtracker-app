@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/models/article.dart';
 import '../theme/discover_palette.dart';
@@ -19,7 +21,13 @@ class FeaturedArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final style = DiscoverPalette.of(article.category);
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final style = DiscoverPalette.of(context, article.category);
+    // Todo lo de dentro va sobre el acento sólido de la categoría, así que se
+    // pinta con SU `onAccent` en vez de blanco: si un tema usara un acento
+    // claro para alguna categoría, esto seguiría siendo legible.
+    final on = style.tone.onAccent;
 
     return SizedBox(
       width: 260,
@@ -32,13 +40,12 @@ class FeaturedArticleCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: style.gradient(),
               borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: style.accent.withValues(alpha: 0.30),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                ),
-              ],
+              boxShadow: surfaces.glow(
+                style.accent,
+                alpha: 0.30,
+                blur: 18,
+                offset: const Offset(0, 10),
+              ),
             ),
             child: Stack(
               children: [
@@ -48,7 +55,7 @@ class FeaturedArticleCard extends StatelessWidget {
                   child: Icon(
                     style.icon,
                     size: 130,
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: on.withValues(alpha: 0.15),
                   ),
                 ),
                 Padding(
@@ -58,15 +65,17 @@ class FeaturedArticleCard extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.22),
+                          color: on.withValues(alpha: 0.22),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           l10n.discoverFeatured.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: theme.type.cardTitle.copyWith(
+                            color: on,
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1,
@@ -76,8 +85,8 @@ class FeaturedArticleCard extends StatelessWidget {
                       const SizedBox(height: 44),
                       Text(
                         article.title,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: theme.type.cardTitle.copyWith(
+                          color: on,
                           fontSize: 19,
                           height: 1.2,
                           fontWeight: FontWeight.w800,
@@ -89,7 +98,7 @@ class FeaturedArticleCard extends StatelessWidget {
                       Text(
                         article.subtitle,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: on.withValues(alpha: 0.9),
                           fontSize: 12.5,
                           height: 1.3,
                         ),
@@ -99,13 +108,12 @@ class FeaturedArticleCard extends StatelessWidget {
                       const Spacer(),
                       Row(
                         children: [
-                          const Icon(Icons.schedule_rounded,
-                              size: 14, color: Colors.white),
+                          Icon(Icons.schedule_rounded, size: 14, color: on),
                           const SizedBox(width: 5),
                           Text(
                             '${article.readTime} ${l10n.discoverMinRead}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: theme.type.cardTitle.copyWith(
+                              color: on,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.4,

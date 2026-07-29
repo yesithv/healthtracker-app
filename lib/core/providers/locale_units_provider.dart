@@ -72,7 +72,10 @@ class LocaleUnitsProvider extends ChangeNotifier {
   /// Aplica idioma/unidades por defecto SOLO si el usuario nunca ha elegido
   /// (no pisa una preferencia persistida). Pensado para el login de un paciente
   /// migrado del legacy: español + sistema métrico.
-  Future<void> ensureDefaults({String? languageCode, MeasurementUnit? unit}) async {
+  Future<void> ensureDefaults({
+    String? languageCode,
+    MeasurementUnit? unit,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     var changed = false;
 

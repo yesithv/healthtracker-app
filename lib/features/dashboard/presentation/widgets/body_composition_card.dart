@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import '../../../../core/constants/metric_colors.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
 import '../../../../core/widgets/action_button.dart';
 import '../../../../core/widgets/dashed_border_container.dart';
@@ -22,44 +23,36 @@ class BodyCompositionCard extends StatelessWidget {
     if (!repo.isLoaded) return const SizedBox();
     final list = repo.items;
 
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Identidad de la familia «composición corporal»: índigo en cualquier tema.
+    final family = theme.metrics.tone(MetricFamily.bodyComposition);
+
     if (list.isEmpty) {
       return DashedBorderContainer(
-        color: MetricColors.compositionColor,
-        borderRadius: 20,
+        color: family.accent,
+        borderRadius: surfaces.radiusCard,
         child: Column(
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundColor: MetricColors.compositionBg,
-              child: const Icon(
-                Icons.accessibility_new,
-                color: MetricColors.compositionColor,
-              ),
+              backgroundColor: family.surface,
+              child: Icon(Icons.accessibility_new, color: family.accent),
             ),
             const SizedBox(height: 16),
-            Text(
-              l10n.bodyComposition,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                letterSpacing: 1.0,
-                color: Color(0xFF1E293B),
-              ),
-            ),
+            Text(l10n.bodyComposition, style: theme.type.cardTitle),
             const SizedBox(height: 4),
             Text(
               l10n.compositionSubtitle,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+              style: theme.type.meta,
             ),
             const SizedBox(height: 12),
-            Text(
-              l10n.noDataYet,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
+            Text(l10n.noDataYet, style: theme.type.meta),
             const SizedBox(height: 20),
             ActionButton(
               text: l10n.completeBodyProfile,
-              color: MetricColors.compositionColor,
+              color: family.accent,
               solid: false,
               onPressed: () => context.push('/record-body-composition'),
             ),
@@ -69,112 +62,90 @@ class BodyCompositionCard extends StatelessWidget {
     }
 
     final latest = list.first;
+
+    Widget divider() =>
+        Container(width: 1, height: 40, color: surfaces.divider);
+
+    // Igual que en el panel lipídico: los separadores se intercalan sobre la
+    // lista ya filtrada, para que una tarjeta sin grasa corporal no abra con una
+    // línea vertical suelta.
+    final tiles = <Widget>[
+      if (latest.bodyFatPercent != null)
+        _CompositionTile(
+          label: l10n.dashboardCompositionFat,
+          value: '${latest.bodyFatPercent!.toStringAsFixed(1)}%',
+          color: family.accent,
+          target: goals.targetBodyFat,
+          currentVal: latest.bodyFatPercent,
+          isLowerBetter: true,
+        ),
+      if (latest.muscleMassKg != null)
+        _CompositionTile(
+          label: l10n.dashboardCompositionMuscle,
+          value: '${latest.muscleMassKg!.toStringAsFixed(1)} kg',
+          color: family.accent,
+          target: goals.targetMuscleMass,
+          currentVal: latest.muscleMassKg,
+          isLowerBetter: false,
+        ),
+      if (latest.visceralFatLevel != null)
+        _CompositionTile(
+          label: l10n.dashboardCompositionVisceral,
+          value: l10n.dashboardCompositionLevel(latest.visceralFatLevel!),
+          // La grasa visceral SÍ tiene lectura clínica propia: se pinta con el
+          // estado, no con el color de la familia.
+          color: theme.clinical
+              .tone(VisceralCategory.of(latest.visceralFatLevel!).status)
+              .accent,
+          target: goals.targetVisceralFat?.toDouble(),
+          currentVal: latest.visceralFatLevel!.toDouble(),
+          isLowerBetter: true,
+        ),
+      if (latest.bmrKcal != null)
+        _CompositionTile(
+          label: l10n.dashboardCompositionBmr,
+          value: '${latest.bmrKcal} kcal',
+          color: family.accent,
+        ),
+    ];
+
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundColor: MetricColors.compositionBg,
-                child: const Icon(
+                backgroundColor: family.surface,
+                child: Icon(
                   Icons.accessibility_new,
-                  color: MetricColors.compositionColor,
+                  color: family.accent,
                   size: 18,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  l10n.bodyComposition,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    letterSpacing: 1.0,
-                    color: Color(0xFF1E293B),
-                  ),
-                ),
+                child: Text(l10n.bodyComposition, style: theme.type.cardTitle),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          // Values row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (latest.bodyFatPercent != null)
-                _CompositionTile(
-                  label: l10n.dashboardCompositionFat,
-                  value: '${latest.bodyFatPercent!.toStringAsFixed(1)}%',
-                  color: MetricColors.compositionColor,
-                  target: goals.targetBodyFat,
-                  currentVal: latest.bodyFatPercent,
-                  isLowerBetter: true,
-                ),
-              if (latest.muscleMassKg != null) ...[
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-                _CompositionTile(
-                  label: l10n.dashboardCompositionMuscle,
-                  value: '${latest.muscleMassKg!.toStringAsFixed(1)} kg',
-                  color: MetricColors.compositionColor,
-                  target: goals.targetMuscleMass,
-                  currentVal: latest.muscleMassKg,
-                  isLowerBetter: false,
-                ),
-              ],
-              if (latest.visceralFatLevel != null) ...[
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-                _CompositionTile(
-                  label: l10n.dashboardCompositionVisceral,
-                  value: l10n.dashboardCompositionLevel(
-                    latest.visceralFatLevel!,
-                  ),
-                  color: VisceralCategory.of(latest.visceralFatLevel!).color,
-                  target: goals.targetVisceralFat?.toDouble(),
-                  currentVal: latest.visceralFatLevel!.toDouble(),
-                  isLowerBetter: true,
-                ),
-              ],
-              if (latest.bmrKcal != null) ...[
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: const Color(0xFFE2E8F0),
-                ),
-                _CompositionTile(
-                  label: l10n.dashboardCompositionBmr,
-                  value: '${latest.bmrKcal} kcal',
-                  color: MetricColors.compositionColor,
-                ),
+              for (var i = 0; i < tiles.length; i++) ...[
+                if (i > 0) divider(),
+                tiles[i],
               ],
             ],
           ),
           const SizedBox(height: 16),
           ActionButton(
             text: l10n.completeBodyProfile,
-            color: MetricColors.compositionColor,
+            color: family.accent,
             solid: false,
             onPressed: () => context.push('/record-body-composition'),
           ),
@@ -203,13 +174,11 @@ class _CompositionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     Widget titleWidget = Text(
       value,
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        color: color,
-      ),
+      style: theme.type.numeralSmall.copyWith(fontSize: 15, color: color),
     );
 
     if (target != null && currentVal != null) {
@@ -227,9 +196,14 @@ class _CompositionTile extends StatelessWidget {
                 ? Icons.check_circle
                 : (isLowerBetter ? Icons.arrow_downward : Icons.arrow_upward),
             size: 12,
+            // Objetivo cumplido → verde «óptimo». Objetivo aún lejos → tinta
+            // apagada, NO el rojo de alerta que había antes: no haber llegado a
+            // una meta personal no es un hallazgo clínico, y gastar el rojo aquí
+            // le quitaba fuerza allí donde sí significa algo. La flecha ya dice
+            // en qué dirección hay que moverse.
             color: isAchieved
-                ? const Color(0xFF10B981)
-                : const Color(0xFFEF4444),
+                ? theme.clinical.optimal.accent
+                : theme.surfaces.inkMuted,
           ),
         ],
       );
@@ -239,15 +213,7 @@ class _CompositionTile extends StatelessWidget {
       children: [
         titleWidget,
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-            letterSpacing: 0.5,
-          ),
-        ),
+        Text(label, style: theme.type.meta.copyWith(fontSize: 9)),
       ],
     );
   }

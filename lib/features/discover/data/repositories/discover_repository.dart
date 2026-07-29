@@ -82,9 +82,13 @@ class DiscoverRepository {
   Future<String?> _fetchFromApi(String lang) async {
     if (ApiConfig.baseUrl.isEmpty) return null;
     try {
-      final uri = Uri.parse('${ApiConfig.baseUrl}/api/v1/discover/feed?lang=$lang');
+      final uri = Uri.parse(
+        '${ApiConfig.baseUrl}/api/v1/discover/feed?lang=$lang',
+      );
       final resp = await http.get(uri).timeout(const Duration(seconds: 4));
-      if (resp.statusCode < 200 || resp.statusCode >= 300 || resp.body.isEmpty) {
+      if (resp.statusCode < 200 ||
+          resp.statusCode >= 300 ||
+          resp.body.isEmpty) {
         return null;
       }
       // Only trust a payload that parses and actually has content.

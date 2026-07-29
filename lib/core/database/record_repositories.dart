@@ -89,7 +89,12 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   /// The single record matching [id], or null if none.
   Future<T?> getById(String id) async {
     final db = await _db;
-    final maps = await db.query(table, where: 'id = ?', whereArgs: [id], limit: 1);
+    final maps = await db.query(
+      table,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
     if (maps.isEmpty) return null;
     return fromMap(maps.first);
   }
@@ -185,7 +190,8 @@ class LipidRepository extends RecordRepository<LipidRecord> {
   String idOf(LipidRecord record) => record.id;
 }
 
-class BodyCompositionRepository extends RecordRepository<BodyCompositionRecord> {
+class BodyCompositionRepository
+    extends RecordRepository<BodyCompositionRecord> {
   BodyCompositionRepository._();
   static final BodyCompositionRepository instance =
       BodyCompositionRepository._();

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
@@ -6,6 +8,7 @@ import 'package:myvitals_healthtracker_app/core/services/backup_service.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class DataBackupScreen extends StatefulWidget {
   const DataBackupScreen({super.key});
@@ -18,20 +21,21 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
   bool _isLoading = false;
 
   Future<void> _exportBackup() async {
+    final clinical = Theme.of(context).clinical;
     setState(() => _isLoading = true);
-    
+
     final prefs = Provider.of<UserProfileProvider>(context, listen: false);
     final backupService = BackupService();
-    
+
     final success = await backupService.exportBackup(prefs.userName);
-    
+
     if (mounted) {
       setState(() => _isLoading = false);
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.backupSuccess),
-            backgroundColor: const Color(0xFF10B981),
+            backgroundColor: clinical.optimal.accent,
           ),
         );
       }
@@ -39,9 +43,17 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
   }
 
   Future<void> _importBackup() async {
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
     final l10n = AppLocalizations.of(context)!;
-    final prefsProvider = Provider.of<UserProfileProvider>(context, listen: false);
-    final goalsProvider = Provider.of<HealthGoalsProvider>(context, listen: false);
+    final prefsProvider = Provider.of<UserProfileProvider>(
+      context,
+      listen: false,
+    );
+    final goalsProvider = Provider.of<HealthGoalsProvider>(
+      context,
+      listen: false,
+    );
     final localeUnitsProvider = Provider.of<LocaleUnitsProvider>(
       context,
       listen: false,
@@ -56,15 +68,23 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel, style: const TextStyle(color: Color(0xFF64748B))),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: surfaces.inkSecondary),
+            ),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0D48A0),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              backgroundColor: surfaces.brand,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-            child: Text(l10n.backupImportButton, style: const TextStyle(color: Colors.white)),
+            child: Text(
+              l10n.backupImportButton,
+              style: TextStyle(color: surfaces.onBrand),
+            ),
           ),
         ],
       ),
@@ -95,8 +115,8 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
             success ? l10n.backupImportSuccess : l10n.backupImportError,
           ),
           backgroundColor: success
-              ? const Color(0xFF10B981)
-              : const Color(0xFFEF4444),
+              ? clinical.optimal.accent
+              : clinical.alert.accent,
         ),
       );
     }
@@ -104,10 +124,13 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
+    final content = Theme.of(context).content;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: Stack(
         children: [
@@ -115,16 +138,19 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
             children: [
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
                   children: [
                     // PRIVACY INFO BOX
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0FDF4),
+                        color: clinical.optimal.surface,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: const Color(0xFFBBF7D0),
+                          color: clinical.optimal.surface,
                           width: 1.5,
                         ),
                       ),
@@ -133,26 +159,23 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                         children: [
                           Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                                  shape: BoxShape.circle,
+                              IconBadge(
+                                Icons.shield_outlined,
+                                color: clinical.optimal.accent,
+                                background: clinical.optimal.accent.withValues(
+                                  alpha: 0.15,
                                 ),
-                                child: const Icon(
-                                  Icons.shield_outlined,
-                                  color: Color(0xFF10B981),
-                                  size: 22,
-                                ),
+                                padding: 10,
+                                iconSize: 22,
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   l10n.backupPrivacyTitle,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF166534),
+                                    color: clinical.optimal.accent,
                                   ),
                                 ),
                               ),
@@ -161,9 +184,9 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                           const SizedBox(height: 16),
                           Text(
                             l10n.backupPrivacyBody,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF334155),
+                              color: surfaces.ink,
                               height: 1.6,
                             ),
                           ),
@@ -171,28 +194,28 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.7),
+                              color: surfaces.onBrand.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: const Color(0xFFD1FAE5),
+                                color: clinical.optimal.surface,
                                 width: 1,
                               ),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.fingerprint,
-                                  color: Color(0xFF10B981),
+                                  color: clinical.optimal.accent,
                                   size: 20,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     l10n.backupPrivacyHighlight,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
-                                      color: Color(0xFF166534),
+                                      color: clinical.optimal.accent,
                                       fontWeight: FontWeight.w500,
                                       height: 1.5,
                                     ),
@@ -205,24 +228,24 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // EXPORT CARD
                     _buildActionCard(
                       icon: Icons.cloud_download_outlined,
-                      iconColor: const Color(0xFF0891B2),
+                      iconColor: content.tone(ContentCategory.sleep).accent,
                       title: l10n.backupExportTitle,
                       subtitle: l10n.backupExportSubtitle,
                       buttonText: l10n.backupExportButton,
                       buttonIcon: Icons.save_alt,
                       onTap: _exportBackup,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // IMPORT CARD
                     _buildActionCard(
                       icon: Icons.cloud_upload_outlined,
-                      iconColor: const Color(0xFFF59E0B),
+                      iconColor: clinical.caution.accent,
                       title: l10n.backupImportTitle,
                       subtitle: l10n.backupImportSubtitle,
                       buttonText: l10n.backupImportButton,
@@ -231,16 +254,16 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                     ),
 
                     const SizedBox(height: 32),
-                    
+
                     // WHAT'S INCLUDED
-                    const Divider(color: Color(0xFFE2E8F0)),
+                    Divider(color: surfaces.divider),
                     const SizedBox(height: 24),
                     Text(
                       l10n.backupWhatIncluded,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E293B),
+                        color: surfaces.ink,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -258,13 +281,11 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
               ),
             ],
           ),
-          
+
           if (_isLoading)
             Container(
-              color: Colors.black.withValues(alpha: 0.3),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              color: surfaces.ink.withValues(alpha: 0.3),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
@@ -280,67 +301,58 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
     required IconData buttonIcon,
     required VoidCallback onTap,
   }) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFF1F5F9),
-          width: 1.5,
-        ),
+        boxShadow: surfaces.cardShadow,
+        border: Border.all(color: surfaces.inset, width: 1.5),
       ),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 32),
+          IconBadge(
+            icon,
+            color: iconColor,
+            background: iconColor.withValues(alpha: 0.1),
+            padding: 16,
+            iconSize: 32,
           ),
           const SizedBox(height: 16),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
+              color: surfaces.ink,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Color(0xFF64748B),
+              color: surfaces.inkSecondary,
               height: 1.4,
             ),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: onTap,
-            icon: Icon(buttonIcon, size: 18, color: Colors.white,),
+            icon: Icon(buttonIcon, size: 18, color: surfaces.card),
             label: Text(
               buttonText,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: surfaces.card,
               ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: iconColor,
-              foregroundColor: Colors.white,
+              foregroundColor: surfaces.onBrand,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -354,30 +366,24 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
   }
 
   Widget _buildIncludedItem(String text) {
+    final clinical = Theme.of(context).clinical;
+    final surfaces = Theme.of(context).surfaces;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: const BoxDecoration(
-              color: Color(0xFFD1FAE5),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.check,
-              color: Color(0xFF10B981),
-              size: 14,
-            ),
+          IconBadge(
+            Icons.check,
+            color: clinical.optimal.accent,
+            background: clinical.optimal.surface,
+            padding: 4,
+            iconSize: 14,
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Color(0xFF334155),
-              ),
+              style: TextStyle(fontSize: 15, color: surfaces.ink),
             ),
           ),
         ],

@@ -100,13 +100,15 @@
   "bmiObesity": "OBESIDADE",
   "commentOptional": "COMENTÁRIO (OPCIONAL)",
   "commentHint": "Alguma observação sobre esta medição?",
-  "saveAndEarnXp": "Salvar e ganhar +10 XP ✦",
+  "saveAndEarnXp": "Salvar e ganhar +10 XP",
   "historyGoodJob": "Bom trabalho!",
   "historyGoalProgress": "Você registrou uma nova medição este mês, mantendo-se no caminho do bem-estar.",
   "historyWeightLoss": "Você perdeu {weight}kg este mês, aproximando-se da sua meta de bem-estar.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "TENDÊNCIA DE IMC",
@@ -204,7 +206,9 @@
   "discoverGreeting": "Bom dia, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Procurar dicas...",
@@ -251,7 +255,6 @@
   "targetMuscleMass": "Massa Muscular Alvo",
   "targetVisceralFat": "Gordura Visceral Alvo",
   "goalsSavedSuccess": "Metas salvas com sucesso.",
-
   "helpSupportPageTitle": "Ajuda e Suporte",
   "helpSupportPageDescription": "Tudo o que você precisa saber sobre o My Vitals.",
   "helpFaqTitle": "Perguntas Frequentes",
@@ -262,15 +265,12 @@
   "helpLegalDescription": "Termos de uso e privacidade de dados.",
   "helpContactTitle": "Contato e Feedback",
   "helpContactDescription": "Escreva para nós, melhoramos juntos.",
-
   "helpSearchHint": "Pesquisar...",
   "helpNoResults": "Sem resultados para sua pesquisa.",
-
   "helpFaqCatGeneral": "Geral",
   "helpFaqCatData": "Meus Dados",
   "helpFaqCatBiometrics": "Biometria",
   "helpFaqCatExport": "Exportar",
-
   "helpFaqQ1": "O que é o My Vitals?",
   "helpFaqA1": "My Vitals é um aplicativo de acompanhamento pessoal de saúde que permite registrar e monitorar seus indicadores de bem-estar: medidas antropométricas, sinais vitais, perfil lipídico e composição corporal.",
   "helpFaqQ2": "Meus dados são salvos na nuvem?",
@@ -278,23 +278,21 @@
   "helpFaqQ3": "Posso usar o aplicativo sem internet?",
   "helpFaqA3": "Sim. O My Vitals funciona completamente offline. Você só precisa de conectividade para atualizações do aplicativo.",
   "helpFaqQ4": "Como ativo o bloqueio biométrico?",
-  "helpFaqA4": "Vá para Perfil → Privacidade e Segurança e ative o interruptor de Bloqueio Biométrico. Seu dispositivo deve ter impressão digital ou FaceID configurado.",
+  "helpFaqA4": "Vá para Perfil › Privacidade e Segurança e ative o interruptor de Bloqueio Biométrico. Seu dispositivo deve ter impressão digital ou FaceID configurado.",
   "helpFaqQ5": "Como exporto meu histórico?",
   "helpFaqA5": "Em cada tela de histórico (Antropométrico, Sinais Vitais, etc.) você encontrará os botões 'Exportar PDF' e 'Excel (CSV)' na parte superior.",
   "helpFaqQ6": "Posso alterar as unidades de medida?",
-  "helpFaqA6": "Sim. Vá para Perfil → Unidades de Medida e escolha entre o sistema Métrico (kg, cm) ou Imperial (lb, ft/in).",
+  "helpFaqA6": "Sim. Vá para Perfil › Unidades de Medida e escolha entre o sistema Métrico (kg, cm) ou Imperial (lb, ft/in).",
   "helpFaqQ7": "O que acontece se eu excluir o aplicativo?",
   "helpFaqA7": "Ao desinstalar o aplicativo, todos os dados armazenados localmente serão excluídos permanentemente. Recomendamos exportar seu histórico em PDF ou CSV antes de desinstalar.",
   "helpFaqQ8": "Este aplicativo substitui meu médico?",
   "helpFaqA8": "Não. O My Vitals é uma ferramenta de acompanhamento pessoal para ajudá-lo a manter um registro organizado. Sempre consulte um profissional de saúde para interpretação e diagnóstico médico.",
-
   "helpGlossarySearchHint": "Buscar termo...",
   "helpGlossaryGroupAnthropo": "Medidas Antropométricas",
   "helpGlossaryGroupVitals": "Sinais Vitais",
   "helpGlossaryGroupLipid": "Perfil Lipídico",
   "helpGlossaryGroupBody": "Composição Corporal",
   "helpGlossaryNormalRange": "Intervalo normal",
-
   "helpLegalPurposeTitle": "Propósito do aplicativo",
   "helpLegalPurposeBody": "My Vitals é um aplicativo de acompanhamento pessoal de saúde projetado para ajudar os usuários a registrar e visualizar seus indicadores de bem-estar. Não é um dispositivo médico certificado.",
   "helpLegalNotMedicalTitle": "Não é um dispositivo médico",
@@ -305,7 +303,6 @@
   "helpLegalPrivacyBody": "Todos os dados são armazenados localmente no dispositivo do usuário. O My Vitals não coleta, transmite ou compartilha informações pessoais com terceiros. Não existem contas de usuário ou servidores de dados.",
   "helpLegalContactTitle": "Contato do desenvolvedor",
   "helpLegalContactBody": "Para consultas legais ou de privacidade, você pode contatar o desenvolvedor em: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Relatar um erro",
   "helpContactReportBugDesc": "Encontrou algo que não está funcionando bem? Conte para nós.",
   "helpContactSuggest": "Enviar sugestão",
@@ -344,7 +341,6 @@
   "backupIncludesPhoto": "Foto de Perfil",
   "backupIncludesPreferences": "Preferências (idioma, unidades)",
   "backupCancel": "Cancelar",
-
   "onboardingWelcomeTitle": "Bem-vindo ao My Vitals",
   "onboardingWelcomeSubtitle": "Seu companheiro de saúde pessoal",
   "onboardingWelcomeFeature1": "Registre seus sinais vitais e medidas corporais",
@@ -352,12 +348,15 @@
   "onboardingWelcomeFeature3": "100% privado, tudo fica no seu dispositivo",
   "onboardingNext": "Próximo",
   "onboardingFinish": "Começar!",
-  "onboardingSkip": "Pular",
   "onboardingStep": "Passo {current} de {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Sua foto de perfil",
@@ -377,12 +376,13 @@
   "goalRemainingWeight": "Faltam {weight}kg para a meta",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Meta alcançada!",
   "noGoalDefined": "Meta não definida",
-
   "validationRequiredFields": "Campos obrigatórios",
   "validationCompleteBeforeContinue": "Por favor preencha estes campos antes de continuar:",
   "validationSelectLanguage": "Selecione um idioma",
@@ -478,6 +478,119 @@
   "deleteRecordConfirm": "Excluir",
   "recordDeleted": "Registro excluído",
   "anthropoSavedSuccess": "Medida salva com sucesso.",
-  "historyShowMore": "Ver mais {count}"
+  "historyShowMore": "Ver mais {count}",
+  "introSignIn": "Iniciar sessão",
+  "introRegister": "Criar conta",
+  "emailLabel": "Email",
+  "validationEnterEmail": "Introduza o seu email",
+  "validationEmailFormat": "Verifique o email: falta a arroba ou o domínio",
+  "validationOutOfRange": "Introduza um valor entre {min} e {max}",
+  "commonRegisterFailed": "Não foi possível criar a sua conta. Verifique a ligação e tente novamente.",
+  "logOutConfirm": "Terminar sessão neste dispositivo? Os seus registos ficam no dispositivo e voltarão a sincronizar quando iniciar sessão de novo.",
+  "pendingAccountTitle": "Conta pendente",
+  "pendingAccountBody": "Os seus dados estão guardados neste dispositivo. Criaremos a sua conta assim que houver ligação.",
+  "pendingAccountCreateNow": "Criar a minha conta agora",
+  "pendingAccountCreating": "A criar a sua conta…",
+  "pendingAccountCreated": "Conta criada. A enviar os seus registos.",
+  "pendingAccountStillOffline": "Ainda sem ligação. Os seus dados continuam seguros neste dispositivo.",
+  "identifyTitle": "Vamos buscar o seu histórico",
+  "identifyBody": "Introduza o seu documento (ou email). Se já é paciente carregamos os seus dados; caso contrário, criamos a sua conta.",
+  "identifyFieldLabel": "Documento ou email",
+  "identifyFieldHint": "Ex.: 1032456789",
+  "identifyFoundTitle": "Encontrámos um histórico clínico associado a este documento.",
+  "identifyFoundBody": "Podemos trazê-lo e ativar a sua conta para ver os seus dados desde o primeiro dia.",
+  "identifyBringHistory": "Trazer o meu histórico e continuar",
+  "identifyBringingHistory": "A trazer o seu histórico…",
+  "identifyNotMe": "Não sou eu — registar-me como novo",
+  "verifyAppBarTitle": "Verificação",
+  "verifyTitle": "Encontrámos a sua conta",
+  "verifyBody": "Verifique a sua identidade para continuar com\n{identifier}.",
+  "@verifyBody": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Palavra-passe",
+  "verifyTestNotice": "Fase de testes: a palavra-passe é 1234. (Em produção ficará aqui o código OTP.)",
+  "verifySubmit": "Entrar",
+  "unexpectedError": "Erro inesperado: {details}",
+  "@unexpectedError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Conta e sincronização",
+  "accountYourAccount": "A sua conta",
+  "accountPendingBody": "Os seus dados estão neste dispositivo. Falta criar a conta no servidor.",
+  "accountLoggedOutBody": "Inicie sessão se já é paciente, ou registe-se para começar.",
+  "accountFallbackName": "Paciente",
+  "accountFromLegacy": "Conta migrada do sistema anterior",
+  "accountCreatedInApp": "Conta criada na app",
+  "accountSignOut": "Sair",
+  "accountSyncSection": "Sincronização",
+  "accountSyncBody": "Envie os seus registos locais para o servidor.",
+  "accountSyncing": "A sincronizar…",
+  "accountSyncNow": "Sincronizar agora",
+  "accountHaveAccount": "Já tenho conta (paciente migrado)",
+  "accountImNew": "Sou novo (registar-me)",
+  "accountCreateAccount": "Criar conta",
+  "accountNewHere": "Sou novo (registar-me)",
+  "accountDocumentOptional": "Documento (opcional)",
+  "accountNameLabel": "Nome",
+  "accountEmailLabel": "Email",
+  "deviceScreenTitle": "O meu dispositivo de medição",
+  "deviceNoneTitle": "Não uso nenhuma",
+  "deviceNoneSubtitle": "Vou registar apenas medidas manuais (peso, cintura, altura).",
+  "deviceNoneSaved": "Guardado: não usa bioimpedância.",
+  "deviceCatalogError": "Não foi possível atualizar o catálogo. A mostrar as opções guardadas.",
+  "deviceAvailableScales": "BALANÇAS DISPONÍVEIS",
+  "deviceWhyItMatters": "Cada balança de bioimpedância interpreta a gordura, o músculo e a gordura visceral com intervalos próprios. Diga-nos qual usa para lhe mostrarmos se os seus valores estão baixos, normais ou altos. Pode mudar quando quiser.",
+  "circumferencesSection": "PERÍMETROS CORPORAIS (OPCIONAL)",
+  "circWaist": "Cintura",
+  "circHip": "Anca",
+  "circLowerAbdomen": "Abdómen inferior",
+  "circArm": "Braço",
+  "circLeg": "Perna",
+  "circChestBust": "Peito/Busto",
+  "circAbdomenShort": "Abd.",
+  "lipidLabQuestion": "Em que laboratório fez o exame?",
+  "lipidLabLoading": "A carregar laboratórios…",
+  "lipidLabNotSpecified": "Não indicado / não sei",
+  "lipidLabOther": "Outro (especificar)",
+  "compositionSkeletalMuscle": "Músculo esquelético",
+  "compositionSkeletalMuscleRef": "Como reportado pela sua balança (%)",
+  "profileAppTheme": "Tema da app",
+  "profileRankObserver": "Observador Vital",
+  "themeBankLabel": "BIBLIOTECA DE TEMAS",
+  "themePickTitle": "Escolha o aspeto",
+  "themePickBody": "Muda cores e tipografia. A navegação, os ícones e o significado de cada cor mantêm-se intactos.",
+  "themeSettingsBody": "A alteração aplica-se de imediato e fica guardada. A navegação, os ícones e o significado de cada cor mantêm-se intactos.",
+  "themeContinueWith": "Continuar com {theme}",
+  "@themeContinueWith": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} selecionada.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWillSyncLater": "{message} Será sincronizado quando houver ligação.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  }
 }
-

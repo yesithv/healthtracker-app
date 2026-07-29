@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart'
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 
 /// Verificación de identidad para una cuenta EXISTENTE (el lookup ya confirmó que el
 /// identificador existe). Solo aquí se personaliza: antes de verificar no se muestra ni el
@@ -30,8 +32,6 @@ class VerifyScreen extends StatefulWidget {
 }
 
 class _VerifyScreenState extends State<VerifyScreen> {
-  static const _blue = Color(0xFF0D48A0);
-
   final _auth = AuthApiClient();
   final _passController = TextEditingController(text: '1234');
 
@@ -72,12 +72,14 @@ class _VerifyScreenState extends State<VerifyScreen> {
       );
 
       // Hidrata el perfil local con lo que el servidor ya sabe (solo campos vacíos).
-      final fullName = [account.firstName, account.lastName]
-          .where((s) => s != null && s.trim().isNotEmpty)
-          .join(' ');
+      final fullName = [
+        account.firstName,
+        account.lastName,
+      ].where((s) => s != null && s.trim().isNotEmpty).join(' ');
       await profile.hydrateIdentity(
         name: fullName,
-        email: account.email ??
+        email:
+            account.email ??
             (widget.identifier.contains('@') ? widget.identifier : null),
         birthDate: account.birthDate,
         gender: account.genderForApp,
@@ -87,7 +89,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
       // báscula Omron (la de la consulta). Solo si el usuario no eligió antes.
       if (account.migrated) {
         await localeUnits.ensureDefaults(
-            languageCode: 'es', unit: MeasurementUnit.metric);
+          languageCode: 'es',
+          unit: MeasurementUnit.metric,
+        );
         await profile.setDefaultDeviceIfUnset('Omron');
       }
 
@@ -98,7 +102,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(() => _error = 'Error inesperado: $e');
+      setState(
+        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -106,17 +112,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: _blue,
+        foregroundColor: surfaces.brand,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.go('/identify'),
         ),
-        title: const Text('Verificación'),
+        title: Text(l10n.verifyAppBarTitle, style: theme.type.cardTitle),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -125,21 +135,25 @@ class _VerifyScreenState extends State<VerifyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              const Icon(Icons.verified_user_outlined, size: 56, color: _blue),
+              Icon(
+                Icons.verified_user_outlined,
+                size: 56,
+                color: surfaces.brand,
+              ),
               const SizedBox(height: 16),
-              const Text(
-                'Encontramos tu cuenta',
+              Text(
+                l10n.verifyTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: theme.type.screenTitle.copyWith(fontSize: 22),
               ),
               const SizedBox(height: 6),
               Text(
-                'Verifica tu identidad para continuar con\n${widget.identifier}.',
+                l10n.verifyBody(widget.identifier),
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Color(0xFF64748B)),
+                style: theme.type.body,
               ),
               const SizedBox(height: 28),
-              _label('Contraseña'),
+              _label(l10n.verifyPasswordLabel),
               TextField(
                 controller: _passController,
                 autofocus: true,
@@ -148,23 +162,31 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 onSubmitted: (_) => _verify(),
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Fase de pruebas: la contraseña es 1234. (Aquí irá el código OTP en producción.)',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-              ),
+              Text(l10n.verifyTestNotice, style: theme.type.meta),
               if (_error != null) ...[
                 const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF1F2),
+                    color: theme.clinical.alert.surface,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                      Icon(
+                        Icons.error_outline,
+                        color: theme.clinical.alert.accent,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C)))),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: theme.type.body.copyWith(
+                            color: theme.clinical.alert.accent,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -172,15 +194,30 @@ class _VerifyScreenState extends State<VerifyScreen> {
               const SizedBox(height: 24),
               FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: _blue,
+                  backgroundColor: surfaces.brand,
+                  foregroundColor: surfaces.onBrand,
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(surfaces.radiusControl),
+                  ),
                 ),
                 onPressed: _busy ? null : _verify,
                 child: _busy
-                    ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Ingresar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: surfaces.onBrand,
+                        ),
+                      )
+                    : Text(
+                        l10n.verifySubmit,
+                        style: theme.type.button.copyWith(
+                          fontSize: 16,
+                          color: surfaces.onBrand,
+                        ),
+                      ),
               ),
             ],
           ),
@@ -190,19 +227,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 8),
-        child: Text(text,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
-      );
+    padding: const EdgeInsets.only(left: 4, bottom: 8),
+    child: Text(text, style: Theme.of(context).type.fieldLabel),
+  );
 
-  InputDecoration _decoration(String hint, IconData icon) => InputDecoration(
-        hintText: hint,
-        prefixIcon: Icon(icon, color: _blue, size: 20),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-      );
+  InputDecoration _decoration(String hint, IconData icon) {
+    final surfaces = Theme.of(context).surfaces;
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon, color: surfaces.brand, size: 20),
+      filled: true,
+      fillColor: surfaces.card,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(surfaces.radiusControl),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
 }

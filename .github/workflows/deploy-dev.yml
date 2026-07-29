@@ -1,0 +1,102 @@
+name: Deploy dev
+
+# Despliega la rama `dev` a GitHub Pages en cada empujón, para poder ver la
+# prueba de concepto de temas en un móvil real sin compilar nada en local.
+#
+# En pull request se ejecutan verificación y build pero NO se publica: así una
+# propuesta se valida sin pisar lo que hay desplegado.
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+  workflow_dispatch:
+
+# Permisos mínimos para publicar en Pages con OIDC.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un despliegue a la vez. `cancel-in-progress: false` porque cancelar a mitad de
+# una publicación puede dejar el sitio en un estado incompleto.
+concurrency:
+  group: pages-dev
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: 3.44.8
+
+jobs:
+  verify:
+    name: Verificación
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Dependencias
+        run: flutter pub get
+
+      - name: Formato
+        # Sólo avisa: el formato no debe bloquear un despliegue de pruebas.
+        run: dart format --output=none --set-exit-if-changed lib test || true
+
+      - name: Análisis estático
+        run: flutter analyze
+
+      - name: Tests
+        # Incluye el contrato semántico de los temas: si un tema rompe la
+        # familia de matiz de un estado clínico o baja del contraste AA, el
+        # despliegue se detiene aquí.
+        run: flutter test
+
+  build:
+    name: Build web
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Compilar
+        # `--base-href` con el nombre del repo: en Pages el sitio se sirve bajo
+        # /<repo>/ y sin esto los assets se buscarían en la raíz y no cargarían.
+        # `--no-web-resources-cdn` empaqueta CanvasKit en el propio sitio, así el
+        # arranque no depende de un CDN externo.
+        run: |
+          flutter build web --release \
+            --base-href "/${GITHUB_REPOSITORY#*/}/" \
+            --no-web-resources-cdn
+
+      - name: Evitar que Pages procese el build con Jekyll
+        run: touch build/web/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Publicar
+    needs: build
+    # Sólo publica desde la propia rama `dev`, nunca desde un pull request.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -320,7 +320,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commentHint => 'Irgendwelche Beobachtungen zu dieser Messung?';
 
   @override
-  String get saveAndEarnXp => 'Speichern und +10 XP verdienen ✦';
+  String get saveAndEarnXp => 'Speichern und +10 XP verdienen';
 
   @override
   String get historyGoodJob => 'Gute Arbeit!';
@@ -845,7 +845,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpFaqA4 =>
-      'Gehe zu Profil → Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.';
+      'Gehe zu Profil › Datenschutz & Sicherheit und aktiviere den Biometrische Sperre-Schalter. Dein Gerät muss Fingerabdruck oder FaceID konfiguriert haben.';
 
   @override
   String get helpFaqQ5 => 'Wie exportiere ich meinen Verlauf?';
@@ -859,7 +859,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpFaqA6 =>
-      'Ja. Gehe zu Profil → Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.';
+      'Ja. Gehe zu Profil › Maßeinheiten und wähle zwischen dem metrischen (kg, cm) oder imperialen (lb, ft/in) System.';
 
   @override
   String get helpFaqQ7 => 'Was passiert, wenn ich die App lösche?';
@@ -1077,9 +1077,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingFinish => 'Loslegen!';
-
-  @override
-  String get onboardingSkip => 'Überspringen';
 
   @override
   String onboardingStep(int current, int total) {
@@ -1452,5 +1449,273 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String historyShowMore(int count) {
     return '$count weitere anzeigen';
+  }
+
+  @override
+  String get introSignIn => 'Anmelden';
+
+  @override
+  String get introRegister => 'Konto erstellen';
+
+  @override
+  String get emailLabel => 'E-Mail';
+
+  @override
+  String get validationEnterEmail => 'Gib deine E-Mail-Adresse ein';
+
+  @override
+  String get validationEmailFormat =>
+      'Prüfe die E-Mail-Adresse: @ oder Domain fehlt';
+
+  @override
+  String validationOutOfRange(Object max, Object min) {
+    return 'Gib einen Wert zwischen $min und $max ein';
+  }
+
+  @override
+  String get commonRegisterFailed =>
+      'Wir konnten dein Konto nicht erstellen. Prüfe die Verbindung und versuche es erneut.';
+
+  @override
+  String get logOutConfirm =>
+      'Auf diesem Gerät abmelden? Deine Einträge bleiben auf dem Gerät und werden bei der nächsten Anmeldung wieder synchronisiert.';
+
+  @override
+  String get pendingAccountTitle => 'Konto ausstehend';
+
+  @override
+  String get pendingAccountBody =>
+      'Deine Daten sind auf diesem Gerät gespeichert. Wir erstellen dein Konto, sobald eine Verbindung besteht.';
+
+  @override
+  String get pendingAccountCreateNow => 'Mein Konto jetzt erstellen';
+
+  @override
+  String get pendingAccountCreating => 'Dein Konto wird erstellt…';
+
+  @override
+  String get pendingAccountCreated =>
+      'Konto erstellt. Deine Einträge werden hochgeladen.';
+
+  @override
+  String get pendingAccountStillOffline =>
+      'Noch keine Verbindung. Deine Daten bleiben sicher auf diesem Gerät.';
+
+  @override
+  String get identifyTitle => 'Holen wir deine Historie';
+
+  @override
+  String get identifyBody =>
+      'Gib deine Ausweisnummer (oder E-Mail) ein. Wenn du bereits Patient bist, laden wir deine Daten; sonst legen wir dein Konto an.';
+
+  @override
+  String get identifyFieldLabel => 'Ausweisnummer oder E-Mail';
+
+  @override
+  String get identifyFieldHint => 'z. B. 1032456789';
+
+  @override
+  String get identifyFoundTitle =>
+      'Wir haben eine Krankengeschichte zu dieser Ausweisnummer gefunden.';
+
+  @override
+  String get identifyFoundBody =>
+      'Wir können sie übernehmen und dein Konto aktivieren, damit du deine Daten vom ersten Tag an siehst.';
+
+  @override
+  String get identifyBringHistory => 'Historie übernehmen und fortfahren';
+
+  @override
+  String get identifyBringingHistory => 'Historie wird übernommen …';
+
+  @override
+  String get identifyNotMe => 'Das bin nicht ich – neu registrieren';
+
+  @override
+  String get verifyAppBarTitle => 'Verifizierung';
+
+  @override
+  String get verifyTitle => 'Wir haben dein Konto gefunden';
+
+  @override
+  String verifyBody(String identifier) {
+    return 'Bestätige deine Identität, um mit\n$identifier fortzufahren.';
+  }
+
+  @override
+  String get verifyPasswordLabel => 'Passwort';
+
+  @override
+  String get verifyTestNotice =>
+      'Testphase: Das Passwort lautet 1234. (In der Produktion steht hier der OTP-Code.)';
+
+  @override
+  String get verifySubmit => 'Anmelden';
+
+  @override
+  String unexpectedError(String details) {
+    return 'Unerwarteter Fehler: $details';
+  }
+
+  @override
+  String get accountSyncTitle => 'Konto und Synchronisierung';
+
+  @override
+  String get accountYourAccount => 'Dein Konto';
+
+  @override
+  String get accountPendingBody =>
+      'Deine Daten liegen auf diesem Gerät. Das Konto muss noch auf dem Server angelegt werden.';
+
+  @override
+  String get accountLoggedOutBody =>
+      'Melde dich an, wenn du bereits Patient bist, oder registriere dich.';
+
+  @override
+  String get accountFallbackName => 'Patient';
+
+  @override
+  String get accountFromLegacy => 'Aus dem Altsystem übernommenes Konto';
+
+  @override
+  String get accountCreatedInApp => 'In der App erstelltes Konto';
+
+  @override
+  String get accountSignOut => 'Abmelden';
+
+  @override
+  String get accountSyncSection => 'Synchronisierung';
+
+  @override
+  String get accountSyncBody => 'Lade deine lokalen Einträge auf den Server.';
+
+  @override
+  String get accountSyncing => 'Wird synchronisiert …';
+
+  @override
+  String get accountSyncNow => 'Jetzt synchronisieren';
+
+  @override
+  String get accountHaveAccount =>
+      'Ich habe bereits ein Konto (übernommener Patient)';
+
+  @override
+  String get accountImNew => 'Ich bin neu (registrieren)';
+
+  @override
+  String get accountCreateAccount => 'Konto erstellen';
+
+  @override
+  String get accountNewHere => 'Ich bin neu (registrieren)';
+
+  @override
+  String get accountDocumentOptional => 'Dokument (optional)';
+
+  @override
+  String get accountNameLabel => 'Name';
+
+  @override
+  String get accountEmailLabel => 'E-Mail';
+
+  @override
+  String get deviceScreenTitle => 'Mein Messgerät';
+
+  @override
+  String get deviceNoneTitle => 'Ich benutze keine';
+
+  @override
+  String get deviceNoneSubtitle =>
+      'Ich erfasse nur manuelle Messwerte (Gewicht, Taille, Größe).';
+
+  @override
+  String get deviceNoneSaved => 'Gespeichert: Du nutzt keine Bioimpedanz.';
+
+  @override
+  String get deviceCatalogError =>
+      'Katalog konnte nicht aktualisiert werden. Es werden die gespeicherten Optionen angezeigt.';
+
+  @override
+  String get deviceAvailableScales => 'VERFÜGBARE WAAGEN';
+
+  @override
+  String get deviceWhyItMatters =>
+      'Jede Bioimpedanzwaage interpretiert Fett, Muskeln und viszerales Fett mit eigenen Bereichen. Sag uns, welche du nutzt, damit wir zeigen können, ob deine Werte niedrig, normal oder hoch sind. Du kannst das jederzeit ändern.';
+
+  @override
+  String get circumferencesSection => 'KÖRPERUMFÄNGE (OPTIONAL)';
+
+  @override
+  String get circWaist => 'Taille';
+
+  @override
+  String get circHip => 'Hüfte';
+
+  @override
+  String get circLowerAbdomen => 'Unterbauch';
+
+  @override
+  String get circArm => 'Arm';
+
+  @override
+  String get circLeg => 'Bein';
+
+  @override
+  String get circChestBust => 'Brust/Büste';
+
+  @override
+  String get circAbdomenShort => 'Bauch';
+
+  @override
+  String get lipidLabQuestion => 'In welchem Labor wurde der Test gemacht?';
+
+  @override
+  String get lipidLabLoading => 'Labore werden geladen …';
+
+  @override
+  String get lipidLabNotSpecified => 'Nicht angegeben / weiß nicht';
+
+  @override
+  String get lipidLabOther => 'Andere (angeben)';
+
+  @override
+  String get compositionSkeletalMuscle => 'Skelettmuskulatur';
+
+  @override
+  String get compositionSkeletalMuscleRef =>
+      'Wie von deiner Waage angegeben (%)';
+
+  @override
+  String get profileAppTheme => 'App-Design';
+
+  @override
+  String get profileRankObserver => 'Vitaler Beobachter';
+
+  @override
+  String get themeBankLabel => 'DESIGN-BIBLIOTHEK';
+
+  @override
+  String get themePickTitle => 'Wähle das Aussehen';
+
+  @override
+  String get themePickBody =>
+      'Ändert Farben und Typografie. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.';
+
+  @override
+  String get themeSettingsBody =>
+      'Die Änderung wirkt sofort und wird gemerkt. Navigation, Symbole und die Bedeutung jeder Farbe bleiben unverändert.';
+
+  @override
+  String themeContinueWith(String theme) {
+    return 'Weiter mit $theme';
+  }
+
+  @override
+  String deviceSelectedSaved(String device) {
+    return '$device ausgewählt.';
+  }
+
+  @override
+  String deviceWillSyncLater(String message) {
+    return '$message Wird synchronisiert, sobald du online bist.';
   }
 }

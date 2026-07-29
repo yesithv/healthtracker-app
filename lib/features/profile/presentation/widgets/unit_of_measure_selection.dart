@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
-import 'profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 
 class UnitOfMeasureSelection extends StatefulWidget {
   final MeasurementUnit initialUnit;
@@ -35,7 +35,7 @@ class _UnitOfMeasureSelectionState extends State<UnitOfMeasureSelection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ProfileSettingsLayout(
+    return SettingsPageLayout(
       icon: Icons.straighten_rounded,
       title: l10n.unitOfMeasureTitle,
       description: l10n.unitOfMeasureDescription,
@@ -85,28 +85,24 @@ class _SelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final radius = BorderRadius.circular(surfaces.radiusControl);
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: radius,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: surfaces.card,
+          borderRadius: radius,
           border: Border.all(
-            color: isSelected
-                ? AppTheme.primaryColor
-                : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected ? surfaces.brand : surfaces.divider,
             width: 2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: surfaces.cardShadow,
         ),
         child: Row(
           children: [
@@ -117,7 +113,7 @@ class _SelectionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppTheme.primaryColor : Colors.grey[400]!,
+                  color: isSelected ? surfaces.brand : surfaces.inkMuted,
                   width: 2,
                 ),
               ),
@@ -126,8 +122,8 @@ class _SelectionCard extends StatelessWidget {
                       child: Container(
                         width: 12,
                         height: 12,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryColor,
+                        decoration: BoxDecoration(
+                          color: surfaces.brand,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -141,28 +137,20 @@ class _SelectionCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: theme.type.numeralSmall.copyWith(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected
-                          ? AppTheme.primaryColor
-                          : const Color(0xFF1E293B),
+                      color: isSelected ? surfaces.brand : surfaces.ink,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                  ),
+                  // Las unidades («kg · cm · mg/dL») son el caso de uso exacto
+                  // de la monoespaciada de etiquetas en «Consulta Serena».
+                  Text(subtitle, style: theme.type.fieldLabel),
                 ],
               ),
             ),
             if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppTheme.primaryColor,
-                size: 24,
-              ),
+              Icon(Icons.check_circle, color: surfaces.brand, size: 24),
           ],
         ),
       ),

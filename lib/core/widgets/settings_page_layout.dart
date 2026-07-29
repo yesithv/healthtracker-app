@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
-class ProfileSettingsLayout extends StatelessWidget {
+/// LA MAQUETA COMÚN de una pantalla de ajuste: icono redondo, título,
+/// descripción, contenido y —si hace falta— un botón de confirmar.
+///
+/// Vivía dentro de `features/profile`, pero es el template general de la app:
+/// cualquier pantalla que presente una decisión al usuario se ve así. Al
+/// moverla a `core/widgets` puede usarla también el selector de tema, que no
+/// cuelga de Perfil.
+class SettingsPageLayout extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
@@ -10,7 +18,12 @@ class ProfileSettingsLayout extends StatelessWidget {
   final VoidCallback onConfirm;
   final bool showConfirmButton;
 
-  const ProfileSettingsLayout({
+  /// Texto del botón de confirmar. Por defecto «Guardar preferencias», que es
+  /// lo que dicen casi todas; el selector de tema lo cambia porque ahí el botón
+  /// no guarda nada —la elección ya se aplicó— sino que sigue adelante.
+  final String? confirmLabel;
+
+  const SettingsPageLayout({
     super.key,
     required this.icon,
     required this.title,
@@ -18,72 +31,59 @@ class ProfileSettingsLayout extends StatelessWidget {
     required this.child,
     required this.onConfirm,
     this.showConfirmButton = true,
+    this.confirmLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         children: [
           const SizedBox(height: 24),
-          // Icon Header
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Icon(icon, size: 32, color: AppTheme.primaryColor),
-            ),
+          // El ICONO es el mismo en todos los temas; sólo cambia su vestido.
+          IconBadge(
+            icon,
+            color: surfaces.brand,
+            background: surfaces.selection,
+            size: 80,
+            iconSize: 32,
           ),
           const SizedBox(height: 24),
-          // Title
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
-            ),
+            style: theme.type.screenTitle,
           ),
           const SizedBox(height: 12),
-          // Description
           Text(
             description,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.grey[600],
-              height: 1.5,
-            ),
+            style: theme.type.body,
           ),
           const SizedBox(height: 32),
-          // Content
           child,
           const SizedBox(height: 40),
-          // Confirmation Button
           if (showConfirmButton) ...[
             ElevatedButton.icon(
               onPressed: onConfirm,
               icon: const Icon(Icons.check_circle_outline, size: 20),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: surfaces.brand,
+                foregroundColor: surfaces.onBrand,
                 minimumSize: const Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(surfaces.radiusControl),
                 ),
                 elevation: 0,
               ),
               label: Text(
-                l10n.savePreferences,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                confirmLabel ?? l10n.savePreferences,
+                style: theme.type.button.copyWith(fontSize: 16),
               ),
             ),
             const SizedBox(height: 24),

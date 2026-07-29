@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/theme_context.dart';
 import 'app_brand_header.dart';
 
 class MainAppBar extends StatelessWidget {
@@ -9,13 +10,15 @@ class MainAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final radius = Radius.circular(surfaces.radiusCard);
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0D48A0),
+      decoration: BoxDecoration(
+        color: surfaces.brand,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          bottomLeft: radius,
+          bottomRight: radius,
         ),
       ),
       child: SafeArea(

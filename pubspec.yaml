@@ -47,3 +47,46 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/
+
+  # Tipografías EMPAQUETADAS, no descargadas en tiempo de ejecución.
+  # Es una decisión de rendimiento deliberada: `google_fonts` resolvía la
+  # familia por red la primera vez, así que cambiar de tema podía provocar un
+  # parpadeo de fuente (o fallar sin conexión). Con los .ttf en el binario, el
+  # cambio de tema es un repintado puro, determinista y offline.
+  #
+  # Newsreader e Inter son fuentes VARIABLES (un archivo, eje `wght`): los
+  # pesos se piden con `TextStyle.fontVariations`, centralizado en
+  # `core/theme/tokens/app_typography.dart`. Licencias en assets/fonts/OFL-*.
+  fonts:
+    - family: Newsreader
+      fonts:
+        - asset: assets/fonts/Newsreader-Variable.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+    - family: IBM Plex Sans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSans-SemiBold.ttf
+          weight: 600
+    - family: IBM Plex Mono
+      fonts:
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+          weight: 600
+
+    # Banderas. Ninguna de las cuatro familias de arriba trae emoji, así que el
+    # selector de prefijo telefónico y el de idioma pintaban un cuadrito vacío
+    # en vez de la bandera. Al empaquetar las fuentes se perdió el respaldo del
+    # sistema, que es quien las resolvía antes.
+    #
+    # Es un RECORTE de Noto Color Emoji: sólo las 47 banderas que lista
+    # `lib/core/constants/countries.dart`, 159 KB en vez de los 10,8 MB de la
+    # fuente entera. `flag_glyph_coverage_test.dart` comprueba que el catálogo
+    # de países y este recorte no se separen — si mañana se añade un país hay
+    # que rehacer el recorte, y la prueba lo dice con nombre y apellidos.
+    - family: NotoColorEmoji
+      fonts:
+        - asset: assets/fonts/NotoColorEmoji-Flags.ttf

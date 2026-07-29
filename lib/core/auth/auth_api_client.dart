@@ -31,25 +31,25 @@ class PatientAccount {
   });
 
   factory PatientAccount.fromJson(Map<String, dynamic> json) => PatientAccount(
-        publicId: json['publicId'] as String,
-        firstName: _titleOrNull(json['firstName'] as String?),
-        lastName: _titleOrNull(json['lastName'] as String?),
-        birthDate: json['birthDate'] == null
-            ? null
-            : DateTime.tryParse(json['birthDate'] as String),
-        sex: json['sex'] as String?,
-        email: json['email'] as String?,
-        source: json['source'] as String?,
-        migrated: json['migrated'] as bool? ?? false,
-      );
+    publicId: json['publicId'] as String,
+    firstName: _titleOrNull(json['firstName'] as String?),
+    lastName: _titleOrNull(json['lastName'] as String?),
+    birthDate: json['birthDate'] == null
+        ? null
+        : DateTime.tryParse(json['birthDate'] as String),
+    sex: json['sex'] as String?,
+    email: json['email'] as String?,
+    source: json['source'] as String?,
+    migrated: json['migrated'] as bool? ?? false,
+  );
 
   /// El sexo del servidor traducido al formato del perfil de la app
   /// ('male'/'female'; '' = desconocido, no se hidrata).
   String get genderForApp => switch (sex) {
-        'F' => 'female',
-        'M' => 'male',
-        _ => '',
-      };
+    'F' => 'female',
+    'M' => 'male',
+    _ => '',
+  };
 
   static String? _titleOrNull(String? v) {
     final t = toTitleCase(v);
@@ -72,13 +72,25 @@ class AuthException implements Exception {
   String toString() => message;
 }
 
+/// Fallo de TRANSPORTE, no de datos: sin conexión, timeout, o el servidor caído
+/// (5xx). Reintentarlo más tarde puede funcionar sin que el usuario cambie nada.
+///
+/// Extiende [AuthException] a propósito, para que todo el código que ya hacía
+/// `on AuthException` siga capturándolo igual. Quien necesite decidir entre
+/// «reintenta luego» y «corrige el dato» captura primero este tipo.
+class AuthNetworkException extends AuthException {
+  const AuthNetworkException(super.message);
+}
+
 /// Cliente de los endpoints públicos de cuenta (`/api/v1/auth/*`).
 class AuthApiClient {
   final http.Client _http;
   final Duration timeout;
 
-  AuthApiClient({http.Client? httpClient, this.timeout = const Duration(seconds: 20)})
-      : _http = httpClient ?? http.Client();
+  AuthApiClient({
+    http.Client? httpClient,
+    this.timeout = const Duration(seconds: 20),
+  }) : _http = httpClient ?? http.Client();
 
   /// Registra un paciente nuevo (source=APP). [sex] en formato de la app ('male'/'female').
   /// [country] es ISO 3166-1 alpha-2 ('CO', 'MX'...); el backend lo valida contra su
@@ -113,7 +125,9 @@ class AuthApiClient {
   /// Resultado del lookup: [exists] = ya hay cuenta (→ verificar); [inLegacy] = no hay
   /// cuenta pero SÍ historial en el legacy (→ ofrecer alta self-service).
   Future<LookupResult> lookup(String identifier) async {
-    final map = await _postRaw('/api/v1/auth/lookup', {'identifier': identifier});
+    final map = await _postRaw('/api/v1/auth/lookup', {
+      'identifier': identifier,
+    });
     return LookupResult(
       exists: map['exists'] as bool? ?? false,
       inLegacy: map['inLegacy'] as bool? ?? false,
@@ -123,31 +137,46 @@ class AuthApiClient {
   /// Alta self-service: trae el historial del legacy (persona + atenciones + indicadores)
   /// y deja la cuenta lista para verificar. Timeout largo: incluye el backfill completo.
   Future<void> activate(String identifier) async {
-    await _postRaw('/api/v1/auth/activate', {'identifier': identifier},
-        timeoutOverride: const Duration(seconds: 90));
+    await _postRaw('/api/v1/auth/activate', {
+      'identifier': identifier,
+    }, timeoutOverride: const Duration(seconds: 90));
   }
 
-  Future<Map<String, dynamic>> _postRaw(String path, Map<String, dynamic> body,
-      {Duration? timeoutOverride}) async {
+  Future<Map<String, dynamic>> _postRaw(
+    String path,
+    Map<String, dynamic> body, {
+    Duration? timeoutOverride,
+  }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}$path');
     final http.Response resp;
     try {
       resp = await _http
-          .post(uri,
-              headers: {'Content-Type': 'application/json'}, body: jsonEncode(body))
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
           .timeout(timeoutOverride ?? timeout);
     } catch (e) {
-      throw AuthException('No se pudo conectar con el servidor: $e');
+      throw AuthNetworkException('No se pudo conectar con el servidor: $e');
     }
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
       return jsonDecode(resp.body) as Map<String, dynamic>;
     }
+    // 5xx = el servidor está caído o falló por su cuenta: reintentable.
+    if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
     throw AuthException(_messageFrom(resp));
   }
 
   /// Inicia sesión por documento (migrado) o email (APP) + contraseña.
-  Future<PatientAccount> login({required String identifier, required String password}) {
-    return _post('/api/v1/auth/login', {'identifier': identifier, 'password': password});
+  Future<PatientAccount> login({
+    required String identifier,
+    required String password,
+  }) {
+    return _post('/api/v1/auth/login', {
+      'identifier': identifier,
+      'password': password,
+    });
   }
 
   Future<PatientAccount> _post(String path, Map<String, dynamic> body) async {
@@ -155,15 +184,22 @@ class AuthApiClient {
     final http.Response resp;
     try {
       resp = await _http
-          .post(uri, headers: {'Content-Type': 'application/json'}, body: jsonEncode(body))
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
           .timeout(timeout);
     } catch (e) {
-      throw AuthException('No se pudo conectar con el servidor: $e');
+      throw AuthNetworkException('No se pudo conectar con el servidor: $e');
     }
 
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
-      return PatientAccount.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+      return PatientAccount.fromJson(
+        jsonDecode(resp.body) as Map<String, dynamic>,
+      );
     }
+    if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
     throw AuthException(_messageFrom(resp));
   }
 

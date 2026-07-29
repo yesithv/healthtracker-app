@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../theme/theme_context.dart';
 import 'app_brand_header.dart';
 
 class SecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -12,13 +14,18 @@ class SecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    // El fondo llevaba el azul de «Pulso Clínico» escrito a mano, así que en
+    // «Consulta Serena» la cabecera se quedaba azul mientras el resto de la
+    // pantalla era cálido. El contenido (AppBrandHeader) ya usaba `onBrand`,
+    // que es el par del token: solo faltaba pedir el otro lado.
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0D48A0),
+      decoration: BoxDecoration(
+        color: surfaces.brand,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          bottomLeft: Radius.circular(surfaces.radiusCard),
+          bottomRight: Radius.circular(surfaces.radiusCard),
         ),
       ),
       child: SafeArea(
@@ -32,9 +39,9 @@ class SecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new,
-                    color: Colors.white,
+                    color: surfaces.onBrand,
                     size: 20,
                   ),
                   onPressed: onBack ?? () => Navigator.of(context).pop(),

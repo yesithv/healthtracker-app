@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/providers/user_profile_provider.dart';
 import '../../../../core/providers/discover_provider.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../data/models/article.dart';
 import '../../data/models/discover_feed.dart';
@@ -83,8 +85,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final feed = provider.feed;
     final prefs = context.watch<UserProfileProvider>();
 
+    final surfaces = Theme.of(context).surfaces;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           MainAppBar(title: l10n.discover.toUpperCase()),
@@ -92,7 +96,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             child: provider.isColdStart
                 ? const DiscoverSkeleton()
                 : RefreshIndicator(
-                    color: DiscoverPalette.brand,
+                    color: surfaces.brand,
                     onRefresh: () => provider.refresh(l10n.localeName),
                     child: _buildFeed(context, l10n, feed, prefs),
                   ),
@@ -108,20 +112,28 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     DiscoverFeed feed,
     UserProfileProvider prefs,
   ) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+
     // Filtered collections.
     final featured = _selectedCategory == 'all' && _query.isEmpty
         ? feed.featuredArticles
         : const <Article>[];
     final articles = feed.standardArticles
-        .where((a) => _inCategory(a.category) && _matchesQuery(a.title, a.subtitle))
+        .where(
+          (a) => _inCategory(a.category) && _matchesQuery(a.title, a.subtitle),
+        )
         .toList();
     final routines = feed.routines
-        .where((r) => _inCategory(r.category) && _matchesQuery(r.title, r.subtitle))
+        .where(
+          (r) => _inCategory(r.category) && _matchesQuery(r.title, r.subtitle),
+        )
         .toList();
     // Challenges are general (no category); show them on "all" or when searching.
     final challenges = feed.challenges
-        .where((c) =>
-            (_selectedCategory == 'all') && _matchesQuery(c.title, c.goal))
+        .where(
+          (c) => (_selectedCategory == 'all') && _matchesQuery(c.title, c.goal),
+        )
         .toList();
 
     final tip = _dailyTip(feed);
@@ -131,7 +143,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         : l10n.discoverGreeting(userName);
     final base64Image = prefs.profileImageBase64;
 
-    final nothingToShow = featured.isEmpty &&
+    final nothingToShow =
+        featured.isEmpty &&
         articles.isEmpty &&
         routines.isEmpty &&
         challenges.isEmpty;
@@ -148,21 +161,19 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 Expanded(
                   child: Text(
                     greeting,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0F172A),
-                    ),
+                    style: theme.type.screenTitle.copyWith(fontSize: 24),
                   ),
                 ),
                 CircleAvatar(
-                  backgroundColor: const Color(0xFFE6A88B),
+                  backgroundColor: theme.metrics
+                      .tone(MetricFamily.anthropometry)
+                      .surface,
                   radius: 20,
                   backgroundImage: base64Image != null
                       ? MemoryImage(base64Decode(base64Image))
                       : null,
                   child: base64Image == null
-                      ? const Icon(Icons.person, color: Colors.white)
+                      ? Icon(Icons.person, color: surfaces.inkSecondary)
                       : null,
                 ),
               ],
@@ -177,11 +188,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               onChanged: (v) => setState(() => _query = v.trim()),
               decoration: InputDecoration(
                 hintText: l10n.discoverSearchHint,
-                prefixIcon: const Icon(Icons.search, color: Colors.black45),
+                prefixIcon: Icon(Icons.search, color: surfaces.inkSecondary),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: surfaces.card,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(surfaces.radiusCard),
                   borderSide: BorderSide.none,
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -210,7 +221,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           SliverToBoxAdapter(
             child: DiscoverSectionHeader(
               title: l10n.discoverFeatured,
-              accent: DiscoverPalette.brand,
+              accent: surfaces.brand,
             ),
           ),
           SliverToBoxAdapter(
@@ -235,7 +246,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           SliverToBoxAdapter(
             child: DiscoverSectionHeader(
               title: l10n.discoverRoutines,
-              accent: DiscoverPalette.of('sports').accent,
+              accent: DiscoverPalette.of(context, 'sports').accent,
             ),
           ),
           SliverToBoxAdapter(
@@ -262,7 +273,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               title: _query.isEmpty && _selectedCategory == 'all'
                   ? l10n.discoverRecommended
                   : l10n.discoverArticles,
-              accent: DiscoverPalette.of('heart').accent,
+              accent: DiscoverPalette.of(context, 'heart').accent,
             ),
           ),
           SliverPadding(
@@ -284,7 +295,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           SliverToBoxAdapter(
             child: DiscoverSectionHeader(
               title: l10n.discoverChallenges,
-              accent: DiscoverPalette.of('nutrition').accent,
+              accent: DiscoverPalette.of(context, 'nutrition').accent,
             ),
           ),
           SliverPadding(
@@ -309,16 +320,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.search_off_rounded,
-                      size: 56, color: Color(0xFFCBD5E1)),
+                  Icon(
+                    Icons.search_off_rounded,
+                    size: 56,
+                    color: surfaces.inkMuted,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     l10n.discoverEmpty,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF94A3B8),
-                      fontSize: 15,
-                    ),
+                    style: theme.type.body.copyWith(fontSize: 15),
                   ),
                 ],
               ),
@@ -338,7 +349,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   // --- detail openers --------------------------------------------------------
 
   void _openArticle(BuildContext context, AppLocalizations l10n, Article a) {
-    final style = DiscoverPalette.of(a.category);
+    final style = DiscoverPalette.of(context, a.category);
     showDiscoverDetailSheet(
       context,
       accent: style.accent,
@@ -358,7 +369,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   void _openRoutine(BuildContext context, AppLocalizations l10n, Routine r) {
-    final style = DiscoverPalette.of(r.category);
+    final style = DiscoverPalette.of(context, r.category);
     final level = switch (r.level) {
       ContentLevel.principiante => l10n.discoverLevelBeginner,
       ContentLevel.intermedio => l10n.discoverLevelIntermediate,
@@ -387,8 +398,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  void _openChallenge(BuildContext context, AppLocalizations l10n, Challenge c) {
-    final color = DiscoverPalette.statusColor(c.status);
+  void _openChallenge(
+    BuildContext context,
+    AppLocalizations l10n,
+    Challenge c,
+  ) {
+    final tone = DiscoverPalette.statusTone(context, c.status);
     final status = switch (c.status) {
       ChallengeStatus.activo => l10n.discoverStatusActive,
       ChallengeStatus.programado => l10n.discoverStatusScheduled,
@@ -396,7 +411,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     };
     showDiscoverDetailSheet(
       context,
-      accent: color,
+      accent: tone.accent,
       icon: Icons.emoji_events_rounded,
       kicker: l10n.discoverChallenges,
       title: c.title,
@@ -409,8 +424,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             label: l10n.discoverDaysShort('${c.durationDays}'),
           ),
       ],
-      ctaLabel:
-          c.status == ChallengeStatus.finalizado ? null : l10n.discoverJoin,
+      ctaLabel: c.status == ChallengeStatus.finalizado
+          ? null
+          : l10n.discoverJoin,
     );
   }
 }

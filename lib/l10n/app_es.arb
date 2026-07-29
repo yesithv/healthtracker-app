@@ -28,8 +28,12 @@
   "xpForNextLevel": "{current} / {total} XP para el siguiente nivel",
   "@xpForNextLevel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "levelProgress": "Progreso de Nivel",
@@ -115,13 +119,15 @@
   "bmiObesity": "OBESIDAD",
   "commentOptional": "COMENTARIO (OPCIONAL)",
   "commentHint": "¿Alguna observación sobre esta toma?",
-  "saveAndEarnXp": "Guardar y ganar +10 XP ✦",
+  "saveAndEarnXp": "Guardar y ganar +10 XP",
   "historyGoodJob": "¡Buen trabajo!",
   "historyGoalProgress": "Has registrado una nueva medición este mes, manteniéndote en tu ruta de bienestar.",
   "historyWeightLoss": "Has perdido {weight}kg este mes, acercándote a tu meta de bienestar.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "TENDENCIA DE IMC",
@@ -213,15 +219,15 @@
   "fatNormal": "NORMAL",
   "fatElevated": "ELEVADO",
   "fatHigh": "ALTO",
-
   "infoBannerAnthro": "Trate de tomar la medida todas las veces en las mismas condiciones, por ejemplo: todas las mañanas después de levantarse, ir al baño y antes de desayunar.",
   "infoBannerVitals": "Trate de tomarse los signos vitales después de llevar media hora en reposo.",
-
   "compositionSavedSuccess": "Perfil corporal guardado exitosamente.",
   "discoverGreeting": "Buenos días, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Buscar consejos...",
@@ -268,7 +274,6 @@
   "targetMuscleMass": "Objetivo de Masa Muscular",
   "targetVisceralFat": "Objetivo de Grasa Visceral",
   "goalsSavedSuccess": "Metas guardadas exitosamente.",
-
   "helpSupportPageTitle": "Ayuda y Soporte",
   "helpSupportPageDescription": "Todo lo que necesitas saber sobre My Vitals.",
   "helpFaqTitle": "Preguntas Frecuentes",
@@ -279,15 +284,12 @@
   "helpLegalDescription": "Términos de uso y privacidad de datos.",
   "helpContactTitle": "Contacto y Feedback",
   "helpContactDescription": "Escríbenos, mejoramos contigo.",
-
   "helpSearchHint": "Buscar...",
   "helpNoResults": "Sin resultados para tu búsqueda.",
-
   "helpFaqCatGeneral": "General",
   "helpFaqCatData": "Mis Datos",
   "helpFaqCatBiometrics": "Biometría",
   "helpFaqCatExport": "Exportar",
-
   "helpFaqQ1": "¿Qué es My Vitals?",
   "helpFaqA1": "My Vitals es una aplicación de seguimiento de salud personal que te permite registrar y monitorear tus indicadores de bienestar: medidas antropométricas, signos vitales, perfil lipídico y composición corporal.",
   "helpFaqQ2": "¿Mis datos se guardan en la nube?",
@@ -295,23 +297,21 @@
   "helpFaqQ3": "¿Puedo usar la app sin internet?",
   "helpFaqA3": "Sí. My Vitals funciona completamente sin conexión a internet. Solo necesitas conectividad para actualizaciones de la aplicación.",
   "helpFaqQ4": "¿Cómo activo el bloqueo biométrico?",
-  "helpFaqA4": "Ve a Perfil → Privacidad y Seguridad y activa el interruptor de Bloqueo Biométrico. Tu dispositivo debe tener huella dactilar o FaceID configurado.",
+  "helpFaqA4": "Ve a Perfil › Privacidad y Seguridad y activa el interruptor de Bloqueo Biométrico. Tu dispositivo debe tener huella dactilar o FaceID configurado.",
   "helpFaqQ5": "¿Cómo exporto mi historial?",
   "helpFaqA5": "En cada pantalla de historial (Antropométrico, Signos Vitales, etc.) encontrarás los botones 'Exportar PDF' y 'Excel (CSV)' en la parte superior.",
   "helpFaqQ6": "¿Puedo cambiar las unidades de medida?",
-  "helpFaqA6": "Sí. Ve a Perfil → Unidades de Medida y elige entre el sistema Métrico (kg, cm) o Imperial (lb, ft/in).",
+  "helpFaqA6": "Sí. Ve a Perfil › Unidades de Medida y elige entre el sistema Métrico (kg, cm) o Imperial (lb, ft/in).",
   "helpFaqQ7": "¿Qué pasa si borro la app?",
   "helpFaqA7": "Al desinstalar la app, todos los datos almacenados localmente se eliminarán permanentemente. Te recomendamos exportar tu historial en PDF o CSV antes de desinstalar.",
   "helpFaqQ8": "¿Esta app reemplaza a mi médico?",
   "helpFaqA8": "No. My Vitals es una herramienta de seguimiento personal para ayudarte a llevar un registro organizado. Siempre consulta a un profesional de la salud para interpretación y diagnóstico médico.",
-
   "helpGlossarySearchHint": "Buscar término...",
   "helpGlossaryGroupAnthropo": "Medidas Antropométricas",
   "helpGlossaryGroupVitals": "Signos Vitales",
   "helpGlossaryGroupLipid": "Perfil Lipídico",
   "helpGlossaryGroupBody": "Perfil Corporal",
   "helpGlossaryNormalRange": "Rango normal",
-
   "helpLegalPurposeTitle": "Propósito de la aplicación",
   "helpLegalPurposeBody": "My Vitals es una aplicación de seguimiento personal de salud diseñada para ayudar a los usuarios a registrar y visualizar sus indicadores de bienestar. No es un dispositivo médico certificado.",
   "helpLegalNotMedicalTitle": "No es un dispositivo médico",
@@ -322,7 +322,6 @@
   "helpLegalPrivacyBody": "Todos los datos se almacenan localmente en el dispositivo del usuario. My Vitals no recopila, transmite ni comparte información personal con terceros. No existen cuentas de usuario ni servidores de datos.",
   "helpLegalContactTitle": "Contacto del desarrollador",
   "helpLegalContactBody": "Para consultas legales o de privacidad, puede contactar al desarrollador en: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Reportar un error",
   "helpContactReportBugDesc": "¿Encontraste algo que no funciona bien? Cuéntanos.",
   "helpContactSuggest": "Enviar sugerencia",
@@ -361,7 +360,6 @@
   "backupIncludesPhoto": "Foto de Perfil",
   "backupIncludesPreferences": "Preferencias (idioma, unidades)",
   "backupCancel": "Cancelar",
-
   "onboardingWelcomeTitle": "Bienvenido a My Vitals",
   "onboardingWelcomeSubtitle": "Tu compañero de salud personal",
   "onboardingWelcomeFeature1": "Registra tus signos vitales y medidas corporales",
@@ -369,12 +367,15 @@
   "onboardingWelcomeFeature3": "100% privado, todo se guarda en tu dispositivo",
   "onboardingNext": "Siguiente",
   "onboardingFinish": "¡Empezar!",
-  "onboardingSkip": "Omitir",
   "onboardingStep": "Paso {current} de {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Tu foto de perfil",
@@ -394,12 +395,13 @@
   "goalRemainingWeight": "Faltan {weight}kg para tu meta",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "¡Meta cumplida!",
   "noGoalDefined": "Meta no definida",
-
   "validationRequiredFields": "Campos requeridos",
   "validationCompleteBeforeContinue": "Completa estos campos antes de continuar:",
   "validationSelectLanguage": "Selecciona un idioma",
@@ -495,6 +497,301 @@
   "deleteRecordConfirm": "Eliminar",
   "recordDeleted": "Registro eliminado",
   "anthropoSavedSuccess": "Medida guardada exitosamente.",
-  "historyShowMore": "Ver {count} más"
+  "historyShowMore": "Ver {count} más",
+  "introSignIn": "Iniciar sesión",
+  "introRegister": "Registrarse",
+  "emailLabel": "Correo",
+  "validationEnterEmail": "Ingresa tu correo",
+  "validationEmailFormat": "Revisa el correo: falta el arroba o el dominio",
+  "validationOutOfRange": "Escribe un valor entre {min} y {max}",
+  "@validationOutOfRange": {
+    "placeholders": { "min": {}, "max": {} }
+  },
+  "commonRegisterFailed": "No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.",
+  "logOutConfirm": "¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.",
+  "pendingAccountTitle": "Cuenta pendiente",
+  "pendingAccountBody": "Tus datos están guardados en este dispositivo. Crearemos tu cuenta en cuanto haya conexión.",
+  "pendingAccountCreateNow": "Crear mi cuenta ahora",
+  "pendingAccountCreating": "Creando tu cuenta…",
+  "pendingAccountCreated": "Cuenta creada. Subiendo tus registros.",
+  "pendingAccountStillOffline": "Todavía no hay conexión. Tus datos siguen a salvo en este dispositivo.",
+  "identifyTitle": "Traigamos tu historial",
+  "@identifyTitle": {
+    "description": "identifyTitle"
+  },
+  "identifyBody": "Ingresa tu documento (o email). Si ya eres paciente, cargamos tus datos; si no, creamos tu cuenta.",
+  "@identifyBody": {
+    "description": "identifyBody"
+  },
+  "identifyFieldLabel": "Documento o email",
+  "@identifyFieldLabel": {
+    "description": "identifyFieldLabel"
+  },
+  "identifyFieldHint": "Ej. 1032456789",
+  "@identifyFieldHint": {
+    "description": "identifyFieldHint"
+  },
+  "identifyFoundTitle": "Encontramos un historial clínico asociado a este documento.",
+  "@identifyFoundTitle": {
+    "description": "identifyFoundTitle"
+  },
+  "identifyFoundBody": "Podemos traerlo y activar tu cuenta para que veas tus datos desde el primer día.",
+  "@identifyFoundBody": {
+    "description": "identifyFoundBody"
+  },
+  "identifyBringHistory": "Traer mi historial y continuar",
+  "@identifyBringHistory": {
+    "description": "identifyBringHistory"
+  },
+  "identifyBringingHistory": "Trayendo tu historial…",
+  "@identifyBringingHistory": {
+    "description": "identifyBringingHistory"
+  },
+  "identifyNotMe": "No soy yo — registrarme como nuevo",
+  "@identifyNotMe": {
+    "description": "identifyNotMe"
+  },
+  "verifyAppBarTitle": "Verificación",
+  "@verifyAppBarTitle": {
+    "description": "verifyAppBarTitle"
+  },
+  "verifyTitle": "Encontramos tu cuenta",
+  "@verifyTitle": {
+    "description": "verifyTitle"
+  },
+  "verifyBody": "Verifica tu identidad para continuar con\n{identifier}.",
+  "@verifyBody": {
+    "description": "verifyBody",
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Contraseña",
+  "@verifyPasswordLabel": {
+    "description": "verifyPasswordLabel"
+  },
+  "verifyTestNotice": "Fase de pruebas: la contraseña es 1234. (Aquí irá el código OTP en producción.)",
+  "@verifyTestNotice": {
+    "description": "verifyTestNotice"
+  },
+  "verifySubmit": "Ingresar",
+  "@verifySubmit": {
+    "description": "verifySubmit"
+  },
+  "unexpectedError": "Error inesperado: {details}",
+  "@unexpectedError": {
+    "description": "unexpectedError",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Cuenta y sincronización",
+  "@accountSyncTitle": {
+    "description": "accountSyncTitle"
+  },
+  "accountYourAccount": "Tu cuenta",
+  "@accountYourAccount": {
+    "description": "accountYourAccount"
+  },
+  "accountPendingBody": "Tus datos están en este dispositivo. Falta crear la cuenta en el servidor.",
+  "@accountPendingBody": {
+    "description": "accountPendingBody"
+  },
+  "accountLoggedOutBody": "Inicia sesión si ya eres paciente, o regístrate para empezar.",
+  "@accountLoggedOutBody": {
+    "description": "accountLoggedOutBody"
+  },
+  "accountFallbackName": "Paciente",
+  "@accountFallbackName": {
+    "description": "accountFallbackName"
+  },
+  "accountFromLegacy": "Cuenta migrada del legacy",
+  "@accountFromLegacy": {
+    "description": "accountFromLegacy"
+  },
+  "accountCreatedInApp": "Cuenta creada en la app",
+  "@accountCreatedInApp": {
+    "description": "accountCreatedInApp"
+  },
+  "accountSignOut": "Salir",
+  "@accountSignOut": {
+    "description": "accountSignOut"
+  },
+  "accountSyncSection": "Sincronización",
+  "@accountSyncSection": {
+    "description": "accountSyncSection"
+  },
+  "accountSyncBody": "Sube tus registros locales al servidor.",
+  "@accountSyncBody": {
+    "description": "accountSyncBody"
+  },
+  "accountSyncing": "Sincronizando…",
+  "@accountSyncing": {
+    "description": "accountSyncing"
+  },
+  "accountSyncNow": "Sincronizar ahora",
+  "@accountSyncNow": {
+    "description": "accountSyncNow"
+  },
+  "accountHaveAccount": "Ya tengo cuenta (paciente migrado)",
+  "@accountHaveAccount": {
+    "description": "accountHaveAccount"
+  },
+  "accountImNew": "Soy nuevo (registrarme)",
+  "@accountImNew": {
+    "description": "accountImNew"
+  },
+  "accountCreateAccount": "Crear cuenta",
+  "accountNewHere": "Soy nuevo (registrarme)",
+  "accountDocumentOptional": "Documento (opcional)",
+  "@accountCreateAccount": {
+    "description": "accountCreateAccount"
+  },
+  "accountNameLabel": "Nombre",
+  "@accountNameLabel": {
+    "description": "accountNameLabel"
+  },
+  "accountEmailLabel": "Email",
+  "@accountEmailLabel": {
+    "description": "accountEmailLabel"
+  },
+  "deviceScreenTitle": "Mi dispositivo de medición",
+  "@deviceScreenTitle": {
+    "description": "deviceScreenTitle"
+  },
+  "deviceNoneTitle": "No uso ninguna",
+  "@deviceNoneTitle": {
+    "description": "deviceNoneTitle"
+  },
+  "deviceNoneSubtitle": "Solo registraré medidas manuales (peso, cintura, talla).",
+  "@deviceNoneSubtitle": {
+    "description": "deviceNoneSubtitle"
+  },
+  "deviceNoneSaved": "Guardado: no usas bioimpedancia.",
+  "@deviceNoneSaved": {
+    "description": "deviceNoneSaved"
+  },
+  "deviceCatalogError": "No se pudo actualizar el catálogo. Mostrando las opciones guardadas.",
+  "@deviceCatalogError": {
+    "description": "deviceCatalogError"
+  },
+  "deviceAvailableScales": "BÁSCULAS DISPONIBLES",
+  "@deviceAvailableScales": {
+    "description": "deviceAvailableScales"
+  },
+  "deviceWhyItMatters": "Cada báscula de bioimpedancia interpreta la grasa, el músculo y la grasa visceral con rangos propios. Dinos cuál usas para mostrarte si tus valores están bajos, normales o altos. Puedes cambiarlo cuando quieras.",
+  "@deviceWhyItMatters": {
+    "description": "deviceWhyItMatters"
+  },
+  "circumferencesSection": "PERÍMETROS CORPORALES (OPCIONAL)",
+  "@circumferencesSection": {
+    "description": "circumferencesSection"
+  },
+  "circWaist": "Cintura",
+  "@circWaist": {
+    "description": "circWaist"
+  },
+  "circHip": "Cadera",
+  "@circHip": {
+    "description": "circHip"
+  },
+  "circLowerAbdomen": "Abdomen bajo",
+  "@circLowerAbdomen": {
+    "description": "circLowerAbdomen"
+  },
+  "circArm": "Brazo",
+  "@circArm": {
+    "description": "circArm"
+  },
+  "circLeg": "Pierna",
+  "@circLeg": {
+    "description": "circLeg"
+  },
+  "circChestBust": "Pecho/Busto",
+  "@circChestBust": {
+    "description": "circChestBust"
+  },
+  "circAbdomenShort": "Abd.",
+  "@circAbdomenShort": {
+    "description": "circAbdomenShort"
+  },
+  "lipidLabQuestion": "¿En qué laboratorio te hiciste el examen?",
+  "@lipidLabQuestion": {
+    "description": "lipidLabQuestion"
+  },
+  "lipidLabLoading": "Cargando laboratorios…",
+  "@lipidLabLoading": {
+    "description": "lipidLabLoading"
+  },
+  "lipidLabNotSpecified": "No indicado / no sé",
+  "@lipidLabNotSpecified": {
+    "description": "lipidLabNotSpecified"
+  },
+  "lipidLabOther": "Otro (especificar)",
+  "@lipidLabOther": {
+    "description": "lipidLabOther"
+  },
+  "compositionSkeletalMuscle": "Músculo esquelético",
+  "@compositionSkeletalMuscle": {
+    "description": "compositionSkeletalMuscle"
+  },
+  "compositionSkeletalMuscleRef": "Como lo reporta tu báscula (%)",
+  "@compositionSkeletalMuscleRef": {
+    "description": "compositionSkeletalMuscleRef"
+  },
+  "profileAppTheme": "Tema de la app",
+  "@profileAppTheme": {
+    "description": "profileAppTheme"
+  },
+  "profileRankObserver": "Observador Vital",
+  "@profileRankObserver": {
+    "description": "profileRankObserver"
+  },
+  "themeBankLabel": "BANCO DE TEMAS",
+  "@themeBankLabel": {
+    "description": "themeBankLabel"
+  },
+  "themePickTitle": "Elige el aspecto",
+  "@themePickTitle": {
+    "description": "themePickTitle"
+  },
+  "themePickBody": "Cambia colores y tipografía. La navegación, los iconos y el significado de cada color se mantienen intactos.",
+  "@themePickBody": {
+    "description": "themePickBody"
+  },
+  "themeSettingsBody": "El cambio se aplica al instante y se recuerda. La navegación, los iconos y el significado de cada color se mantienen intactos.",
+  "@themeSettingsBody": {
+    "description": "themeSettingsBody"
+  },
+  "themeContinueWith": "Continuar con {theme}",
+  "@themeContinueWith": {
+    "description": "themeContinueWith",
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} seleccionada.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    },
+    "description": "deviceSelectedSaved"
+  },
+  "deviceWillSyncLater": "{message} Se sincronizará cuando haya conexión.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    },
+    "description": "deviceWillSyncLater"
+  }
 }
-

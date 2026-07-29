@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
-import '../widgets/profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 
 /// Mixin that exposes a [validate] method for wizard-embedded screens.
 mixin WizardValidatable {
@@ -70,11 +71,12 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<LocaleUnitsProvider>(context, listen: false);
 
     final content = SingleChildScrollView(
-      child: ProfileSettingsLayout(
+      child: SettingsPageLayout(
         icon: Icons.language_rounded,
         title: l10n.languageTitle,
         description: l10n.languageDescription,
@@ -112,7 +114,7 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       body: Column(
         children: [
           const SecondaryAppBar(),
@@ -138,6 +140,7 @@ class _LanguageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -146,21 +149,13 @@ class _LanguageTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF0D48A0).withValues(alpha: 0.05)
-                : Colors.white,
+            color: isSelected ? surfaces.selection : surfaces.card,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? const Color(0xFF0D48A0) : Colors.transparent,
+              color: isSelected ? surfaces.brand : Colors.transparent,
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: surfaces.cardShadow,
           ),
           child: Row(
             children: [
@@ -172,9 +167,7 @@ class _LanguageTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isSelected
-                        ? const Color(0xFF0D48A0)
-                        : const Color(0xFF1E293B),
+                    color: isSelected ? surfaces.brand : surfaces.ink,
                   ),
                 ),
               ),
@@ -184,9 +177,7 @@ class _LanguageTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected
-                        ? const Color(0xFF0D48A0)
-                        : const Color(0xFFCBD5E1),
+                    color: isSelected ? surfaces.brand : surfaces.inkMuted,
                     width: 2,
                   ),
                 ),
@@ -195,8 +186,8 @@ class _LanguageTile extends StatelessWidget {
                         child: Container(
                           width: 12,
                           height: 12,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF0D48A0),
+                          decoration: BoxDecoration(
+                            color: surfaces.brand,
                             shape: BoxShape.circle,
                           ),
                         ),

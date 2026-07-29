@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
-import 'package:myvitals_healthtracker_app/features/profile/presentation/widgets/profile_settings_layout.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 class PrivacySecurityScreen extends StatefulWidget {
@@ -32,14 +34,17 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final surfaces = Theme.of(context).surfaces;
+    final clinical = Theme.of(context).clinical;
+    final content = Theme.of(context).content;
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
+      backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
       body: SingleChildScrollView(
-        child: ProfileSettingsLayout(
+        child: SettingsPageLayout(
           icon: Icons.security_outlined,
           title: l10n.privacySecurity,
           description: l10n.privacySecurityDescription,
@@ -52,15 +57,9 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: surfaces.card,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: surfaces.cardShadow,
                 ),
                 child: Column(
                   children: [
@@ -69,12 +68,17 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8B5CF6).withValues(alpha: 0.1),
+                            color: content
+                                .tone(ContentCategory.emotional)
+                                .accent
+                                .withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.fingerprint,
-                            color: Color(0xFF8B5CF6),
+                            color: content
+                                .tone(ContentCategory.emotional)
+                                .accent,
                             size: 24,
                           ),
                         ),
@@ -85,17 +89,17 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                             children: [
                               Text(
                                 l10n.biometricLockTitle,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1E293B),
+                                  color: surfaces.ink,
                                 ),
                               ),
                               Text(
                                 l10n.biometricLockSubtitle,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFF94A3B8),
+                                  color: surfaces.inkMuted,
                                 ),
                               ),
                             ],
@@ -103,13 +107,17 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                         ),
                         Switch(
                           value: prefs.isBiometricEnabled,
-                          activeThumbColor: const Color(0xFF8B5CF6),
+                          activeThumbColor: content
+                              .tone(ContentCategory.emotional)
+                              .accent,
                           onChanged: _isBiometricSupported
                               ? (value) async {
                                   if (value) {
-                                    final authenticated = await _biometricService.authenticate(
-                                      localizedReason: l10n.unlockAppToContinue,
-                                    );
+                                    final authenticated =
+                                        await _biometricService.authenticate(
+                                          localizedReason:
+                                              l10n.unlockAppToContinue,
+                                        );
                                     if (authenticated) {
                                       prefs.setBiometricEnabled(true);
                                     }
@@ -125,14 +133,18 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          const Icon(Icons.info_outline, color: Color(0xFFEF4444), size: 16),
+                          Icon(
+                            Icons.info_outline,
+                            color: clinical.alert.accent,
+                            size: 16,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               l10n.biometricNotAvailable,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFFEF4444),
+                                color: clinical.alert.accent,
                               ),
                             ),
                           ),
@@ -152,28 +164,25 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
   }
 
   Widget _buildInfoBanner(String text) {
+    final clinical = Theme.of(context).clinical;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE0F2FE),
+        color: clinical.info.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFBAE6FD)),
+        border: Border.all(color: clinical.info.surface),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.shield_outlined,
-            color: Color(0xFF0284C7),
-            size: 20,
-          ),
+          Icon(Icons.shield_outlined, color: clinical.info.accent, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: Color(0xFF0369A1),
+                color: clinical.info.accent,
                 height: 1.5,
               ),
             ),

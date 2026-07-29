@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
-import 'package:myvitals_healthtracker_app/core/sync/sync_api_client.dart' show SyncException;
+import 'package:myvitals_healthtracker_app/core/sync/sync_api_client.dart'
+    show SyncException;
 
 /// Un dispositivo de medición (bioimpedancia/báscula) del catálogo que administra el
 /// BackOffice. La app lo usa para el selector "¿qué báscula usas?".
@@ -22,7 +23,8 @@ class MeasuringDevice {
     required this.deviceType,
   });
 
-  factory MeasuringDevice.fromJson(Map<String, dynamic> json) => MeasuringDevice(
+  factory MeasuringDevice.fromJson(Map<String, dynamic> json) =>
+      MeasuringDevice(
         code: json['code'] as String,
         brand: json['brand'] as String? ?? '',
         model: json['model'] as String? ?? '',
@@ -39,12 +41,15 @@ class DeviceApiClient {
   final http.Client _http;
   final Duration timeout;
 
-  DeviceApiClient({http.Client? httpClient, this.timeout = const Duration(seconds: 20)})
-      : _http = httpClient ?? http.Client();
+  DeviceApiClient({
+    http.Client? httpClient,
+    this.timeout = const Duration(seconds: 20),
+  }) : _http = httpClient ?? http.Client();
 
   Map<String, String> get _patientHeaders => {
-        'X-Patient-Public-Id': PatientSession.instance.publicId ?? ApiConfig.patientPublicId,
-      };
+    'X-Patient-Public-Id':
+        PatientSession.instance.publicId ?? ApiConfig.patientPublicId,
+  };
 
   /// Catálogo de dispositivos activos (recurso público).
   Future<List<MeasuringDevice>> fetchCatalog() async {
@@ -57,7 +62,9 @@ class DeviceApiClient {
     }
     _ensure2xx(resp);
     final list = jsonDecode(resp.body) as List<dynamic>;
-    return list.map((e) => MeasuringDevice.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => MeasuringDevice.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Código de la báscula del paciente, o `null` si no usa ninguna.

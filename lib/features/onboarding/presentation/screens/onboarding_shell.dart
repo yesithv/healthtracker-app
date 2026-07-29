@@ -3,27 +3,50 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
-import 'package:myvitals_healthtracker_app/core/theme/app_theme.dart';
+import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/measurement_units_screen.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'onboarding_avatar_page.dart';
 
-/// The 3-step onboarding wizard shell (datos → unidades → avatar).
-/// La portada de bienvenida vive en /welcome; el idioma se autodetecta del
-/// dispositivo (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
-/// Wraps a [PageView] with step indicators, Next/Finish buttons,
-/// and embeds shared profile screens via their `onNext` / `showAppBar` params.
-class OnboardingShell extends StatefulWidget {
-  /// When true, finishing the wizard creates the patient account (register,
-  /// source=APP) with the collected profile. When false the wizard is local-only
-  /// ("usar sin cuenta"): the account can be linked later from Profile.
-  final bool createAccount;
+/// Cómo terminó el intento de crear la cuenta al cerrar el asistente.
+enum _RegisterOutcome {
+  /// Cuenta creada y sesión guardada.
+  created,
 
-  const OnboardingShell({super.key, this.createAccount = false});
+  /// No se pudo hablar con el servidor: queda pendiente y el usuario entra.
+  deferred,
+
+  /// El servidor rechazó los datos: el usuario tiene que corregir algo.
+  rejected,
+}
+
+/// Asistente de alta en 3 pasos (datos → unidades → avatar).
+///
+/// La portada vive en /intro; el idioma se autodetecta del dispositivo
+/// (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
+/// Envuelve un [PageView] con indicadores de paso y botones Siguiente/Finalizar,
+/// y reutiliza pantallas de Perfil vía sus parámetros `onNext` / `showAppBar`.
+///
+/// La cuenta es OBLIGATORIA, pero su CREACIÓN puede diferirse:
+///
+///   · El servidor acepta  → cuenta creada, sesión guardada, al panel.
+///   · Falla la RED        → los datos quedan en el dispositivo, el alta se marca
+///                           pendiente y el usuario entra igual. La cuenta se
+///                           crea en el primer intento que funcione (al arrancar
+///                           la app o al pulsar «Sincronizar»).
+///   · El servidor RECHAZA → correo duplicado, dato inválido… Reintentar no
+///                           ayuda: se muestra el motivo y se queda en el paso.
+///
+/// La diferencia entre los dos fallos la da [AuthNetworkException]; sin ella,
+/// un corte de red y un correo duplicado serían indistinguibles y habría que
+/// tratarlos igual.
+class OnboardingShell extends StatefulWidget {
+  const OnboardingShell({super.key});
 
   @override
   State<OnboardingShell> createState() => _OnboardingShellState();
@@ -38,7 +61,11 @@ class _OnboardingShellState extends State<OnboardingShell> {
   final GlobalKey<PersonalInfoScreenState> _personalInfoKey =
       GlobalKey<PersonalInfoScreenState>();
 
+  /// Registro en curso: bloquea el botón para no crear dos cuentas.
+  bool _registering = false;
 
+  /// Motivo por el que falló el último intento de registro, si falló.
+  String? _registerError;
 
   @override
   void dispose() {
@@ -93,33 +120,56 @@ class _OnboardingShellState extends State<OnboardingShell> {
     }
   }
 
+  /// Cierra el asistente creando la cuenta.
+  ///
+  /// Solo se queda en el paso cuando el servidor RECHAZA los datos, porque eso
+  /// el usuario sí puede arreglarlo. Si lo que falla es la red, entra: sus datos
+  /// están en el dispositivo y la cuenta se creará luego.
   Future<void> _finishOnboarding() async {
+    if (_registering) return;
+    setState(() {
+      _registering = true;
+      _registerError = null;
+    });
+
     final onboarding = Provider.of<OnboardingProvider>(context, listen: false);
-    if (widget.createAccount) {
-      await _tryRegister();
+    final outcome = await _register();
+    if (!mounted) return;
+
+    if (outcome == _RegisterOutcome.rejected) {
+      setState(() => _registering = false);
+      return;
     }
+
     await onboarding.setComplete();
     if (mounted) context.go('/dashboard');
   }
 
-  /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido. No
-  /// bloquea: si no hay email o el registro falla (offline, email duplicado), el
-  /// usuario entra en modo local y puede vincular la cuenta luego desde Perfil.
-  Future<void> _tryRegister() async {
+  /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido.
+  Future<_RegisterOutcome> _register() async {
+    final l10n = AppLocalizations.of(context)!;
     final profile = Provider.of<UserProfileProvider>(context, listen: false);
     final email = profile.userEmail.trim();
-    if (email.isEmpty) return; // sin identificador no se puede crear la cuenta
+    if (email.isEmpty) {
+      // Red de seguridad: el paso 1 ya exige el correo, pero si llegara vacío
+      // no hay identificador con el que crear la cuenta.
+      setState(() => _registerError = l10n.validationEnterEmail);
+      return _RegisterOutcome.rejected;
+    }
 
     // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
     // locale del dispositivo (captura silenciosa; el backend valida el código).
-    final country = Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
+    final country =
+        Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
     // Teléfono en formato internacional (prefijo + número): listo para WhatsApp.
     final localPhone = profile.userPhone.replaceAll(RegExp(r'[^0-9]'), '');
 
     final auth = AuthApiClient();
     try {
       final account = await auth.register(
-        firstName: profile.userName.trim().isEmpty ? 'Paciente' : profile.userName.trim(),
+        firstName: profile.userName.trim().isEmpty
+            ? 'Paciente'
+            : profile.userName.trim(),
         email: email,
         birthDate: profile.birthDate,
         sex: profile.userGender.isEmpty ? null : profile.userGender,
@@ -131,15 +181,27 @@ class _OnboardingShellState extends State<OnboardingShell> {
         firstName: account.firstName,
         source: account.source,
       );
+      // Cuenta creada: nada queda pendiente.
+      await PendingAccountStore.instance.clear();
+      return _RegisterOutcome.created;
+    } on AuthNetworkException catch (e) {
+      // Sin red o servidor caído: los datos ya están guardados en el perfil
+      // local, así que basta con recordar que el alta sigue pendiente.
+      await PendingAccountStore.instance.markPending(reason: e.message);
+      return _RegisterOutcome.deferred;
+    } on AuthException catch (e) {
+      // El servidor rechaza el dato (correo duplicado, formato inválido…):
+      // reintentar no arregla nada, hay que decírselo al usuario.
+      if (mounted) setState(() => _registerError = e.message);
+      return _RegisterOutcome.rejected;
     } catch (e) {
       debugPrint('Registro al terminar onboarding falló: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No se pudo crear la cuenta ahora; puedes vincularla luego en Perfil.'),
-          ),
-        );
-      }
+      // Causa desconocida: se trata como diferible en lugar de dejar al usuario
+      // fuera con sus datos ya escritos.
+      await PendingAccountStore.instance.markPending(
+        reason: l10n.commonRegisterFailed,
+      );
+      return _RegisterOutcome.deferred;
     } finally {
       auth.close();
     }
@@ -147,9 +209,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
 
   // ── UI HELPERS ───────────────────────────────────────────────────────────────
 
-  /// Bottom action area background. Uniform light now that the wizard starts on
-  /// the first form step (the blue welcome portada moved to /welcome).
-  Color _bottomBgColor() => const Color(0xFFF4F6F9);
+  /// Fondo de la barra de acciones: el lienzo del tema activo.
+  Color _bottomBgColor() => Theme.of(context).surfaces.canvas;
 
   // Ya no hay un paso "welcome" oscuro dentro del wizard; la barra siempre es clara.
   bool get _isWelcomeStep => false;
@@ -157,6 +218,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final isLastPage = _currentPage == _totalPages - 1;
 
     return PopScope(
@@ -182,21 +245,20 @@ class _OnboardingShellState extends State<OnboardingShell> {
                     key: _personalInfoKey,
                     showAppBar: false,
                     onNext: _nextPage,
+                    // La cuenta es obligatoria y el registro necesita un
+                    // identificador: aquí el correo deja de ser opcional.
+                    requireEmail: true,
                   ),
 
                   // Step 2 — Measurement Units (shared with Profile)
                   // No validation needed: always has a default value
-                  MeasurementUnitsScreen(
-                    showAppBar: false,
-                    onNext: _nextPage,
-                  ),
+                  MeasurementUnitsScreen(showAppBar: false, onNext: _nextPage),
 
                   // Step 3 — Avatar (fully optional)
                   const OnboardingAvatarPage(),
                 ],
               ),
             ),
-
 
             // ── BOTTOM NAVIGATION BAR ─────────────────────────────────────
             AnimatedContainer(
@@ -211,6 +273,41 @@ class _OnboardingShellState extends State<OnboardingShell> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Motivo del fallo de registro, si lo hubo. Va aquí y no en
+                  // un SnackBar porque es un error bloqueante: el usuario tiene
+                  // que verlo y reintentar, no verlo pasar.
+                  if (_registerError != null) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.clinical.alert.surface,
+                        borderRadius: BorderRadius.circular(
+                          surfaces.radiusControl,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: theme.clinical.alert.accent,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _registerError!,
+                              style: theme.type.body.copyWith(
+                                fontSize: 13,
+                                color: theme.clinical.alert.accent,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   // Step indicator dots
                   _StepIndicators(
                     total: _totalPages,
@@ -231,8 +328,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
                           icon: Icon(
                             Icons.arrow_back_ios_rounded,
                             color: _isWelcomeStep
-                                ? Colors.white70
-                                : const Color(0xFF64748B),
+                                ? surfaces.onBrand.withValues(alpha: 0.7)
+                                : surfaces.inkSecondary,
                           ),
                         ),
                       ),
@@ -240,14 +337,16 @@ class _OnboardingShellState extends State<OnboardingShell> {
                       const Spacer(),
 
                       // Step counter text
+                      // «PASO 1 DE 3»: rótulo de sección, en versalitas
+                      // monoespaciadas cuando el tema lo pide.
                       Text(
-                        l10n.onboardingStep(_currentPage + 1, _totalPages),
-                        style: TextStyle(
-                          fontSize: 13,
+                        l10n
+                            .onboardingStep(_currentPage + 1, _totalPages)
+                            .toUpperCase(),
+                        style: theme.type.sectionLabel.copyWith(
                           color: _isWelcomeStep
-                              ? Colors.white60
-                              : const Color(0xFF94A3B8),
-                          fontWeight: FontWeight.w500,
+                              ? surfaces.onBrand.withValues(alpha: 0.6)
+                              : surfaces.inkMuted,
                         ),
                       ),
 
@@ -259,26 +358,17 @@ class _OnboardingShellState extends State<OnboardingShell> {
                             ? l10n.onboardingFinish
                             : l10n.onboardingNext,
                         isLight: _isWelcomeStep,
-                        onTap: _nextPage,
+                        busy: _registering,
+                        onTap: _registering ? null : _nextPage,
                       ),
                     ],
                   ),
 
-                  // Skip text (only on the last step —avatar—, fully optional)
-                  if (isLastPage) ...[
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: _finishOnboarding,
-                      child: Text(
-                        l10n.onboardingSkip,
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
+                  // Antes había aquí un enlace de «omitir» en el paso del avatar.
+                  // Se retira: hacía exactamente lo mismo que «Finalizar» —la
+                  // foto siempre fue opcional y sigue siéndolo—, así que eran dos
+                  // botones para la misma acción, uno de ellos insinuando que el
+                  // otro obligaba a poner foto.
                 ],
               ),
             ),
@@ -309,11 +399,11 @@ class _StepIndicators extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(total, (i) {
         final isActive = i == current;
-        final Color activeColor =
-            isLight ? Colors.white : AppTheme.primaryColor;
+        final surfaces = Theme.of(context).surfaces;
+        final Color activeColor = isLight ? surfaces.onBrand : surfaces.brand;
         final Color inactiveColor = isLight
-            ? Colors.white.withValues(alpha: 0.3)
-            : const Color(0xFFCBD5E1);
+            ? surfaces.onBrand.withValues(alpha: 0.3)
+            : surfaces.track;
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -337,54 +427,61 @@ class _StepIndicators extends StatelessWidget {
 class _NextButton extends StatelessWidget {
   final String label;
   final bool isLight;
-  final VoidCallback onTap;
+  final bool busy;
+  final VoidCallback? onTap;
 
   const _NextButton({
     required this.label,
     required this.isLight,
     required this.onTap,
+    this.busy = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final radius = BorderRadius.circular(surfaces.radiusControl);
+
+    final Color fill = isLight ? surfaces.onBrand : surfaces.brand;
+    final Color onFill = isLight ? surfaces.brand : surfaces.onBrand;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: radius,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
           decoration: BoxDecoration(
-            color: isLight ? Colors.white : AppTheme.primaryColor,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: isLight
-                    ? Colors.white.withValues(alpha: 0.3)
-                    : AppTheme.primaryColor.withValues(alpha: 0.35),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            color: fill,
+            borderRadius: radius,
+            // El halo del botón lo hereda del tema: en «Consulta Serena» las
+            // superficies son planas y aquí no se dibuja sombra ninguna.
+            boxShadow: surfaces.glow(
+              fill,
+              alpha: 0.35,
+              blur: 12,
+              offset: const Offset(0, 4),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: isLight ? AppTheme.primaryColor : Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
+              Text(label, style: theme.type.button.copyWith(color: onFill)),
               const SizedBox(width: 6),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 14,
-                color: isLight ? AppTheme.primaryColor : Colors.white,
-              ),
+              if (busy)
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: onFill,
+                  ),
+                )
+              else
+                Icon(Icons.arrow_forward_ios_rounded, size: 14, color: onFill),
             ],
           ),
         ),

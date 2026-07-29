@@ -37,12 +37,12 @@ class SyncService extends ChangeNotifier {
     SyncApiClient? client,
     MeasurementDownloadService? download,
     this.autoSyncDebounce = const Duration(seconds: 2),
-  })  : _anthropometric = anthropometric,
-        _vitals = vitals,
-        _lipid = lipid,
-        _body = body,
-        _client = client ?? SyncApiClient(),
-        _download = download ?? MeasurementDownloadService() {
+  }) : _anthropometric = anthropometric,
+       _vitals = vitals,
+       _lipid = lipid,
+       _body = body,
+       _client = client ?? SyncApiClient(),
+       _download = download ?? MeasurementDownloadService() {
     _attachAutoSync();
     // Si la app arranca con una sesión ya restaurada (PatientSession.load() corre
     // antes de construir los providers), no habrá evento de login que dispare el
@@ -94,7 +94,8 @@ class SyncService extends ChangeNotifier {
   void _onRecordsChanged() {
     if (_muteAutoSync) return;
 
-    final hasPatient = PatientSession.instance.isAuthenticated ||
+    final hasPatient =
+        PatientSession.instance.isAuthenticated ||
         ApiConfig.patientPublicId.isNotEmpty;
     if (ApiConfig.baseUrl.isEmpty || !hasPatient) return;
 
@@ -106,11 +107,14 @@ class SyncService extends ChangeNotifier {
   Future<void> syncNow() async {
     if (_status == SyncStatus.syncing) return;
 
-    final hasPatient = PatientSession.instance.isAuthenticated ||
+    final hasPatient =
+        PatientSession.instance.isAuthenticated ||
         ApiConfig.patientPublicId.isNotEmpty;
     if (ApiConfig.baseUrl.isEmpty || !hasPatient) {
-      _set(SyncStatus.notConfigured,
-          'Inicia sesión para sincronizar (falta identidad del paciente).');
+      _set(
+        SyncStatus.notConfigured,
+        'Inicia sesión para sincronizar (falta identidad del paciente).',
+      );
       return;
     }
 
@@ -129,7 +133,8 @@ class SyncService extends ChangeNotifier {
       for (final r in body) ...MeasurementMapper.fromBodyComposition(r),
     ];
 
-    final hadRecords = anthro.isNotEmpty ||
+    final hadRecords =
+        anthro.isNotEmpty ||
         vitals.isNotEmpty ||
         lipid.isNotEmpty ||
         body.isNotEmpty;
@@ -140,10 +145,11 @@ class SyncService extends ChangeNotifier {
       final pulled = await _pull();
       _lastSyncedAt = DateTime.now();
       _set(
-          SyncStatus.success,
-          pulled > 0
-              ? 'Historial actualizado: $pulled registro(s) descargado(s).'
-              : 'Todo al día. No hay datos nuevos.');
+        SyncStatus.success,
+        pulled > 0
+            ? 'Historial actualizado: $pulled registro(s) descargado(s).'
+            : 'Todo al día. No hay datos nuevos.',
+      );
       return;
     }
 
@@ -169,10 +175,14 @@ class SyncService extends ChangeNotifier {
       final pulled = await _pull();
 
       _lastSyncedAt = DateTime.now();
-      final rejectedNote = result.rejected > 0 ? ' (${result.rejected} descartada/s)' : '';
+      final rejectedNote = result.rejected > 0
+          ? ' (${result.rejected} descartada/s)'
+          : '';
       final pulledNote = pulled > 0 ? ' · $pulled descargado(s)' : '';
-      _set(SyncStatus.success,
-          '${result.accepted} medición/es sincronizada/s$rejectedNote$pulledNote.');
+      _set(
+        SyncStatus.success,
+        '${result.accepted} medición/es sincronizada/s$rejectedNote$pulledNote.',
+      );
     } on SyncException catch (e) {
       _set(SyncStatus.error, 'No se pudo sincronizar: ${e.message}');
     } catch (e) {

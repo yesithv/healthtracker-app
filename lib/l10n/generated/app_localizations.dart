@@ -713,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @saveAndEarnXp.
   ///
   /// In en, this message translates to:
-  /// **'Save and earn +10 XP ✦'**
+  /// **'Save and earn +10 XP'**
   String get saveAndEarnXp;
 
   /// No description provided for @historyGoodJob.
@@ -1697,7 +1697,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA4.
   ///
   /// In en, this message translates to:
-  /// **'Go to Profile → Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.'**
+  /// **'Go to Profile › Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.'**
   String get helpFaqA4;
 
   /// No description provided for @helpFaqQ5.
@@ -1721,7 +1721,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA6.
   ///
   /// In en, this message translates to:
-  /// **'Yes. Go to Profile → Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.'**
+  /// **'Yes. Go to Profile › Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.'**
   String get helpFaqA6;
 
   /// No description provided for @helpFaqQ7.
@@ -2113,12 +2113,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get Started!'**
   String get onboardingFinish;
-
-  /// No description provided for @onboardingSkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip'**
-  String get onboardingSkip;
 
   /// No description provided for @onboardingStep.
   ///
@@ -2803,6 +2797,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show {count} more'**
   String historyShowMore(int count);
+
+  /// No description provided for @introSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get introSignIn;
+
+  /// No description provided for @introRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get introRegister;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @validationEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get validationEnterEmail;
+
+  /// No description provided for @validationEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the email: the @ or the domain is missing'**
+  String get validationEmailFormat;
+
+  /// No description provided for @validationOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a value between {min} and {max}'**
+  String validationOutOfRange(Object max, Object min);
+
+  /// No description provided for @commonRegisterFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t create your account. Check your connection and try again.'**
+  String get commonRegisterFailed;
+
+  /// No description provided for @logOutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out on this device? Your records stay on the device and will sync again when you sign back in.'**
+  String get logOutConfirm;
+
+  /// No description provided for @pendingAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account pending'**
+  String get pendingAccountTitle;
+
+  /// No description provided for @pendingAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is saved on this device. We will create your account as soon as there is a connection.'**
+  String get pendingAccountBody;
+
+  /// No description provided for @pendingAccountCreateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my account now'**
+  String get pendingAccountCreateNow;
+
+  /// No description provided for @pendingAccountCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account…'**
+  String get pendingAccountCreating;
+
+  /// No description provided for @pendingAccountCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created. Uploading your records.'**
+  String get pendingAccountCreated;
+
+  /// No description provided for @pendingAccountStillOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Still no connection. Your data is safe on this device.'**
+  String get pendingAccountStillOffline;
+
+  /// No description provided for @identifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let us bring your history'**
+  String get identifyTitle;
+
+  /// No description provided for @identifyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your ID number (or email). If you are already a patient we will load your data; if not, we will create your account.'**
+  String get identifyBody;
+
+  /// No description provided for @identifyFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number or email'**
+  String get identifyFieldLabel;
+
+  /// No description provided for @identifyFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 1032456789'**
+  String get identifyFieldHint;
+
+  /// No description provided for @identifyFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We found a medical history linked to this ID.'**
+  String get identifyFoundTitle;
+
+  /// No description provided for @identifyFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We can bring it over and activate your account so you see your data from day one.'**
+  String get identifyFoundBody;
+
+  /// No description provided for @identifyBringHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring my history and continue'**
+  String get identifyBringHistory;
+
+  /// No description provided for @identifyBringingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing your history…'**
+  String get identifyBringingHistory;
+
+  /// No description provided for @identifyNotMe.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s not me — sign me up as new'**
+  String get identifyNotMe;
+
+  /// No description provided for @verifyAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get verifyAppBarTitle;
+
+  /// No description provided for @verifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We found your account'**
+  String get verifyTitle;
+
+  /// No description provided for @verifyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity to continue with\n{identifier}.'**
+  String verifyBody(String identifier);
+
+  /// No description provided for @verifyPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get verifyPasswordLabel;
+
+  /// No description provided for @verifyTestNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Test phase: the password is 1234. (An OTP code will go here in production.)'**
+  String get verifyTestNotice;
+
+  /// No description provided for @verifySubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get verifySubmit;
+
+  /// No description provided for @unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error: {details}'**
+  String unexpectedError(String details);
+
+  /// No description provided for @accountSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account and sync'**
+  String get accountSyncTitle;
+
+  /// No description provided for @accountYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account'**
+  String get accountYourAccount;
+
+  /// No description provided for @accountPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is on this device. The account still has to be created on the server.'**
+  String get accountPendingBody;
+
+  /// No description provided for @accountLoggedOutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in if you are already a patient, or register to get started.'**
+  String get accountLoggedOutBody;
+
+  /// No description provided for @accountFallbackName.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get accountFallbackName;
+
+  /// No description provided for @accountFromLegacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Account migrated from the legacy system'**
+  String get accountFromLegacy;
+
+  /// No description provided for @accountCreatedInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created in the app'**
+  String get accountCreatedInApp;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountSignOut;
+
+  /// No description provided for @accountSyncSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get accountSyncSection;
+
+  /// No description provided for @accountSyncBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your local records to the server.'**
+  String get accountSyncBody;
+
+  /// No description provided for @accountSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get accountSyncing;
+
+  /// No description provided for @accountSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get accountSyncNow;
+
+  /// No description provided for @accountHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have an account (migrated patient)'**
+  String get accountHaveAccount;
+
+  /// No description provided for @accountImNew.
+  ///
+  /// In en, this message translates to:
+  /// **'I am new (sign me up)'**
+  String get accountImNew;
+
+  /// No description provided for @accountCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get accountCreateAccount;
+
+  /// No description provided for @accountNewHere.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m new (sign up)'**
+  String get accountNewHere;
+
+  /// No description provided for @accountDocumentOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Document (optional)'**
+  String get accountDocumentOptional;
+
+  /// No description provided for @accountNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get accountNameLabel;
+
+  /// No description provided for @accountEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get accountEmailLabel;
+
+  /// No description provided for @deviceScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My measuring device'**
+  String get deviceScreenTitle;
+
+  /// No description provided for @deviceNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I don’t use one'**
+  String get deviceNoneTitle;
+
+  /// No description provided for @deviceNoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I will only record manual measurements (weight, waist, height).'**
+  String get deviceNoneSubtitle;
+
+  /// No description provided for @deviceNoneSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: you don’t use bioimpedance.'**
+  String get deviceNoneSaved;
+
+  /// No description provided for @deviceCatalogError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh the catalogue. Showing the saved options.'**
+  String get deviceCatalogError;
+
+  /// No description provided for @deviceAvailableScales.
+  ///
+  /// In en, this message translates to:
+  /// **'AVAILABLE SCALES'**
+  String get deviceAvailableScales;
+
+  /// No description provided for @deviceWhyItMatters.
+  ///
+  /// In en, this message translates to:
+  /// **'Every bioimpedance scale interprets fat, muscle and visceral fat with its own ranges. Tell us which one you use so we can show whether your values are low, normal or high. You can change it whenever you like.'**
+  String get deviceWhyItMatters;
+
+  /// No description provided for @circumferencesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'BODY CIRCUMFERENCES (OPTIONAL)'**
+  String get circumferencesSection;
+
+  /// No description provided for @circWaist.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist'**
+  String get circWaist;
+
+  /// No description provided for @circHip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hip'**
+  String get circHip;
+
+  /// No description provided for @circLowerAbdomen.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower abdomen'**
+  String get circLowerAbdomen;
+
+  /// No description provided for @circArm.
+  ///
+  /// In en, this message translates to:
+  /// **'Arm'**
+  String get circArm;
+
+  /// No description provided for @circLeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Leg'**
+  String get circLeg;
+
+  /// No description provided for @circChestBust.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest/Bust'**
+  String get circChestBust;
+
+  /// No description provided for @circAbdomenShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Abd.'**
+  String get circAbdomenShort;
+
+  /// No description provided for @lipidLabQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Which lab ran your test?'**
+  String get lipidLabQuestion;
+
+  /// No description provided for @lipidLabLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading labs…'**
+  String get lipidLabLoading;
+
+  /// No description provided for @lipidLabNotSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified / I don’t know'**
+  String get lipidLabNotSpecified;
+
+  /// No description provided for @lipidLabOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other (specify)'**
+  String get lipidLabOther;
+
+  /// No description provided for @compositionSkeletalMuscle.
+  ///
+  /// In en, this message translates to:
+  /// **'Skeletal muscle'**
+  String get compositionSkeletalMuscle;
+
+  /// No description provided for @compositionSkeletalMuscleRef.
+  ///
+  /// In en, this message translates to:
+  /// **'As reported by your scale (%)'**
+  String get compositionSkeletalMuscleRef;
+
+  /// No description provided for @profileAppTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'App theme'**
+  String get profileAppTheme;
+
+  /// No description provided for @profileRankObserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Observer'**
+  String get profileRankObserver;
+
+  /// No description provided for @themeBankLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'THEME LIBRARY'**
+  String get themeBankLabel;
+
+  /// No description provided for @themePickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the look'**
+  String get themePickTitle;
+
+  /// No description provided for @themePickBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes colours and typography. Navigation, icons and the meaning of every colour stay exactly the same.'**
+  String get themePickBody;
+
+  /// No description provided for @themeSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The change applies instantly and is remembered. Navigation, icons and the meaning of every colour stay exactly the same.'**
+  String get themeSettingsBody;
+
+  /// No description provided for @themeContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with {theme}'**
+  String themeContinueWith(String theme);
+
+  /// No description provided for @deviceSelectedSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} selected.'**
+  String deviceSelectedSaved(String device);
+
+  /// No description provided for @deviceWillSyncLater.
+  ///
+  /// In en, this message translates to:
+  /// **'{message} It will sync once you are online.'**
+  String deviceWillSyncLater(String message);
 }
 
 class _AppLocalizationsDelegate

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/providers/user_profile_provider.dart';
+import '../../../../core/theme/theme_context.dart';
 
 /// Dashboard header card: avatar, name and email from [UserProfileProvider].
 class UserProfileCard extends StatelessWidget {
@@ -12,47 +13,26 @@ class UserProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final prefs = Provider.of<UserProfileProvider>(context);
+    final theme = Theme.of(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: theme.surfaces.cardDecoration(),
       child: Row(
         children: [
-          _buildAvatar(prefs.profileImageBase64),
+          _buildAvatar(context, prefs.profileImageBase64),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  prefs.userName.isNotEmpty
-                      ? prefs.userName
-                      : l10n.newUserInfo,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xFF1E293B),
-                  ),
+                  prefs.userName.isNotEmpty ? prefs.userName : l10n.newUserInfo,
+                  style: theme.type.numeralSmall.copyWith(fontSize: 18),
                 ),
                 if (prefs.userEmail.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    prefs.userEmail,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 13,
-                    ),
-                  ),
+                  Text(prefs.userEmail, style: theme.type.meta),
                 ],
               ],
             ),
@@ -62,7 +42,7 @@ class UserProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(String? base64String) {
+  Widget _buildAvatar(BuildContext context, String? base64String) {
     if (base64String != null && base64String.isNotEmpty) {
       try {
         return CircleAvatar(
@@ -73,10 +53,12 @@ class UserProfileCard extends StatelessWidget {
         // Fallback
       }
     }
-    return const CircleAvatar(
+    final surfaces = Theme.of(context).surfaces;
+    return CircleAvatar(
       radius: 36,
-      backgroundColor: Color(0xFFE3F2FD),
-      child: Icon(Icons.person, size: 40, color: Color(0xFF0D48A0)),
+      backgroundColor: surfaces.selection,
+      // Mismo icono en todos los temas; sólo cambia cómo se viste.
+      child: Icon(Icons.person, size: 40, color: surfaces.brand),
     );
   }
 }

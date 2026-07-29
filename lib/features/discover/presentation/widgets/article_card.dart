@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_context.dart';
+
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/models/article.dart';
 import '../theme/discover_palette.dart';
@@ -14,21 +16,17 @@ class ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
     final l10n = AppLocalizations.of(context)!;
-    final style = DiscoverPalette.of(article.category);
+    final style = DiscoverPalette.of(context, article.category);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: surfaces.card,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: surfaces.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -46,7 +44,7 @@ class ArticleCard extends StatelessWidget {
                     gradient: style.gradient(),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(style.icon, color: Colors.white, size: 24),
+                  child: Icon(style.icon, color: style.tone.onAccent, size: 24),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -55,10 +53,8 @@ class ArticleCard extends StatelessWidget {
                     children: [
                       Text(
                         article.title,
-                        style: const TextStyle(
+                        style: theme.type.cardTitle.copyWith(
                           fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF0F172A),
                           height: 1.2,
                         ),
                         maxLines: 2,
@@ -67,9 +63,8 @@ class ArticleCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         article.subtitle,
-                        style: const TextStyle(
+                        style: theme.type.body.copyWith(
                           fontSize: 13,
-                          color: Color(0xFF64748B),
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -78,8 +73,11 @@ class ArticleCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.schedule_rounded,
-                              size: 13, color: style.accent),
+                          Icon(
+                            Icons.schedule_rounded,
+                            size: 13,
+                            color: style.accent,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${article.readTime} ${l10n.discoverMinRead}',
@@ -92,15 +90,14 @@ class ArticleCard extends StatelessWidget {
                           ),
                           if (article.author.isNotEmpty) ...[
                             const SizedBox(width: 8),
-                            const Text('·',
-                                style: TextStyle(color: Color(0xFF94A3B8))),
+                            Text('·', style: theme.type.meta),
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
                                 article.author,
-                                style: const TextStyle(
+                                style: theme.type.body.copyWith(
                                   fontSize: 11,
-                                  color: Color(0xFF94A3B8),
+                                  color: surfaces.inkMuted,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

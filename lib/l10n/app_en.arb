@@ -26,8 +26,12 @@
   "xpForNextLevel": "{current} / {total} XP for next level",
   "@xpForNextLevel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "levelProgress": "Level Progress",
@@ -113,13 +117,15 @@
   "bmiObesity": "OBESITY",
   "commentOptional": "COMMENT (OPTIONAL)",
   "commentHint": "Any observations about this measurement?",
-  "saveAndEarnXp": "Save and earn +10 XP ✦",
+  "saveAndEarnXp": "Save and earn +10 XP",
   "historyGoodJob": "Good job!",
   "historyGoalProgress": "You have recorded a new measurement this month, staying on your wellness track.",
   "historyWeightLoss": "You lost {weight}kg this month, getting closer to your wellness goal.",
   "@historyWeightLoss": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "historyBmiTrend": "BMI TREND",
@@ -211,15 +217,15 @@
   "fatNormal": "NORMAL",
   "fatElevated": "ELEVATED",
   "fatHigh": "HIGH",
-
   "infoBannerAnthro": "Try to take the measurement every time under the same conditions, for example: every morning after waking up, going to the bathroom, and before breakfast.",
   "infoBannerVitals": "Try to take your vital signs after resting for half an hour.",
-
   "compositionSavedSuccess": "Body profile saved successfully.",
   "discoverGreeting": "Good morning, {name}",
   "@discoverGreeting": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "discoverSearchHint": "Search for tips...",
@@ -249,11 +255,29 @@
   "discoverStatusFinished": "Finished",
   "discoverEmpty": "No content available yet.",
   "discoverExercises": "{count} exercises",
-  "@discoverExercises": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverExercises": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "discoverParticipants": "{count} participants",
-  "@discoverParticipants": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverParticipants": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "discoverDaysShort": "{count} days",
-  "@discoverDaysShort": { "placeholders": { "count": { "type": "String" } } },
+  "@discoverDaysShort": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "privacySecurityDescription": "Manage how your medical and personal information is protected.",
   "biometricLockTitle": "Biometric Lock",
   "biometricLockSubtitle": "Requires Fingerprint or FaceID on app startup",
@@ -269,7 +293,6 @@
   "targetMuscleMass": "Target Muscle Mass",
   "targetVisceralFat": "Target Visceral Fat",
   "goalsSavedSuccess": "Goals saved successfully.",
-
   "helpSupportPageTitle": "Help & Support",
   "helpSupportPageDescription": "Everything you need to know about My Vitals.",
   "helpFaqTitle": "Frequently Asked Questions",
@@ -280,15 +303,12 @@
   "helpLegalDescription": "Terms of use and data privacy.",
   "helpContactTitle": "Contact & Feedback",
   "helpContactDescription": "Write to us, we improve together.",
-
   "helpSearchHint": "Search...",
   "helpNoResults": "No results for your search.",
-
   "helpFaqCatGeneral": "General",
   "helpFaqCatData": "My Data",
   "helpFaqCatBiometrics": "Biometrics",
   "helpFaqCatExport": "Export",
-
   "helpFaqQ1": "What is My Vitals?",
   "helpFaqA1": "My Vitals is a personal health tracking app that lets you record and monitor your wellness indicators: anthropometric measurements, vital signs, lipid profile, and body composition.",
   "helpFaqQ2": "Is my data saved to the cloud?",
@@ -296,23 +316,21 @@
   "helpFaqQ3": "Can I use the app without internet?",
   "helpFaqA3": "Yes. My Vitals works completely offline. You only need connectivity for app updates.",
   "helpFaqQ4": "How do I enable biometric lock?",
-  "helpFaqA4": "Go to Profile → Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.",
+  "helpFaqA4": "Go to Profile › Privacy & Security and enable the Biometric Lock toggle. Your device must have fingerprint or FaceID configured.",
   "helpFaqQ5": "How do I export my history?",
   "helpFaqA5": "In each history screen (Anthropometric, Vital Signs, etc.) you will find 'Export PDF' and 'Excel (CSV)' buttons at the top.",
   "helpFaqQ6": "Can I change the measurement units?",
-  "helpFaqA6": "Yes. Go to Profile → Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.",
+  "helpFaqA6": "Yes. Go to Profile › Measurement Units and choose between Metric (kg, cm) or Imperial (lb, ft/in) system.",
   "helpFaqQ7": "What happens if I delete the app?",
   "helpFaqA7": "Uninstalling the app will permanently delete all locally stored data. We recommend exporting your history to PDF or CSV before uninstalling.",
   "helpFaqQ8": "Does this app replace my doctor?",
   "helpFaqA8": "No. My Vitals is a personal tracking tool to help you keep an organized record. Always consult a healthcare professional for medical interpretation and diagnosis.",
-
   "helpGlossarySearchHint": "Search term...",
   "helpGlossaryGroupAnthropo": "Anthropometric Measurements",
   "helpGlossaryGroupVitals": "Vital Signs",
   "helpGlossaryGroupLipid": "Lipid Profile",
   "helpGlossaryGroupBody": "Body Composition",
   "helpGlossaryNormalRange": "Normal range",
-
   "helpLegalPurposeTitle": "Purpose of the application",
   "helpLegalPurposeBody": "My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.",
   "helpLegalNotMedicalTitle": "Not a medical device",
@@ -323,7 +341,6 @@
   "helpLegalPrivacyBody": "All data is stored locally on the user's device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.",
   "helpLegalContactTitle": "Developer contact",
   "helpLegalContactBody": "For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com",
-
   "helpContactReportBug": "Report a bug",
   "helpContactReportBugDesc": "Found something that's not working? Tell us.",
   "helpContactSuggest": "Send a suggestion",
@@ -362,7 +379,6 @@
   "backupIncludesPhoto": "Profile Photo",
   "backupIncludesPreferences": "Preferences (language, units)",
   "backupCancel": "Cancel",
-
   "onboardingWelcomeTitle": "Welcome to My Vitals",
   "onboardingWelcomeSubtitle": "Your personal health companion",
   "onboardingWelcomeFeature1": "Record your vital signs and body measurements",
@@ -370,12 +386,15 @@
   "onboardingWelcomeFeature3": "100% private, everything stays on your device",
   "onboardingNext": "Next",
   "onboardingFinish": "Get Started!",
-  "onboardingSkip": "Skip",
   "onboardingStep": "Step {current} of {total}",
   "@onboardingStep": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "onboardingAvatarTitle": "Your profile picture",
@@ -395,12 +414,13 @@
   "goalRemainingWeight": "{weight}kg remaining for target",
   "@goalRemainingWeight": {
     "placeholders": {
-      "weight": { "type": "String" }
+      "weight": {
+        "type": "String"
+      }
     }
   },
   "goalAchieved": "Goal achieved!",
   "noGoalDefined": "No goal defined",
-
   "validationRequiredFields": "Required fields",
   "validationCompleteBeforeContinue": "Please complete these fields before continuing:",
   "validationSelectLanguage": "Select a language",
@@ -414,7 +434,9 @@
   "dashboardCompositionLevel": "Lv. {level}",
   "@dashboardCompositionLevel": {
     "placeholders": {
-      "level": { "type": "int" }
+      "level": {
+        "type": "int"
+      }
     }
   },
   "vitalsPdfTitle": "Vital Signs History",
@@ -504,8 +526,123 @@
   "historyShowMore": "Show {count} more",
   "@historyShowMore": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "introSignIn": "Sign in",
+  "introRegister": "Create account",
+  "emailLabel": "Email",
+  "validationEnterEmail": "Enter your email",
+  "validationEmailFormat": "Check the email: the @ or the domain is missing",
+  "validationOutOfRange": "Enter a value between {min} and {max}",
+  "commonRegisterFailed": "We couldn't create your account. Check your connection and try again.",
+  "logOutConfirm": "Sign out on this device? Your records stay on the device and will sync again when you sign back in.",
+  "pendingAccountTitle": "Account pending",
+  "pendingAccountBody": "Your data is saved on this device. We will create your account as soon as there is a connection.",
+  "pendingAccountCreateNow": "Create my account now",
+  "pendingAccountCreating": "Creating your account…",
+  "pendingAccountCreated": "Account created. Uploading your records.",
+  "pendingAccountStillOffline": "Still no connection. Your data is safe on this device.",
+  "identifyTitle": "Let us bring your history",
+  "identifyBody": "Enter your ID number (or email). If you are already a patient we will load your data; if not, we will create your account.",
+  "identifyFieldLabel": "ID number or email",
+  "identifyFieldHint": "e.g. 1032456789",
+  "identifyFoundTitle": "We found a medical history linked to this ID.",
+  "identifyFoundBody": "We can bring it over and activate your account so you see your data from day one.",
+  "identifyBringHistory": "Bring my history and continue",
+  "identifyBringingHistory": "Bringing your history…",
+  "identifyNotMe": "That's not me — sign me up as new",
+  "verifyAppBarTitle": "Verification",
+  "verifyTitle": "We found your account",
+  "verifyBody": "Verify your identity to continue with\n{identifier}.",
+  "@verifyBody": {
+    "placeholders": {
+      "identifier": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPasswordLabel": "Password",
+  "verifyTestNotice": "Test phase: the password is 1234. (An OTP code will go here in production.)",
+  "verifySubmit": "Sign in",
+  "unexpectedError": "Unexpected error: {details}",
+  "@unexpectedError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSyncTitle": "Account and sync",
+  "accountYourAccount": "Your account",
+  "accountPendingBody": "Your data is on this device. The account still has to be created on the server.",
+  "accountLoggedOutBody": "Sign in if you are already a patient, or register to get started.",
+  "accountFallbackName": "Patient",
+  "accountFromLegacy": "Account migrated from the legacy system",
+  "accountCreatedInApp": "Account created in the app",
+  "accountSignOut": "Sign out",
+  "accountSyncSection": "Sync",
+  "accountSyncBody": "Upload your local records to the server.",
+  "accountSyncing": "Syncing…",
+  "accountSyncNow": "Sync now",
+  "accountHaveAccount": "I already have an account (migrated patient)",
+  "accountImNew": "I am new (sign me up)",
+  "accountCreateAccount": "Create account",
+  "accountNewHere": "I'm new (sign up)",
+  "accountDocumentOptional": "Document (optional)",
+  "accountNameLabel": "Name",
+  "accountEmailLabel": "Email",
+  "deviceScreenTitle": "My measuring device",
+  "deviceNoneTitle": "I don’t use one",
+  "deviceNoneSubtitle": "I will only record manual measurements (weight, waist, height).",
+  "deviceNoneSaved": "Saved: you don’t use bioimpedance.",
+  "deviceCatalogError": "Could not refresh the catalogue. Showing the saved options.",
+  "deviceAvailableScales": "AVAILABLE SCALES",
+  "deviceWhyItMatters": "Every bioimpedance scale interprets fat, muscle and visceral fat with its own ranges. Tell us which one you use so we can show whether your values are low, normal or high. You can change it whenever you like.",
+  "circumferencesSection": "BODY CIRCUMFERENCES (OPTIONAL)",
+  "circWaist": "Waist",
+  "circHip": "Hip",
+  "circLowerAbdomen": "Lower abdomen",
+  "circArm": "Arm",
+  "circLeg": "Leg",
+  "circChestBust": "Chest/Bust",
+  "circAbdomenShort": "Abd.",
+  "lipidLabQuestion": "Which lab ran your test?",
+  "lipidLabLoading": "Loading labs…",
+  "lipidLabNotSpecified": "Not specified / I don’t know",
+  "lipidLabOther": "Other (specify)",
+  "compositionSkeletalMuscle": "Skeletal muscle",
+  "compositionSkeletalMuscleRef": "As reported by your scale (%)",
+  "profileAppTheme": "App theme",
+  "profileRankObserver": "Vital Observer",
+  "themeBankLabel": "THEME LIBRARY",
+  "themePickTitle": "Choose the look",
+  "themePickBody": "Changes colours and typography. Navigation, icons and the meaning of every colour stay exactly the same.",
+  "themeSettingsBody": "The change applies instantly and is remembered. Navigation, icons and the meaning of every colour stay exactly the same.",
+  "themeContinueWith": "Continue with {theme}",
+  "@themeContinueWith": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceSelectedSaved": "{device} selected.",
+  "@deviceSelectedSaved": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceWillSyncLater": "{message} It will sync once you are online.",
+  "@deviceWillSyncLater": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
     }
   }
 }
-

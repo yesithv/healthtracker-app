@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import '../../../../core/constants/metric_colors.dart';
+import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
 import '../../../../core/widgets/action_button.dart';
 import '../../../../core/widgets/dashed_border_container.dart';
+import '../../../../core/widgets/status_chip.dart';
 import '../../../../core/database/record_repositories.dart';
 
 /// Dashboard card summarizing the latest blood-pressure / heart-rate reading.
@@ -20,41 +22,36 @@ class VitalSignsCard extends StatelessWidget {
     if (!repo.isLoaded) return const SizedBox();
     final list = repo.items;
 
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    // Identidad de la familia «signos vitales»: rojo en cualquier tema.
+    final family = theme.metrics.tone(MetricFamily.vitals);
+
     if (list.isEmpty) {
       return DashedBorderContainer(
-        color: MetricColors.vitalsColor,
-        borderRadius: 20,
+        color: family.accent,
+        borderRadius: surfaces.radiusCard,
         child: Column(
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundColor: MetricColors.vitalsBg,
-              child: Icon(Icons.favorite, color: MetricColors.vitalsColor),
+              backgroundColor: family.surface,
+              child: Icon(Icons.favorite, color: family.accent),
             ),
             const SizedBox(height: 16),
-            Text(
-              l10n.vitalSigns,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                letterSpacing: 1.0,
-                color: Color(0xFF1E293B),
-              ),
-            ),
+            Text(l10n.vitalSigns, style: theme.type.cardTitle),
             const SizedBox(height: 4),
             Text(
               l10n.vitalsSubtitle,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              textAlign: TextAlign.center,
+              style: theme.type.meta,
             ),
             const SizedBox(height: 12),
-            Text(
-              l10n.noDataYet,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
+            Text(l10n.noDataYet, style: theme.type.meta),
             const SizedBox(height: 20),
             ActionButton(
               text: l10n.recordVitalsAction,
-              color: MetricColors.vitalsColor,
+              color: family.accent,
               solid: false,
               onPressed: () => context.push('/record-vital-signs'),
             ),
@@ -65,22 +62,14 @@ class VitalSignsCard extends StatelessWidget {
 
     final latest = list.first;
     final bpCat = BpCategory.of(latest.systolic, latest.diastolic);
-    final bpColor = bpCat.color;
-    final bpLabel = bpCat.label(l10n);
+    // El ESTADO lo decide el clasificador (rangos del backoffice); el tema sólo
+    // resuelve con qué color se dibuja.
+    final bpStatus = bpCat.status;
+    final bpTone = theme.clinical.tone(bpStatus);
 
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: surfaces.cardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -88,43 +77,14 @@ class VitalSignsCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 18,
-                backgroundColor: MetricColors.vitalsBg,
-                child: Icon(
-                  Icons.favorite,
-                  color: MetricColors.vitalsColor,
-                  size: 18,
-                ),
+                backgroundColor: family.surface,
+                child: Icon(Icons.favorite, color: family.accent, size: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  l10n.vitalSigns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    letterSpacing: 1.0,
-                    color: Color(0xFF1E293B),
-                  ),
-                ),
+                child: Text(l10n.vitalSigns, style: theme.type.cardTitle),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: bpColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  bpLabel,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              StatusChip(status: bpStatus, label: bpCat.label(l10n)),
             ],
           ),
           const SizedBox(height: 16),
@@ -135,25 +95,25 @@ class VitalSignsCard extends StatelessWidget {
                 label: l10n.bloodPressureTitle,
                 value: '${latest.systolic}/${latest.diastolic}',
                 unit: 'mmHg',
-                color: bpColor,
+                color: bpTone.accent,
               ),
-              Container(
-                width: 1,
-                height: 50,
-                color: const Color(0xFFE2E8F0),
-              ),
+              Container(width: 1, height: 50, color: surfaces.divider),
               _VitalTile(
                 label: l10n.heartRateTitle,
                 value: latest.heartRate.toString(),
                 unit: 'bpm',
-                color: MetricColors.vitalsColor,
+                // El pulso tiene su propia lectura clínica: no hereda el color
+                // de la tensión, se clasifica aparte.
+                color: theme.clinical
+                    .tone(HrCategory.of(latest.heartRate).status)
+                    .accent,
               ),
             ],
           ),
           const SizedBox(height: 16),
           ActionButton(
             text: l10n.recordVitalsAction,
-            color: MetricColors.vitalsColor,
+            color: family.accent,
             solid: false,
             onPressed: () => context.push('/record-vital-signs'),
           ),
@@ -178,35 +138,13 @@ class _VitalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final type = Theme.of(context).type;
     return Column(
       children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        Text(
-          unit,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF94A3B8),
-          ),
-        ),
+        Text(value, style: type.numeral.copyWith(color: color)),
+        Text(unit, style: type.numeralUnit),
         const SizedBox(height: 4),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
-            letterSpacing: 0.5,
-          ),
-        ),
+        Text(label, textAlign: TextAlign.center, style: type.meta),
       ],
     );
   }

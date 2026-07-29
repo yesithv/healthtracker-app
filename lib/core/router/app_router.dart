@@ -29,9 +29,10 @@ import '../../features/profile/presentation/screens/data_backup_screen.dart';
 import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
-import '../../features/welcome/presentation/screens/welcome_screen.dart';
+import '../../features/welcome/presentation/screens/intro_screen.dart';
 import '../../features/auth/presentation/screens/identify_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
+import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -41,11 +42,22 @@ class AppRouter {
   static final router = GoRouter(
     initialLocation: '/',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+      // PANTALLA 0 — selector de tema (temporal, ver ThemePickerScreen).
+      // Es la raíz para poder recorrer el flujo entero con cualquiera de los
+      // temas. Al reubicarla en Perfil, basta devolver '/' a SplashScreen.
       GoRoute(
-        path: '/welcome',
-        builder: (context, state) => const WelcomeScreen(),
+        path: '/',
+        builder: (context, state) =>
+            const ThemePickerScreen(mode: ThemePickerMode.onboarding),
       ),
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      // Portada del flujo real: logotipo, las tres características y los dos
+      // caminos de entrada. Es a donde manda el arranque a quien no tiene
+      // sesión ni perfil local.
+      GoRoute(path: '/intro', builder: (context, state) => const IntroScreen()),
       GoRoute(
         path: '/identify',
         builder: (context, state) => const IdentifyScreen(),
@@ -60,13 +72,18 @@ class AppRouter {
               : VerifyScreen(identifier: id);
         },
       ),
+      // Alta de paciente nuevo. Ya no admite parámetro `mode`: el asistente
+      // siempre crea la cuenta, porque el modo local se ha eliminado.
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => OnboardingShell(
-          // 'account' = al terminar el wizard se crea la cuenta (register);
-          // cualquier otro valor (o ninguno) = modo local sin cuenta.
-          createAccount: state.uri.queryParameters['mode'] == 'account',
-        ),
+        builder: (context, state) => const OnboardingShell(),
+      ),
+      // Mismo selector que la pantalla 0, en modo ajuste: con vuelta atrás y
+      // sin CTA, porque la elección ya se guarda al tocar la ficha.
+      GoRoute(
+        path: '/profile/theme',
+        builder: (context, state) =>
+            const ThemePickerScreen(mode: ThemePickerMode.settings),
       ),
       GoRoute(
         path: '/profile/language',
@@ -150,27 +167,23 @@ class AppRouter {
 
       GoRoute(
         path: '/history/anthropometry',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: AnthropometryHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: AnthropometryHistoryTab()),
       ),
       GoRoute(
         path: '/history/vital-signs',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: VitalSignsHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: VitalSignsHistoryTab()),
       ),
       GoRoute(
         path: '/history/lipid',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: LipidHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: LipidHistoryTab()),
       ),
       GoRoute(
         path: '/history/body-composition',
-        builder: (context, state) => const HistoryCategoryScreen(
-          child: BodyCompositionHistoryTab(),
-        ),
+        builder: (context, state) =>
+            const HistoryCategoryScreen(child: BodyCompositionHistoryTab()),
       ),
       ShellRoute(
         builder: (context, state, child) {

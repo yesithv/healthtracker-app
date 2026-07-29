@@ -26,12 +26,12 @@ class ServerBand {
   });
 
   factory ServerBand.fromJson(Map<String, dynamic> json) => ServerBand(
-        bandCode: json['bandCode'] as String,
-        bandLabel: json['bandLabel'] as String? ?? '',
-        minValue: (json['minValue'] as num).toDouble(),
-        maxValue: (json['maxValue'] as num).toDouble(),
-        sortOrder: (json['sortOrder'] as num?)?.toInt() ?? 0,
-      );
+    bandCode: json['bandCode'] as String,
+    bandLabel: json['bandLabel'] as String? ?? '',
+    minValue: (json['minValue'] as num).toDouble(),
+    maxValue: (json['maxValue'] as num).toDouble(),
+    sortOrder: (json['sortOrder'] as num?)?.toInt() ?? 0,
+  );
 }
 
 /// Fuente ÚNICA de umbrales clínicos en la app: los rangos administrados en el
@@ -84,13 +84,17 @@ class ReferenceRangesStore {
             headers: {'X-Patient-Public-Id': patientId},
           )
           .timeout(const Duration(seconds: 8));
-      if (resp.statusCode >= 200 && resp.statusCode < 300 && resp.body.isNotEmpty) {
+      if (resp.statusCode >= 200 &&
+          resp.statusCode < 300 &&
+          resp.body.isNotEmpty) {
         _apply(jsonDecode(resp.body) as Map<String, dynamic>);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_prefsKey, resp.body);
       }
     } catch (e) {
-      debugPrint('ReferenceRanges: refresh no disponible ($e); se usa el caché.');
+      debugPrint(
+        'ReferenceRanges: refresh no disponible ($e); se usa el caché.',
+      );
     } finally {
       if (httpClient == null) client.close();
     }
@@ -132,10 +136,11 @@ class ReferenceRangesStore {
       final map = ind as Map<String, dynamic>;
       final code = map['indicatorCode'] as String?;
       if (code == null) continue;
-      final bands = (map['bands'] as List<dynamic>? ?? [])
-          .map((b) => ServerBand.fromJson(b as Map<String, dynamic>))
-          .toList()
-        ..sort((a, b) => a.minValue.compareTo(b.minValue));
+      final bands =
+          (map['bands'] as List<dynamic>? ?? [])
+              .map((b) => ServerBand.fromJson(b as Map<String, dynamic>))
+              .toList()
+            ..sort((a, b) => a.minValue.compareTo(b.minValue));
       if (bands.isNotEmpty) parsed[code] = bands;
     }
     _byIndicator = parsed;
