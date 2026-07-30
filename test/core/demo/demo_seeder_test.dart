@@ -6,14 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_seeder.dart';
-import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
-import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/reminders_provider.dart';
-import 'package:myvitals_healthtracker_app/core/providers/theme_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
-import 'package:myvitals_healthtracker_app/core/theme/theme_catalog.dart';
 
 /// La siembra de la demo escribe las claves de `SharedPreferences` a mano,
 /// porque cada provider guarda las suyas en constantes privadas. Es un acuerdo
@@ -94,16 +90,14 @@ void main() {
     expect(reminders.reminders.where((r) => !r.isEnabled), isNotEmpty);
   });
 
-  test('idioma, unidades y tema salen de la siembra', () async {
-    final localeUnits = LocaleUnitsProvider();
-    await Future<void>.delayed(Duration.zero);
-    expect(localeUnits.locale.languageCode, 'es');
-    expect(localeUnits.unit, MeasurementUnit.metric);
-
-    final theme = await ThemeProvider.load();
-    expect(theme.themeId, AppThemeId.pulsoClinico);
-    // `hasChosen` en true evita que el selector de tema se cuele delante del
-    // panel al arrancar.
-    expect(theme.hasChosen, isTrue);
+  test('la siembra NO impone idioma, unidades ni tema', () {
+    // La demo se entra desde la portada, y tiene que verse con el idioma y el
+    // tema que el visitante ya tenía: imponerlos la haría dejar de parecerse a
+    // la app que se le está enseñando. Sólo el arranque guionizado de las
+    // capturas puede pisarlos, y para eso están las banderas de compilación.
+    final seed = DemoSeeder.demoPreferences();
+    expect(seed.containsKey('user_language'), isFalse);
+    expect(seed.containsKey('user_measurement_unit'), isFalse);
+    expect(seed.containsKey('app_theme_id'), isFalse);
   });
 }

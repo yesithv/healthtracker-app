@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import '../demo/demo_mode.dart';
+import '../demo/demo_session.dart';
 import '../shell/app_shell.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
@@ -41,10 +41,11 @@ import '../../features/history/data/models/body_composition_record.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    // La demo entra directa al panel: su sesión y su perfil ya están sembrados,
-    // así que el selector de tema y la portada sólo estorbarían a quien viene a
-    // tomar una captura. El arranque normal no se mueve de la raíz.
-    initialLocation: kDemoMode ? '/dashboard' : '/',
+    // Arrancar con la demo ya activa (porque el visitante recargó la página sin
+    // salir de ella) entra directo al panel: la portada y el selector de tema le
+    // harían repetir un camino que ya recorrió. El arranque normal no se mueve
+    // de la raíz.
+    initialLocation: DemoSession.instance.isActive ? '/dashboard' : '/',
     routes: [
       // PANTALLA 0 — selector de tema (temporal, ver ThemePickerScreen).
       // Es la raíz para poder recorrer el flujo entero con cualquiera de los

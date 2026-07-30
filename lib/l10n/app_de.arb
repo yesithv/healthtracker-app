@@ -592,5 +592,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "introDemo": "Demo ansehen",
+  "demoNoticeTitle": "Du bist in der Demo",
+  "demoNoticeBody": "Alles, was du siehst, gehört zu einer erfundenen Patientenakte. Du kannst Messwerte erfassen und bearbeiten: nichts wird gespeichert, und beim Verlassen der Demo verschwindet alles.",
+  "demoNoticeAction": "Verstanden",
+  "demoBannerLabel": "Demodaten",
+  "demoExit": "Demo verlassen"
 }

@@ -150,15 +150,7 @@ List<AnthropometricRecord> _buildAnthropometric(
     // normalidad (IMC 24,8), rozando el objetivo de 75 kg sin alcanzarlo: así
     // el panel enseña la barra de progreso viva y no un objetivo ya cumplido.
     final weight = _round(
-      _series(
-        92.4,
-        76.8,
-        t,
-        date,
-        rnd,
-        holidayEffect: 1.4,
-        jitter: 0.35,
-      ),
+      _series(92.4, 76.8, t, date, rnd, holidayEffect: 1.4, jitter: 0.35),
       1,
     );
     final bmi = _round(weight / math.pow(_heightCm / 100, 2), 1);
@@ -243,7 +235,15 @@ List<VitalSignRecord> _buildVitalSigns(
       holidayEffect: 2.5,
       jitter: 3,
     );
-    var heartRate = _series(78, 61.5, t, date, rnd, holidayEffect: 3, jitter: 5);
+    var heartRate = _series(
+      78,
+      61.5,
+      t,
+      date,
+      rnd,
+      holidayEffect: 3,
+      jitter: 5,
+    );
 
     // Reparto realista del contexto: casi siempre en reposo, y una de cada
     // seis tomas justo después de entrenar (que es cuando el pulso se dispara,
@@ -447,12 +447,22 @@ List<BodyCompositionRecord> _buildBodyComposition(
         // Derivado, no inventado: kg de músculo = peso del día × % músculo.
         muscleMassKg: _round(weighIn.weight * musclePct / 100, 1),
         musclePct: musclePct,
-        visceralFatLevel: _series(13.4, 6.6, t, date, rnd, jitter: 0.4)
-            .round()
-            .clamp(1, 30),
-        metabolicAge: _series(52.4, 37.6, t, date, rnd, jitter: 0.6)
-            .round()
-            .clamp(18, 80),
+        visceralFatLevel: _series(
+          13.4,
+          6.6,
+          t,
+          date,
+          rnd,
+          jitter: 0.4,
+        ).round().clamp(1, 30),
+        metabolicAge: _series(
+          52.4,
+          37.6,
+          t,
+          date,
+          rnd,
+          jitter: 0.6,
+        ).round().clamp(18, 80),
         // El metabolismo basal BAJA al bajar el peso total, aunque suba el
         // músculo: es lo que de verdad marca la báscula, y conviene que la
         // demo no enseñe una fisiología de fantasía.

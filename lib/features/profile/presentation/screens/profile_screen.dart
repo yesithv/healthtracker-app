@@ -11,6 +11,8 @@ import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
 import '../../../../core/auth/patient_session.dart';
+import '../../../../core/demo/demo_actions.dart';
+import '../../../../core/demo/demo_session.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -474,50 +476,59 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // --- LOG OUT BUTTON ---
-                GestureDetector(
-                  onTap: () => _confirmLogOut(context),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: surfaces.card,
-                      borderRadius: BorderRadius.circular(surfaces.radiusCard),
-                      // Salir es la acción destructiva de la pantalla: va en el
-                      // rojo de ALERTA, igual que borrar un registro.
-                      border: Border.all(
-                        color: theme.clinical.alert.accent.withValues(
-                          alpha: 0.35,
+                // --- SALIR ---
+                // En la demostración, cerrar sesión no significa nada: no hay
+                // cuenta que cerrar. La acción de salida de la pantalla pasa a
+                // ser abandonar la demo, que es lo único que el visitante puede
+                // querer hacer aquí, y así no quedan dos salidas compitiendo.
+                if (context.watch<DemoSession>().isActive)
+                  const _ExitDemoButton()
+                else
+                  GestureDetector(
+                    onTap: () => _confirmLogOut(context),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        color: surfaces.card,
+                        borderRadius: BorderRadius.circular(
+                          surfaces.radiusCard,
                         ),
-                        width: 1.5,
-                      ),
-                      boxShadow: surfaces.glow(
-                        theme.clinical.alert.accent,
-                        alpha: 0.05,
-                        blur: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: theme.clinical.alert.accent,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          l10n.logOut,
-                          style: theme.type.button.copyWith(
-                            color: theme.clinical.alert.accent,
-                            fontSize: 16,
+                        // Salir es la acción destructiva de la pantalla: va en el
+                        // rojo de ALERTA, igual que borrar un registro.
+                        border: Border.all(
+                          color: theme.clinical.alert.accent.withValues(
+                            alpha: 0.35,
                           ),
+                          width: 1.5,
                         ),
-                      ],
+                        boxShadow: surfaces.glow(
+                          theme.clinical.alert.accent,
+                          alpha: 0.05,
+                          blur: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: theme.clinical.alert.accent,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            l10n.logOut,
+                            style: theme.type.button.copyWith(
+                              color: theme.clinical.alert.accent,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 const SizedBox(height: 48),
 
                 // --- MEDICAL DISCLAIMER ---
@@ -738,6 +749,71 @@ class _MenuTile extends StatelessWidget {
               Icon(Icons.chevron_right, color: surfaces.brand, size: 20),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Salida de la demostración, con el mismo peso visual que tenía el cierre de
+/// sesión: es la acción que saca al visitante de aquí, y tiene que encontrarse
+/// igual de rápido.
+///
+/// No pide confirmación, y a diferencia del cierre de sesión no va en rojo. Lo
+/// que se descarta son datos de un paciente que no existe, así que no hay nada
+/// destructivo que advertir: gastar el rojo de ALERTA aquí le quitaría fuerza
+/// donde sí significa algo, y un diálogo de confirmación sólo estorbaría el
+/// camino hacia el registro, que es a donde esto lleva.
+class _ExitDemoButton extends StatefulWidget {
+  const _ExitDemoButton();
+
+  @override
+  State<_ExitDemoButton> createState() => _ExitDemoButtonState();
+}
+
+class _ExitDemoButtonState extends State<_ExitDemoButton> {
+  bool _leaving = false;
+
+  Future<void> _leave() async {
+    if (_leaving) return;
+    setState(() => _leaving = true);
+    await exitDemo(context);
+    if (mounted) setState(() => _leaving = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final tone = theme.clinical.info;
+
+    return GestureDetector(
+      onTap: _leaving ? null : _leave,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: surfaces.card,
+          borderRadius: BorderRadius.circular(surfaces.radiusCard),
+          border: Border.all(
+            color: tone.accent.withValues(alpha: 0.35),
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.logout, color: tone.accent, size: 18),
+            const SizedBox(width: 10),
+            Text(
+              l10n.demoExit,
+              style: theme.type.button.copyWith(
+                color: tone.accent,
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

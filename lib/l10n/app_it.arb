@@ -609,5 +609,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "introDemo": "Guarda la demo",
+  "demoNoticeTitle": "Sei nella demo",
+  "demoNoticeBody": "Tutto quello che vedi appartiene a un paziente immaginario. Puoi registrare e modificare le misurazioni: non viene salvato nulla, e tutto sparisce quando esci dalla demo.",
+  "demoNoticeAction": "Ho capito",
+  "demoBannerLabel": "Dati dimostrativi",
+  "demoExit": "Esci dalla demo"
 }

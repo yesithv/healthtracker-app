@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
-import 'package:myvitals_healthtracker_app/core/demo/demo_mode.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
 /// Una banda de referencia resuelta para ESTE paciente (GET /me/reference-ranges):
 /// el servidor ya eligió dispositivo-vs-baseline y filtró por sexo/edad.
@@ -75,7 +75,7 @@ class ReferenceRangesStore {
     // La demo corre sin servidor: los clasificadores usan sus cortes de fábrica
     // y no se emite ni una petición. Evita además llenar la consola de errores
     // de conexión mientras se graba la pantalla.
-    if (kDemoMode) return;
+    if (DemoSession.instance.isActive) return;
     if (ApiConfig.baseUrl.isEmpty) return;
     final patientId =
         PatientSession.instance.publicId ?? ApiConfig.patientPublicId;

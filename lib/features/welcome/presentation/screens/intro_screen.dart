@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:myvitals_healthtracker_app/core/demo/demo_actions.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/ecg_trace.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -23,8 +24,14 @@ import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 ///   · «Registrarse» → `/onboarding`, que recoge los datos y crea
 ///     la cuenta al terminar el asistente.
 ///
-/// No hay tercera vía: la cuenta es OBLIGATORIA para usar la app, así que el
-/// antiguo «explorar sin cuenta» ya no existe en ninguna pantalla.
+/// Hay además una TERCERA vía, y conviene entender por qué no contradice a las
+/// otras dos: «ver la demostración» NO es el antiguo «explorar sin cuenta», que
+/// se eliminó al hacer la cuenta obligatoria. Aquélla dejaba llevar mediciones
+/// propias sin registrarse; ésta abre la historia de un paciente inventado,
+/// marcada como tal con un aviso que no se puede cerrar, guardada en una base de
+/// datos aparte y borrada al salir. Nadie puede usar la app de verdad por ahí:
+/// para eso sigue haciendo falta registrarse. Es un escaparate, no un modo de
+/// uso.
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -56,6 +63,18 @@ class _IntroScreenState extends State<IntroScreen>
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _entryController.forward();
     });
+  }
+
+  /// Sembrar dos años de historia lleva un momento perceptible. Mientras dura,
+  /// el enlace se apaga y enseña un giro: pulsarlo dos veces lanzaría dos
+  /// siembras a la vez sobre la misma base de datos.
+  bool _enteringDemo = false;
+
+  Future<void> _enterDemo() async {
+    if (_enteringDemo) return;
+    setState(() => _enteringDemo = true);
+    await enterDemo(context);
+    if (mounted) setState(() => _enteringDemo = false);
   }
 
   @override
@@ -229,6 +248,42 @@ class _IntroScreenState extends State<IntroScreen>
                               ),
                             ),
                           ),
+                        ),
+
+                        // ── LA DEMOSTRACIÓN ────────────────────────────────
+                        // Tercera vía, deliberadamente en tercer plano: es un
+                        // enlace y no un botón porque no compite con los dos
+                        // caminos reales. Quien viene a usar la app se registra;
+                        // esto es para quien viene a mirarla.
+                        const SizedBox(height: 4),
+                        TextButton(
+                          onPressed: _enteringDemo ? null : _enterDemo,
+                          style: TextButton.styleFrom(
+                            foregroundColor: surfaces.onBrand,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          child: _enteringDemo
+                              ? SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: surfaces.onBrand,
+                                  ),
+                                )
+                              : Text(
+                                  l10n.introDemo,
+                                  textAlign: TextAlign.center,
+                                  style: theme.type.button.copyWith(
+                                    fontSize: 14,
+                                    color: surfaces.onBrand.withValues(
+                                      alpha: 0.85,
+                                    ),
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: surfaces.onBrand
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                ),
                         ),
                       ],
                     ),

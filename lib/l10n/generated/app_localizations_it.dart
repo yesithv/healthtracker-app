@@ -1715,4 +1715,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String deviceWillSyncLater(String message) {
     return '$message Verrà sincronizzato quando ci sarà connessione.';
   }
+
+  @override
+  String get introDemo => 'Guarda la demo';
+
+  @override
+  String get demoNoticeTitle => 'Sei nella demo';
+
+  @override
+  String get demoNoticeBody =>
+      'Tutto quello che vedi appartiene a un paziente immaginario. Puoi registrare e modificare le misurazioni: non viene salvato nulla, e tutto sparisce quando esci dalla demo.';
+
+  @override
+  String get demoNoticeAction => 'Ho capito';
+
+  @override
+  String get demoBannerLabel => 'Dati dimostrativi';
+
+  @override
+  String get demoExit => 'Esci dalla demo';
 }

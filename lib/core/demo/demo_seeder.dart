@@ -2,27 +2,18 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_dataset.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_mode.dart';
 
-/// Deja la app lista para que la fotografíen: preferencias, perfil, ajustes y
-/// dos años de mediciones, todo puesto antes del primer frame.
+/// El contenido de la demostración: qué perfil, qué ajustes y qué registros.
 ///
-/// **Qué escribe y dónde.** Nada aterriza en la instalación real:
-///
-/// - Las preferencias van a un almacén EN MEMORIA
-///   ([SharedPreferences.setMockInitialValues]). Al cerrar la app se evaporan,
-///   y mientras tanto se comportan como las de verdad: los ajustes que se
-///   toquen durante la demo funcionan y se ven, simplemente no sobreviven.
-/// - Las mediciones van a `my-vitals-demo.db`, un archivo aparte del de
-///   producción (ver [DatabaseService]), que se vacía y se vuelve a llenar en
-///   cada arranque.
-///
-/// De ahí que la demo sea idempotente y desechable: arrancarla diez veces deja
-/// el mismo estado diez veces, y desinstalarla no deja rastro.
+/// Aquí sólo se decide QUÉ se siembra. El CUÁNDO —y, sobre todo, cómo se
+/// deshace— es de `DemoSession`, que envuelve todo esto en una copia de
+/// seguridad y una base de datos aparte. Separarlo así deja este archivo
+/// razonable de leer: es la descripción de un personaje, no una máquina de
+/// estados.
 class DemoSeeder {
   const DemoSeeder._();
 
@@ -33,31 +24,6 @@ class DemoSeeder {
   static const String demoPhone = '3128840719';
   static const String demoCountry = 'CO';
 
-  /// Siembra todo. Llamar en `main()` ANTES de tocar nada más: las preferencias
-  /// tienen que estar en su sitio antes de que cualquier provider o store las
-  /// lea, o cada uno se quedará con lo que hubiera en disco.
-  static Future<void> install() async {
-    if (!kDemoMode) return;
-    await _seedPreferences();
-    await _seedRecords();
-  }
-
-  // ── Preferencias, perfil y ajustes ───────────────────────────────────────
-
-  static Future<void> _seedPreferences() async {
-    final values = demoPreferences();
-
-    final avatar = await _monogramAvatar('DO');
-    if (avatar != null) values['user_profile_image'] = avatar;
-
-    // A partir de aquí, `SharedPreferences.getInstance()` devuelve este mapa y
-    // toda escritura se queda en RAM. Es una utilidad marcada para pruebas y se
-    // usa a propósito: es exactamente el «que no persista nada» que pide la
-    // demo, y el compilador ya ha borrado esta rama en una build normal.
-    // ignore: invalid_use_of_visible_for_testing_member
-    SharedPreferences.setMockInitialValues(values);
-  }
-
   /// El estado con el que arranca la demo, en forma de preferencias.
   ///
   /// Las CLAVES van escritas a mano porque cada provider guarda las suyas en
@@ -65,8 +31,13 @@ class DemoSeeder {
   /// arrancaría medio vacía sin que nada se queje. Por eso este mapa se expone —
   /// `test/core/demo/demo_seeder_test.dart` levanta los providers de verdad
   /// sobre él y comprueba que cada uno encuentra lo suyo.
-  @visibleForTesting
-  static Map<String, Object> demoPreferences() {
+  ///
+  /// [overrideAppearance] añade idioma, unidades y tema. Sólo lo pide el
+  /// arranque guionizado de las capturas: al entrar desde la portada, la demo
+  /// tiene que verse con el idioma y el tema que el visitante ya tenía.
+  static Map<String, Object> demoPreferences({
+    bool overrideAppearance = false,
+  }) {
     final birthDate = DateTime(1984, 3, 12);
 
     return <String, Object>{
@@ -78,14 +49,10 @@ class DemoSeeder {
       'user_activity_level': 'moderate',
       'user_phone': demoPhone,
       'user_country': demoCountry,
+      // El bloqueo biométrico se deja APAGADO a propósito: pediría huella antes
+      // de dejar ver el panel, justo a quien viene a echar un vistazo.
       'user_biometric_enabled': false,
       'default_device_name': demoDeviceName,
-
-      // Idioma, unidades y tema, todos gobernados por `--dart-define` para
-      // poder repetir la misma captura en otro idioma o con el otro tema.
-      'user_language': kDemoLanguage,
-      'user_measurement_unit': kDemoUnits,
-      'app_theme_id': kDemoTheme,
 
       // Báscula de bioimpedancia: elegida, y sin nada pendiente de subir.
       'measuring_device_code': 'OMRON_HBF514C',
@@ -94,8 +61,8 @@ class DemoSeeder {
       'measuring_device_pending_sync': false,
 
       // Objetivos de salud. Deliberadamente MIXTOS: el peso sigue en curso
-      // (faltan ~1,8 kg) y la grasa corporal ya está cumplida, para que una
-      // sola captura del panel enseñe los dos estados de la interfaz de metas.
+      // (faltan ~1,8 kg) y la grasa corporal ya está cumplida, para que una sola
+      // pantalla enseñe los dos estados de la interfaz de metas.
       'medical_goals_enabled': true,
       'target_weight': 75.0,
       'target_body_fat': 22.0,
@@ -135,30 +102,37 @@ class DemoSeeder {
         },
       ]),
 
-      // Asistente de alta ya superado y sesión activa: la app entra directa al
-      // panel sin pasar por la portada ni por el registro.
+      // Asistente de alta ya superado y sesión activa: la demo entra directa al
+      // panel sin pasar por el registro.
       'onboarding_complete': true,
       'session_patient_public_id': 'demo-0000-0000-0000-000000000001',
       'session_patient_first_name': 'Daniel',
       'session_patient_last_name': 'Ospina',
       'session_patient_source': 'APP',
+
+      // Sólo para capturas guionizadas (ver `demo_mode.dart`).
+      if (overrideAppearance && kDemoLanguage.isNotEmpty)
+        'user_language': kDemoLanguage,
+      if (overrideAppearance && kDemoUnits.isNotEmpty)
+        'user_measurement_unit': kDemoUnits,
+      if (overrideAppearance && kDemoTheme.isNotEmpty)
+        'app_theme_id': kDemoTheme,
     };
   }
 
   /// Dibuja un avatar de monograma y lo devuelve en base64 (PNG).
   ///
   /// La alternativa era versionar una foto de archivo, que en una web de
-  /// portafolio plantea de quién es esa cara. Un monograma no retrata a nadie
-  /// y pesa unos 2 KB. Si el dibujo fallara, se devuelve `null` y la tarjeta
-  /// del panel cae a su icono de siempre: la demo no se cae por un avatar.
-  static Future<String?> _monogramAvatar(String initials) async {
+  /// portafolio plantea de quién es esa cara. Un monograma no retrata a nadie y
+  /// pesa unos 2 KB. Si el dibujo fallara devuelve `null` y la tarjeta del panel
+  /// cae a su icono de siempre: la demo no se cae por un avatar.
+  static Future<String?> monogramAvatar([String initials = 'DO']) async {
     try {
       const size = 256.0;
+      const rect = Rect.fromLTWH(0, 0, size, size);
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
 
-      // Degradado diagonal en el azul de la marca.
-      final rect = const Rect.fromLTWH(0, 0, size, size);
       canvas.drawRect(
         rect,
         Paint()
@@ -209,13 +183,18 @@ class DemoSeeder {
     'body_composition_records',
   ];
 
-  static Future<void> _seedRecords() async {
+  /// Llena la base de datos activa con los dos años de historia.
+  ///
+  /// Da por hecho que quien llama ya ha cambiado a la base desechable: sembrar
+  /// sobre la real borraría el historial del usuario. Ese contrato lo cumple
+  /// `DemoSession.enter()`, que es el único que debería llamar aquí.
+  static Future<void> seedRecords({required String language}) async {
     final db = await DatabaseService.instance.database;
-    final data = buildDemoDataset(language: kDemoLanguage);
+    final data = buildDemoDataset(language: language);
 
     // Vaciar y volver a llenar, en un solo lote. Sin el `batch` serían ~630
-    // transacciones sueltas y el arranque de la demo se notaría; con él, la
-    // siembra entera es un parpadeo.
+    // transacciones sueltas y entrar en la demo se notaría; con él, la siembra
+    // entera es un parpadeo.
     final batch = db.batch();
     for (final table in _tables) {
       batch.delete(table);
@@ -234,12 +213,17 @@ class DemoSeeder {
     }
     await batch.commit(noResult: true);
 
-    debugPrint(
-      'Demo: sembrados ${data.totalRecords} registros '
-      '(${data.anthropometric.length} antropometría, '
-      '${data.vitalSigns.length} signos vitales, '
-      '${data.lipids.length} lípidos, '
-      '${data.bodyComposition.length} composición corporal).',
-    );
+    debugPrint('Demo: sembrados ${data.totalRecords} registros.');
+  }
+
+  /// Vacía la base de la demo, incluido lo que el visitante haya registrado él
+  /// mismo. Se llama al salir, con la base desechable todavía abierta.
+  static Future<void> wipeRecords() async {
+    final db = await DatabaseService.instance.database;
+    final batch = db.batch();
+    for (final table in _tables) {
+      batch.delete(table);
+    }
+    await batch.commit(noResult: true);
   }
 }

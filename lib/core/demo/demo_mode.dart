@@ -1,51 +1,43 @@
-/// Modo demostración: la app arranca con dos años de historia clínica ya
-/// dentro, para tomar capturas o grabar vídeo sin registrar cientos de
-/// mediciones a mano.
+/// Banderas de COMPILACIÓN del modo demostración.
 ///
-/// Se enciende SOLO en tiempo de compilación:
+/// Ojo con el reparto de papeles: la demo se enciende y se apaga **en tiempo de
+/// ejecución** (ver `DemoSession`), porque cualquiera puede entrar desde la
+/// portada y salir desde dentro. Lo que hay aquí sólo decide con qué estado
+/// ARRANCA la app, y existe para las capturas guionizadas: poder lanzar la app
+/// ya dentro de la demo, en un idioma y un tema concretos, sin tocar la
+/// pantalla.
 ///
 /// ```sh
 /// flutter run -d chrome --dart-define=DEMO_MODE=true
 /// ```
-///
-/// Sin la bandera, [kDemoMode] es la constante `false` y el compilador elimina
-/// del binario todo el paquete `core/demo` junto con las ramas que lo llaman:
-/// una build de producción no puede entrar en este modo ni por accidente, y no
-/// paga ni un byte por que exista.
-///
-/// **Nada de lo que siembra este modo se persiste.** Las preferencias viven en
-/// memoria (ver `DemoSeeder`) y los registros van a una base de datos aparte
-/// que se borra y se vuelve a sembrar en cada arranque. Cerrar la app deja la
-/// demo exactamente como estaba; la instalación real del usuario no se toca.
 library;
 
-/// ¿Está la app corriendo como demostración?
-const bool kDemoMode = bool.fromEnvironment('DEMO_MODE');
-
-/// Idioma con el que arranca la demo. Uno de los que soporta la app:
-/// `es`, `en`, `de`, `pt`, `it`.
+/// Arranca ya dentro de la demo, sin pasar por la portada.
 ///
-/// ```sh
-/// --dart-define=DEMO_LANG=en
-/// ```
-const String kDemoLanguage = String.fromEnvironment(
-  'DEMO_LANG',
-  defaultValue: 'es',
-);
+/// No es lo mismo que «la demo existe»: la demo existe siempre y se entra desde
+/// la portada. Esto sólo se salta ese paso.
+const bool kDemoAutoStart = bool.fromEnvironment('DEMO_MODE');
 
-/// Tema con el que arranca la demo: `pulsoClinico` o `consultaSerena`. Permite
-/// sacar la misma captura con los dos acabados sin tocar la app.
+/// Idioma con el que arranca la demo automática (`es`, `en`, `de`, `pt`, `it`).
 ///
-/// ```sh
-/// --dart-define=DEMO_THEME=consultaSerena
-/// ```
-const String kDemoTheme = String.fromEnvironment(
-  'DEMO_THEME',
-  defaultValue: 'pulsoClinico',
-);
+/// Vacío —lo normal— significa **no imponer ninguno**: la demo se ve en el
+/// idioma del usuario, que es lo que ya resuelve `LocaleUnitsProvider` a partir
+/// del dispositivo o de su elección. Sólo se rellena para forzar el idioma de
+/// una captura concreta.
+const String kDemoLanguage = String.fromEnvironment('DEMO_LANG');
 
-/// Sistema de unidades de la demo: `metric` o `imperial`.
-const String kDemoUnits = String.fromEnvironment(
-  'DEMO_UNITS',
-  defaultValue: 'metric',
-);
+/// Tema con el que arranca la demo automática: `pulsoClinico` o
+/// `consultaSerena`. Vacío = se respeta el que tenga elegido el usuario.
+const String kDemoTheme = String.fromEnvironment('DEMO_THEME');
+
+/// Unidades de la demo automática: `metric` o `imperial`. Vacío = las del
+/// usuario.
+const String kDemoUnits = String.fromEnvironment('DEMO_UNITS');
+
+/// ¿La demo automática impone además idioma, tema o unidades?
+///
+/// Al entrar desde la portada NUNCA se imponen: la demo tiene que verse en el
+/// idioma y con el tema que el usuario ya tenía, o dejaría de parecerse a la
+/// app que se le está enseñando.
+bool get kDemoOverridesAppearance =>
+    kDemoLanguage.isNotEmpty || kDemoTheme.isNotEmpty || kDemoUnits.isNotEmpty;

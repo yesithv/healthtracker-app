@@ -22,8 +22,7 @@ import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
-import 'package:myvitals_healthtracker_app/core/demo/demo_mode.dart';
-import 'package:myvitals_healthtracker_app/core/demo/demo_seeder.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
 void main() {
   runZonedGuarded(
@@ -37,17 +36,13 @@ void main() {
         debugPrint(details.toString());
       };
 
-      // 0. MODO DEMOSTRACIÓN (sólo si se compiló con --dart-define=DEMO_MODE).
-      // Va PRIMERO, y no por capricho: instala el almacén de preferencias en
-      // memoria, y cualquier provider o store que leyera antes se quedaría con
-      // lo que hubiera en disco. En una build normal `kDemoMode` es `false`
-      // constante y el compilador borra esta rama entera.
-      if (kDemoMode) {
-        try {
-          await DemoSeeder.install();
-        } catch (e, st) {
-          debugPrint('=== DEMO SEED ERROR: $e\n$st');
-        }
+      // 0. MODO DEMOSTRACIÓN. Va PRIMERO, y no por capricho: decide QUÉ base de
+      // datos hay que abrir, y el paso 1 ya la abre. Si el visitante dejó la
+      // demo activa y recargó la página, esto la restituye.
+      try {
+        await DemoSession.instance.bootstrap();
+      } catch (e, st) {
+        debugPrint('=== DEMO BOOTSTRAP ERROR: $e\n$st');
       }
 
       // 1. SQLite / sqflite database initialization
@@ -139,6 +134,11 @@ void main() {
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(
               value: PatientSession.instance,
+            ),
+            // Demostración: la cáscara observa esto para pintar (o quitar) el
+            // aviso permanente y la salida.
+            ChangeNotifierProvider<DemoSession>.value(
+              value: DemoSession.instance,
             ),
             // Alta diferida: la UI reacciona para avisar de que la cuenta aún
             // no existe en el servidor.
