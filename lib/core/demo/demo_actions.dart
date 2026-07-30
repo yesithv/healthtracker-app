@@ -60,14 +60,19 @@ Future<void> Function() _providerReload(BuildContext context) {
   final device = context.read<MeasuringDeviceProvider>();
 
   return () async {
+    // La sesión va PRIMERO. Es un singleton, pero se relee igual: al entrar
+    // aparece la identidad del personaje y al salir tiene que desaparecer, o la
+    // app creería que sigue habiendo alguien dentro.
+    //
+    // Y va primero porque el resto la consulta: la báscula decide si puede
+    // hablar con la API preguntando si hay paciente, así que releerla después
+    // dejaba una ventana en la que salía a la red con la identidad de la demo,
+    // que en el servidor no existe.
+    await PatientSession.instance.load();
     await profile.reload();
     await goals.reload();
     await reminders.reload();
     await localeUnits.reload();
     await device.load();
-    // La sesión es un singleton, pero se relee igual: al entrar aparece la
-    // identidad del personaje y al salir tiene que desaparecer, o la app creería
-    // que sigue habiendo alguien dentro.
-    await PatientSession.instance.load();
   };
 }
