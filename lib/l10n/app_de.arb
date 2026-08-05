@@ -598,5 +598,7 @@
   "demoNoticeBody": "Alles, was du siehst, gehört zu einer erfundenen Patientenakte. Du kannst Messwerte erfassen und bearbeiten: nichts wird gespeichert, und beim Verlassen der Demo verschwindet alles.",
   "demoNoticeAction": "Verstanden",
   "demoBannerLabel": "Demodaten",
-  "demoExit": "Demo verlassen"
+  "demoExit": "Demo verlassen",
+  "profileRankTier2": "Beständiger Begleiter",
+  "profileRankTier3": "Wellness-Veteran"
 }

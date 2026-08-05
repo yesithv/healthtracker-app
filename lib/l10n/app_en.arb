@@ -650,5 +650,7 @@
   "demoNoticeBody": "Everything you see belongs to a fictional patient. Feel free to add or edit measurements: nothing is saved, and it all disappears when you leave the demo.",
   "demoNoticeAction": "Got it",
   "demoBannerLabel": "Demo data",
-  "demoExit": "Leave the demo"
+  "demoExit": "Leave the demo",
+  "profileRankTier2": "Steady Caregiver",
+  "profileRankTier3": "Wellness Veteran"
 }

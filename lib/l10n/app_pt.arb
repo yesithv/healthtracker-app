@@ -598,5 +598,7 @@
   "demoNoticeBody": "Tudo o que vê pertence a um paciente fictício. Pode registar e editar medições: nada é guardado, e tudo desaparece ao sair da demonstração.",
   "demoNoticeAction": "Entendido",
   "demoBannerLabel": "Dados de demonstração",
-  "demoExit": "Sair da demonstração"
+  "demoExit": "Sair da demonstração",
+  "profileRankTier2": "Cuidador Constante",
+  "profileRankTier3": "Veterano do Bem-estar"
 }

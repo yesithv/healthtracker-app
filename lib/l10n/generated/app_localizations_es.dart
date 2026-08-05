@@ -1732,4 +1732,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get demoExit => 'Salir de la demostración';
+
+  @override
+  String get profileRankTier2 => 'Cuidador Constante';
+
+  @override
+  String get profileRankTier3 => 'Veterano del Bienestar';
 }

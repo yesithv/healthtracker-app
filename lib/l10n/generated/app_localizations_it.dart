@@ -1734,4 +1734,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get demoExit => 'Esci dalla demo';
+
+  @override
+  String get profileRankTier2 => 'Custode Costante';
+
+  @override
+  String get profileRankTier3 => 'Veterano del Benessere';
 }

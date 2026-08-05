@@ -3307,6 +3307,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave the demo'**
   String get demoExit;
+
+  /// No description provided for @profileRankTier2.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady Caregiver'**
+  String get profileRankTier2;
+
+  /// No description provided for @profileRankTier3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellness Veteran'**
+  String get profileRankTier3;
 }
 
 class _AppLocalizationsDelegate

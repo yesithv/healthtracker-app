@@ -802,5 +802,7 @@
   "demoNoticeBody": "Todo lo que ves es de un paciente ficticio. Puedes registrar y editar mediciones: no se guarda nada, y todo desaparece al salir de la demostración.",
   "demoNoticeAction": "Entendido",
   "demoBannerLabel": "Datos de demostración",
-  "demoExit": "Salir de la demostración"
+  "demoExit": "Salir de la demostración",
+  "profileRankTier2": "Cuidador Constante",
+  "profileRankTier3": "Veterano del Bienestar"
 }
