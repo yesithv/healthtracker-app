@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/router/app_router.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
 /// Fija el invariante de acceso: **la cuenta es obligatoria**.
 ///
@@ -88,6 +89,49 @@ void main() {
             'La bandera createAccount permitía terminar el asistente sin crear '
             'la cuenta; el alta debe registrar siempre.',
       );
+    });
+  });
+
+  group('la demo es la única vía nueva sin cuenta ·', () {
+    // La demostración es la ÚNICA entrada sin cuenta que se admite, y bajo
+    // condiciones estrictas: datos ficticios, marcados, en una base aparte y
+    // borrados al salir (ver DemoSession). Estas pruebas fijan que la portada
+    // entre por esa puerta y no por otra improvisada.
+    final intro = File(
+      'lib/features/welcome/presentation/screens/intro_screen.dart',
+    ).readAsStringSync();
+
+    /// El código de la portada sin comentarios: el «por qué» del cambio sí puede
+    /// nombrar caminos que no existen.
+    String introCode() => intro
+        .split('\n')
+        .where((l) => !l.trimLeft().startsWith('//'))
+        .where((l) => !l.trimLeft().startsWith('///'))
+        .join('\n');
+
+    test('la portada entra a la demo por la vía sancionada', () {
+      expect(
+        introCode().contains('enterDemo('),
+        isTrue,
+        reason:
+            'La demo debe entrarse por enterDemo(), que copia las preferencias '
+            'y cambia a la base desechable; no por un atajo.',
+      );
+    });
+
+    test('la portada no salta al panel por su cuenta', () {
+      // Un `go('/dashboard')` en la portada sería una puerta trasera al panel
+      // sin pasar por la sesión ni por la demo. El único que enruta al panel es
+      // enterDemo (tras activar la demo) o el arranque con sesión.
+      expect(
+        introCode().contains("'/dashboard'"),
+        isFalse,
+        reason: 'La portada no debe navegar directamente al panel.',
+      );
+    });
+
+    test('la demo arranca inactiva: nadie entra sin pedirlo', () {
+      expect(DemoSession.instance.isActive, isFalse);
     });
   });
 }

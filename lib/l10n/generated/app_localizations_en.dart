@@ -1713,4 +1713,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String deviceWillSyncLater(String message) {
     return '$message It will sync once you are online.';
   }
+
+  @override
+  String get introDemo => 'Explore the demo';
+
+  @override
+  String get demoNoticeTitle => 'You are in the demo';
+
+  @override
+  String get demoNoticeBody =>
+      'Everything you see belongs to a fictional patient. Feel free to add or edit measurements: nothing is saved, and it all disappears when you leave the demo.';
+
+  @override
+  String get demoNoticeAction => 'Got it';
+
+  @override
+  String get demoBannerLabel => 'Demo data';
+
+  @override
+  String get demoExit => 'Leave the demo';
+
+  @override
+  String get profileRankTier2 => 'Steady Caregiver';
+
+  @override
+  String get profileRankTier3 => 'Wellness Veteran';
 }

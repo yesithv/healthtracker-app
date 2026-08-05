@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 import 'package:myvitals_healthtracker_app/core/sync/measurement_download_service.dart';
 import 'package:myvitals_healthtracker_app/core/sync/measurement_mapper.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_api_client.dart';
@@ -106,6 +107,16 @@ class SyncService extends ChangeNotifier {
   /// Sube todo lo pendiente. Reentrante-seguro: si ya hay una sync en curso, no hace nada.
   Future<void> syncNow() async {
     if (_status == SyncStatus.syncing) return;
+
+    // La demo tiene sesión sembrada pero no tiene servidor detrás: sin esta
+    // puerta, la pantalla de cuenta enseñaría un error de conexión, y además
+    // intentaríamos subir a la API las mediciones de un paciente que no existe.
+    // Se responde lo que respondería una app al día, sin salir a la red.
+    if (DemoSession.instance.isActive) {
+      _lastSyncedAt ??= DateTime.now().subtract(const Duration(minutes: 6));
+      _set(SyncStatus.success, 'Todo al día. No hay datos nuevos.');
+      return;
+    }
 
     final hasPatient =
         PatientSession.instance.isAuthenticated ||

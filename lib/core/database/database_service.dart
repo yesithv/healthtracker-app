@@ -14,8 +14,36 @@ class DatabaseService {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('my-vitals-db.db');
+    _database = await _initDB(_fileName);
     return _database!;
+  }
+
+  /// La demo escribe en un archivo APARTE. No es cosmético: es la garantía de
+  /// que sembrar dos años de mediciones de mentira —y dejar que el visitante
+  /// registre las suyas— no pueda tocar ni borrar el historial real de quien
+  /// tenga la app instalada en el mismo dispositivo.
+  static bool _useDemo = false;
+
+  static String get _fileName =>
+      _useDemo ? 'my-vitals-demo.db' : 'my-vitals-db.db';
+
+  /// Elige a qué archivo apunta la PRÓXIMA apertura. Lo gobierna `DemoSession`
+  /// al entrar y al salir de la demo; cambiarlo con una conexión ya abierta no
+  /// hace nada por sí solo, hay que pasar después por [reopen].
+  static void useDemoDatabase(bool value) {
+    _useDemo = value;
+  }
+
+  /// Cierra la conexión actual y abre la que toque según [useDemoDatabase].
+  ///
+  /// Los repositorios cachean en memoria lo que leyeron, así que quien llame
+  /// aquí tiene que refrescarlos después o seguirán enseñando los registros de
+  /// la base anterior.
+  Future<void> reopen() async {
+    final previous = _database;
+    _database = null;
+    await previous?.close();
+    await database;
   }
 
   Future<Database> _initDB(String filePath) async {

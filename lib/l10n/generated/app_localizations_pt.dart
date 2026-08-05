@@ -1715,4 +1715,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String deviceWillSyncLater(String message) {
     return '$message Será sincronizado quando houver ligação.';
   }
+
+  @override
+  String get introDemo => 'Ver a demonstração';
+
+  @override
+  String get demoNoticeTitle => 'Está na demonstração';
+
+  @override
+  String get demoNoticeBody =>
+      'Tudo o que vê pertence a um paciente fictício. Pode registar e editar medições: nada é guardado, e tudo desaparece ao sair da demonstração.';
+
+  @override
+  String get demoNoticeAction => 'Entendido';
+
+  @override
+  String get demoBannerLabel => 'Dados de demonstração';
+
+  @override
+  String get demoExit => 'Sair da demonstração';
+
+  @override
+  String get profileRankTier2 => 'Cuidador Constante';
+
+  @override
+  String get profileRankTier3 => 'Veterano do Bem-estar';
 }

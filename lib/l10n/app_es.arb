@@ -505,7 +505,10 @@
   "validationEmailFormat": "Revisa el correo: falta el arroba o el dominio",
   "validationOutOfRange": "Escribe un valor entre {min} y {max}",
   "@validationOutOfRange": {
-    "placeholders": { "min": {}, "max": {} }
+    "placeholders": {
+      "min": {},
+      "max": {}
+    }
   },
   "commonRegisterFailed": "No pudimos crear tu cuenta. Revisa tu conexión e inténtalo de nuevo.",
   "logOutConfirm": "¿Cerrar sesión en este dispositivo? Tus registros se quedan en el dispositivo y se volverán a sincronizar cuando entres de nuevo.",
@@ -793,5 +796,13 @@
       }
     },
     "description": "deviceWillSyncLater"
-  }
+  },
+  "introDemo": "Ver la demostración",
+  "demoNoticeTitle": "Estás en la demostración",
+  "demoNoticeBody": "Todo lo que ves es de un paciente ficticio. Puedes registrar y editar mediciones: no se guarda nada, y todo desaparece al salir de la demostración.",
+  "demoNoticeAction": "Entendido",
+  "demoBannerLabel": "Datos de demostración",
+  "demoExit": "Salir de la demostración",
+  "profileRankTier2": "Cuidador Constante",
+  "profileRankTier3": "Veterano del Bienestar"
 }

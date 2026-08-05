@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../theme/theme_context.dart';
+import '../widgets/demo_banner.dart';
 import '../widgets/register_modal.dart';
 
 class AppShell extends StatelessWidget {
@@ -25,7 +26,15 @@ class AppShell extends StatelessWidget {
     final surfaces = theme.surfaces;
 
     return Scaffold(
-      body: child,
+      // El aviso de la demostración va POR ENCIMA de la pestaña activa, no
+      // dentro de ella: así acompaña a las cuatro y el visitante nunca pierde de
+      // vista ni que son datos de prueba ni por dónde se sale.
+      body: Column(
+        children: [
+          const DemoBanner(),
+          Expanded(child: child),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showRegisterModal(context),
         backgroundColor: surfaces.brand,

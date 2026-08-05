@@ -11,6 +11,11 @@ import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
 import '../../../../core/auth/patient_session.dart';
+import '../../../../core/demo/demo_actions.dart';
+import '../../../../core/demo/demo_session.dart';
+import '../../../../core/database/record_repositories.dart';
+import '../../../../core/providers/health_goals_provider.dart';
+import '../../data/profile_achievements.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -31,6 +36,80 @@ class ProfileScreen extends StatelessWidget {
   /// un cian eléctricos sobre un lienzo cálido.
   static Tone _wayfinding(ThemeData theme, ContentCategory c) =>
       theme.content.tone(c);
+
+  /// Reúne lo que los registros dicen sobre los logros del usuario. Observa los
+  /// cuatro repositorios y las metas (todos provistos en `main.dart`), reduce
+  /// todo a números y deja el cálculo a [ProfileAchievements], que es puro y
+  /// testeable. Si algún repositorio aún no cargó, su conteo es 0: nunca se
+  /// enseña más de lo que hay.
+  static ProfileAchievements _readAchievements(BuildContext context) {
+    final anthro = context.watch<AnthropometricRepository>();
+    final vitals = context.watch<VitalSignsRepository>();
+    final lipid = context.watch<LipidRepository>();
+    final body = context.watch<BodyCompositionRepository>();
+    final goals = context.watch<HealthGoalsProvider>();
+
+    // Meta corporal cumplida: mismo criterio que las tarjetas del panel
+    // (`AnthropometricHistoryCard` y `BodyCompositionCard`), para no tener dos
+    // definiciones que puedan discrepar. Basta con que se cumpla una.
+    var bodyGoalMet = false;
+    if (goals.medicalGoalsEnabled) {
+      final weight = anthro.items.isNotEmpty ? anthro.items.first.weight : null;
+      if (goals.targetWeight != null && weight != null) {
+        bodyGoalMet = (weight - goals.targetWeight!).abs() <= 0.5;
+      }
+      final fat = body.items.isNotEmpty
+          ? body.items.first.bodyFatPercent
+          : null;
+      if (!bodyGoalMet && goals.targetBodyFat != null && fat != null) {
+        bodyGoalMet = fat <= goals.targetBodyFat!;
+      }
+    }
+
+    // Ventana de historia: del registro más antiguo al más nuevo, sea de la
+    // familia que sea. Cada lista viene ordenada por fecha descendente, así que
+    // basta mirar sus extremos (primero = más nuevo, último = más antiguo). Se
+    // recogen sólo los extremos y no las 630 fechas: esto corre en cada
+    // reconstrucción del Perfil.
+    final endpoints = <DateTime>[
+      if (anthro.items.isNotEmpty) anthro.items.first.date,
+      if (anthro.items.isNotEmpty) anthro.items.last.date,
+      if (vitals.items.isNotEmpty) vitals.items.first.date,
+      if (vitals.items.isNotEmpty) vitals.items.last.date,
+      if (lipid.items.isNotEmpty) lipid.items.first.date,
+      if (lipid.items.isNotEmpty) lipid.items.last.date,
+      if (body.items.isNotEmpty) body.items.first.date,
+      if (body.items.isNotEmpty) body.items.last.date,
+    ];
+    final spanDays = endpoints.isEmpty
+        ? 0
+        : endpoints
+              .reduce((a, b) => a.isAfter(b) ? a : b)
+              .difference(endpoints.reduce((a, b) => a.isBefore(b) ? a : b))
+              .inDays;
+
+    return ProfileAchievements.from(
+      AchievementInput(
+        anthroCount: anthro.isLoaded ? anthro.items.length : 0,
+        vitalsCount: vitals.isLoaded ? vitals.items.length : 0,
+        lipidCount: lipid.isLoaded ? lipid.items.length : 0,
+        bodyCount: body.isLoaded ? body.items.length : 0,
+        longestVitalsDayStreak: longestConsecutiveDayStreak(
+          vitals.items.map((r) => r.date),
+        ),
+        historySpanDays: spanDays,
+        bodyGoalMet: bodyGoalMet,
+      ),
+    );
+  }
+
+  /// Nombre del rango para el tramo calculado. El tramo 1 reutiliza el rango que
+  /// ya existía; los otros dos se añadieron con este cambio.
+  static String _rankName(AppLocalizations l10n, int tier) => switch (tier) {
+    3 => l10n.profileRankTier3,
+    2 => l10n.profileRankTier2,
+    _ => l10n.profileRankObserver,
+  };
 
   void _showImageSourceSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -195,6 +274,7 @@ class ProfileScreen extends StatelessWidget {
     final prefs = Provider.of<UserProfileProvider>(context);
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
+    final achievements = _readAchievements(context);
 
     return Scaffold(
       backgroundColor: surfaces.canvas,
@@ -304,7 +384,7 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              l10n.level(1),
+                              l10n.level(achievements.level),
                               style: theme.type.badge.copyWith(
                                 fontSize: 10,
                                 color: surfaces.brand,
@@ -315,14 +395,14 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        l10n.profileRankObserver,
+                        _rankName(l10n, achievements.rankTier),
                         style: theme.type.cardTitle.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 12),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
-                          value: 0.15,
+                          value: achievements.progressToNext,
                           minHeight: 8,
                           backgroundColor: surfaces.track,
                           valueColor: AlwaysStoppedAnimation<Color>(
@@ -330,6 +410,19 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Registros como «XP» hacia el siguiente nivel. En el nivel
+                      // máximo no hay «siguiente», así que se omite.
+                      if (achievements.recordsForNextLevel > 0) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.xpForNextLevel(
+                            achievements.recordsIntoLevel,
+                            achievements.recordsIntoLevel +
+                                achievements.recordsForNextLevel,
+                          ),
+                          style: theme.type.meta.copyWith(fontSize: 11),
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       Text(
                         l10n.myHealthAchievements,
@@ -357,35 +450,45 @@ class ProfileScreen extends StatelessWidget {
                               surfaces.brand,
                               canvas: surfaces.card,
                             ),
-                            isLocked: false,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.firstStep,
+                            ),
                           ),
                           _BadgeItem(
                             icon: Icons.favorite,
                             label: l10n.badgeStrongHeart,
                             description: l10n.badgeStrongHeartDesc,
                             tone: _wayfinding(theme, ContentCategory.heart),
-                            isLocked: false,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.strongHeart,
+                            ),
                           ),
                           _BadgeItem(
                             icon: Icons.calendar_month,
                             label: l10n.badgeVitalHabit,
                             description: l10n.badgeVitalHabitDesc,
                             tone: _wayfinding(theme, ContentCategory.sports),
-                            isLocked: true,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.vitalHabit,
+                            ),
                           ),
                           _BadgeItem(
                             icon: Icons.visibility,
                             label: l10n.badgeAwareness,
                             description: l10n.badgeAwarenessDesc,
                             tone: _wayfinding(theme, ContentCategory.emotional),
-                            isLocked: false,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.awareness,
+                            ),
                           ),
                           _BadgeItem(
                             icon: Icons.fitness_center,
                             label: l10n.badgeBalance,
                             description: l10n.badgeBalanceDesc,
                             tone: _wayfinding(theme, ContentCategory.nutrition),
-                            isLocked: true,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.balance,
+                            ),
                           ),
                           _BadgeItem(
                             icon: Icons.verified_user,
@@ -395,7 +498,9 @@ class ProfileScreen extends StatelessWidget {
                               surfaces.brand,
                               canvas: surfaces.card,
                             ),
-                            isLocked: true,
+                            isLocked: !achievements.isUnlocked(
+                              ProfileBadge.guardian,
+                            ),
                           ),
                         ],
                       ),
@@ -474,50 +579,59 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // --- LOG OUT BUTTON ---
-                GestureDetector(
-                  onTap: () => _confirmLogOut(context),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      color: surfaces.card,
-                      borderRadius: BorderRadius.circular(surfaces.radiusCard),
-                      // Salir es la acción destructiva de la pantalla: va en el
-                      // rojo de ALERTA, igual que borrar un registro.
-                      border: Border.all(
-                        color: theme.clinical.alert.accent.withValues(
-                          alpha: 0.35,
+                // --- SALIR ---
+                // En la demostración, cerrar sesión no significa nada: no hay
+                // cuenta que cerrar. La acción de salida de la pantalla pasa a
+                // ser abandonar la demo, que es lo único que el visitante puede
+                // querer hacer aquí, y así no quedan dos salidas compitiendo.
+                if (context.watch<DemoSession>().isActive)
+                  const _ExitDemoButton()
+                else
+                  GestureDetector(
+                    onTap: () => _confirmLogOut(context),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        color: surfaces.card,
+                        borderRadius: BorderRadius.circular(
+                          surfaces.radiusCard,
                         ),
-                        width: 1.5,
-                      ),
-                      boxShadow: surfaces.glow(
-                        theme.clinical.alert.accent,
-                        alpha: 0.05,
-                        blur: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: theme.clinical.alert.accent,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          l10n.logOut,
-                          style: theme.type.button.copyWith(
-                            color: theme.clinical.alert.accent,
-                            fontSize: 16,
+                        // Salir es la acción destructiva de la pantalla: va en el
+                        // rojo de ALERTA, igual que borrar un registro.
+                        border: Border.all(
+                          color: theme.clinical.alert.accent.withValues(
+                            alpha: 0.35,
                           ),
+                          width: 1.5,
                         ),
-                      ],
+                        boxShadow: surfaces.glow(
+                          theme.clinical.alert.accent,
+                          alpha: 0.05,
+                          blur: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: theme.clinical.alert.accent,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            l10n.logOut,
+                            style: theme.type.button.copyWith(
+                              color: theme.clinical.alert.accent,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 const SizedBox(height: 48),
 
                 // --- MEDICAL DISCLAIMER ---
@@ -738,6 +852,71 @@ class _MenuTile extends StatelessWidget {
               Icon(Icons.chevron_right, color: surfaces.brand, size: 20),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Salida de la demostración, con el mismo peso visual que tenía el cierre de
+/// sesión: es la acción que saca al visitante de aquí, y tiene que encontrarse
+/// igual de rápido.
+///
+/// No pide confirmación, y a diferencia del cierre de sesión no va en rojo. Lo
+/// que se descarta son datos de un paciente que no existe, así que no hay nada
+/// destructivo que advertir: gastar el rojo de ALERTA aquí le quitaría fuerza
+/// donde sí significa algo, y un diálogo de confirmación sólo estorbaría el
+/// camino hacia el registro, que es a donde esto lleva.
+class _ExitDemoButton extends StatefulWidget {
+  const _ExitDemoButton();
+
+  @override
+  State<_ExitDemoButton> createState() => _ExitDemoButtonState();
+}
+
+class _ExitDemoButtonState extends State<_ExitDemoButton> {
+  bool _leaving = false;
+
+  Future<void> _leave() async {
+    if (_leaving) return;
+    setState(() => _leaving = true);
+    await exitDemo(context);
+    if (mounted) setState(() => _leaving = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final tone = theme.clinical.info;
+
+    return GestureDetector(
+      onTap: _leaving ? null : _leave,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: surfaces.card,
+          borderRadius: BorderRadius.circular(surfaces.radiusCard),
+          border: Border.all(
+            color: tone.accent.withValues(alpha: 0.35),
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.logout, color: tone.accent, size: 18),
+            const SizedBox(width: 10),
+            Text(
+              l10n.demoExit,
+              style: theme.type.button.copyWith(
+                color: tone.accent,
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

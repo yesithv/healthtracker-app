@@ -22,6 +22,7 @@ import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
 void main() {
   runZonedGuarded(
@@ -34,6 +35,15 @@ void main() {
         debugPrint('=== FLUTTER ERROR ===');
         debugPrint(details.toString());
       };
+
+      // 0. MODO DEMOSTRACIÓN. Va PRIMERO, y no por capricho: decide QUÉ base de
+      // datos hay que abrir, y el paso 1 ya la abre. Si el visitante dejó la
+      // demo activa y recargó la página, esto la restituye.
+      try {
+        await DemoSession.instance.bootstrap();
+      } catch (e, st) {
+        debugPrint('=== DEMO BOOTSTRAP ERROR: $e\n$st');
+      }
 
       // 1. SQLite / sqflite database initialization
       try {
@@ -124,6 +134,11 @@ void main() {
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(
               value: PatientSession.instance,
+            ),
+            // Demostración: la cáscara observa esto para pintar (o quitar) el
+            // aviso permanente y la salida.
+            ChangeNotifierProvider<DemoSession>.value(
+              value: DemoSession.instance,
             ),
             // Alta diferida: la UI reacciona para avisar de que la cuenta aún
             // no existe en el servidor.

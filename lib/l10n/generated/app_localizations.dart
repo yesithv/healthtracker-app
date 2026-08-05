@@ -3271,6 +3271,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{message} It will sync once you are online.'**
   String deviceWillSyncLater(String message);
+
+  /// No description provided for @introDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the demo'**
+  String get introDemo;
+
+  /// No description provided for @demoNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are in the demo'**
+  String get demoNoticeTitle;
+
+  /// No description provided for @demoNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you see belongs to a fictional patient. Feel free to add or edit measurements: nothing is saved, and it all disappears when you leave the demo.'**
+  String get demoNoticeBody;
+
+  /// No description provided for @demoNoticeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get demoNoticeAction;
+
+  /// No description provided for @demoBannerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo data'**
+  String get demoBannerLabel;
+
+  /// No description provided for @demoExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the demo'**
+  String get demoExit;
+
+  /// No description provided for @profileRankTier2.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady Caregiver'**
+  String get profileRankTier2;
+
+  /// No description provided for @profileRankTier3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wellness Veteran'**
+  String get profileRankTier3;
 }
 
 class _AppLocalizationsDelegate
