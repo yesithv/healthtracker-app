@@ -1,15 +1,17 @@
-name: Deploy dev
+name: Deploy web
 
-# Despliega la rama `dev` a GitHub Pages en cada empujón, para poder ver la
-# prueba de concepto de temas en un móvil real sin compilar nada en local.
+# Compila la app a web y la publica en GitHub Pages en cada empujón a `main`,
+# para que Health Tracker tenga una demo pública igual que el resto de proyectos
+# de Iron-Coding. La demo arranca en modo demostración (dos años de datos), así
+# se puede probar de punta a punta sin cuenta ni API.
 #
 # En pull request se ejecutan verificación y build pero NO se publica: así una
 # propuesta se valida sin pisar lo que hay desplegado.
 on:
   push:
-    branches: [dev]
+    branches: [main]
   pull_request:
-    branches: [dev]
+    branches: [main]
   workflow_dispatch:
 
 # Permisos mínimos para publicar en Pages con OIDC.
@@ -21,7 +23,7 @@ permissions:
 # Un despliegue a la vez. `cancel-in-progress: false` porque cancelar a mitad de
 # una publicación puede dejar el sitio en un estado incompleto.
 concurrency:
-  group: pages-dev
+  group: pages
   cancel-in-progress: false
 
 env:
@@ -44,7 +46,7 @@ jobs:
         run: flutter pub get
 
       - name: Formato
-        # Sólo avisa: el formato no debe bloquear un despliegue de pruebas.
+        # Sólo avisa: el formato no debe bloquear un despliegue.
         run: dart format --output=none --set-exit-if-changed lib test || true
 
       - name: Análisis estático
@@ -91,7 +93,7 @@ jobs:
   deploy:
     name: Publicar
     needs: build
-    # Sólo publica desde la propia rama `dev`, nunca desde un pull request.
+    # Sólo publica desde `main`, nunca desde un pull request.
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
