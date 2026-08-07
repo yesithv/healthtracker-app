@@ -62,7 +62,13 @@ void main() {
 
     test('solo mes en rangos de meses', () {
       final f = axisDateFormat(DateTime(2026, 1, 1), DateTime(2026, 6, 1));
-      expect(f.pattern, equals('MMM'));
+      // El esqueleto «solo mes» se resuelve como MMM (formato) o LLL
+      // (standalone) según la versión de intl/CLDR —ambos pintan el mismo mes
+      // abreviado—, así que se comprueba la INTENCIÓN: hay mes y no hay ni día
+      // ni año. (Los tests hermanos ya verifican con `contains`.)
+      expect(f.pattern, anyOf(contains('M'), contains('L')));
+      expect(f.pattern, isNot(contains('d')));
+      expect(f.pattern, isNot(contains('y')));
     });
 
     test('mes y año cuando el rango cruza más de un año', () {

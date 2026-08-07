@@ -63,6 +63,8 @@ PdfColor _statusColor(ClinicalStatus s) => switch (s) {
   ClinicalStatus.optimal => PdfColors.green700,
   ClinicalStatus.caution => PdfColors.orange700,
   ClinicalStatus.alert => PdfColors.red700,
+  // Sin valoración clínica: gris neutro, sin cargar la lectura.
+  ClinicalStatus.neutral => _muted,
 };
 
 /// Rangos de referencia ORIENTATIVOS mostrados junto a cada valor. Son cifras y

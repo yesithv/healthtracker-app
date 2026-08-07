@@ -1,9 +1,3 @@
-import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
-import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
-import 'package:myvitals_healthtracker_app/features/history/data/models/body_composition_record.dart';
-import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
-import 'package:myvitals_healthtracker_app/features/history/data/models/vital_sign_record.dart';
-
 /// Agregación PURA para el PDF consolidado de historia clínica.
 ///
 /// Vive APARTE de la construcción del PDF y de los widgets —Dart puro, sin
@@ -17,6 +11,12 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/vital_si
 /// necesitan `AppLocalizations` para las etiquetas y ya están cubiertos por su
 /// propio test. Aquí solo vive lo numérico.
 library;
+
+import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
+import 'package:myvitals_healthtracker_app/features/history/data/models/body_composition_record.dart';
+import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
+import 'package:myvitals_healthtracker_app/features/history/data/models/vital_sign_record.dart';
 
 /// Ventana temporal que el usuario elige antes de generar el documento.
 enum ExportPeriod {
