@@ -1739,4 +1739,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileRankTier3 => 'Wellness Veteran';
+
+  @override
+  String get mhxDocTitle => 'Personal Health Summary';
+  @override
+  String get mhxDocSubtitle => 'Consolidated report of self-reported measurements';
+  @override
+  String get mhxPatient => 'Patient';
+  @override
+  String get mhxBirthDate => 'Date of birth';
+  @override
+  String get mhxPeriodCovered => 'Period covered';
+  @override
+  String get mhxGeneratedOn => 'Generated on';
+  @override
+  String get mhxSource => 'Source';
+  @override
+  String get mhxSelfReported => 'self-reported data';
+  @override
+  String get mhxDisclaimerTitle => 'Informational summary - not a medical diagnosis';
+  @override
+  String get mhxDisclaimerBody => 'This document was generated automatically from measurements recorded by the user. It is not a medical diagnosis or an official clinical record, and does not replace assessment by a healthcare professional.';
+  @override
+  String get mhxSummaryTitle => 'Summary of latest values';
+  @override
+  String get mhxColIndicator => 'Indicator';
+  @override
+  String get mhxColLatest => 'Latest value';
+  @override
+  String get mhxColReference => 'Reference';
+  @override
+  String get mhxColStatus => 'Status';
+  @override
+  String get mhxColNotes => 'Notes';
+  @override
+  String get mhxBloodPressure => 'Blood pressure';
+  @override
+  String get mhxHeartRate => 'Heart rate';
+  @override
+  String get mhxWeight => 'Weight';
+  @override
+  String get mhxBmi => 'BMI';
+  @override
+  String get mhxBodyFat => 'Body fat';
+  @override
+  String get mhxVisceralFat => 'Visceral fat';
+  @override
+  String get mhxTotalCholesterol => 'Total cholesterol';
+  @override
+  String get mhxLdl => 'LDL';
+  @override
+  String get mhxHdl => 'HDL';
+  @override
+  String get mhxTriglycerides => 'Triglycerides';
+  @override
+  String get mhxSystolic => 'Systolic';
+  @override
+  String get mhxDiastolic => 'Diastolic';
+  @override
+  String get mhxStatsMeasurements => 'Measurements';
+  @override
+  String get mhxStatsAverage => 'Average';
+  @override
+  String get mhxStatsRange => 'Range';
+  @override
+  String get mhxStatsLatest => 'Latest';
+  @override
+  String get mhxFooterDisclaimer => 'Data source: measurements entered by the patient through the MY VITALS app using personal devices that may not be clinically calibrated; their accuracy is not verified by a professional or an accredited laboratory. The reference ranges shown are indicative and may not apply to your individual situation; a value flagged outside the range is not a diagnosis. Do not make treatment decisions based on this document without professional supervision. It contains personal health data: the user is responsible for its safekeeping and sharing.';
+  @override
+  String get mhxButton => 'Export complete medical history';
+  @override
+  String get mhxHubHint => 'One PDF with your four indicators to show your doctor.';
+  @override
+  String get mhxChoosePeriod => 'Choose the period';
+  @override
+  String get mhxPeriod6Months => 'Last 6 months';
+  @override
+  String get mhxPeriod1Year => 'Last year';
+  @override
+  String get mhxPeriodAll => 'All history';
+  @override
+  String get mhxGenerate => 'Generate PDF';
+  @override
+  String get mhxNoData => 'There are no measurements to export yet.';
+  @override
+  String mhxAgeYears(int years) {
+    return '$years yr';
+  }
+  @override
+  String mhxPageOf(int current, int total) {
+    return 'Page $current of $total';
+  }
 }

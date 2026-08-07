@@ -95,6 +95,29 @@ pantalla enseñe los dos estados de la interfaz de metas.
 La generación es **determinista**: la misma fecha produce los mismos números, así
 que una captura repetida semanas después sale idéntica.
 
+## Exportar la historia clínica consolidada
+
+Desde la pestaña **Historial**, arriba del todo, hay un botón nuevo: **exportar
+la historia clínica completa**. A diferencia del export por indicador —cada uno
+saca su tabla en PDF—, éste genera **un único documento** con los cuatro
+indicadores para enseñar al médico: una cabecera con el paciente (Daniel Ospina,
+42 años), un aviso de que son datos autoreportados, un resumen de últimos valores
+marcados dentro/fuera de rango, y por indicador su tendencia (gráfica vectorial),
+sus estadísticas del periodo y los últimos registros con sus comentarios. Pide
+antes el periodo (6 meses / **1 año** / todo).
+
+La demo es el mejor sitio para revisarlo: con los ~630 registros de dos años, la
+gráfica de tensión enseña la bajada de 138/88 a 118/76 y la de peso la de 92 a 77
+kg. El periodo «todo» es el que más estira el documento (varias páginas), así que
+es donde asoman los cortes de página, el pie con numeración y los rangos vacíos.
+
+Sigue el esquema de un *Patient Summary* internacional (ISO 27269 / HL7 FHIR IPS):
+la app figura como FUENTE, cada valor lleva su unidad UCUM y su rango de
+referencia, y el documento deja claro que no es un diagnóstico. La agregación es
+pura y determinista (`lib/core/export/clinical_summary.dart`), separada del
+dibujo del PDF (`lib/core/export/medical_history_pdf.dart`), así que se comprueba
+desde `test/core/export/` igual que el resto de la demo.
+
 ## Cómo está montado
 
 ```

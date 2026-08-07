@@ -652,5 +652,59 @@
   "demoBannerLabel": "Demo data",
   "demoExit": "Leave the demo",
   "profileRankTier2": "Steady Caregiver",
-  "profileRankTier3": "Wellness Veteran"
+  "profileRankTier3": "Wellness Veteran",
+  "mhxDocTitle": "Personal Health Summary",
+  "mhxDocSubtitle": "Consolidated report of self-reported measurements",
+  "mhxPatient": "Patient",
+  "mhxBirthDate": "Date of birth",
+  "mhxPeriodCovered": "Period covered",
+  "mhxGeneratedOn": "Generated on",
+  "mhxSource": "Source",
+  "mhxSelfReported": "self-reported data",
+  "mhxDisclaimerTitle": "Informational summary - not a medical diagnosis",
+  "mhxDisclaimerBody": "This document was generated automatically from measurements recorded by the user. It is not a medical diagnosis or an official clinical record, and does not replace assessment by a healthcare professional.",
+  "mhxSummaryTitle": "Summary of latest values",
+  "mhxColIndicator": "Indicator",
+  "mhxColLatest": "Latest value",
+  "mhxColReference": "Reference",
+  "mhxColStatus": "Status",
+  "mhxColNotes": "Notes",
+  "mhxBloodPressure": "Blood pressure",
+  "mhxHeartRate": "Heart rate",
+  "mhxWeight": "Weight",
+  "mhxBmi": "BMI",
+  "mhxBodyFat": "Body fat",
+  "mhxVisceralFat": "Visceral fat",
+  "mhxTotalCholesterol": "Total cholesterol",
+  "mhxLdl": "LDL",
+  "mhxHdl": "HDL",
+  "mhxTriglycerides": "Triglycerides",
+  "mhxSystolic": "Systolic",
+  "mhxDiastolic": "Diastolic",
+  "mhxStatsMeasurements": "Measurements",
+  "mhxStatsAverage": "Average",
+  "mhxStatsRange": "Range",
+  "mhxStatsLatest": "Latest",
+  "mhxFooterDisclaimer": "Data source: measurements entered by the patient through the MY VITALS app using personal devices that may not be clinically calibrated; their accuracy is not verified by a professional or an accredited laboratory. The reference ranges shown are indicative and may not apply to your individual situation; a value flagged outside the range is not a diagnosis. Do not make treatment decisions based on this document without professional supervision. It contains personal health data: the user is responsible for its safekeeping and sharing.",
+  "mhxButton": "Export complete medical history",
+  "mhxHubHint": "One PDF with your four indicators to show your doctor.",
+  "mhxChoosePeriod": "Choose the period",
+  "mhxPeriod6Months": "Last 6 months",
+  "mhxPeriod1Year": "Last year",
+  "mhxPeriodAll": "All history",
+  "mhxGenerate": "Generate PDF",
+  "mhxNoData": "There are no measurements to export yet.",
+  "mhxAgeYears": "{years} yr",
+  "mhxPageOf": "Page {current} of {total}",
+  "@mhxAgeYears": {
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  },
+  "@mhxPageOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  }
 }

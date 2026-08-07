@@ -5,6 +5,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/main_app_bar.dart';
+import 'package:myvitals_healthtracker_app/features/history/presentation/widgets/consolidated_export_button.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -23,6 +24,11 @@ class HistoryScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
               children: [
+                // Exportación CONSOLIDADA: un único PDF con los cuatro
+                // indicadores para el médico. Va arriba, como acción primaria
+                // sobre la lista de módulos (cada uno con su propio export).
+                const ConsolidatedExportButton(),
+                const SizedBox(height: 20),
                 // Menu items matching Profile _MenuTile style
                 _HistoryMenuTile(
                   icon: Icons.straighten,
