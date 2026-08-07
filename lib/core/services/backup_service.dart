@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/vital_sign_record.dart';
@@ -20,8 +21,10 @@ class BackupService {
   /// else so a newer/unknown format isn't restored with wrong assumptions.
   static const List<String> _supportedVersions = ["1.0"];
 
-  /// Generates the backup JSON and shares/downloads it.
-  Future<bool> exportBackup(String userName) async {
+  /// Generates the backup JSON and shares/downloads it. Returns a [ShareOutcome]
+  /// so the UI can tell a real share from a cancel (which must not read as
+  /// success) or a failure.
+  Future<ShareOutcome> exportBackup(String userName) async {
     try {
       // Fetch all records
       final anthropometric = await AnthropometricRepository.instance.getAll();
@@ -34,7 +37,10 @@ class BackupService {
       final prefs = await SharedPreferences.getInstance();
       final prefsMap = <String, dynamic>{};
 
-      // Keys matching the preference providers (profile, goals, locale/units)
+      // Keys matching the preference providers (profile, goals, locale/units,
+      // theme, reminders, measuring device). The screen promises "Preferences",
+      // so theme/reminders/device must travel with the backup too — they are all
+      // String/bool values that the restore loop already handles.
       final preferenceKeys = [
         'user_language',
         'user_measurement_unit',
@@ -49,6 +55,14 @@ class BackupService {
         'target_body_fat',
         'target_muscle_mass',
         'target_visceral_fat',
+        // Theme (ThemeProvider)
+        'app_theme_id',
+        // Reminders (RemindersProvider) — a JSON string
+        'user_reminders',
+        // Measuring device (MeasuringDeviceProvider)
+        'measuring_device_code',
+        'measuring_device_name',
+        'measuring_device_chosen',
       ];
 
       for (var key in preferenceKeys) {
@@ -85,6 +99,7 @@ class BackupService {
           : "User";
       final fileName = "myvitals-$sanitizedName-$dateStr-$timeStr.json";
 
+      final ShareResult result;
       if (kIsWeb) {
         // Use XFile.fromData on Web to trigger a download via the share sheet.
         final bytes = utf8.encode(jsonString);
@@ -93,21 +108,21 @@ class BackupService {
           name: fileName,
           mimeType: 'application/json',
         );
-        await SharePlus.instance.share(ShareParams(files: [xFile]));
+        result = await SharePlus.instance.share(ShareParams(files: [xFile]));
       } else {
         final directory = await getApplicationDocumentsDirectory();
         final path = '${directory.path}/$fileName';
         final file = File(path);
         await file.writeAsString(jsonString);
-        await SharePlus.instance.share(
+        result = await SharePlus.instance.share(
           ShareParams(files: [XFile(path)], subject: 'My Vitals Backup'),
         );
       }
 
-      return true;
+      return shareOutcomeOf(result);
     } catch (e) {
       debugPrint("Error exporting backup: $e");
-      return false;
+      return ShareOutcome.error;
     }
   }
 

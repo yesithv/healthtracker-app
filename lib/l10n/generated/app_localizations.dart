@@ -398,18 +398,6 @@ abstract class AppLocalizations {
   /// **'Metric (kg, cm, °C)'**
   String get metricSystem;
 
-  /// No description provided for @historyComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'History — Coming Soon'**
-  String get historyComingSoon;
-
-  /// No description provided for @discoverComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Education and tips — Coming Soon'**
-  String get discoverComingSoon;
-
   /// No description provided for @registerIndicators.
   ///
   /// In en, this message translates to:
@@ -2063,8 +2051,20 @@ abstract class AppLocalizations {
   /// No description provided for @backupIncludesPreferences.
   ///
   /// In en, this message translates to:
-  /// **'Preferences (language, units)'**
+  /// **'Preferences (language, units, theme, reminders, device)'**
   String get backupIncludesPreferences;
+
+  /// No description provided for @exportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported successfully'**
+  String get exportSuccess;
+
+  /// No description provided for @exportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export. Please try again.'**
+  String get exportError;
 
   /// No description provided for @backupCancel.
   ///

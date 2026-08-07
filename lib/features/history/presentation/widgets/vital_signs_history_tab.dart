@@ -9,6 +9,8 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:go_router/go_router.dart';
@@ -292,9 +294,15 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
     final cool = _theme.clinical.info.accent;
     if (records.isEmpty) return const SizedBox.shrink();
 
-    final recentRecords = records.length > 6
-        ? records.sublist(records.length - 6)
-        : records;
+    // Muestreo uniforme de TODA la lista filtrada (conserva primero y último), en
+    // vez del viejo `sublist(length - 6)` que ignoraba el filtro y aplanaba
+    // «Siempre» a las dos últimas semanas.
+    final recentRecords = downsample(records);
+    final axisFmt = axisDateFormat(
+      recentRecords.first.date,
+      recentRecords.last.date,
+    );
+    final labelStep = axisLabelStep(recentRecords.length);
     final List<FlSpot> spotsSys = [];
     final List<FlSpot> spotsDia = [];
     double minV = recentRecords.first.diastolic.toDouble();
@@ -365,12 +373,16 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
                       interval: 1,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < recentRecords.length) {
-                          final format = DateFormat.MMM();
+                        final isLast = index == recentRecords.length - 1;
+                        // Solo una etiqueta cada `labelStep` (más la última) para
+                        // no amontonarlas cuando hay muchos puntos.
+                        if (index >= 0 &&
+                            index < recentRecords.length &&
+                            (index % labelStep == 0 || isLast)) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              format.format(recentRecords[index].date),
+                              axisFmt.format(recentRecords[index].date),
                               style: _theme.type.numeralUnit.copyWith(
                                 fontSize: 10,
                               ),
@@ -524,6 +536,8 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
     List<VitalSignRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     final pdf = pw.Document();
 
     final List<List<String>> tableData = [
@@ -590,16 +604,28 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: 'vital_signs_history.pdf',
-    );
+    try {
+      final ok = await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'vital_signs_history.pdf',
+      );
+      showShareFeedback(
+        messenger,
+        theme,
+        l10n,
+        ok ? ShareOutcome.success : ShareOutcome.silent,
+      );
+    } catch (_) {
+      showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
+    }
   }
 
   Future<void> _exportCsv(
     List<VitalSignRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
@@ -627,18 +653,21 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
     ];
     String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [
-          XFile.fromData(
-            Uint8List.fromList(bytes),
-            name: 'vital_signs_history.csv',
-            mimeType: 'text/csv',
-          ),
-        ],
-        subject: l10n.vitalsShareCsvSubject,
+    final outcome = await runShare(
+      () => SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile.fromData(
+              Uint8List.fromList(bytes),
+              name: 'vital_signs_history.csv',
+              mimeType: 'text/csv',
+            ),
+          ],
+          subject: l10n.vitalsShareCsvSubject,
+        ),
       ),
     );
+    showShareFeedback(messenger, theme, l10n, outcome);
   }
 
   /// Red background revealed when swiping a history item left to delete it.

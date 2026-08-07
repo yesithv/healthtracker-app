@@ -5,9 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/services/backup_service.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
+import 'package:myvitals_healthtracker_app/core/providers/theme_provider.dart';
+import 'package:myvitals_healthtracker_app/core/providers/reminders_provider.dart';
+import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class DataBackupScreen extends StatefulWidget {
@@ -21,24 +25,24 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
   bool _isLoading = false;
 
   Future<void> _exportBackup() async {
-    final clinical = Theme.of(context).clinical;
     setState(() => _isLoading = true);
 
     final prefs = Provider.of<UserProfileProvider>(context, listen: false);
     final backupService = BackupService();
 
-    final success = await backupService.exportBackup(prefs.userName);
+    final outcome = await backupService.exportBackup(prefs.userName);
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.backupSuccess),
-            backgroundColor: clinical.optimal.accent,
-          ),
-        );
-      }
+      // El helper distingue éxito (verde), cancelar (silencio) y fallo (rojo), así
+      // cancelar el diálogo ya no cuenta como «backup creado».
+      showShareFeedback(
+        ScaffoldMessenger.of(context),
+        Theme.of(context),
+        AppLocalizations.of(context)!,
+        outcome,
+        successMessage: AppLocalizations.of(context)!.backupSuccess,
+      );
     }
   }
 
@@ -55,6 +59,15 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       listen: false,
     );
     final localeUnitsProvider = Provider.of<LocaleUnitsProvider>(
+      context,
+      listen: false,
+    );
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final remindersProvider = Provider.of<RemindersProvider>(
+      context,
+      listen: false,
+    );
+    final deviceProvider = Provider.of<MeasuringDeviceProvider>(
       context,
       listen: false,
     );
@@ -105,6 +118,9 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       await prefsProvider.reload();
       await goalsProvider.reload();
       await localeUnitsProvider.reload();
+      await themeProvider.reload();
+      await remindersProvider.reload();
+      await deviceProvider.load();
     }
 
     if (mounted) {

@@ -9,6 +9,8 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:go_router/go_router.dart';
@@ -295,9 +297,14 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
         .toList();
     if (validRecords.isEmpty) return const SizedBox.shrink();
 
-    final recentRecords = validRecords.length > 6
-        ? validRecords.sublist(validRecords.length - 6)
-        : validRecords;
+    // Muestreo uniforme de toda la serie filtrada (conserva primero y último), en
+    // vez del viejo `sublist(length - 6)` que ignoraba el filtro.
+    final recentRecords = downsample(validRecords);
+    final axisFmt = axisDateFormat(
+      recentRecords.first.date,
+      recentRecords.last.date,
+    );
+    final labelStep = axisLabelStep(recentRecords.length);
     final List<FlSpot> spotsTc = [];
     double minV = recentRecords.first.totalCholesterol!;
     double maxV = recentRecords.first.totalCholesterol!;
@@ -322,7 +329,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'COLESTEROL TOTAL',
+                l10n.lipidTotalCholesterol.toUpperCase(),
                 style: _theme.type.sectionLabel.copyWith(
                   fontSize: 11,
                   color: surfaces.inkSecondary,
@@ -379,12 +386,14 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                       interval: 1,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < recentRecords.length) {
-                          final format = DateFormat.MMM();
+                        final isLast = index == recentRecords.length - 1;
+                        if (index >= 0 &&
+                            index < recentRecords.length &&
+                            (index % labelStep == 0 || isLast)) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              format.format(recentRecords[index].date),
+                              axisFmt.format(recentRecords[index].date),
                               style: _theme.type.numeralUnit.copyWith(
                                 fontSize: 10,
                               ),
@@ -419,7 +428,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
                     spots: spotsTc,
                     isCurved: true,
                     color: family.accent,
-                    barWidth: 3,
+                    barWidth: surfaces.chartLineWidth,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
@@ -497,6 +506,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     List<LipidRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     final pdf = pw.Document();
 
     final List<List<String>> tableData = [
@@ -567,16 +578,28 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: 'lipid_profile_history.pdf',
-    );
+    try {
+      final ok = await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'lipid_profile_history.pdf',
+      );
+      showShareFeedback(
+        messenger,
+        theme,
+        l10n,
+        ok ? ShareOutcome.success : ShareOutcome.silent,
+      );
+    } catch (_) {
+      showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
+    }
   }
 
   Future<void> _exportCsv(
     List<LipidRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
@@ -603,18 +626,21 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
     ];
     String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [
-          XFile.fromData(
-            Uint8List.fromList(bytes),
-            name: 'lipid_profile_history.csv',
-            mimeType: 'text/csv',
-          ),
-        ],
-        subject: l10n.lipidShareCsvSubject,
+    final outcome = await runShare(
+      () => SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile.fromData(
+              Uint8List.fromList(bytes),
+              name: 'lipid_profile_history.csv',
+              mimeType: 'text/csv',
+            ),
+          ],
+          subject: l10n.lipidShareCsvSubject,
+        ),
       ),
     );
+    showShareFeedback(messenger, theme, l10n, outcome);
   }
 
   /// Red background revealed when swiping a history item left to delete it.

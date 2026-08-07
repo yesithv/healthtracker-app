@@ -162,12 +162,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get metricSystem => 'Metric (kg, cm, °C)';
 
   @override
-  String get historyComingSoon => 'History — Coming Soon';
-
-  @override
-  String get discoverComingSoon => 'Education and tips — Coming Soon';
-
-  @override
   String get registerIndicators => 'Register Indicators';
 
   @override
@@ -1046,7 +1040,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupIncludesPhoto => 'Profile Photo';
 
   @override
-  String get backupIncludesPreferences => 'Preferences (language, units)';
+  String get backupIncludesPreferences =>
+      'Preferences (language, units, theme, reminders, device)';
+
+  @override
+  String get exportSuccess => 'Exported successfully';
+
+  @override
+  String get exportError => 'Could not export. Please try again.';
 
   @override
   String get backupCancel => 'Cancel';
