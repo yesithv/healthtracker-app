@@ -94,7 +94,7 @@ class DemoSession extends ChangeNotifier {
     final seed = DemoSeeder.demoPreferences(
       overrideAppearance: overrideAppearance,
     );
-    final avatar = await DemoSeeder.monogramAvatar();
+    final avatar = await DemoSeeder.demoAvatar();
     if (avatar != null) seed['user_profile_image'] = avatar;
     await _writeAll(prefs, seed);
     await prefs.setBool(_kActive, true);

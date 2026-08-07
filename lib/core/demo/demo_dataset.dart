@@ -46,7 +46,7 @@ class DemoDataset {
 const int _spanDays = 730;
 
 /// Talla del personaje, en cm (constante: un adulto no crece).
-const double _heightCm = 176.0;
+const double _heightCm = 165.0;
 
 /// Báscula de bioimpedancia del personaje. Coincide con el catálogo de
 /// respaldo de `MeasuringDeviceProvider`, así que la ficha del dispositivo en
@@ -146,11 +146,11 @@ List<AnthropometricRecord> _buildAnthropometric(
     final t = date.difference(start).inDays / _spanDays;
     final at = _atHour(date, 7, 20);
 
-    // 92,4 → 76,8 kg. Empieza en sobrepeso claro (IMC 29,8) y termina en
-    // normalidad (IMC 24,8), rozando el objetivo de 75 kg sin alcanzarlo: así
+    // 80,5 → 63,5 kg. Empieza en sobrepeso claro (IMC 29,6) y termina en
+    // normalidad (IMC 23,3), rozando el objetivo de 62 kg sin alcanzarlo: así
     // el panel enseña la barra de progreso viva y no un objetivo ya cumplido.
     final weight = _round(
-      _series(92.4, 76.8, t, date, rnd, holidayEffect: 1.4, jitter: 0.35),
+      _series(80.5, 63.5, t, date, rnd, holidayEffect: 1.4, jitter: 0.35),
       1,
     );
     final bmi = _round(weight / math.pow(_heightCm / 100, 2), 1);
@@ -166,23 +166,26 @@ List<AnthropometricRecord> _buildAnthropometric(
         height: _heightCm,
         bmi: bmi,
         waistCm: tape
-            ? _round(_series(104, 87.5, t, date, rnd, jitter: 0.4), 1)
+            ? _round(_series(95, 76, t, date, rnd, jitter: 0.4), 1)
             : null,
+        // La cadera se mantiene por encima de la cintura de principio a fin, que
+        // es la silueta típica de una mujer y lo que da un índice cintura-cadera
+        // saludable al final de la serie.
         hipCm: tape
-            ? _round(_series(108, 99, t, date, rnd, jitter: 0.4), 1)
+            ? _round(_series(112, 101, t, date, rnd, jitter: 0.4), 1)
             : null,
         lowerAbdomenCm: tape
-            ? _round(_series(106, 91, t, date, rnd, jitter: 0.4), 1)
+            ? _round(_series(100, 84, t, date, rnd, jitter: 0.4), 1)
             : null,
-        // El brazo SUBE: se pierde grasa y se gana músculo.
+        // El brazo baja poco: se pierde grasa, pero manteniendo tono.
         armCm: tape
-            ? _round(_series(32.8, 34.9, t, date, rnd, jitter: 0.2), 1)
+            ? _round(_series(31.5, 30.0, t, date, rnd, jitter: 0.2), 1)
             : null,
         legCm: tape
-            ? _round(_series(58.6, 57.1, t, date, rnd, jitter: 0.3), 1)
+            ? _round(_series(62, 57, t, date, rnd, jitter: 0.3), 1)
             : null,
         chestBustCm: tape
-            ? _round(_series(106.5, 101.2, t, date, rnd, jitter: 0.4), 1)
+            ? _round(_series(102, 94, t, date, rnd, jitter: 0.4), 1)
             : null,
         comment: notes.pick(notes.weight, i, every: 6),
         createdAt: at,
@@ -215,11 +218,11 @@ List<VitalSignRecord> _buildVitalSigns(
   ) {
     final t = date.difference(start).inDays / _spanDays;
 
-    // 138/88 con pulso 78 → 118/76 con pulso 62: de «elevada» a «normal».
+    // 134/86 con pulso 76 → 114/74 con pulso 64: de «elevada» a «normal».
     // El semáforo del panel cruza de ámbar a verde a lo largo de la serie.
     var systolic = _series(
-      138,
-      118,
+      134,
+      114,
       t,
       date,
       rnd,
@@ -227,8 +230,8 @@ List<VitalSignRecord> _buildVitalSigns(
       jitter: 4.5,
     );
     var diastolic = _series(
-      88,
-      75.5,
+      86,
+      74,
       t,
       date,
       rnd,
@@ -236,8 +239,8 @@ List<VitalSignRecord> _buildVitalSigns(
       jitter: 3,
     );
     var heartRate = _series(
-      78,
-      61.5,
+      76,
+      64,
       t,
       date,
       rnd,
@@ -369,15 +372,16 @@ List<LipidRecord> _buildLipids(
     final t = date.difference(start).inDays / _spanDays;
     final at = _atHour(date, 8, 30);
 
-    final ldl = _round(_series(158, 101, t, date, rnd, jitter: 3), 0);
+    final ldl = _round(_series(150, 98, t, date, rnd, jitter: 3), 0);
     // El HDL es el único que mejora SUBIENDO, así que el repunte de fiestas
-    // va con signo negativo: en diciembre baja.
+    // va con signo negativo: en diciembre baja. Arranca ya más alto que en un
+    // hombre, que es lo habitual en una mujer.
     final hdl = _round(
-      _series(38, 55, t, date, rnd, holidayEffect: -2, jitter: 1.5),
+      _series(42, 62, t, date, rnd, holidayEffect: -2, jitter: 1.5),
       0,
     );
     final triglycerides = _round(
-      _series(212, 117, t, date, rnd, holidayEffect: 14, jitter: 8),
+      _series(190, 105, t, date, rnd, holidayEffect: 14, jitter: 8),
       0,
     );
     // Friedewald: VLDL ≈ TG/5, y el total es la suma de las tres fracciones.
@@ -430,12 +434,15 @@ List<BodyCompositionRecord> _buildBodyComposition(
     final date = weighIn.date;
     final t = date.difference(start).inDays / _spanDays;
 
+    // Grasa y músculo con proporciones de mujer: la grasa arranca alta (36 %) y
+    // baja a un saludable 26 %; el músculo esquelético sube del 24 % al 31 %,
+    // por debajo de lo que marcaría un hombre a igual peso.
     final bodyFat = _round(
-      _series(31.4, 20.6, t, date, rnd, holidayEffect: 0.6, jitter: 0.3),
+      _series(36.0, 26.0, t, date, rnd, holidayEffect: 0.6, jitter: 0.3),
       1,
     );
     final musclePct = _round(
-      _series(28.3, 36.4, t, date, rnd, holidayEffect: -0.3, jitter: 0.2),
+      _series(24.0, 31.0, t, date, rnd, holidayEffect: -0.3, jitter: 0.2),
       1,
     );
 
@@ -448,16 +455,16 @@ List<BodyCompositionRecord> _buildBodyComposition(
         muscleMassKg: _round(weighIn.weight * musclePct / 100, 1),
         musclePct: musclePct,
         visceralFatLevel: _series(
-          13.4,
-          6.6,
+          10.4,
+          4.6,
           t,
           date,
           rnd,
           jitter: 0.4,
         ).round().clamp(1, 30),
         metabolicAge: _series(
-          52.4,
-          37.6,
+          48.4,
+          33.6,
           t,
           date,
           rnd,
@@ -465,13 +472,15 @@ List<BodyCompositionRecord> _buildBodyComposition(
         ).round().clamp(18, 80),
         // El metabolismo basal BAJA al bajar el peso total, aunque suba el
         // músculo: es lo que de verdad marca la báscula, y conviene que la
-        // demo no enseñe una fisiología de fantasía.
-        bmrKcal: _series(1782, 1655, t, date, rnd, jitter: 9).round(),
+        // demo no enseñe una fisiología de fantasía. Los valores son más bajos
+        // que en un hombre, acordes a menos masa magra.
+        bmrKcal: _series(1480, 1360, t, date, rnd, jitter: 9).round(),
+        // El agua corporal en una mujer ronda por debajo de la de un hombre.
         bodyWaterPercent: _round(
-          _series(48.1, 56.4, t, date, rnd, jitter: 0.3),
+          _series(45.0, 52.0, t, date, rnd, jitter: 0.3),
           1,
         ),
-        boneMassKg: _round(_series(3.18, 3.02, t, date, rnd, jitter: 0.03), 2),
+        boneMassKg: _round(_series(2.35, 2.20, t, date, rnd, jitter: 0.03), 2),
         deviceName: demoDeviceName,
         comment: notes.pick(notes.body, i, every: 8),
         createdAt: date,
