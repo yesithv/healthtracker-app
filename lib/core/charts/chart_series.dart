@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 /// Utilidades puras para las gráficas de tendencia del historial.
 ///
 /// Viven APARTE de los widgets —Dart puro, sin `BuildContext` ni Flutter— por la
@@ -12,6 +10,8 @@ import 'package:intl/intl.dart';
 /// la misma línea plana reciente que «6 meses». Aquí vive el muestreo que deja a la
 /// gráfica dibujar todo el rango filtrado sin ahogarse en miles de puntos.
 library;
+
+import 'package:intl/intl.dart';
 
 /// Reduce [items] a como mucho [maxPoints] elementos con un muestreo UNIFORME que
 /// SIEMPRE conserva el primero y el último. Así una serie de dos años entra en la
