@@ -129,18 +129,19 @@ propias sin registrarse, ésta abre la historia de alguien que no existe, marcad
 como tal con un aviso que no se puede cerrar y borrada al salir. Es un escaparate,
 no un modo de uso.
 
-## Límites conocidos
+## Límites conocidos, ya resueltos
 
-Dos cosas que la siembra **no** puede arreglar, porque no dependen de los datos:
+Dos límites que arrastraba la app real —y que la demo dejaba a la vista— ya están
+corregidos:
 
-- **Las gráficas dibujan como mucho 6 puntos** (`recentRecords` en los cuatro
-  `*_history_tab.dart`), sea cual sea el filtro y el volumen de datos. En la
-  analítica, que es trimestral, esos 6 puntos cubren 15 meses y la gráfica se lee
-  perfecta; en tensión o peso cubren dos semanas, así que el filtro «Siempre»
-  enseña una línea plana reciente en vez de la mejora de dos años.
-- **La tarjeta de «Progreso de Autocuidado» está escrita a mano** en
-  `profile_screen.dart`: nivel 1, barra al 15 % y medallas bloqueadas fijas. No se
-  calcula desde los registros, así que un visitante que acaba de ver dos años de
-  historia sigue apareciendo como principiante.
-
-Las dos son anteriores a la demo y afectan también a la app real.
+- **Las gráficas ignoraban el filtro de tiempo.** Los cuatro `*_history_tab.dart`
+  recortaban a los últimos 6 registros (`recentRecords`), sea cual fuera el filtro,
+  así que «Siempre» enseñaba una línea plana reciente en vez de la mejora de dos
+  años. Ahora usan un muestreo uniforme de toda la serie filtrada
+  (`lib/core/charts/chart_series.dart`, que conserva el primer y el último punto) y
+  el eje X lleva fechas con año cuando el rango lo pide.
+- **La tarjeta de «Progreso de Autocuidado» estaba escrita a mano.** Enseñaba nivel
+  1 y casi todo bloqueado aunque hubiera dos años de historia detrás. Ahora el
+  nivel, la barra y las medallas se calculan desde los registros
+  (`lib/features/profile/data/profile_achievements.dart`); con ~630 registros el
+  personaje llega al nivel 8.

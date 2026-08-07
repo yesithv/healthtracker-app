@@ -10,6 +10,8 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:go_router/go_router.dart';
@@ -302,9 +304,14 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         .toList();
     if (validRecords.isEmpty) return const SizedBox.shrink();
 
-    final recentRecords = validRecords.length > 6
-        ? validRecords.sublist(validRecords.length - 6)
-        : validRecords;
+    // Muestreo uniforme de toda la serie filtrada (conserva primero y último), en
+    // vez del viejo `sublist(length - 6)` que ignoraba el filtro.
+    final recentRecords = downsample(validRecords);
+    final axisFmt = axisDateFormat(
+      recentRecords.first.date,
+      recentRecords.last.date,
+    );
+    final labelStep = axisLabelStep(recentRecords.length);
     final List<FlSpot> spotsFat = [];
     double minV = recentRecords.first.bodyFatPercent!;
     double maxV = recentRecords.first.bodyFatPercent!;
@@ -380,12 +387,14 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                       interval: 1,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < recentRecords.length) {
-                          final format = DateFormat.MMM();
+                        final isLast = index == recentRecords.length - 1;
+                        if (index >= 0 &&
+                            index < recentRecords.length &&
+                            (index % labelStep == 0 || isLast)) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              format.format(recentRecords[index].date),
+                              axisFmt.format(recentRecords[index].date),
                               style: _theme.type.numeralUnit.copyWith(
                                 fontSize: 10,
                               ),
@@ -420,7 +429,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                     spots: spotsFat,
                     isCurved: true,
                     color: family.accent,
-                    barWidth: 3,
+                    barWidth: surfaces.chartLineWidth,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
@@ -498,6 +507,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     List<BodyCompositionRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     final pdf = pw.Document();
 
     final List<List<String>> tableData = [
@@ -565,16 +576,28 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: 'body_composition_history.pdf',
-    );
+    try {
+      final ok = await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'body_composition_history.pdf',
+      );
+      showShareFeedback(
+        messenger,
+        theme,
+        l10n,
+        ok ? ShareOutcome.success : ShareOutcome.silent,
+      );
+    } catch (_) {
+      showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
+    }
   }
 
   Future<void> _exportCsv(
     List<BodyCompositionRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
@@ -603,18 +626,21 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     ];
     String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [
-          XFile.fromData(
-            Uint8List.fromList(bytes),
-            name: 'body_composition_history.csv',
-            mimeType: 'text/csv',
-          ),
-        ],
-        subject: l10n.compositionShareCsvSubject,
+    final outcome = await runShare(
+      () => SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile.fromData(
+              Uint8List.fromList(bytes),
+              name: 'body_composition_history.csv',
+              mimeType: 'text/csv',
+            ),
+          ],
+          subject: l10n.compositionShareCsvSubject,
+        ),
       ),
     );
+    showShareFeedback(messenger, theme, l10n, outcome);
   }
 
   /// Red background revealed when swiping a history item left to delete it.
@@ -689,13 +715,16 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
 
   /// Línea compacta con los demás valores del registro (músculo %/kg, visceral,
   /// edad metabólica, TMB) — visible p. ej. en la historia importada del legacy.
-  String? _secondaryLine(BodyCompositionRecord r) {
+  String? _secondaryLine(BodyCompositionRecord r, AppLocalizations l10n) {
     final parts = <String>[
-      if (r.musclePct != null) 'Músculo ${r.musclePct}%',
+      if (r.musclePct != null)
+        '${l10n.dashboardCompositionMuscle} ${r.musclePct}%',
       if (r.musclePct == null && r.muscleMassKg != null)
-        'Músculo ${r.muscleMassKg}kg',
-      if (r.visceralFatLevel != null) 'Visceral ${r.visceralFatLevel}',
-      if (r.metabolicAge != null) 'Edad ${r.metabolicAge}',
+        '${l10n.dashboardCompositionMuscle} ${r.muscleMassKg}kg',
+      if (r.visceralFatLevel != null)
+        '${l10n.dashboardCompositionVisceral} ${r.visceralFatLevel}',
+      if (r.metabolicAge != null)
+        '${l10n.compositionMetabolicAge} ${r.metabolicAge}',
       if (r.bmrKcal != null) '${r.bmrKcal} kcal',
     ];
     return parts.isEmpty ? null : parts.join(' · ');
@@ -745,15 +774,15 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '% Grasa',
+                    '% ${l10n.dashboardCompositionFat}',
                     style: theme.type.numeralUnit.copyWith(fontSize: 11),
                   ),
                 ],
               ),
-              if (_secondaryLine(record) != null) ...[
+              if (_secondaryLine(record, l10n) != null) ...[
                 const SizedBox(height: 4),
                 Text(
-                  _secondaryLine(record)!,
+                  _secondaryLine(record, l10n)!,
                   style: theme.type.meta.copyWith(fontSize: 10),
                 ),
               ],

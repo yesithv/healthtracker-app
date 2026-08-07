@@ -8,6 +8,8 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart
 import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
@@ -309,10 +311,14 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     final surfaces = _theme.surfaces;
     if (records.isEmpty) return const SizedBox.shrink();
 
-    // Take up to last 6 elements for simplicity
-    final recentRecords = records.length > 6
-        ? records.sublist(records.length - 6)
-        : records;
+    // Muestreo uniforme de toda la serie filtrada (conserva primero y último), en
+    // vez del viejo `sublist(length - 6)` que ignoraba el filtro.
+    final recentRecords = downsample(records);
+    final axisFmt = axisDateFormat(
+      recentRecords.first.date,
+      recentRecords.last.date,
+    );
+    final labelStep = axisLabelStep(recentRecords.length);
     final List<FlSpot> spots = [];
     double minBmi = recentRecords.first.bmi;
     double maxBmi = recentRecords.first.bmi;
@@ -440,13 +446,14 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                       interval: 1,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index >= 0 && index < recentRecords.length) {
-                          // Month abbreviation (e.g. Mar)
-                          final format = DateFormat.MMM();
+                        final isLast = index == recentRecords.length - 1;
+                        if (index >= 0 &&
+                            index < recentRecords.length &&
+                            (index % labelStep == 0 || isLast)) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              format.format(recentRecords[index].date),
+                              axisFmt.format(recentRecords[index].date),
                               style: _theme.type.numeralUnit.copyWith(
                                 fontSize: 10,
                               ),
@@ -608,6 +615,8 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     List<AnthropometricRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     final pdf = pw.Document();
 
     final List<List<String>> tableData = [
@@ -672,7 +681,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                 0: pw.Alignment.centerLeft,
                 1: pw.Alignment.center,
                 2: pw.Alignment.center,
-                3: pw.Alignment.centerRight,
+                3: pw.Alignment.center,
+                4: pw.Alignment.center,
+                5: pw.Alignment.centerLeft,
               },
             ),
           ];
@@ -680,47 +691,66 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: 'anthropometry_history.pdf',
-    );
+    try {
+      final ok = await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'anthropometry_history.pdf',
+      );
+      showShareFeedback(
+        messenger,
+        theme,
+        l10n,
+        ok ? ShareOutcome.success : ShareOutcome.silent,
+      );
+    } catch (_) {
+      showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
+    }
   }
 
   Future<void> _exportCsv(
     List<AnthropometricRecord> records,
     AppLocalizations l10n,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = _theme;
     List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.historyColWeight,
+        l10n.exportColHeight,
         l10n.historyColBmi,
         l10n.historyColCategory,
+        l10n.exportColComment,
       ],
       ...records.map((r) {
         final status = BmiCategory.of(r.bmi).label(l10n);
         return [
           DateFormat('dd/MM/yyyy HH:mm').format(r.date),
           r.weight,
+          r.height.toStringAsFixed(2),
           r.bmi.toStringAsFixed(2),
           status,
+          r.comment ?? '',
         ];
       }),
     ];
     String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [
-          XFile.fromData(
-            Uint8List.fromList(bytes),
-            name: 'anthropometry_history.csv',
-            mimeType: 'text/csv',
-          ),
-        ],
-        subject: l10n.historyShareCsvSubject,
+    final outcome = await runShare(
+      () => SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile.fromData(
+              Uint8List.fromList(bytes),
+              name: 'anthropometry_history.csv',
+              mimeType: 'text/csv',
+            ),
+          ],
+          subject: l10n.historyShareCsvSubject,
+        ),
       ),
     );
+    showShareFeedback(messenger, theme, l10n, outcome);
   }
 
   /// Red background revealed when swiping a history item left to delete it.
@@ -839,7 +869,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
               if (record.hasCircumferences) ...[
                 const SizedBox(height: 4),
                 Text(
-                  _circumferencesLine(record),
+                  _circumferencesLine(record, l10n),
                   style: theme.type.meta.copyWith(fontSize: 10),
                 ),
               ],
@@ -853,16 +883,17 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
 
   /// Línea compacta con los perímetros del registro (cm) — visibles p. ej. en la
   /// historia importada del legacy: cintura, cadera, abdomen, brazo, pierna, pecho.
-  String _circumferencesLine(AnthropometricRecord r) {
+  String _circumferencesLine(AnthropometricRecord r, AppLocalizations l10n) {
     String f(double v) =>
         v == v.roundToDouble() ? v.toInt().toString() : v.toStringAsFixed(1);
     final parts = <String>[
-      if (r.waistCm != null) 'Cintura ${f(r.waistCm!)}',
-      if (r.hipCm != null) 'Cadera ${f(r.hipCm!)}',
-      if (r.lowerAbdomenCm != null) 'Abd. ${f(r.lowerAbdomenCm!)}',
-      if (r.armCm != null) 'Brazo ${f(r.armCm!)}',
-      if (r.legCm != null) 'Pierna ${f(r.legCm!)}',
-      if (r.chestBustCm != null) 'Pecho ${f(r.chestBustCm!)}',
+      if (r.waistCm != null) '${l10n.circWaist} ${f(r.waistCm!)}',
+      if (r.hipCm != null) '${l10n.circHip} ${f(r.hipCm!)}',
+      if (r.lowerAbdomenCm != null)
+        '${l10n.circAbdomenShort} ${f(r.lowerAbdomenCm!)}',
+      if (r.armCm != null) '${l10n.circArm} ${f(r.armCm!)}',
+      if (r.legCm != null) '${l10n.circLeg} ${f(r.legCm!)}',
+      if (r.chestBustCm != null) '${l10n.circChestBust} ${f(r.chestBustCm!)}',
     ];
     return '${parts.join(' · ')} cm';
   }

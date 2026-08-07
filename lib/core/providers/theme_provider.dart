@@ -61,6 +61,21 @@ class ThemeProvider extends ChangeNotifier {
     bool hasChosen = false,
   }) => ThemeProvider._(id, hasChosen);
 
+  /// Relee la preferencia de tema desde disco y notifica. Lo usan la restauración
+  /// de un backup y la salida de la demo, donde las preferencias cambian por
+  /// debajo y la sesión en curso debe reflejarlas sin reiniciar.
+  Future<void> reload() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final parsed = AppThemeId.tryParse(prefs.getString(_prefsKey));
+      _themeId = parsed ?? AppThemeCatalog.fallback;
+      _hasChosen = parsed != null;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('No se pudo releer la preferencia de tema: $e');
+    }
+  }
+
   Future<void> select(AppThemeId id) async {
     // Elegir el tema que ya estaba activo sigue contando como elección: es lo
     // que permite salir del selector la primera vez sin cambiar nada.
