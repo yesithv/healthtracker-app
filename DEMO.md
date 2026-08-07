@@ -36,7 +36,7 @@ Con un usuario que ya tenía tema `consultaSerena` e idioma `pt`:
 |---|---|---|---|
 | Ruta | `/intro` | `/dashboard` | `/intro` |
 | Tema · idioma | consultaSerena · pt | consultaSerena · pt | consultaSerena · pt |
-| Perfil | vacío | Daniel Ospina | vacío |
+| Perfil | vacío | Camila Herrera | vacío |
 | Panel | sin datos | 630 registros | sin datos |
 
 Las preferencias antes y después son idénticas byte a byte. El aviso de una sola
@@ -72,15 +72,15 @@ flutter run -d chrome \
 
 ## Qué historia cuenta
 
-Daniel Ospina, 42 años, 176 cm. Dos años cuidándose, y los datos lo enseñan:
+Camila Herrera, 36 años, 165 cm. Dos años cuidándose, y los datos lo enseñan:
 
 | | Hace dos años | Hoy |
 |---|---|---|
-| Peso · IMC | 92,4 kg · 29,8 *(sobrepeso)* | 76,8 kg · 24,8 *(normal)* |
-| Tensión | 138/88 *(elevada)* | 118/76 *(normal)* |
-| Pulso en reposo | 78 lpm | 62 lpm |
-| Colesterol total · LDL · HDL | 236 · 158 · 38 | 178 · 102 · 54 |
-| Grasa corporal · visceral | 31,4 % · nivel 13 | 20,6 % · nivel 7 |
+| Peso · IMC | 80,5 kg · 29,6 *(sobrepeso)* | 63,5 kg · 23,3 *(normal)* |
+| Tensión | 134/86 *(elevada)* | 114/74 *(normal)* |
+| Pulso en reposo | 76 lpm | 64 lpm |
+| Colesterol total · LDL · HDL | 230 · 150 · 42 | 181 · 98 · 62 |
+| Grasa corporal · visceral | 36,0 % · nivel 10 | 26,0 % · nivel 5 |
 
 Las cadencias son las de un usuario real, no las de un generador: la tensión se
 mide en casa cada dos días (~420 lecturas), el peso y la bioimpedancia una vez
@@ -89,25 +89,35 @@ trimestre (9 paneles). Hay mesetas, algún síntoma suelto y un repunte cada
 diciembre, porque una línea perfecta no se parece a nadie.
 
 Los objetivos están puestos **a medias a propósito**: el de peso sigue en curso
-(faltan ~1,8 kg) y el de grasa corporal ya está cumplido, para que una sola
+(faltan ~1,5 kg) y el de grasa corporal ya está cumplido, para que una sola
 pantalla enseñe los dos estados de la interfaz de metas.
 
 La generación es **determinista**: la misma fecha produce los mismos números, así
 que una captura repetida semanas después sale idéntica.
+
+## La foto de la usuaria
+
+El avatar de Camila se resuelve en tres peldaños (`DemoSeeder.demoAvatar`), de más a
+menos concreto: una **foto real** versionada en `assets/demo/demo_avatar.jpg` si
+existe; si no, un **retrato ilustrado** dibujado por código —no es la cara de nadie
+real y sale idéntico en cada arranque—; y por último un **monograma** con las
+iniciales. Para poner una foto real basta con dejar caer un JPEG cuadrado con licencia
+libre en esa ruta y recompilar, sin tocar código; los detalles y la fuente van en
+`assets/demo/README.md`.
 
 ## Exportar la historia clínica consolidada
 
 Desde la pestaña **Historial**, arriba del todo, hay un botón nuevo: **exportar
 la historia clínica completa**. A diferencia del export por indicador —cada uno
 saca su tabla en PDF—, éste genera **un único documento** con los cuatro
-indicadores para enseñar al médico: una cabecera con el paciente (Daniel Ospina,
-42 años), un aviso de que son datos autoreportados, un resumen de últimos valores
+indicadores para enseñar al médico: una cabecera con la paciente (Camila Herrera,
+36 años), un aviso de que son datos autoreportados, un resumen de últimos valores
 marcados dentro/fuera de rango, y por indicador su tendencia (gráfica vectorial),
 sus estadísticas del periodo y los últimos registros con sus comentarios. Pide
 antes el periodo (6 meses / **1 año** / todo).
 
 La demo es el mejor sitio para revisarlo: con los ~630 registros de dos años, la
-gráfica de tensión enseña la bajada de 138/88 a 118/76 y la de peso la de 92 a 77
+gráfica de tensión enseña la bajada de 134/86 a 114/74 y la de peso la de 80 a 63
 kg. El periodo «todo» es el que más estira el documento (varias páginas), así que
 es donde asoman los cortes de página, el pie con numeración y los rangos vacíos.
 
@@ -125,7 +135,7 @@ lib/core/demo/
   demo_mode.dart      Banderas de compilación. Sólo el arranque guionizado.
   demo_session.dart   El interruptor: entrar, salir, copia y vuelta atrás.
   demo_dataset.dart   Genera los registros. Puro: ni disco, ni red, ni reloj.
-  demo_seeder.dart    Qué perfil y qué ajustes tiene el personaje.
+  demo_seeder.dart    Qué perfil y qué ajustes tiene el personaje, y su avatar.
   demo_actions.dart   Entrar/salir desde la interfaz (recarga providers, navega).
 lib/core/widgets/
   demo_banner.dart    El aviso permanente y la salida.

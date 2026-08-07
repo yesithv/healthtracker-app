@@ -88,8 +88,8 @@ void main() {
   group('los valores son posibles ·', () {
     test('peso, talla e IMC', () {
       for (final r in data.anthropometric) {
-        expect(r.weight, inInclusiveRange(74.0, 96.0));
-        expect(r.height, 176.0);
+        expect(r.weight, inInclusiveRange(61.0, 83.0));
+        expect(r.height, 165.0);
         // El IMC no se inventa: se deriva del peso y la talla del registro.
         final expected = r.weight / ((r.height / 100) * (r.height / 100));
         expect(r.bmi, closeTo(expected, 0.05));
@@ -117,9 +117,9 @@ void main() {
 
     test('el panel lipídico cuadra por dentro', () {
       for (final r in data.lipids) {
-        expect(r.ldl, inInclusiveRange(90.0, 170.0));
-        expect(r.hdl, inInclusiveRange(30.0, 65.0));
-        expect(r.triglycerides, inInclusiveRange(100.0, 240.0));
+        expect(r.ldl, inInclusiveRange(90.0, 160.0));
+        expect(r.hdl, inInclusiveRange(37.0, 66.0));
+        expect(r.triglycerides, inInclusiveRange(95.0, 220.0));
         // Friedewald: VLDL ≈ triglicéridos / 5.
         expect(r.vldl, closeTo(r.triglycerides! / 5, 1));
         // Y el total es la suma de las tres fracciones.
@@ -133,11 +133,11 @@ void main() {
       };
 
       for (final r in data.bodyComposition) {
-        expect(r.bodyFatPercent, inInclusiveRange(18.0, 34.0));
-        expect(r.musclePct, inInclusiveRange(26.0, 39.0));
+        expect(r.bodyFatPercent, inInclusiveRange(23.0, 38.0));
+        expect(r.musclePct, inInclusiveRange(21.0, 33.0));
         expect(r.visceralFatLevel, inInclusiveRange(1, 30));
         expect(r.metabolicAge, inInclusiveRange(18, 80));
-        expect(r.bodyWaterPercent, inInclusiveRange(45.0, 60.0));
+        expect(r.bodyWaterPercent, inInclusiveRange(42.0, 55.0));
 
         final weight = weightByDate[r.date];
         expect(
