@@ -76,6 +76,9 @@ class ConsultaSerena {
       onBrand: _onSalvia,
       radiusCard: 20,
       radiusControl: 14,
+      // El realce de lo elegido tiene su propia forma, siempre rectángulo
+      // redondeado, para que ningún tema lo devuelva a cápsula.
+      radiusSelection: 14,
       // Un punto más blando que «Pulso Clínico», en la misma línea que el
       // resto del tema, pero sigue siendo un cuadrado.
       radiusIcon: 14,

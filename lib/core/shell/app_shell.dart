@@ -70,9 +70,10 @@ class AppShell extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         color: surfaces.selection,
-                        borderRadius: BorderRadius.circular(
-                          surfaces.radiusControl,
-                        ),
+                        // El realce es rectángulo redondeado en cualquier tema:
+                        // su forma la fija `radiusSelection`, no la cápsula del
+                        // botón. Ver `AppSurfaces.radiusSelection`.
+                        borderRadius: surfaces.selectionRadius,
                       ),
                     ),
                   ),

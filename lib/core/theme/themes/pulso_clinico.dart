@@ -78,6 +78,10 @@ class PulsoClinico {
       onBrand: Color(0xFFFFFFFF),
       radiusCard: 20,
       radiusControl: 30, // cápsulas: el idioma de botón que ya usaba la app
+      // El realce de lo elegido NO sigue a la cápsula del botón: sobre la
+      // pestaña activa de la barra ese 30 se lee como círculo. Rectángulo
+      // redondeado, en la misma línea que la caja del icono.
+      radiusSelection: 12,
       // La caja del icono NO sigue a la cápsula del botón: un icono metido
       // en una cápsula vuelve a leerse como círculo, que es justo lo que se
       // quiso quitar. Se queda en cuadrado redondeado, como el instrumental.

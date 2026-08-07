@@ -31,6 +31,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     required this.onBrand,
     required this.radiusCard,
     required this.radiusControl,
+    required this.radiusSelection,
     required this.radiusIcon,
     required this.chartLineWidth,
     required this.dataStroke,
@@ -99,6 +100,21 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
   final double radiusCard;
   final double radiusControl;
 
+  /// Redondeo del RELLENO QUE MARCA LO ELEGIDO: el fondo de la pestaña activa
+  /// de la barra, la fila de ajustes seleccionada, el idioma en uso. Es el
+  /// compañero de FORMA del color [selection], igual que [onSelection] es su
+  /// compañero de CONTENIDO.
+  ///
+  /// Es siempre un rectángulo redondeado, NUNCA una cápsula ni un círculo, y por
+  /// eso NO hereda de [radiusControl]. Ese es el radio del botón, y un tema es
+  /// libre de hacer sus botones en cápsula —«Pulso Clínico» los pone en 30—. La
+  /// barra tomaba de ahí la forma del realce, así que sobre un indicador alto ese
+  /// 30 lo redondeaba hasta leerse como círculo en un tema y como rectángulo en
+  /// otro: la misma pantalla se veía distinta según el tema. Al tener su propio
+  /// token, la forma del realce la decide este contrato —acotado a rectángulo por
+  /// su prueba— y no un accidente del idioma de botón de cada tema.
+  final double radiusSelection;
+
   /// Redondeo de la CAJA QUE ENCIERRA UN ICONO: la pastilla de color detrás del
   /// icono de una fila, de una tarjeta o de una cabecera.
   ///
@@ -129,6 +145,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
 
   BorderRadius get cardRadius => BorderRadius.circular(radiusCard);
   BorderRadius get controlRadius => BorderRadius.circular(radiusControl);
+  BorderRadius get selectionRadius => BorderRadius.circular(radiusSelection);
   BorderRadius get iconRadius => BorderRadius.circular(radiusIcon);
 
   /// Halo de color alrededor de un elemento destacado: el botón elegido, la
@@ -187,6 +204,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     Color? onBrand,
     double? radiusCard,
     double? radiusControl,
+    double? radiusSelection,
     double? radiusIcon,
     double? chartLineWidth,
     Color? dataStroke,
@@ -211,6 +229,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       onBrand: onBrand ?? this.onBrand,
       radiusCard: radiusCard ?? this.radiusCard,
       radiusControl: radiusControl ?? this.radiusControl,
+      radiusSelection: radiusSelection ?? this.radiusSelection,
       radiusIcon: radiusIcon ?? this.radiusIcon,
       chartLineWidth: chartLineWidth ?? this.chartLineWidth,
       dataStroke: dataStroke ?? this.dataStroke,
@@ -241,6 +260,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       onBrand: Color.lerp(onBrand, other.onBrand, t)!,
       radiusCard: lerpDouble(radiusCard, other.radiusCard, t),
       radiusControl: lerpDouble(radiusControl, other.radiusControl, t),
+      radiusSelection: lerpDouble(radiusSelection, other.radiusSelection, t),
       radiusIcon: lerpDouble(radiusIcon, other.radiusIcon, t),
       chartLineWidth: lerpDouble(chartLineWidth, other.chartLineWidth, t),
       dataStroke: Color.lerp(dataStroke, other.dataStroke, t)!,
