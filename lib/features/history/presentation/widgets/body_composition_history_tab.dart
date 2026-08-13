@@ -8,6 +8,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
@@ -735,71 +736,38 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     AppLocalizations l10n,
   ) {
     final theme = _theme;
-    final surfaces = theme.surfaces;
     final double defaultFat = record.bodyFatPercent ?? 0.0;
     final FatCategory fatCat = FatCategory.of(defaultFat);
     final String statusLabel = fatCat.label(l10n);
-    final dateFormat = DateFormat(
-      'dd MMM yyyy',
-    ).format(record.date).toUpperCase();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: surfaces.cardDecoration().copyWith(
-        border: Border.all(color: surfaces.divider),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return MeasurementHistoryCard(
+      date: record.date,
+      value: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dateFormat,
-                style: theme.type.sectionLabel.copyWith(
-                  fontSize: 10,
-                  color: surfaces.inkMuted,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    record.bodyFatPercent != null
-                        ? '${record.bodyFatPercent}'
-                        : 'N/A',
-                    style: theme.type.numeralSmall.copyWith(fontSize: 18),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '% ${l10n.dashboardCompositionFat}',
-                    style: theme.type.numeralUnit.copyWith(fontSize: 11),
-                  ),
-                ],
-              ),
-              if (_secondaryLine(record, l10n) != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  _secondaryLine(record, l10n)!,
-                  style: theme.type.meta.copyWith(fontSize: 10),
-                ),
-              ],
-            ],
+          Text(
+            record.bodyFatPercent != null ? '${record.bodyFatPercent}' : 'N/A',
+            style: theme.type.numeralSmall.copyWith(fontSize: 18),
           ),
-          // Era una insignia calcada a mano con el color de FÁBRICA del
-          // clasificador (`fatCat.color`), que ignoraba el tema y además
-          // siempre se dibujaba suave. StatusChip pide el ESTADO y deja que el
-          // tema resuelva el acabado. Mismo texto, misma condición, mismo sitio.
-          if (record.bodyFatPercent != null)
-            StatusChip(
+          const SizedBox(width: 4),
+          Text(
+            '% ${l10n.dashboardCompositionFat}',
+            style: theme.type.numeralUnit.copyWith(fontSize: 11),
+          ),
+        ],
+      ),
+      detail: _secondaryLine(record, l10n),
+      // Era una insignia calcada a mano con el color de FÁBRICA del
+      // clasificador (`fatCat.color`), que ignoraba el tema y además
+      // siempre se dibujaba suave. StatusChip pide el ESTADO y deja que el
+      // tema resuelva el acabado. Mismo texto, misma condición, mismo sitio.
+      trailing: record.bodyFatPercent != null
+          ? StatusChip(
               status: fatCat.status,
               label: statusLabel,
               icon: iconForStatus(fatCat.status),
-            ),
-        ],
-      ),
+            )
+          : null,
     );
   }
 }
