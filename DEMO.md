@@ -2,7 +2,7 @@
 
 En la portada, bajo «Iniciar sesión» y «Crear cuenta», hay un enlace: **ver la
 demostración**. Abre la app con dos años de historia clínica de un paciente
-inventado —perfil, ajustes, objetivos, recordatorios y unos 630 registros— y
+inventado —perfil, ajustes, objetivos, recordatorios y unos 80 registros— y
 deja navegarla entera, registrar y editar. Un aviso permanente arriba recuerda
 que son datos de prueba y ofrece la salida, que devuelve a la portada.
 
@@ -37,7 +37,7 @@ Con un usuario que ya tenía tema `consultaSerena` e idioma `pt`:
 | Ruta | `/intro` | `/dashboard` | `/intro` |
 | Tema · idioma | consultaSerena · pt | consultaSerena · pt | consultaSerena · pt |
 | Perfil | vacío | Camila Herrera | vacío |
-| Panel | sin datos | 630 registros | sin datos |
+| Panel | sin datos | ~80 registros | sin datos |
 
 Las preferencias antes y después son idénticas byte a byte. El aviso de una sola
 vez no vuelve a salir al recargar la página, y la demo sobrevive a un F5 sin
@@ -82,11 +82,25 @@ Camila Herrera, 36 años, 165 cm. Dos años cuidándose, y los datos lo enseñan
 | Colesterol total · LDL · HDL | 230 · 150 · 42 | 181 · 98 · 62 |
 | Grasa corporal · visceral | 36,0 % · nivel 10 | 26,0 % · nivel 5 |
 
-Las cadencias son las de un usuario real, no las de un generador: la tensión se
-mide en casa cada dos días (~420 lecturas), el peso y la bioimpedancia una vez
-por semana (105 cada uno), la cinta métrica una vez al mes y la analítica cada
-trimestre (9 paneles). Hay mesetas, algún síntoma suelto y un repunte cada
-diciembre, porque una línea perfecta no se parece a nadie.
+Las cadencias son las que recomienda la práctica clínica, no las de un
+generador denso: cada examen aparece con la frecuencia con la que un paciente
+real se lo hace, contando **hacia atrás desde hoy** —así, si la ventana de dos
+años no se llena por tiempo, se llena por número de tomas—:
+
+| Indicador | Cadencia | Tomas (~2 años) |
+|---|---|---|
+| Peso · IMC | una vez al mes | ~24 |
+| Perímetros (cinta) | cada dos o tres meses | ~8 |
+| Bioimpedancia | una de cada dos pesajes (~cada 2 meses) | ~13 |
+| Analítica lipídica | cada trimestre | 9 |
+| Tensión · pulso | una vez al mes | ~24 |
+
+A la tensión se le suma un **tramo de siete días seguidos** de automedición al
+principio —los que el médico manda tras encontrarla elevada—, así que la serie
+enseña también una racha diaria real. Ninguna toma cae en el mismo día del mes:
+cada fecha lleva un desajuste de unos días, porque a una analítica se va cuando
+hay cita, no en fechas de reloj. Hay mesetas, algún síntoma suelto y un repunte
+cada diciembre, porque una línea perfecta no se parece a nadie.
 
 Los objetivos están puestos **a medias a propósito**: el de peso sigue en curso
 (faltan ~1,5 kg) y el de grasa corporal ya está cumplido, para que una sola
@@ -116,7 +130,7 @@ marcados dentro/fuera de rango, y por indicador su tendencia (gráfica vectorial
 sus estadísticas del periodo y los últimos registros con sus comentarios. Pide
 antes el periodo (6 meses / **1 año** / todo).
 
-La demo es el mejor sitio para revisarlo: con los ~630 registros de dos años, la
+La demo es el mejor sitio para revisarlo: con los ~80 registros de dos años, la
 gráfica de tensión enseña la bajada de 134/86 a 114/74 y la de peso la de 80 a 63
 kg. El periodo «todo» es el que más estira el documento (varias páginas), así que
 es donde asoman los cortes de página, el pie con numeración y los rangos vacíos.
@@ -176,5 +190,6 @@ corregidos:
 - **La tarjeta de «Progreso de Autocuidado» estaba escrita a mano.** Enseñaba nivel
   1 y casi todo bloqueado aunque hubiera dos años de historia detrás. Ahora el
   nivel, la barra y las medallas se calculan desde los registros
-  (`lib/features/profile/data/profile_achievements.dart`); con ~630 registros el
-  personaje llega al nivel 8.
+  (`lib/features/profile/data/profile_achievements.dart`); con ~80 registros y el
+  tramo de siete días de automedición, el personaje llega al nivel 4 («constante»)
+  con las seis medallas ganadas.

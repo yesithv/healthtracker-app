@@ -78,6 +78,48 @@ DemoDataset buildDemoDataset({DateTime? today, String language = 'es'}) {
   );
 }
 
+// ── La cadencia de cada examen ─────────────────────────────────────────────
+
+/// Las fechas en que el personaje se hizo un examen de esta familia, contadas
+/// **hacia atrás desde hoy** ([end]) una cada [intervalDays] días.
+///
+/// Nadie se pesa «todos los día 3 del mes»: cada toma lleva un desajuste de
+/// ±[jitterDays] para que las fechas no queden cuadriculadas. La primera (la más
+/// reciente) se pega a hoy —sólo se adelanta, nunca cae en el futuro— para que
+/// la tarjeta del panel abra con un dato fresco. Se paran las tomas al pasar de
+/// [start] (la ventana de dos años) o al llegar a [maxCount].
+///
+/// El desajuste sale de [rnd], la misma fuente sembrada que todo lo demás, así
+/// que la serie sigue siendo DETERMINISTA: el mismo «hoy» produce exactamente
+/// las mismas fechas, y una captura repetida semanas después sale idéntica.
+///
+/// Devuelve las fechas en orden cronológico (de la más antigua a la más
+/// reciente), a mediodía; cada familia les pone luego su hora concreta.
+List<DateTime> _cadenceDays(
+  DateTime start,
+  DateTime end,
+  math.Random rnd, {
+  required int intervalDays,
+  required int jitterDays,
+  required int maxCount,
+}) {
+  final days = <DateTime>[];
+  var anchor = end;
+  for (var i = 0; i < maxCount && !anchor.isBefore(start); i++) {
+    final jitter = jitterDays == 0
+        ? 0
+        : rnd.nextInt(jitterDays * 2 + 1) - jitterDays;
+    var day = anchor.add(Duration(days: jitter));
+    // Nunca en el futuro: la toma más reciente se adelanta, no se pospone.
+    if (day.isAfter(end)) day = end.subtract(Duration(days: rnd.nextInt(3)));
+    if (!day.isBefore(start)) {
+      days.add(DateTime(day.year, day.month, day.day, 12));
+    }
+    anchor = anchor.subtract(Duration(days: intervalDays));
+  }
+  return days.reversed.toList();
+}
+
 // ── La curva ───────────────────────────────────────────────────────────────
 
 /// Progreso 0→1 a lo largo de los dos años, con la forma de un cambio real y
@@ -127,8 +169,9 @@ double _round(double v, int decimals) {
 
 // ── Antropometría (peso, talla, IMC, perímetros) ───────────────────────────
 
-/// Un pesaje semanal: 105 registros en dos años. Es la cadencia de alguien
-/// constante sin llegar a obsesivo, y da a la gráfica puntos de sobra.
+/// Un pesaje al mes: ~24 registros en dos años. El peso de casa se mira a
+/// diario, pero como dato que se ANOTA una vez al mes es la cadencia realista de
+/// alguien constante sin llegar a obsesivo, y da a la gráfica puntos de sobra.
 List<AnthropometricRecord> _buildAnthropometric(
   DateTime start,
   DateTime end,
@@ -136,15 +179,19 @@ List<AnthropometricRecord> _buildAnthropometric(
   _DemoNotes notes,
 ) {
   final records = <AnthropometricRecord>[];
-  var i = 0;
+  final days = _cadenceDays(
+    start,
+    end,
+    rnd,
+    intervalDays: 29,
+    jitterDays: 5,
+    maxCount: 25,
+  );
 
-  for (
-    var date = start;
-    !date.isAfter(end);
-    date = date.add(const Duration(days: 7)), i++
-  ) {
+  for (var i = 0; i < days.length; i++) {
+    final date = days[i];
     final t = date.difference(start).inDays / _spanDays;
-    final at = _atHour(date, 7, 20);
+    final at = _atHour(date, 7, 15 + rnd.nextInt(35));
 
     // 80,5 → 63,5 kg. Empieza en sobrepeso claro (IMC 29,6) y termina en
     // normalidad (IMC 23,3), rozando el objetivo de 62 kg sin alcanzarlo: así
@@ -155,8 +202,9 @@ List<AnthropometricRecord> _buildAnthropometric(
     );
     final bmi = _round(weight / math.pow(_heightCm / 100, 2), 1);
 
-    // La cinta métrica sale una vez al mes, no cada semana.
-    final tape = i % 4 == 0;
+    // La cinta métrica no sale en cada pesaje: se pasa cada dos o tres meses,
+    // en uno de cada tres registros.
+    final tape = i % 3 == 0;
 
     records.add(
       AnthropometricRecord(
@@ -187,7 +235,7 @@ List<AnthropometricRecord> _buildAnthropometric(
         chestBustCm: tape
             ? _round(_series(102, 94, t, date, rnd, jitter: 0.4), 1)
             : null,
-        comment: notes.pick(notes.weight, i, every: 6),
+        comment: notes.pick(notes.weight, i, every: 4),
         createdAt: at,
         updatedAt: at,
         isSynced: true,
@@ -199,9 +247,10 @@ List<AnthropometricRecord> _buildAnthropometric(
 
 // ── Signos vitales (tensión y pulso) ───────────────────────────────────────
 
-/// Una toma cada dos días, más una segunda toma vespertina de vez en cuando:
-/// ~420 lecturas. Es la familia con más registros porque es la que se mide en
-/// casa, y es la que llena de verdad la gráfica de los filtros de 7 y 30 días.
+/// Una toma al mes (~24 lecturas), más una segunda toma vespertina de vez en
+/// cuando y un tramo de siete días seguidos de automedición al principio —de los
+/// que el médico manda tras encontrar la tensión elevada—. Se mide en casa, así
+/// que es la familia que da vida a la gráfica de tensión del panel.
 List<VitalSignRecord> _buildVitalSigns(
   DateTime start,
   DateTime end,
@@ -209,44 +258,24 @@ List<VitalSignRecord> _buildVitalSigns(
   _DemoNotes notes,
 ) {
   final records = <VitalSignRecord>[];
-  var i = 0;
+  final days = _cadenceDays(
+    start,
+    end,
+    rnd,
+    intervalDays: 30,
+    jitterDays: 6,
+    maxCount: 24,
+  );
 
-  for (
-    var date = start;
-    !date.isAfter(end);
-    date = date.add(const Duration(days: 2)), i++
-  ) {
+  for (var i = 0; i < days.length; i++) {
+    final date = days[i];
     final t = date.difference(start).inDays / _spanDays;
 
     // 134/86 con pulso 76 → 114/74 con pulso 64: de «elevada» a «normal».
     // El semáforo del panel cruza de ámbar a verde a lo largo de la serie.
-    var systolic = _series(
-      134,
-      114,
-      t,
-      date,
-      rnd,
-      holidayEffect: 4,
-      jitter: 4.5,
-    );
-    var diastolic = _series(
-      86,
-      74,
-      t,
-      date,
-      rnd,
-      holidayEffect: 2.5,
-      jitter: 3,
-    );
-    var heartRate = _series(
-      76,
-      64,
-      t,
-      date,
-      rnd,
-      holidayEffect: 3,
-      jitter: 5,
-    );
+    var systolic = _series(134, 114, t, date, rnd, holidayEffect: 4, jitter: 4.5);
+    var diastolic = _series(86, 74, t, date, rnd, holidayEffect: 2.5, jitter: 3);
+    var heartRate = _series(76, 64, t, date, rnd, holidayEffect: 3, jitter: 5);
 
     // Reparto realista del contexto: casi siempre en reposo, y una de cada
     // seis tomas justo después de entrenar (que es cuando el pulso se dispara,
@@ -263,18 +292,18 @@ List<VitalSignRecord> _buildVitalSigns(
       activity = 'reposo';
     }
 
-    // Un 4 % de tomas con síntoma: son las que hacen que el historial tenga
-    // algo que contar y que los filtros por síntoma no salgan vacíos.
+    // Alguna toma con síntoma: son las que hacen que el historial tenga algo que
+    // contar y que los filtros por síntoma no salgan vacíos.
     final symptomRoll = rnd.nextDouble();
-    if (symptomRoll < 0.018) {
+    if (symptomRoll < 0.05) {
       symptom = 'mareo';
       systolic -= 9;
       diastolic -= 6;
-    } else if (symptomRoll < 0.030) {
+    } else if (symptomRoll < 0.10) {
       symptom = 'dolor';
       systolic += 11;
       diastolic += 6;
-    } else if (symptomRoll < 0.045) {
+    } else if (symptomRoll < 0.16) {
       symptom = 'fatiga';
       heartRate += 9;
     }
@@ -289,7 +318,7 @@ List<VitalSignRecord> _buildVitalSigns(
         heartRate: heartRate,
         activity: activity,
         symptom: symptom,
-        comment: notes.pick(notes.vitals, i, every: 11),
+        comment: notes.pick(notes.vitals, i, every: 6),
       ),
     );
 
@@ -307,6 +336,45 @@ List<VitalSignRecord> _buildVitalSigns(
         ),
       );
     }
+  }
+
+  // El tramo de siete días seguidos: al principio de la historia, cuando la
+  // tensión salía elevada, el médico pide medir a diario una semana. Es una
+  // conducta real —y es lo que enseña que la app sabe llevar una racha diaria—.
+  records.addAll(_weekOfMonitoring(start, rnd, notes));
+
+  // Las dos fuentes (mensual y el tramo diario) se entrelazan en el tiempo, así
+  // que se ordena para que el historial y las gráficas salgan cronológicos.
+  records.sort((a, b) => a.date.compareTo(b.date));
+  return records;
+}
+
+/// Siete días consecutivos de automedición matinal, ~45 días después del
+/// arranque: la tensión todavía está elevada, así que las lecturas rondan la
+/// franja alta. Determinista como el resto (la variación sale de [rnd]).
+List<VitalSignRecord> _weekOfMonitoring(
+  DateTime start,
+  math.Random rnd,
+  _DemoNotes notes,
+) {
+  final records = <VitalSignRecord>[];
+  final firstDay = start.add(const Duration(days: 45));
+  for (var d = 0; d < 7; d++) {
+    final date = firstDay.add(Duration(days: d));
+    final t = date.difference(start).inDays / _spanDays;
+    records.add(
+      _vitalSign(
+        id: 'demo-vitals-monitor-$d',
+        at: _atHour(date, 7, 0 + rnd.nextInt(25)),
+        systolic: _series(133, 130, t, date, rnd, jitter: 3.5),
+        diastolic: _series(85, 83, t, date, rnd, jitter: 2.5),
+        heartRate: _series(75, 73, t, date, rnd, jitter: 4),
+        activity: 'reposo',
+        symptom: 'normal',
+        // Sólo el primer día lleva la nota que explica la semana de control.
+        comment: d == 0 ? notes.monitoring : null,
+      ),
+    );
   }
   return records;
 }
@@ -341,9 +409,11 @@ VitalSignRecord _vitalSign({
 
 // ── Perfil lipídico ────────────────────────────────────────────────────────
 
-/// Un panel de laboratorio cada ~90 días: 9 analíticas en dos años, que es lo
-/// que se hace de verdad. Pocos puntos, pero es la familia donde más se nota
-/// la mejora: el colesterol entra en «límite alto» y sale en «óptimo».
+/// Un panel de laboratorio cada ~3 meses: ~9 analíticas en dos años, que es la
+/// cadencia con que se controla un colesterol que se está tratando. Pocos
+/// puntos, pero es la familia donde más se nota la mejora: el colesterol entra
+/// en «límite alto» y sale en «óptimo». El día exacto varía (±2 semanas): a una
+/// analítica se va cuando se puede pedir cita, no en fechas de reloj.
 List<LipidRecord> _buildLipids(
   DateTime start,
   DateTime end,
@@ -357,18 +427,17 @@ List<LipidRecord> _buildLipids(
   ];
 
   final records = <LipidRecord>[];
-  var i = 0;
+  final days = _cadenceDays(
+    start,
+    end,
+    rnd,
+    intervalDays: 85,
+    jitterDays: 12,
+    maxCount: 9,
+  );
 
-  // El desfase inicial cuadra la última analítica con «hoy». Sin él, la serie
-  // terminaría diez días atrás y la tarjeta del panel abriría con un resultado
-  // rancio: en una captura, lo primero que se mira es la fecha.
-  const offset = _spanDays % 90;
-
-  for (
-    var date = start.add(const Duration(days: offset));
-    !date.isAfter(end);
-    date = date.add(const Duration(days: 90)), i++
-  ) {
+  for (var i = 0; i < days.length; i++) {
+    final date = days[i];
     final t = date.difference(start).inDays / _spanDays;
     final at = _atHour(date, 8, 30);
 
@@ -404,7 +473,7 @@ List<LipidRecord> _buildLipids(
         // mano — el mismo camino que recorre un usuario sin cobertura. Los
         // semáforos caen entonces al criterio ATP III, que es el de fábrica.
         labName: labs[i % labs.length],
-        comment: notes.pick(notes.lipids, i, every: 3),
+        comment: notes.pick(notes.lipids, i, every: 2),
         createdAt: at,
         updatedAt: at,
         isSynced: true,
@@ -416,9 +485,10 @@ List<LipidRecord> _buildLipids(
 
 // ── Composición corporal ───────────────────────────────────────────────────
 
-/// Una lectura de bioimpedancia por cada pesaje, con la misma fecha: es la
-/// misma báscula. El músculo en kg se deriva del peso de ese día y del % de
-/// músculo esquelético, para que las dos familias no se contradigan.
+/// Una lectura de bioimpedancia cada dos meses: se sube a la báscula uno de
+/// cada dos pesajes (~12 lecturas), y siempre en un día que YA tiene pesaje, con
+/// la misma fecha. Así el músculo en kg se deriva del peso de ese día y del % de
+/// músculo esquelético, y las dos familias no se contradicen.
 List<BodyCompositionRecord> _buildBodyComposition(
   List<AnthropometricRecord> weighIns,
   math.Random rnd,
@@ -429,10 +499,11 @@ List<BodyCompositionRecord> _buildBodyComposition(
   final start = weighIns.first.date;
   final records = <BodyCompositionRecord>[];
 
-  for (var i = 0; i < weighIns.length; i++) {
+  for (var i = 0; i < weighIns.length; i += 2) {
     final weighIn = weighIns[i];
     final date = weighIn.date;
     final t = date.difference(start).inDays / _spanDays;
+    final n = i ~/ 2;
 
     // Grasa y músculo con proporciones de mujer: la grasa arranca alta (36 %) y
     // baja a un saludable 26 %; el músculo esquelético sube del 24 % al 31 %,
@@ -482,7 +553,7 @@ List<BodyCompositionRecord> _buildBodyComposition(
         ),
         boneMassKg: _round(_series(2.35, 2.20, t, date, rnd, jitter: 0.03), 2),
         deviceName: demoDeviceName,
-        comment: notes.pick(notes.body, i, every: 8),
+        comment: notes.pick(notes.body, n, every: 4),
         createdAt: date,
         updatedAt: date,
         isSynced: true,
@@ -505,6 +576,9 @@ class _DemoNotes {
   final List<String> lipids;
   final List<String> body;
 
+  /// La nota del primer día del tramo de siete de automedición.
+  final String monitoring;
+
   factory _DemoNotes(String language) =>
       language == 'es' ? _DemoNotes._spanish() : _DemoNotes._english();
 
@@ -513,9 +587,11 @@ class _DemoNotes {
     required this.vitals,
     required this.lipids,
     required this.body,
+    required this.monitoring,
   });
 
   factory _DemoNotes._spanish() => const _DemoNotes._(
+    monitoring: 'El médico me pidió medir la tensión siete días seguidos.',
     weight: [
       'Después de dos semanas sin fallar al gimnasio.',
       'Semana de viaje, comí fuera casi todos los días.',
@@ -545,6 +621,7 @@ class _DemoNotes {
   );
 
   factory _DemoNotes._english() => const _DemoNotes._(
+    monitoring: 'Doctor asked me to measure my blood pressure seven days in a row.',
     weight: [
       'Two weeks without missing a single gym session.',
       'Travel week, ate out almost every day.',

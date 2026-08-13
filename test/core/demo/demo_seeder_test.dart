@@ -54,6 +54,19 @@ void main() {
     expect(profile.userGender, isNotEmpty);
     expect(profile.birthDate, isNotNull);
     expect(profile.defaultDeviceName, isNotEmpty);
+    // El nivel de actividad tiene que ser una de las claves que la pantalla de
+    // Información personal reconoce; un valor fuera de ese juego —como el antiguo
+    // 'moderate'— se enseñaría como si no estuviera puesto.
+    expect(
+      profile.userActivityLevel,
+      isIn(const [
+        'sedentary',
+        'lightly_active',
+        'moderately_active',
+        'very_active',
+        'extra_active',
+      ]),
+    );
     // La demo NO se abre con el bloqueo biométrico puesto: pediría huella antes
     // de dejar ver el panel, justo a quien viene a tomar una captura.
     expect(profile.isBiometricEnabled, isFalse);

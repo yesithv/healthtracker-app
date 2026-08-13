@@ -332,7 +332,7 @@ class DemoSeeder {
     final db = await DatabaseService.instance.database;
     final data = buildDemoDataset(language: language);
 
-    // Vaciar y volver a llenar, en un solo lote. Sin el `batch` serían ~630
+    // Vaciar y volver a llenar, en un solo lote. Sin el `batch` serían ~80
     // transacciones sueltas y entrar en la demo se notaría; con él, la siembra
     // entera es un parpadeo.
     final batch = db.batch();

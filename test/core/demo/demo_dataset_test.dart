@@ -18,12 +18,14 @@ void main() {
 
   group('el conjunto de la demo ·', () {
     test('cubre dos años en las cuatro familias', () {
-      expect(data.anthropometric, hasLength(105)); // semanal
-      expect(data.bodyComposition, hasLength(105)); // una por pesaje
+      // Cadencias clínicas realistas, no un generador denso: peso/IMC una vez
+      // al mes, bioimpedancia una de cada dos, laboratorio cada trimestre.
+      expect(data.anthropometric, hasLength(25)); // mensual
+      expect(data.bodyComposition, hasLength(13)); // una de cada dos pesajes
       expect(data.lipids, hasLength(9)); // trimestral
-      // La tensión se mide en casa: es la serie densa, y la que llena las
-      // gráficas de los filtros de 7 y 30 días.
-      expect(data.vitalSigns.length, greaterThan(380));
+      // La tensión se mide en casa una vez al mes, más alguna toma vespertina y
+      // un tramo de siete días seguidos de automedición al principio.
+      expect(data.vitalSigns.length, inInclusiveRange(31, 46));
 
       final families = {
         'antropometría': data.anthropometric.map((r) => r.date).toList(),
@@ -34,9 +36,9 @@ void main() {
 
       families.forEach((family, dates) {
         expect(dates.first.isBefore(dates.last), isTrue, reason: family);
-        // Cada familia tiene su cadencia (semanal, cada dos días, trimestral),
-        // así que su primer registro cae dentro de un ciclo del arranque de la
-        // ventana; ninguna empieza a mitad de camino.
+        // Cada familia tiene su cadencia (mensual, bimensual, trimestral) y se
+        // cuenta hacia atrás desde hoy, así que su registro más antiguo cae cerca
+        // del arranque de la ventana de dos años; ninguna empieza a mitad de camino.
         expect(
           today.difference(dates.first).inDays,
           inInclusiveRange(640, 731),
@@ -76,12 +78,42 @@ void main() {
     });
 
     test('todo queda marcado como sincronizado', () {
-      // Si no, el panel de cuenta enseñaría 600 registros pendientes de subir
-      // justo en la captura que quiere enseñar una app al día.
+      // Si no, el panel de cuenta enseñaría registros pendientes de subir justo
+      // en la captura que quiere enseñar una app al día.
       expect(data.anthropometric.every((r) => r.isSynced), isTrue);
       expect(data.vitalSigns.every((r) => r.isSynced), isTrue);
       expect(data.lipids.every((r) => r.isSynced), isTrue);
       expect(data.bodyComposition.every((r) => r.isSynced), isTrue);
+    });
+
+    test('la tensión tiene un tramo de siete días seguidos', () {
+      // El tramo de automedición que el médico manda al principio: es lo que da
+      // realismo a la serie y lo que gana la medalla de «7 días seguidos».
+      final days =
+          data.vitalSigns
+              .map((r) => DateTime(r.date.year, r.date.month, r.date.day))
+              .toSet()
+              .toList()
+            ..sort();
+      var longest = 1, current = 1;
+      for (var i = 1; i < days.length; i++) {
+        current = days[i].difference(days[i - 1]).inDays == 1 ? current + 1 : 1;
+        if (current > longest) longest = current;
+      }
+      expect(longest, greaterThanOrEqualTo(7));
+    });
+
+    test('las fechas no quedan cuadriculadas al mismo día del mes', () {
+      // El jitter existe justo para esto: si todas las tomas cayeran el mismo
+      // día del mes, la demo se leería como lo que es —un generador—.
+      final daysOfMonth = data.anthropometric
+          .map((r) => r.date.day)
+          .toSet();
+      expect(
+        daysOfMonth.length,
+        greaterThan(3),
+        reason: 'los pesajes deben repartirse por el mes, no clavarse en un día',
+      );
     });
   });
 
@@ -159,19 +191,19 @@ void main() {
     });
 
     test('la tensión pasa de elevada a normal', () {
-      // Se promedian las tomas en reposo del primer y del último mes: una
-      // lectura suelta no dice nada, y las de después de entrenar sesgarían.
+      // Se promedian las primeras y las últimas tomas en reposo: una lectura
+      // suelta no dice nada, y las de después de entrenar sesgarían.
       double restingMean(Iterable<int> values) =>
           values.reduce((a, b) => a + b) / values.length;
 
       final resting = data.vitalSigns
           .where((r) => r.activityState == 'reposo')
           .toList();
-      final firstMonth = resting.take(15).map((r) => r.systolic);
-      final lastMonth = resting.reversed.take(15).map((r) => r.systolic);
+      final first = resting.take(5).map((r) => r.systolic);
+      final last = resting.reversed.take(5).map((r) => r.systolic);
 
-      expect(restingMean(firstMonth), greaterThan(130));
-      expect(restingMean(lastMonth), lessThan(125));
+      expect(restingMean(first), greaterThan(127));
+      expect(restingMean(last), lessThan(120));
     });
 
     test('el perfil lipídico mejora en las cuatro fracciones', () {
