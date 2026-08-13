@@ -608,6 +608,8 @@
   "mhxPeriodCovered": "Erfasster Zeitraum",
   "mhxGeneratedOn": "Erstellt am",
   "mhxSource": "Quelle",
+  "mhxGeneratedBy": "Erstellt von",
+  "mhxReportRef": "Bericht-Nr.",
   "mhxSelfReported": "selbst erfasste Daten",
   "mhxDisclaimerTitle": "Zusammenfassung zur Information - keine medizinische Diagnose",
   "mhxDisclaimerBody": "Dieses Dokument wurde automatisch aus vom Nutzer erfassten Messwerten erstellt. Es ist keine medizinische Diagnose und keine offizielle Krankenakte und ersetzt nicht die Beurteilung durch eine medizinische Fachkraft.",

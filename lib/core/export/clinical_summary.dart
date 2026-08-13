@@ -144,6 +144,15 @@ class ClinicalSummary {
 
   bool get hasData => !isEmpty;
 
+  /// Total de mediciones incluidas en el periodo, sumando las cuatro familias.
+  /// Lo usa la cabecera del PDF para declarar cuántos registros resume el
+  /// documento; es un dato numérico, no traducible.
+  int get totalRecords =>
+      vitals.length +
+      anthropometry.length +
+      lipids.length +
+      bodyComposition.length;
+
   // ── Series por campo (para las gráficas y las estadísticas del PDF) ────────
 
   MetricSeries get systolicSeries =>

@@ -625,6 +625,8 @@
   "mhxPeriodCovered": "Periodo coperto",
   "mhxGeneratedOn": "Generato il",
   "mhxSource": "Fonte",
+  "mhxGeneratedBy": "Generato da",
+  "mhxReportRef": "Referto n.",
   "mhxSelfReported": "dati autodichiarati",
   "mhxDisclaimerTitle": "Riepilogo informativo - non è una diagnosi medica",
   "mhxDisclaimerBody": "Questo documento è stato generato automaticamente dalle misurazioni registrate dall'utente. Non è una diagnosi medica né una cartella clinica ufficiale e non sostituisce la valutazione di un professionista sanitario.",
