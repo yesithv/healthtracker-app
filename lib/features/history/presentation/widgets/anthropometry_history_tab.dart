@@ -15,6 +15,7 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/anthropo
 import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -825,59 +826,26 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
 
   Widget _buildHistoryItem(AnthropometricRecord record, AppLocalizations l10n) {
     final theme = _theme;
-    final surfaces = theme.surfaces;
     final statusLabel = BmiCategory.of(record.bmi).label(l10n);
 
-    final dateFormat = DateFormat(
-      'dd MMM yyyy',
-    ).format(record.date).toUpperCase();
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: surfaces.cardDecoration().copyWith(
-        border: Border.all(color: surfaces.divider),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return MeasurementHistoryCard(
+      date: record.date,
+      value: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dateFormat,
-                style: theme.type.sectionLabel.copyWith(
-                  fontSize: 10,
-                  color: surfaces.inkMuted,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${record.weight} kg',
-                    style: theme.type.numeralSmall.copyWith(fontSize: 16),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '(${l10n.historyBmiLabel}: ${record.bmi.toStringAsFixed(1)})',
-                    style: theme.type.numeralUnit.copyWith(fontSize: 12),
-                  ),
-                ],
-              ),
-              if (record.hasCircumferences) ...[
-                const SizedBox(height: 4),
-                Text(
-                  _circumferencesLine(record, l10n),
-                  style: theme.type.meta.copyWith(fontSize: 10),
-                ),
-              ],
-            ],
+          Text(
+            '${record.weight} kg',
+            style: theme.type.numeralSmall.copyWith(fontSize: 16),
           ),
-          BmiStatusBadge(bmi: record.bmi, label: statusLabel),
+          const SizedBox(width: 8),
+          Text(
+            '(${l10n.historyBmiLabel}: ${record.bmi.toStringAsFixed(1)})',
+            style: theme.type.numeralUnit.copyWith(fontSize: 12),
+          ),
         ],
       ),
+      detail: record.hasCircumferences ? _circumferencesLine(record, l10n) : null,
+      trailing: BmiStatusBadge(bmi: record.bmi, label: statusLabel),
     );
   }
 
