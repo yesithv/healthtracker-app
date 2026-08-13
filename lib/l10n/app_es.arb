@@ -812,6 +812,8 @@
   "mhxPeriodCovered": "Periodo cubierto",
   "mhxGeneratedOn": "Generado el",
   "mhxSource": "Fuente",
+  "mhxGeneratedBy": "Generado por",
+  "mhxReportRef": "Informe N.º",
   "mhxSelfReported": "datos autoreportados",
   "mhxDisclaimerTitle": "Resumen informativo - no es un diagnóstico médico",
   "mhxDisclaimerBody": "Este documento se generó automáticamente a partir de mediciones registradas por el usuario. No es un diagnóstico médico ni una historia clínica oficial, y no sustituye la valoración de un profesional sanitario.",

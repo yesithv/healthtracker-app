@@ -134,6 +134,7 @@ Future<Uint8List> buildMedicalHistoryPdf({
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.fromLTRB(36, 36, 36, 44),
+      header: (context) => _runningHeader(context, patient, l10n),
       footer: (context) => _footer(context, l10n),
       build: (context) => sections,
     ),
@@ -142,7 +143,105 @@ Future<Uint8List> buildMedicalHistoryPdf({
   return doc.save();
 }
 
-// ── Cabecera del paciente ───────────────────────────────────────────────────
+// ── Sello de marca ──────────────────────────────────────────────────────────
+
+/// El sello de la app en el documento: un latido de ECG vectorial —el mismo
+/// gesto que `EcgTrace` en la pantalla de arranque— seguido del wordmark
+/// «MY VITALS». Se dibuja con `pw.CustomPaint` en vez de incrustar un PNG: sale
+/// nítido a cualquier tamaño y no arrastra un asset al bundle. [scale] lo hace
+/// grande en la portada y pequeño en la cabecera corriente.
+pw.Widget _brandMark({double scale = 1.0}) {
+  final markW = 30.0 * scale;
+  final markH = 15.0 * scale;
+  return pw.Row(
+    mainAxisSize: pw.MainAxisSize.min,
+    crossAxisAlignment: pw.CrossAxisAlignment.center,
+    children: [
+      pw.CustomPaint(
+        size: PdfPoint(markW, markH),
+        painter: (PdfGraphics canvas, PdfPoint size) {
+          final w = size.x;
+          final h = size.y;
+          final mid = h / 2;
+          // Línea base, pequeña subida, pico R (arriba), valle S (abajo) y
+          // vuelta a la base. En PDF el eje Y crece hacia arriba, así que el
+          // pico es el valor alto. Fracciones del ancho para que escale limpio.
+          final pts = <List<double>>[
+            [0.00, mid],
+            [0.30, mid],
+            [0.37, mid + h * 0.12],
+            [0.45, h * 0.96],
+            [0.54, h * 0.04],
+            [0.62, mid + h * 0.08],
+            [0.70, mid],
+            [1.00, mid],
+          ];
+          canvas
+            ..setStrokeColor(_brand)
+            ..setLineWidth(1.3 * scale)
+            ..moveTo(pts.first[0] * w, pts.first[1]);
+          for (final p in pts.skip(1)) {
+            canvas.lineTo(p[0] * w, p[1]);
+          }
+          canvas.strokePath();
+        },
+      ),
+      pw.SizedBox(width: 6 * scale),
+      pw.Text(
+        AppInfo.appName,
+        style: pw.TextStyle(
+          fontSize: 13 * scale,
+          fontWeight: pw.FontWeight.bold,
+          color: _brand,
+          letterSpacing: 1.1 * scale,
+        ),
+      ),
+    ],
+  );
+}
+
+/// Folio determinista del informe, derivado del instante de generación:
+/// `MV-AAAAMMDD-HHMM`. Da al documento un identificador estable —dos
+/// generaciones en el mismo minuto dan el mismo folio— con aire de informe
+/// formal, sin depender de red ni de un contador persistente.
+String _reportRef(DateTime at) {
+  String two(int v) => v.toString().padLeft(2, '0');
+  return 'MV-${at.year}${two(at.month)}${two(at.day)}-${two(at.hour)}${two(at.minute)}';
+}
+
+// ── Cabecera corriente (páginas 2+) ─────────────────────────────────────────
+
+/// Cabecera que se repite en cada página SALVO la primera (que ya lleva la
+/// portada grande). Ata cada hoja suelta a su origen: sello de la marca a la
+/// izquierda, documento + paciente a la derecha, con una fina línea inferior.
+pw.Widget _runningHeader(
+  pw.Context context,
+  MedicalHistoryPatient patient,
+  AppLocalizations l10n,
+) {
+  if (context.pageNumber == 1) return pw.SizedBox();
+  final name = patient.name.trim().isEmpty ? '-' : patient.name.trim();
+  return pw.Container(
+    margin: const pw.EdgeInsets.only(bottom: 12),
+    padding: const pw.EdgeInsets.only(bottom: 6),
+    decoration: const pw.BoxDecoration(
+      border: pw.Border(bottom: pw.BorderSide(color: _hairline)),
+    ),
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      children: [
+        _brandMark(scale: 0.7),
+        pw.Text(
+          '${l10n.mhxDocTitle}  ·  $name',
+          style: const pw.TextStyle(fontSize: 8, color: _muted),
+        ),
+      ],
+    ),
+  );
+}
+
+// ── Portada / cabecera del paciente (página 1) ──────────────────────────────
 
 pw.Widget _patientHeader(
   ClinicalSummary summary,
@@ -157,75 +256,117 @@ pw.Widget _patientHeader(
   final periodText = (summary.periodStart != null && summary.periodEnd != null)
       ? '${dateFmt.format(summary.periodStart!)} - ${dateFmt.format(summary.periodEnd!)}'
       : '-';
+  final generatedText = DateFormat(
+    'dd MMM yyyy · HH:mm',
+    dateFmt.locale,
+  ).format(summary.generatedAt);
 
   return pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
+      // Lockup de marca (izquierda) + folio y fecha de generación (derecha).
       pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Expanded(
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                  l10n.mhxDocTitle,
-                  style: pw.TextStyle(
-                    fontSize: 20,
-                    fontWeight: pw.FontWeight.bold,
-                    color: _brand,
-                  ),
+          _brandMark(scale: 1.15),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.end,
+            children: [
+              pw.Text(
+                '${l10n.mhxReportRef} ${_reportRef(summary.generatedAt)}',
+                style: pw.TextStyle(
+                  fontSize: 8.5,
+                  color: _brand,
+                  fontWeight: pw.FontWeight.bold,
                 ),
-                pw.SizedBox(height: 2),
-                pw.Text(
-                  l10n.mhxDocSubtitle,
-                  style: const pw.TextStyle(fontSize: 10, color: _muted),
-                ),
-              ],
-            ),
-          ),
-          pw.Text(
-            AppInfo.appName,
-            style: pw.TextStyle(
-              fontSize: 12,
-              fontWeight: pw.FontWeight.bold,
-              color: _muted,
-            ),
+              ),
+              pw.SizedBox(height: 2),
+              pw.Text(
+                '${l10n.mhxGeneratedOn} $generatedText',
+                style: const pw.TextStyle(fontSize: 7.5, color: _muted),
+              ),
+            ],
           ),
         ],
       ),
-      pw.SizedBox(height: 12),
+      pw.Divider(color: _hairline, thickness: 1, height: 18),
+      // Título del documento.
+      pw.Text(
+        l10n.mhxDocTitle,
+        style: pw.TextStyle(
+          fontSize: 23,
+          fontWeight: pw.FontWeight.bold,
+          color: _ink,
+        ),
+      ),
+      pw.SizedBox(height: 3),
+      pw.Text(
+        l10n.mhxDocSubtitle,
+        style: const pw.TextStyle(fontSize: 10.5, color: _muted),
+      ),
+      pw.SizedBox(height: 14),
+      // Tarjeta de identidad del paciente, con cinta de título.
       pw.Container(
-        padding: const pw.EdgeInsets.all(12),
+        width: double.infinity,
         decoration: pw.BoxDecoration(
           color: PdfColors.blueGrey50,
-          borderRadius: pw.BorderRadius.circular(6),
+          borderRadius: pw.BorderRadius.circular(8),
+          border: pw.Border.all(color: _hairline),
         ),
-        child: pw.Wrap(
-          spacing: 24,
-          runSpacing: 8,
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            _headerField(l10n.mhxPatient, name),
-            _headerField(
-              l10n.mhxBirthDate,
-              dob == null
-                  ? '-'
-                  : '${dateFmt.format(dob)}'
-                        '${age == null ? '' : '  (${l10n.mhxAgeYears(age)})'}',
+            pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
+              decoration: pw.BoxDecoration(
+                color: _brand,
+                borderRadius: const pw.BorderRadius.only(
+                  topLeft: pw.Radius.circular(7),
+                  topRight: pw.Radius.circular(7),
+                ),
+              ),
+              child: pw.Text(
+                l10n.mhxPatient.toUpperCase(),
+                style: pw.TextStyle(
+                  fontSize: 8,
+                  color: PdfColors.white,
+                  fontWeight: pw.FontWeight.bold,
+                  letterSpacing: 0.8,
+                ),
+              ),
             ),
-            _headerField(l10n.gender, _genderLabel(patient.gender, l10n)),
-            _headerField(l10n.mhxPeriodCovered, periodText),
-            _headerField(
-              l10n.mhxGeneratedOn,
-              DateFormat(
-                'dd MMM yyyy · HH:mm',
-                dateFmt.locale,
-              ).format(summary.generatedAt),
-            ),
-            _headerField(
-              l10n.mhxSource,
-              '${AppInfo.appName} v${AppInfo.version} · ${l10n.mhxSelfReported}',
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(12),
+              child: pw.Wrap(
+                spacing: 28,
+                runSpacing: 12,
+                children: [
+                  _headerField(l10n.mhxPatient, name),
+                  _headerField(
+                    l10n.mhxBirthDate,
+                    dob == null
+                        ? '-'
+                        : '${dateFmt.format(dob)}'
+                              '${age == null ? '' : '  (${l10n.mhxAgeYears(age)})'}',
+                  ),
+                  _headerField(l10n.gender, _genderLabel(patient.gender, l10n)),
+                  _headerField(l10n.mhxPeriodCovered, periodText),
+                  _headerField(
+                    l10n.mhxStatsMeasurements,
+                    '${summary.totalRecords}',
+                  ),
+                  _headerField(l10n.mhxGeneratedBy, name),
+                  _headerField(
+                    l10n.mhxSource,
+                    '${AppInfo.appName} v${AppInfo.version} · ${l10n.mhxSelfReported}',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -989,18 +1130,25 @@ pw.Widget _fullDisclaimer(AppLocalizations l10n) {
 }
 
 pw.Widget _footer(pw.Context context, AppLocalizations l10n) {
-  return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-    children: [
-      pw.Text(
-        '${AppInfo.appName} · ${l10n.mhxSelfReported}',
-        style: const pw.TextStyle(fontSize: 7, color: _muted),
-      ),
-      pw.Text(
-        l10n.mhxPageOf(context.pageNumber, context.pagesCount),
-        style: const pw.TextStyle(fontSize: 7, color: _muted),
-      ),
-    ],
+  return pw.Container(
+    margin: const pw.EdgeInsets.only(top: 8),
+    padding: const pw.EdgeInsets.only(top: 6),
+    decoration: const pw.BoxDecoration(
+      border: pw.Border(top: pw.BorderSide(color: _hairline)),
+    ),
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      children: [
+        pw.Text(
+          '${AppInfo.appName} v${AppInfo.version} · ${l10n.mhxSelfReported}',
+          style: const pw.TextStyle(fontSize: 7, color: _muted),
+        ),
+        pw.Text(
+          l10n.mhxPageOf(context.pageNumber, context.pagesCount),
+          style: const pw.TextStyle(fontSize: 7, color: _muted),
+        ),
+      ],
+    ),
   );
 }
 

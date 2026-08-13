@@ -1756,6 +1756,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get mhxGeneratedOn => 'Gerado em';
   @override
   String get mhxSource => 'Fonte';
+
+  @override
+  String get mhxGeneratedBy => 'Gerado por';
+
+  @override
+  String get mhxReportRef => 'Relatório n.º';
   @override
   String get mhxSelfReported => 'dados autorrelatados';
   @override
