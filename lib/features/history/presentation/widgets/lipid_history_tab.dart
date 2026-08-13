@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
@@ -715,62 +716,36 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
 
   Widget _buildHistoryItem(LipidRecord record, AppLocalizations l10n) {
     final theme = _theme;
-    final surfaces = theme.surfaces;
     final LipidStatus overall = overallLipidStatus(record);
     final String statusLabel = overall.label(l10n);
-    final dateFormat = DateFormat(
-      'dd MMM yyyy',
-    ).format(record.date).toUpperCase();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: surfaces.cardDecoration().copyWith(
-        border: Border.all(color: surfaces.divider),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return MeasurementHistoryCard(
+      date: record.date,
+      value: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dateFormat,
-                style: theme.type.sectionLabel.copyWith(
-                  fontSize: 10,
-                  color: surfaces.inkMuted,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    record.totalCholesterol != null
-                        ? '${record.totalCholesterol}'
-                        : 'N/A',
-                    style: theme.type.numeralSmall.copyWith(fontSize: 18),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'mg/dL (CT)',
-                    style: theme.type.numeralUnit.copyWith(fontSize: 11),
-                  ),
-                ],
-              ),
-            ],
+          Text(
+            record.totalCholesterol != null
+                ? '${record.totalCholesterol}'
+                : 'N/A',
+            style: theme.type.numeralSmall.copyWith(fontSize: 18),
           ),
-          // Era una insignia calcada a mano con el color de FÁBRICA del
-          // clasificador (`overall.color`), que ignoraba el tema y
-          // además siempre se dibujaba suave. StatusChip pide el ESTADO y deja
-          // que el tema resuelva el acabado: sólido en «Pulso Clínico», suave en
-          // «Consulta Serena». Mismo texto, mismo sitio.
-          StatusChip(
-            status: overall.status,
-            label: statusLabel,
-            icon: iconForStatus(overall.status),
+          const SizedBox(width: 4),
+          Text(
+            'mg/dL (CT)',
+            style: theme.type.numeralUnit.copyWith(fontSize: 11),
           ),
         ],
+      ),
+      // Era una insignia calcada a mano con el color de FÁBRICA del
+      // clasificador (`overall.color`), que ignoraba el tema y
+      // además siempre se dibujaba suave. StatusChip pide el ESTADO y deja
+      // que el tema resuelva el acabado: sólido en «Pulso Clínico», suave en
+      // «Consulta Serena». Mismo texto, mismo sitio.
+      trailing: StatusChip(
+        status: overall.status,
+        label: statusLabel,
+        icon: iconForStatus(overall.status),
       ),
     );
   }
