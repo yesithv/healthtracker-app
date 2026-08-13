@@ -44,44 +44,47 @@ void main() {
   });
 
   group('el visitante de la demo ·', () {
-    // Lo que ve quien entra a la demo: ~630 registros repartidos, dos años de
-    // historia, meta corporal cumplida y —clave— signos vitales cada dos días,
-    // así que su racha diaria máxima es 1.
+    // Lo que ve quien entra a la demo: ~82 registros en cadencias clínicas
+    // realistas (peso/IMC mensual, bioimpedancia cada dos meses, laboratorio
+    // trimestral, tensión mensual), dos años de historia, meta corporal cumplida
+    // y —clave— un tramo de siete días seguidos de automedición de tensión.
     final demo = ProfileAchievements.from(
       const AchievementInput(
-        anthroCount: 105,
-        vitalsCount: 420,
+        anthroCount: 25,
+        vitalsCount: 35,
         lipidCount: 9,
-        bodyCount: 105,
-        longestVitalsDayStreak: 1,
+        bodyCount: 13,
+        longestVitalsDayStreak: 7,
         historySpanDays: 730,
         bodyGoalMet: true,
       ),
     );
 
-    test('llega a un nivel alto', () {
-      // 639 registros → pasado el hito de 600 (Nivel 8).
-      expect(demo.level, 8);
+    test('llega a un nivel intermedio', () {
+      // ~82 registros → pasado el hito de 60 (Nivel 4), el tramo «constante».
+      expect(demo.level, 4);
     });
 
-    test('gana cinco de las seis medallas', () {
-      expect(demo.unlocked, hasLength(5));
+    test('gana las seis medallas', () {
+      // Con menos registros pero un tramo diario real, ahora sí entran las seis:
+      // la de «7 días seguidos» la gana ese tramo de automedición.
+      expect(demo.unlocked, hasLength(6));
       expect(demo.unlocked, contains(ProfileBadge.firstStep));
       expect(demo.unlocked, contains(ProfileBadge.strongHeart));
+      expect(demo.unlocked, contains(ProfileBadge.vitalHabit));
       expect(demo.unlocked, contains(ProfileBadge.awareness));
       expect(demo.unlocked, contains(ProfileBadge.balance));
       expect(demo.unlocked, contains(ProfileBadge.guardian));
     });
 
-    test('«7 días seguidos» queda bloqueada: registra cada dos días', () {
-      // No es un fallo, es lo honesto: el paciente ficticio no mide a diario, así
-      // que esa medalla NO puede estar ganada. Si algún día se encendiera con
-      // racha 1, el calculador estaría mintiendo.
-      expect(demo.isUnlocked(ProfileBadge.vitalHabit), isFalse);
+    test('«7 días seguidos» se gana con el tramo de automedición', () {
+      // El médico pide medir una semana seguida al principio: siete días de
+      // calendario consecutivos, justo lo que exige la medalla.
+      expect(demo.isUnlocked(ProfileBadge.vitalHabit), isTrue);
     });
 
-    test('el rango es el del tramo alto', () {
-      expect(demo.rankTier, 3);
+    test('el rango es el del tramo medio', () {
+      expect(demo.rankTier, 2);
     });
   });
 

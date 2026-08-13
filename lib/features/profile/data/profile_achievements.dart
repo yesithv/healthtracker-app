@@ -95,7 +95,7 @@ class ProfileAchievements {
   /// Hitos de registros acumulados que separan un nivel del siguiente. La curva
   /// es cada vez más exigente a propósito: los primeros niveles llegan rápido
   /// (para que alguien que empieza vea que sube) y los últimos piden constancia.
-  /// Con ~630 registros la demo cae en el nivel 8.
+  /// Con ~82 registros (cadencias clínicas realistas) la demo cae en el nivel 4.
   static const List<int> _milestones = [
     0,
     10,

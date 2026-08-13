@@ -69,7 +69,7 @@ class ProfileScreen extends StatelessWidget {
     // Ventana de historia: del registro más antiguo al más nuevo, sea de la
     // familia que sea. Cada lista viene ordenada por fecha descendente, así que
     // basta mirar sus extremos (primero = más nuevo, último = más antiguo). Se
-    // recogen sólo los extremos y no las 630 fechas: esto corre en cada
+    // recogen sólo los extremos y no todas las fechas: esto corre en cada
     // reconstrucción del Perfil.
     final endpoints = <DateTime>[
       if (anthro.items.isNotEmpty) anthro.items.first.date,
