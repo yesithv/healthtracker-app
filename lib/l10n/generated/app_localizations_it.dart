@@ -341,6 +341,55 @@ class AppLocalizationsIt extends AppLocalizations {
   String get historyBmiUnit => 'IMC';
 
   @override
+  String historyTrendOf(String metric) {
+    return 'ANDAMENTO $metric';
+  }
+
+  @override
+  String historyMetricNeedsData(String measure) {
+    return 'Registra $measure per vedere questo indicatore.';
+  }
+
+  @override
+  String get whtrName => 'Vita-altezza';
+
+  @override
+  String get whtrShort => 'WHtR';
+
+  @override
+  String get whtrLow => 'BASSO';
+
+  @override
+  String get whtrNormal => 'NORMALE';
+
+  @override
+  String get whtrIncreased => 'AUMENTATO';
+
+  @override
+  String get whtrHigh => 'ALTO';
+
+  @override
+  String get whrName => 'Vita-fianchi';
+
+  @override
+  String get whrShort => 'WHR';
+
+  @override
+  String get whrNormal => 'NORMALE';
+
+  @override
+  String get whrIncreased => 'AUMENTATO';
+
+  @override
+  String get measureWaist => 'la vita';
+
+  @override
+  String get measureWaistAndHip => 'vita e fianchi';
+
+  @override
+  String get unitCm => 'cm';
+
+  @override
   String get historyExportPdf => 'Esporta in PDF';
 
   @override

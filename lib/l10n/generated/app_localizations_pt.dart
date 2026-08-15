@@ -341,6 +341,55 @@ class AppLocalizationsPt extends AppLocalizations {
   String get historyBmiUnit => 'IMC';
 
   @override
+  String historyTrendOf(String metric) {
+    return 'TENDÊNCIA DE $metric';
+  }
+
+  @override
+  String historyMetricNeedsData(String measure) {
+    return 'Registre $measure para ver este indicador.';
+  }
+
+  @override
+  String get whtrName => 'Cintura-estatura';
+
+  @override
+  String get whtrShort => 'ICE';
+
+  @override
+  String get whtrLow => 'BAIXO';
+
+  @override
+  String get whtrNormal => 'NORMAL';
+
+  @override
+  String get whtrIncreased => 'AUMENTADO';
+
+  @override
+  String get whtrHigh => 'ALTO';
+
+  @override
+  String get whrName => 'Cintura-quadril';
+
+  @override
+  String get whrShort => 'ICQ';
+
+  @override
+  String get whrNormal => 'NORMAL';
+
+  @override
+  String get whrIncreased => 'AUMENTADO';
+
+  @override
+  String get measureWaist => 'a cintura';
+
+  @override
+  String get measureWaistAndHip => 'cintura e quadril';
+
+  @override
+  String get unitCm => 'cm';
+
+  @override
   String get historyExportPdf => 'Exportar para PDF';
 
   @override

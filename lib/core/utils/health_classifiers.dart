@@ -187,6 +187,103 @@ enum BmiCategory {
   };
 }
 
+/// Waist-to-height ratio category (WHtR = waist ÷ height).
+///
+/// Cortes de Ashwell, universales (no dependen de sexo ni edad): la evidencia
+/// cardiometabólica del WHtR iguala o supera a la del IMC. La regla de bolsillo
+/// es «mantén tu cintura por debajo de la mitad de tu altura» (0.5).
+enum WhtrCategory {
+  low,
+  normal,
+  increased,
+  high;
+
+  static WhtrCategory of(double whtr) {
+    final s = _serverCategory('WHTR', whtr, const {
+      'LOW': WhtrCategory.low,
+      'VERY_LOW': WhtrCategory.low,
+      'UNDERWEIGHT': WhtrCategory.low,
+      'NORMAL': WhtrCategory.normal,
+      'OPTIMAL': WhtrCategory.normal,
+      'ELEVATED': WhtrCategory.increased,
+      'BORDERLINE': WhtrCategory.increased,
+      'OVERWEIGHT': WhtrCategory.increased,
+      'HIGH': WhtrCategory.high,
+      'VERY_HIGH': WhtrCategory.high,
+      'OBESE': WhtrCategory.high,
+    });
+    if (s != null) return s;
+    // Fallback offline (Ashwell).
+    if (whtr < 0.4) return WhtrCategory.low;
+    if (whtr < 0.5) return WhtrCategory.normal;
+    if (whtr < 0.6) return WhtrCategory.increased;
+    return WhtrCategory.high;
+  }
+
+  Color get color => switch (this) {
+    WhtrCategory.low => _blue,
+    WhtrCategory.normal => _green,
+    WhtrCategory.increased => _amber,
+    WhtrCategory.high => _red,
+  };
+
+  ClinicalStatus get status => switch (this) {
+    WhtrCategory.low => ClinicalStatus.info,
+    WhtrCategory.normal => ClinicalStatus.optimal,
+    WhtrCategory.increased => ClinicalStatus.caution,
+    WhtrCategory.high => ClinicalStatus.alert,
+  };
+
+  String label(AppLocalizations l10n) => switch (this) {
+    WhtrCategory.low => l10n.whtrLow,
+    WhtrCategory.normal => l10n.whtrNormal,
+    WhtrCategory.increased => l10n.whtrIncreased,
+    WhtrCategory.high => l10n.whtrHigh,
+  };
+}
+
+/// Waist-to-hip ratio category (WHR = waist ÷ hip).
+///
+/// Cortes OMS de riesgo cardiometabólico aumentado, distintos por sexo:
+/// hombre ≥ 0.90, mujer ≥ 0.85. El [gender] solo se usa en el fallback offline;
+/// si el backoffice sirviera bandas `WHR` ya vienen resueltas por sexo.
+enum WhrCategory {
+  normal,
+  increased;
+
+  static WhrCategory of(double whr, {required String gender}) {
+    final s = _serverCategory('WHR', whr, const {
+      'LOW': WhrCategory.normal,
+      'NORMAL': WhrCategory.normal,
+      'OPTIMAL': WhrCategory.normal,
+      'ELEVATED': WhrCategory.increased,
+      'BORDERLINE': WhrCategory.increased,
+      'HIGH': WhrCategory.increased,
+      'VERY_HIGH': WhrCategory.increased,
+    });
+    if (s != null) return s;
+    // Fallback offline (OMS, por sexo). Sin sexo conocido usamos el corte
+    // femenino (más conservador) para no subestimar el riesgo.
+    final threshold = gender.toLowerCase() == 'male' ? 0.90 : 0.85;
+    return whr >= threshold ? WhrCategory.increased : WhrCategory.normal;
+  }
+
+  Color get color => switch (this) {
+    WhrCategory.normal => _green,
+    WhrCategory.increased => _red,
+  };
+
+  ClinicalStatus get status => switch (this) {
+    WhrCategory.normal => ClinicalStatus.optimal,
+    WhrCategory.increased => ClinicalStatus.alert,
+  };
+
+  String label(AppLocalizations l10n) => switch (this) {
+    WhrCategory.normal => l10n.whrNormal,
+    WhrCategory.increased => l10n.whrIncreased,
+  };
+}
+
 /// Body-fat-percentage category.
 enum FatCategory {
   veryLow,

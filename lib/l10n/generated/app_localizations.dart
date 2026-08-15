@@ -746,6 +746,51 @@ abstract class AppLocalizations {
   /// **'BMI'**
   String get historyBmiUnit;
 
+  /// No description provided for @historyTrendOf.
+  String historyTrendOf(String metric);
+
+  /// No description provided for @historyMetricNeedsData.
+  String historyMetricNeedsData(String measure);
+
+  /// No description provided for @whtrName.
+  String get whtrName;
+
+  /// No description provided for @whtrShort.
+  String get whtrShort;
+
+  /// No description provided for @whtrLow.
+  String get whtrLow;
+
+  /// No description provided for @whtrNormal.
+  String get whtrNormal;
+
+  /// No description provided for @whtrIncreased.
+  String get whtrIncreased;
+
+  /// No description provided for @whtrHigh.
+  String get whtrHigh;
+
+  /// No description provided for @whrName.
+  String get whrName;
+
+  /// No description provided for @whrShort.
+  String get whrShort;
+
+  /// No description provided for @whrNormal.
+  String get whrNormal;
+
+  /// No description provided for @whrIncreased.
+  String get whrIncreased;
+
+  /// No description provided for @measureWaist.
+  String get measureWaist;
+
+  /// No description provided for @measureWaistAndHip.
+  String get measureWaistAndHip;
+
+  /// No description provided for @unitCm.
+  String get unitCm;
+
   /// No description provided for @historyExportPdf.
   ///
   /// In en, this message translates to:
