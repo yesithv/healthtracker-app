@@ -76,6 +76,46 @@ void main() {
     });
   });
 
+  group('WhtrCategory.of', () {
+    test('boundaries (Ashwell)', () {
+      expect(WhtrCategory.of(0.39), WhtrCategory.low);
+      expect(WhtrCategory.of(0.4), WhtrCategory.normal);
+      expect(WhtrCategory.of(0.49), WhtrCategory.normal);
+      expect(WhtrCategory.of(0.5), WhtrCategory.increased);
+      expect(WhtrCategory.of(0.59), WhtrCategory.increased);
+      expect(WhtrCategory.of(0.6), WhtrCategory.high);
+    });
+
+    test('color mapping', () {
+      expect(WhtrCategory.low.color, _blue);
+      expect(WhtrCategory.normal.color, _green);
+      expect(WhtrCategory.increased.color, _amber);
+      expect(WhtrCategory.high.color, _red);
+    });
+  });
+
+  group('WhrCategory.of', () {
+    test('male threshold at 0.90 (WHO)', () {
+      expect(WhrCategory.of(0.89, gender: 'male'), WhrCategory.normal);
+      expect(WhrCategory.of(0.90, gender: 'male'), WhrCategory.increased);
+    });
+
+    test('female threshold at 0.85 (WHO)', () {
+      expect(WhrCategory.of(0.84, gender: 'female'), WhrCategory.normal);
+      expect(WhrCategory.of(0.85, gender: 'female'), WhrCategory.increased);
+    });
+
+    test('unknown gender uses the more conservative female cut-off', () {
+      expect(WhrCategory.of(0.85, gender: ''), WhrCategory.increased);
+      expect(WhrCategory.of(0.84, gender: ''), WhrCategory.normal);
+    });
+
+    test('color mapping', () {
+      expect(WhrCategory.normal.color, _green);
+      expect(WhrCategory.increased.color, _red);
+    });
+  });
+
   group('FatCategory.of', () {
     test('boundaries', () {
       expect(FatCategory.of(4.9), FatCategory.veryLow);

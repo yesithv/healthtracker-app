@@ -28,8 +28,10 @@ void main() {
         .listSync(recursive: true)
         .whereType<File>()
         .where((f) => f.path.endsWith('.dart'))
-        .where((f) => !f.path.contains('/core/theme/'))
-        .where((f) => !f.path.contains('/generated/'))
+        // Normaliza el separador: en Windows `File.path` usa `\`, y sin esto las
+        // exclusiones `/core/theme/` y `/generated/` no casan y marcan de más.
+        .where((f) => !f.path.replaceAll(r'\', '/').contains('/core/theme/'))
+        .where((f) => !f.path.replaceAll(r'\', '/').contains('/generated/'))
         .toList();
   }
 

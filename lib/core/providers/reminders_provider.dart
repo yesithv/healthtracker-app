@@ -47,6 +47,15 @@ class RemindersProvider extends ChangeNotifier {
   /// Re-reads reminders from storage (e.g. after a restored backup).
   Future<void> reload() => _load();
 
+  /// Borra los recordatorios del usuario y vuelve a los de por defecto (al cerrar
+  /// sesión / cambiar de paciente).
+  Future<void> clear() async {
+    _reminders = _defaultReminders();
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_remindersKey);
+  }
+
   List<Reminder> _defaultReminders() {
     return const [
       Reminder(

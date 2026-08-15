@@ -341,6 +341,55 @@ class AppLocalizationsEs extends AppLocalizations {
   String get historyBmiUnit => 'IMC';
 
   @override
+  String historyTrendOf(String metric) {
+    return 'TENDENCIA DE $metric';
+  }
+
+  @override
+  String historyMetricNeedsData(String measure) {
+    return 'Registra $measure para ver este indicador.';
+  }
+
+  @override
+  String get whtrName => 'Índice cintura-altura';
+
+  @override
+  String get whtrShort => 'ICA';
+
+  @override
+  String get whtrLow => 'BAJO';
+
+  @override
+  String get whtrNormal => 'NORMAL';
+
+  @override
+  String get whtrIncreased => 'AUMENTADO';
+
+  @override
+  String get whtrHigh => 'ALTO';
+
+  @override
+  String get whrName => 'Índice cintura-cadera';
+
+  @override
+  String get whrShort => 'ICC';
+
+  @override
+  String get whrNormal => 'NORMAL';
+
+  @override
+  String get whrIncreased => 'AUMENTADO';
+
+  @override
+  String get measureWaist => 'la cintura';
+
+  @override
+  String get measureWaistAndHip => 'cintura y cadera';
+
+  @override
+  String get unitCm => 'cm';
+
+  @override
   String get historyExportPdf => 'Exportar a PDF';
 
   @override
@@ -1078,6 +1127,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onboardingFinish => '¡Empezar!';
 
   @override
+  String get welcomeGetStarted => 'Comenzar';
+
+  @override
+  String get welcomeLogIn => 'Iniciar sesión';
+
+  @override
+  String get welcomeAlreadyHaveAccount => '¿Ya tienes cuenta?';
+
+  @override
   String onboardingStep(int current, int total) {
     return 'Paso $current de $total';
   }
@@ -1754,16 +1812,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mhxDocTitle => 'Resumen de salud personal';
+
   @override
-  String get mhxDocSubtitle => 'Informe consolidado de mediciones autoreportadas';
+  String get mhxDocSubtitle =>
+      'Informe consolidado de mediciones autoreportadas';
+
   @override
   String get mhxPatient => 'Paciente';
+
   @override
   String get mhxBirthDate => 'Fecha de nacimiento';
+
   @override
   String get mhxPeriodCovered => 'Periodo cubierto';
+
   @override
   String get mhxGeneratedOn => 'Generado el';
+
   @override
   String get mhxSource => 'Fuente';
 
@@ -1772,78 +1837,118 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mhxReportRef => 'Informe N.º';
+
   @override
   String get mhxSelfReported => 'datos autoreportados';
+
   @override
-  String get mhxDisclaimerTitle => 'Resumen informativo - no es un diagnóstico médico';
+  String get mhxDisclaimerTitle =>
+      'Resumen informativo - no es un diagnóstico médico';
+
   @override
-  String get mhxDisclaimerBody => 'Este documento se generó automáticamente a partir de mediciones registradas por el usuario. No es un diagnóstico médico ni una historia clínica oficial, y no sustituye la valoración de un profesional sanitario.';
+  String get mhxDisclaimerBody =>
+      'Este documento se generó automáticamente a partir de mediciones registradas por el usuario. No es un diagnóstico médico ni una historia clínica oficial, y no sustituye la valoración de un profesional sanitario.';
+
   @override
   String get mhxSummaryTitle => 'Resumen de últimos valores';
+
   @override
   String get mhxColIndicator => 'Indicador';
+
   @override
   String get mhxColLatest => 'Último valor';
+
   @override
   String get mhxColReference => 'Referencia';
+
   @override
   String get mhxColStatus => 'Estado';
+
   @override
   String get mhxColNotes => 'Observaciones';
+
   @override
   String get mhxBloodPressure => 'Presión arterial';
+
   @override
   String get mhxHeartRate => 'Frecuencia cardíaca';
+
   @override
   String get mhxWeight => 'Peso';
+
   @override
   String get mhxBmi => 'IMC';
+
   @override
   String get mhxBodyFat => 'Grasa corporal';
+
   @override
   String get mhxVisceralFat => 'Grasa visceral';
+
   @override
   String get mhxTotalCholesterol => 'Colesterol total';
+
   @override
   String get mhxLdl => 'LDL';
+
   @override
   String get mhxHdl => 'HDL';
+
   @override
   String get mhxTriglycerides => 'Triglicéridos';
+
   @override
   String get mhxSystolic => 'Sistólica';
+
   @override
   String get mhxDiastolic => 'Diastólica';
+
   @override
   String get mhxStatsMeasurements => 'Mediciones';
+
   @override
   String get mhxStatsAverage => 'Promedio';
+
   @override
   String get mhxStatsRange => 'Rango';
+
   @override
   String get mhxStatsLatest => 'Último';
+
   @override
-  String get mhxFooterDisclaimer => 'Fuente de los datos: mediciones introducidas por el paciente mediante la app MY VITALS con dispositivos personales que pueden no estar calibrados clínicamente; su exactitud no está verificada por un profesional ni por un laboratorio acreditado. Los rangos de referencia mostrados son orientativos y pueden no aplicar a su situación individual; un valor marcado fuera de rango no es un diagnóstico. No tome decisiones de tratamiento basándose en este documento sin supervisión profesional. Contiene datos personales de salud: el usuario es responsable de su custodia y de con quién lo comparte.';
+  String get mhxFooterDisclaimer =>
+      'Fuente de los datos: mediciones introducidas por el paciente mediante la app MY VITALS con dispositivos personales que pueden no estar calibrados clínicamente; su exactitud no está verificada por un profesional ni por un laboratorio acreditado. Los rangos de referencia mostrados son orientativos y pueden no aplicar a su situación individual; un valor marcado fuera de rango no es un diagnóstico. No tome decisiones de tratamiento basándose en este documento sin supervisión profesional. Contiene datos personales de salud: el usuario es responsable de su custodia y de con quién lo comparte.';
+
   @override
   String get mhxButton => 'Exportar historia clínica completa';
+
   @override
-  String get mhxHubHint => 'Un PDF con tus cuatro indicadores para mostrar al médico.';
+  String get mhxHubHint =>
+      'Un PDF con tus cuatro indicadores para mostrar al médico.';
+
   @override
   String get mhxChoosePeriod => 'Elige el periodo';
+
   @override
   String get mhxPeriod6Months => 'Últimos 6 meses';
+
   @override
   String get mhxPeriod1Year => 'Último año';
+
   @override
   String get mhxPeriodAll => 'Todo el historial';
+
   @override
   String get mhxGenerate => 'Generar PDF';
+
   @override
   String get mhxNoData => 'Todavía no hay mediciones que exportar.';
+
   @override
   String mhxAgeYears(int years) {
     return '$years años';
   }
+
   @override
   String mhxPageOf(int current, int total) {
     return 'Página $current de $total';

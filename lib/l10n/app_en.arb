@@ -142,6 +142,33 @@
   "historyPdfTitle": "Anthropometric History",
   "historyShareCsvSubject": "Measurement History CSV",
   "historyBmiLabel": "BMI",
+  "historyTrendOf": "{metric} TREND",
+  "@historyTrendOf": {
+    "description": "History chart card title, per the selected metric",
+    "placeholders": {
+      "metric": { "type": "String", "example": "BMI" }
+    }
+  },
+  "historyMetricNeedsData": "Log {measure} to see this indicator.",
+  "@historyMetricNeedsData": {
+    "description": "Empty state when the derived metric lacks enough data",
+    "placeholders": {
+      "measure": { "type": "String", "example": "your waist" }
+    }
+  },
+  "whtrName": "Waist-to-height",
+  "whtrShort": "WHtR",
+  "whtrLow": "LOW",
+  "whtrNormal": "NORMAL",
+  "whtrIncreased": "INCREASED",
+  "whtrHigh": "HIGH",
+  "whrName": "Waist-to-hip",
+  "whrShort": "WHR",
+  "whrNormal": "NORMAL",
+  "whrIncreased": "INCREASED",
+  "measureWaist": "your waist",
+  "measureWaistAndHip": "waist and hip",
+  "unitCm": "cm",
   "recordVitalSignsTitle": "VITAL SIGNS",
   "bloodPressureTitle": "BLOOD PRESSURE (MMHG)",
   "systolicLabel": "SYSTOLIC",
@@ -387,6 +414,9 @@
   "onboardingWelcomeFeature3": "100% private, everything stays on your device",
   "onboardingNext": "Next",
   "onboardingFinish": "Get Started!",
+  "welcomeGetStarted": "Get Started",
+  "welcomeLogIn": "Log In",
+  "welcomeAlreadyHaveAccount": "Already have an account?",
   "onboardingStep": "Step {current} of {total}",
   "@onboardingStep": {
     "placeholders": {

@@ -4,6 +4,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/auth/local_data_reset.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/pending_account_banner.dart';
@@ -51,12 +52,21 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     final profile = context.read<UserProfileProvider>();
     try {
       final account = await action();
+
+      // Aislamiento entre pacientes: si el dispositivo tenía datos de OTRO paciente,
+      // se borran antes de guardar la sesión (mismo criterio que en el login normal).
+      final owner = await currentDataOwner();
+      if (owner != null && owner != account.publicId && mounted) {
+        await wipeLocalUserData(context);
+      }
+
       await PatientSession.instance.save(
         publicId: account.publicId,
         firstName: account.firstName,
         lastName: account.lastName,
         source: account.source,
       );
+      await setDataOwner(account.publicId);
       // Igual que en /verify: el perfil local se llena con lo que el servidor sabe.
       final fullName = [
         account.firstName,

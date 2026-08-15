@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/auth/local_data_reset.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
@@ -181,6 +182,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
         firstName: account.firstName,
         source: account.source,
       );
+      // El paciente recién creado es el dueño de los datos locales de este device.
+      await setDataOwner(account.publicId);
       // Cuenta creada: nada queda pendiente.
       await PendingAccountStore.instance.clear();
       return _RegisterOutcome.created;
@@ -241,6 +244,8 @@ class _OnboardingShellState extends State<OnboardingShell> {
                 },
                 children: [
                   // Step 1 — Personal Info (shared with Profile)
+                  // En modo cuenta el email es obligatorio: es el identificador con el
+                  // que se crea la cuenta (register), así el alta no queda en modo local.
                   PersonalInfoScreen(
                     key: _personalInfoKey,
                     showAppBar: false,
