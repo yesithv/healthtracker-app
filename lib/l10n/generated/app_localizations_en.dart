@@ -342,6 +342,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyBmiUnit => 'BMI';
 
   @override
+  String historyTrendOf(String metric) {
+    return '$metric TREND';
+  }
+
+  @override
+  String historyMetricNeedsData(String measure) {
+    return 'Log $measure to see this indicator.';
+  }
+
+  @override
+  String get whtrName => 'Waist-to-height';
+
+  @override
+  String get whtrShort => 'WHtR';
+
+  @override
+  String get whtrLow => 'LOW';
+
+  @override
+  String get whtrNormal => 'NORMAL';
+
+  @override
+  String get whtrIncreased => 'INCREASED';
+
+  @override
+  String get whtrHigh => 'HIGH';
+
+  @override
+  String get whrName => 'Waist-to-hip';
+
+  @override
+  String get whrShort => 'WHR';
+
+  @override
+  String get whrNormal => 'NORMAL';
+
+  @override
+  String get whrIncreased => 'INCREASED';
+
+  @override
+  String get measureWaist => 'your waist';
+
+  @override
+  String get measureWaistAndHip => 'waist and hip';
+
+  @override
+  String get unitCm => 'cm';
+
+  @override
   String get historyExportPdf => 'Export to PDF';
 
   @override

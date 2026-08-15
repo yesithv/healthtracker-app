@@ -41,6 +41,19 @@ class AnthropometricRecord {
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
+  /// Índice cintura-altura (WHtR): cintura ÷ altura, ambas en cm (adimensional).
+  /// Indicador cardiometabólico con umbral universal 0.5 (no depende de sexo/edad).
+  /// `null` si falta la cintura o la altura no es válida.
+  double? get whtr =>
+      (waistCm != null && height > 0) ? waistCm! / height : null;
+
+  /// Índice cintura-cadera (WHR): cintura ÷ cadera (adimensional). Distingue la
+  /// distribución de grasa androide/ginoide; los cortes de riesgo dependen del
+  /// sexo. `null` si falta cualquiera de los dos perímetros.
+  double? get whr => (waistCm != null && hipCm != null && hipCm! > 0)
+      ? waistCm! / hipCm!
+      : null;
+
   /// ¿Trae al menos un perímetro? (para mostrar u ocultar la sección en historiales).
   bool get hasCircumferences =>
       waistCm != null ||

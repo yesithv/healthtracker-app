@@ -144,6 +144,33 @@
   "historyPdfTitle": "Historial Antropométrico",
   "historyShareCsvSubject": "Historial de mediciones CSV",
   "historyBmiLabel": "IMC",
+  "historyTrendOf": "TENDENCIA DE {metric}",
+  "@historyTrendOf": {
+    "description": "Título de la tarjeta de gráfica del historial, según la métrica seleccionada",
+    "placeholders": {
+      "metric": { "type": "String", "example": "IMC" }
+    }
+  },
+  "historyMetricNeedsData": "Registra {measure} para ver este indicador.",
+  "@historyMetricNeedsData": {
+    "description": "Estado vacío cuando la métrica derivada no tiene datos suficientes",
+    "placeholders": {
+      "measure": { "type": "String", "example": "la cintura" }
+    }
+  },
+  "whtrName": "Índice cintura-altura",
+  "whtrShort": "ICA",
+  "whtrLow": "BAJO",
+  "whtrNormal": "NORMAL",
+  "whtrIncreased": "AUMENTADO",
+  "whtrHigh": "ALTO",
+  "whrName": "Índice cintura-cadera",
+  "whrShort": "ICC",
+  "whrNormal": "NORMAL",
+  "whrIncreased": "AUMENTADO",
+  "measureWaist": "la cintura",
+  "measureWaistAndHip": "cintura y cadera",
+  "unitCm": "cm",
   "recordVitalSignsTitle": "SIGNOS VITALES",
   "bloodPressureTitle": "PRESIÓN ARTERIAL (MMHG)",
   "systolicLabel": "SISTÓLICA",
