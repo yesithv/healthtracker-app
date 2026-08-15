@@ -1620,6 +1620,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accountSyncTitle => 'Konto und Synchronisierung';
 
   @override
+  String get accountSyncDescription =>
+      'Melde dich an und synchronisiere deine Einträge mit dem Server.';
+
+  @override
+  String get deviceScreenDescription =>
+      'Wähle die Waage, die du nutzt, damit wir deine Messungen einordnen können.';
+
+  @override
+  String get goalsScreenDescription =>
+      'Lege deine Zielwerte fest und verfolge deinen Fortschritt.';
+
+  @override
   String get accountYourAccount => 'Dein Konto';
 
   @override

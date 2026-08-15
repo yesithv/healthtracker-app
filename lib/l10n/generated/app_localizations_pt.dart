@@ -1617,6 +1617,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get accountSyncTitle => 'Conta e sincronização';
 
   @override
+  String get accountSyncDescription =>
+      'Inicie sessão e sincronize os seus registos com o servidor.';
+
+  @override
+  String get deviceScreenDescription =>
+      'Escolhe a balança que usas para interpretar as tuas medições.';
+
+  @override
+  String get goalsScreenDescription =>
+      'Define os teus valores-alvo e acompanha o teu progresso.';
+
+  @override
   String get accountYourAccount => 'A sua conta';
 
   @override

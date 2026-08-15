@@ -291,6 +291,7 @@
   "unlockAppToContinue": "Desbloquea para continuar",
   "biometricNotAvailable": "Biometría no disponible en este dispositivo.",
   "healthGoalsTitle": "Metas de Salud",
+  "goalsScreenDescription": "Define tus valores objetivo y sigue tu progreso.",
   "healthGoalsDescription": "Establece tus objetivos médicos para hacer un seguimiento de tu progreso.",
   "medicalGoalsToggle": "Activar Objetivos médicos",
   "medicalGoalsSubtitle": "Habilitar para establecer metas de peso y composición corporal",
@@ -623,6 +624,7 @@
     }
   },
   "accountSyncTitle": "Cuenta y sincronización",
+  "accountSyncDescription": "Inicia sesión y sincroniza tus registros con el servidor.",
   "@accountSyncTitle": {
     "description": "accountSyncTitle"
   },
@@ -693,6 +695,7 @@
     "description": "accountEmailLabel"
   },
   "deviceScreenTitle": "Mi dispositivo de medición",
+  "deviceScreenDescription": "Elige la báscula que usas para interpretar tus mediciones.",
   "@deviceScreenTitle": {
     "description": "deviceScreenTitle"
   },

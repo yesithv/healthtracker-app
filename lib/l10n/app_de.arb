@@ -245,6 +245,7 @@
   "unlockAppToContinue": "Zum Fortfahren entsperren",
   "biometricNotAvailable": "Biometrie auf diesem Gerät nicht verfügbar.",
   "healthGoalsTitle": "Gesundheitsziele",
+  "goalsScreenDescription": "Lege deine Zielwerte fest und verfolge deinen Fortschritt.",
   "healthGoalsDescription": "Legen Sie Ihre medizinischen Ziele fest, um Ihren Fortschritt zu verfolgen.",
   "medicalGoalsToggle": "Medizinische Ziele aktivieren",
   "medicalGoalsSubtitle": "Aktivieren Sie diese Option, um Gewichts- und Körperziele festzulegen",
@@ -527,6 +528,7 @@
     }
   },
   "accountSyncTitle": "Konto und Synchronisierung",
+  "accountSyncDescription": "Melde dich an und synchronisiere deine Einträge mit dem Server.",
   "accountYourAccount": "Dein Konto",
   "accountPendingBody": "Deine Daten liegen auf diesem Gerät. Das Konto muss noch auf dem Server angelegt werden.",
   "accountLoggedOutBody": "Melde dich an, wenn du bereits Patient bist, oder registriere dich.",
@@ -546,6 +548,7 @@
   "accountNameLabel": "Name",
   "accountEmailLabel": "E-Mail",
   "deviceScreenTitle": "Mein Messgerät",
+  "deviceScreenDescription": "Wähle die Waage, die du nutzt, damit wir deine Messungen einordnen können.",
   "deviceNoneTitle": "Ich benutze keine",
   "deviceNoneSubtitle": "Ich erfasse nur manuelle Messwerte (Gewicht, Taille, Größe).",
   "deviceNoneSaved": "Gespeichert: Du nutzt keine Bioimpedanz.",

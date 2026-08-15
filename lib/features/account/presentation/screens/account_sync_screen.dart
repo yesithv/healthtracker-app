@@ -13,6 +13,7 @@ import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.
 import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 /// Pantalla de cuenta y sincronización (andamio de Fase 0). Reúne los dos flujos:
@@ -112,6 +113,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final surfaces = Theme.of(context).surfaces;
     final session = context.watch<PatientSession>();
     return Scaffold(
@@ -120,7 +122,19 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: session.isAuthenticated ? _loggedIn(session) : _loggedOut(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Encabezado común: ícono + título + descripción centrados.
+              SettingsPageHeader(
+                icon: Icons.sync,
+                title: l10n.accountSyncTitle,
+                description: l10n.accountSyncDescription,
+              ),
+              const SizedBox(height: 32),
+              session.isAuthenticated ? _loggedIn(session) : _loggedOut(),
+            ],
+          ),
         ),
       ),
     );
@@ -139,17 +153,11 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.accountYourAccount,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: _blue,
-          ),
-        ),
-        const SizedBox(height: 4),
+        // El título de la pantalla ya lo pone el encabezado común; aquí sólo
+        // queda el texto contextual (según haya o no un alta pendiente).
         Text(
           pending ? l10n.accountPendingBody : l10n.accountLoggedOutBody,
+          textAlign: TextAlign.center,
           style: TextStyle(color: surfaces.inkSecondary),
         ),
         if (_error != null) _errorBanner(_error!),

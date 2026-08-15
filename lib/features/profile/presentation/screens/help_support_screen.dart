@@ -4,6 +4,7 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dar
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import '../../../../core/widgets/settings_page_header.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HelpSupportScreen extends StatelessWidget {
@@ -56,60 +57,13 @@ class HelpSupportScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               children: [
-                // Header description
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [surfaces.brand, clinical.info.accent],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: surfaces.glow(
-                      surfaces.brand,
-                      alpha: 0.25,
-                      blur: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      IconBadge(
-                        Icons.support_agent,
-                        color: surfaces.card,
-                        background: surfaces.onBrand.withValues(alpha: 0.15),
-                        padding: 14,
-                        iconSize: 32,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.helpSupportPageTitle,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: surfaces.card,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              l10n.helpSupportPageDescription,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: surfaces.onBrand.withValues(alpha: 0.85),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                // Encabezado común: ícono + título + descripción centrados.
+                SettingsPageHeader(
+                  icon: Icons.support_agent,
+                  title: l10n.helpSupportPageTitle,
+                  description: l10n.helpSupportPageDescription,
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 32),
 
                 // Section cards
                 ...sections.map((s) => _buildSectionCard(context, s)),
