@@ -2984,6 +2984,24 @@ abstract class AppLocalizations {
   /// **'Account and sync'**
   String get accountSyncTitle;
 
+  /// No description provided for @accountSyncDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in and sync your records with the server.'**
+  String get accountSyncDescription;
+
+  /// No description provided for @deviceScreenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the scale you use so we can interpret your measurements.'**
+  String get deviceScreenDescription;
+
+  /// No description provided for @goalsScreenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your target values and track your progress.'**
+  String get goalsScreenDescription;
+
   /// No description provided for @accountYourAccount.
   ///
   /// In en, this message translates to:

@@ -245,6 +245,7 @@
   "unlockAppToContinue": "Desbloqueie para continuar",
   "biometricNotAvailable": "Biometria não disponível neste dispositivo.",
   "healthGoalsTitle": "Metas de Saúde",
+  "goalsScreenDescription": "Define os teus valores-alvo e acompanha o teu progresso.",
   "healthGoalsDescription": "Defina seus objetivos médicos para acompanhar seu progresso.",
   "medicalGoalsToggle": "Ativar Objetivos Médicos",
   "medicalGoalsSubtitle": "Habilite para definir metas de peso e composição corporal",
@@ -524,6 +525,7 @@
     }
   },
   "accountSyncTitle": "Conta e sincronização",
+  "accountSyncDescription": "Inicie sessão e sincronize os seus registos com o servidor.",
   "accountYourAccount": "A sua conta",
   "accountPendingBody": "Os seus dados estão neste dispositivo. Falta criar a conta no servidor.",
   "accountLoggedOutBody": "Inicie sessão se já é paciente, ou registe-se para começar.",
@@ -543,6 +545,7 @@
   "accountNameLabel": "Nome",
   "accountEmailLabel": "Email",
   "deviceScreenTitle": "O meu dispositivo de medição",
+  "deviceScreenDescription": "Escolhe a balança que usas para interpretar as tuas medições.",
   "deviceNoneTitle": "Não uso nenhuma",
   "deviceNoneSubtitle": "Vou registar apenas medidas manuais (peso, cintura, altura).",
   "deviceNoneSaved": "Guardado: não usa bioimpedância.",

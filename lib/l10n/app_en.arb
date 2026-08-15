@@ -283,6 +283,7 @@
   "unlockAppToContinue": "Unlock to continue",
   "biometricNotAvailable": "Biometrics not available on this device.",
   "healthGoalsTitle": "Health Goals",
+  "goalsScreenDescription": "Set your target values and track your progress.",
   "healthGoalsDescription": "Set your medical objectives to track your progress.",
   "medicalGoalsToggle": "Enable Medical Goals",
   "medicalGoalsSubtitle": "Enable to set weight and body composition goals",
@@ -576,6 +577,7 @@
     }
   },
   "accountSyncTitle": "Account and sync",
+  "accountSyncDescription": "Sign in and sync your records with the server.",
   "accountYourAccount": "Your account",
   "accountPendingBody": "Your data is on this device. The account still has to be created on the server.",
   "accountLoggedOutBody": "Sign in if you are already a patient, or register to get started.",
@@ -595,6 +597,7 @@
   "accountNameLabel": "Name",
   "accountEmailLabel": "Email",
   "deviceScreenTitle": "My measuring device",
+  "deviceScreenDescription": "Choose the scale you use so we can interpret your measurements.",
   "deviceNoneTitle": "I don’t use one",
   "deviceNoneSubtitle": "I will only record manual measurements (weight, waist, height).",
   "deviceNoneSaved": "Saved: you don’t use bioimpedance.",

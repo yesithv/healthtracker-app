@@ -9,6 +9,7 @@ import '../../../../core/theme/tokens/content_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
+import '../../../../core/widgets/settings_page_header.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HealthGoalsScreen extends StatefulWidget {
@@ -91,6 +92,13 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Encabezado común: ícono + título + descripción centrados.
+                  SettingsPageHeader(
+                    icon: Icons.flag_circle_outlined,
+                    title: l10n.healthGoalsTitle,
+                    description: l10n.goalsScreenDescription,
+                  ),
+                  const SizedBox(height: 32),
                   // --- INFO & TOGGLE CARD ---
                   Container(
                     padding: const EdgeInsets.all(20),

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provider.dart';
 import 'package:myvitals_healthtracker_app/core/sync/device_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
 
 /// Selector "¿qué báscula de bioimpedancia usas?". Fuente de verdad editable siempre; la
 /// elección se guarda local y se sincroniza a la API, que la usa para interpretar (el semáforo
@@ -65,15 +67,17 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
 
     return Scaffold(
       backgroundColor: surfaces.canvas,
-      appBar: AppBar(
-        title: Text(l10n.deviceScreenTitle),
-        backgroundColor: surfaces.card,
-        foregroundColor: surfaces.ink,
-        elevation: 0,
-      ),
+      appBar: const SecondaryAppBar(),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         children: [
+          // Encabezado común: ícono + título + descripción centrados.
+          SettingsPageHeader(
+            icon: Icons.monitor_heart_outlined,
+            title: l10n.deviceScreenTitle,
+            description: l10n.deviceScreenDescription,
+          ),
+          const SizedBox(height: 32),
           _headerCard(),
           const SizedBox(height: 20),
           if (provider.loadingCatalog)

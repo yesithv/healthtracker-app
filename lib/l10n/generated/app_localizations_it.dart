@@ -1560,6 +1560,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get accountSyncTitle => 'Account e sincronizzazione';
 
   @override
+  String get accountSyncDescription =>
+      'Accedi e sincronizza i tuoi dati con il server.';
+
+  @override
+  String get deviceScreenDescription =>
+      'Scegli la bilancia che usi per interpretare le tue misurazioni.';
+
+  @override
+  String get goalsScreenDescription =>
+      'Imposta i tuoi valori obiettivo e monitora i tuoi progressi.';
+
+  @override
   String get accountYourAccount => 'Il tuo account';
 
   @override
