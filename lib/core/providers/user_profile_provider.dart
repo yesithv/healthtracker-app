@@ -68,6 +68,45 @@ class UserProfileProvider extends ChangeNotifier {
   /// so the UI reflects the new values without restarting the app.
   Future<void> reload() => _loadFromPrefs();
 
+  /// Borra el perfil del usuario (memoria + persistencia) al cerrar sesión o
+  /// cambiar de paciente. No toca preferencias de app/dispositivo (idioma,
+  /// unidades) que viven en otros providers.
+  Future<void> clear() async {
+    _profileImageBase64 = null;
+    _userName = '';
+    _birthDate = null;
+    _userEmail = '';
+    _userGender = '';
+    _userActivityLevel = 'sedentary';
+    _userPhone = '';
+    _userCountryCode = '';
+    _defaultDeviceName = '';
+    _isBiometricEnabled = false;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    for (final key in [
+      _userNameKey,
+      _birthDateKey,
+      _emailKey,
+      _genderKey,
+      _activityLevelKey,
+      _phoneKey,
+      _countryKey,
+      _defaultDeviceKey,
+      _biometricKey,
+      _imageKey,
+    ]) {
+      await prefs.remove(key);
+    }
+
+    // La foto en móvil vive como archivo, no en prefs.
+    if (!kIsWeb) {
+      final file = await _profileImageFile();
+      if (await file.exists()) await file.delete();
+    }
+  }
+
   Future<void> setProfileImage(String? base64) async {
     _profileImageBase64 = base64;
     notifyListeners();

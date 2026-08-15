@@ -348,6 +348,9 @@
   "onboardingWelcomeFeature3": "100% privado, tudo fica no seu dispositivo",
   "onboardingNext": "Próximo",
   "onboardingFinish": "Começar!",
+  "welcomeGetStarted": "Começar",
+  "welcomeLogIn": "Iniciar sessão",
+  "welcomeAlreadyHaveAccount": "Já tem conta?",
   "onboardingStep": "Passo {current} de {total}",
   "@onboardingStep": {
     "placeholders": {

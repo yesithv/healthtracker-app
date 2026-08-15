@@ -1,14 +1,12 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
-import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/ecg_trace.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,12 +17,19 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  late AnimationController _ecgController;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    // ECG Animation Controller
+    _ecgController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat();
 
     // Fade-in animation for text
     _fadeController = AnimationController(
@@ -65,27 +70,19 @@ class _SplashScreenState extends State<SplashScreen>
     await onboarding.ready;
     if (!mounted) return;
 
-    // ── PUERTA DE ACCESO ──────────────────────────────────────────────
-    // La cuenta es OBLIGATORIA, pero su CREACIÓN puede quedar diferida: si el
-    // alta no pudo salir al servidor por falta de red, el usuario entra igual y
-    // la cuenta se crea en el primer intento que funcione. Exigir servidor
-    // disponible en ese instante convertiría un corte de red en un muro.
-    //
-    // Da paso, por tanto, una sesión activa O un alta pendiente.
-    final pending = PendingAccountStore.instance;
-    if (!PatientSession.instance.isAuthenticated && !pending.isPending) {
-      context.go('/intro');
-      return;
-    }
+    // ── AUTH / ONBOARDING GATE ────────────────────────────────────────
+    // Priority: an active patient session (migrated/created) goes straight in.
+    // Otherwise, a locally-configured profile (onboarding done) also goes in.
+    // A fresh install with neither lands on the Welcome gate to choose between
+    // logging in (migrated patient), creating an account, or using it offline.
+    final hasSession = PatientSession.instance.isAuthenticated;
+    final hasLocalProfile =
+        onboarding.isComplete && prefs.userName.trim().isNotEmpty;
 
-    // Con un alta pendiente se reintenta AQUÍ, en cada arranque: es el momento
-    // natural de «apenas haya internet» sin añadir un vigilante de conectividad.
-    // No se espera el resultado —entrar no debe depender de la red— y si sale
-    // bien, guardar la sesión despierta a SyncService, que sube lo acumulado.
-    if (pending.isPending) {
-      final profile = Provider.of<UserProfileProvider>(context, listen: false);
-      // ignore: discarded_futures
-      flushPendingAccount(AccountDraft.fromProfile(profile));
+    if (!hasSession && !hasLocalProfile) {
+      // Sin sesión ni perfil local: a la portada (reseña + Comenzar / Iniciar sesión).
+      context.go('/welcome');
+      return;
     }
 
     // ── BIOMETRIC AUTH ────────────────────────────────────────────────
@@ -113,43 +110,71 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    _ecgController.dispose();
     _fadeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
-
     return Scaffold(
-      backgroundColor: surfaces.brand,
+      backgroundColor: const Color(0xFF0D48A0),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ── ELECTRO ─────────────────────────────────────────────────────
-            // El trazo es el mismo en los dos temas. Lo que cambia es si va
-            // dentro de un bisel de instrumental o desnudo sobre el fondo, y
-            // eso lo dice el tema (`monitorBezel`), no esta pantalla.
-            const EcgTrace(),
+            // --- ECG MONITOR FRAME ---
+            Container(
+              width: 240,
+              height: 140,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF020617),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: AnimatedBuilder(
+                  animation: _ecgController,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      painter: EcgPainter(
+                        progress: _ecgController.value,
+                        color: const Color(0xFF22C55E),
+                      ),
+                      child: Container(),
+                    );
+                  },
+                ),
+              ),
+            ),
             const SizedBox(height: 48),
-            // ── MARCA ───────────────────────────────────────────────────────
+            // --- TEXT SECTION ---
             FadeTransition(
               opacity: _fadeAnimation,
               child: Column(
-                children: [
+                children: const [
                   Text(
-                    'My Vitals',
-                    textAlign: TextAlign.center,
-                    style: theme.type.display.copyWith(color: surfaces.onBrand),
+                    'MY VITALS',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 4,
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'Health Tracker',
-                    textAlign: TextAlign.center,
-                    style: theme.type.displayMeta.copyWith(
-                      color: surfaces.onBrand.withValues(alpha: 0.8),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      letterSpacing: 2,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -162,3 +187,76 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
+class EcgPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+
+  EcgPainter({required this.progress, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    _drawGrid(canvas, size);
+
+    final path = Path();
+    final double midY = size.height / 2;
+    final double width = size.width;
+
+    for (double x = 0; x <= width; x++) {
+      double relativeX = (x / width + (1 - progress)) % 1.0;
+      double y = midY + _getEcgHeight(relativeX * 10) * 40;
+
+      if (x == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    canvas.drawPath(path, paint);
+
+    final glowPaint = Paint()
+      ..color = color.withValues(alpha: 0.3)
+      ..strokeWidth = 6.0
+      ..style = PaintingStyle.stroke
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
+
+    canvas.drawPath(path, glowPaint);
+  }
+
+  double _getEcgHeight(double t) {
+    t = t % 10;
+    if (t < 0.5) return 0;
+    if (t < 1.0) return -0.2 * math.sin((t - 0.5) * 2 * math.pi);
+    if (t < 1.5) return 0;
+    if (t < 1.6) return 0.2 * (t - 1.5) * 10;
+    if (t < 1.8) return -1.5 * math.sin((t - 1.6) * 5 * math.pi / 2);
+    if (t < 2.0) return 0.5 * math.sin((t - 1.8) * 5 * math.pi / 2);
+    if (t < 2.5) return 0;
+    if (t < 3.5) return -0.4 * math.sin((t - 2.5) * math.pi);
+    return 0;
+  }
+
+  void _drawGrid(Canvas canvas, Size size) {
+    final gridPaint = Paint()
+      ..color = color.withValues(alpha: 0.05)
+      ..strokeWidth = 0.5;
+    const double spacing = 20.0;
+    for (double x = 0; x < size.width; x += spacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+    for (double y = 0; y < size.height; y += spacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(EcgPainter oldDelegate) =>
+      oldDelegate.progress != progress;
+}

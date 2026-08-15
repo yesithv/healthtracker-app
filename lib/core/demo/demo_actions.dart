@@ -43,7 +43,7 @@ Future<void> exitDemo(BuildContext context) async {
   await DemoSession.instance.exit();
   await reload();
 
-  router.go('/intro');
+  router.go('/welcome');
 }
 
 /// Cierra sobre los providers ANTES del primer `await`.

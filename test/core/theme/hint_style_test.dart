@@ -131,9 +131,12 @@ void main() {
             .listSync(recursive: true)
             .whereType<File>()
             .where((f) => f.path.endsWith('.dart'))) {
-      if (file.path.contains('core/theme/themes/')) continue;
+      // Normaliza el separador para que las exclusiones funcionen también en
+      // Windows, donde `File.path` usa `\` en vez de `/`.
+      final path = file.path.replaceAll(r'\', '/');
+      if (path.contains('core/theme/themes/')) continue;
       if (file.readAsStringSync().contains('hintStyle:')) {
-        offenders.add(file.path);
+        offenders.add(path);
       }
     }
     expect(

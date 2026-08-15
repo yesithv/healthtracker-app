@@ -78,4 +78,25 @@ class HealthGoalsProvider extends ChangeNotifier {
 
   /// Re-reads goals from storage (e.g. after a restored backup).
   Future<void> reload() => _load();
+
+  /// Borra las metas del usuario (al cerrar sesión / cambiar de paciente).
+  Future<void> clear() async {
+    _medicalGoalsEnabled = false;
+    _targetWeight = null;
+    _targetBodyFat = null;
+    _targetMuscleMass = null;
+    _targetVisceralFat = null;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    for (final key in [
+      _enabledKey,
+      _weightKey,
+      _bodyFatKey,
+      _muscleMassKey,
+      _visceralFatKey,
+    ]) {
+      await prefs.remove(key);
+    }
+  }
 }
