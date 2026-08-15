@@ -28,16 +28,17 @@ void main() {
 
   group('acceso con cuenta obligatoria ·', () {
     test('la portada del flujo está enrutada', () {
-      expect(allPaths(), contains('/intro'));
+      expect(allPaths(), contains('/welcome'));
     });
 
-    test('la portada antigua ya no está enrutada', () {
-      // `/welcome` ofrecía «explorar sin cuenta»: dejarla enrutada mantendría
-      // viva una puerta trasera al modo local.
+    test('la portada anterior ya no está enrutada', () {
+      // `/intro` fue el nombre intermedio de la portada; el flujo actual entra
+      // por `/welcome` (misma garantía: cuenta obligatoria, sin modo local).
+      // Dejar `/intro` enrutada mantendría viva una portada muerta.
       expect(
         allPaths(),
-        isNot(contains('/welcome')),
-        reason: 'La portada antigua permitía entrar sin cuenta',
+        isNot(contains('/intro')),
+        reason: 'La portada anterior ya no debe estar enrutada',
       );
     });
 
@@ -98,7 +99,7 @@ void main() {
     // borrados al salir (ver DemoSession). Estas pruebas fijan que la portada
     // entre por esa puerta y no por otra improvisada.
     final intro = File(
-      'lib/features/welcome/presentation/screens/intro_screen.dart',
+      'lib/features/welcome/presentation/screens/welcome_screen.dart',
     ).readAsStringSync();
 
     /// El código de la portada sin comentarios: el «por qué» del cambio sí puede

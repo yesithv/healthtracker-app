@@ -2114,6 +2114,24 @@ abstract class AppLocalizations {
   /// **'Get Started!'**
   String get onboardingFinish;
 
+  /// No description provided for @welcomeGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get welcomeGetStarted;
+
+  /// No description provided for @welcomeLogIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get welcomeLogIn;
+
+  /// No description provided for @welcomeAlreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get welcomeAlreadyHaveAccount;
+
   /// No description provided for @onboardingStep.
   ///
   /// In en, this message translates to:
@@ -3326,13 +3344,11 @@ abstract class AppLocalizations {
   /// **'Personal Health Summary'**
   String get mhxDocTitle;
 
-
   /// No description provided for @mhxDocSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Consolidated report of self-reported measurements'**
   String get mhxDocSubtitle;
-
 
   /// No description provided for @mhxPatient.
   ///
@@ -3340,13 +3356,11 @@ abstract class AppLocalizations {
   /// **'Patient'**
   String get mhxPatient;
 
-
   /// No description provided for @mhxBirthDate.
   ///
   /// In en, this message translates to:
   /// **'Date of birth'**
   String get mhxBirthDate;
-
 
   /// No description provided for @mhxPeriodCovered.
   ///
@@ -3354,13 +3368,11 @@ abstract class AppLocalizations {
   /// **'Period covered'**
   String get mhxPeriodCovered;
 
-
   /// No description provided for @mhxGeneratedOn.
   ///
   /// In en, this message translates to:
   /// **'Generated on'**
   String get mhxGeneratedOn;
-
 
   /// No description provided for @mhxSource.
   ///
@@ -3380,13 +3392,11 @@ abstract class AppLocalizations {
   /// **'Report no.'**
   String get mhxReportRef;
 
-
   /// No description provided for @mhxSelfReported.
   ///
   /// In en, this message translates to:
   /// **'self-reported data'**
   String get mhxSelfReported;
-
 
   /// No description provided for @mhxDisclaimerTitle.
   ///
@@ -3394,13 +3404,11 @@ abstract class AppLocalizations {
   /// **'Informational summary - not a medical diagnosis'**
   String get mhxDisclaimerTitle;
 
-
   /// No description provided for @mhxDisclaimerBody.
   ///
   /// In en, this message translates to:
   /// **'This document was generated automatically from measurements recorded by the user. It is not a medical diagnosis or an official clinical record, and does not replace assessment by a healthcare professional.'**
   String get mhxDisclaimerBody;
-
 
   /// No description provided for @mhxSummaryTitle.
   ///
@@ -3408,13 +3416,11 @@ abstract class AppLocalizations {
   /// **'Summary of latest values'**
   String get mhxSummaryTitle;
 
-
   /// No description provided for @mhxColIndicator.
   ///
   /// In en, this message translates to:
   /// **'Indicator'**
   String get mhxColIndicator;
-
 
   /// No description provided for @mhxColLatest.
   ///
@@ -3422,13 +3428,11 @@ abstract class AppLocalizations {
   /// **'Latest value'**
   String get mhxColLatest;
 
-
   /// No description provided for @mhxColReference.
   ///
   /// In en, this message translates to:
   /// **'Reference'**
   String get mhxColReference;
-
 
   /// No description provided for @mhxColStatus.
   ///
@@ -3436,13 +3440,11 @@ abstract class AppLocalizations {
   /// **'Status'**
   String get mhxColStatus;
 
-
   /// No description provided for @mhxColNotes.
   ///
   /// In en, this message translates to:
   /// **'Notes'**
   String get mhxColNotes;
-
 
   /// No description provided for @mhxBloodPressure.
   ///
@@ -3450,13 +3452,11 @@ abstract class AppLocalizations {
   /// **'Blood pressure'**
   String get mhxBloodPressure;
 
-
   /// No description provided for @mhxHeartRate.
   ///
   /// In en, this message translates to:
   /// **'Heart rate'**
   String get mhxHeartRate;
-
 
   /// No description provided for @mhxWeight.
   ///
@@ -3464,13 +3464,11 @@ abstract class AppLocalizations {
   /// **'Weight'**
   String get mhxWeight;
 
-
   /// No description provided for @mhxBmi.
   ///
   /// In en, this message translates to:
   /// **'BMI'**
   String get mhxBmi;
-
 
   /// No description provided for @mhxBodyFat.
   ///
@@ -3478,13 +3476,11 @@ abstract class AppLocalizations {
   /// **'Body fat'**
   String get mhxBodyFat;
 
-
   /// No description provided for @mhxVisceralFat.
   ///
   /// In en, this message translates to:
   /// **'Visceral fat'**
   String get mhxVisceralFat;
-
 
   /// No description provided for @mhxTotalCholesterol.
   ///
@@ -3492,13 +3488,11 @@ abstract class AppLocalizations {
   /// **'Total cholesterol'**
   String get mhxTotalCholesterol;
 
-
   /// No description provided for @mhxLdl.
   ///
   /// In en, this message translates to:
   /// **'LDL'**
   String get mhxLdl;
-
 
   /// No description provided for @mhxHdl.
   ///
@@ -3506,13 +3500,11 @@ abstract class AppLocalizations {
   /// **'HDL'**
   String get mhxHdl;
 
-
   /// No description provided for @mhxTriglycerides.
   ///
   /// In en, this message translates to:
   /// **'Triglycerides'**
   String get mhxTriglycerides;
-
 
   /// No description provided for @mhxSystolic.
   ///
@@ -3520,13 +3512,11 @@ abstract class AppLocalizations {
   /// **'Systolic'**
   String get mhxSystolic;
 
-
   /// No description provided for @mhxDiastolic.
   ///
   /// In en, this message translates to:
   /// **'Diastolic'**
   String get mhxDiastolic;
-
 
   /// No description provided for @mhxStatsMeasurements.
   ///
@@ -3534,13 +3524,11 @@ abstract class AppLocalizations {
   /// **'Measurements'**
   String get mhxStatsMeasurements;
 
-
   /// No description provided for @mhxStatsAverage.
   ///
   /// In en, this message translates to:
   /// **'Average'**
   String get mhxStatsAverage;
-
 
   /// No description provided for @mhxStatsRange.
   ///
@@ -3548,13 +3536,11 @@ abstract class AppLocalizations {
   /// **'Range'**
   String get mhxStatsRange;
 
-
   /// No description provided for @mhxStatsLatest.
   ///
   /// In en, this message translates to:
   /// **'Latest'**
   String get mhxStatsLatest;
-
 
   /// No description provided for @mhxFooterDisclaimer.
   ///
@@ -3562,13 +3548,11 @@ abstract class AppLocalizations {
   /// **'Data source: measurements entered by the patient through the MY VITALS app using personal devices that may not be clinically calibrated; their accuracy is not verified by a professional or an accredited laboratory. The reference ranges shown are indicative and may not apply to your individual situation; a value flagged outside the range is not a diagnosis. Do not make treatment decisions based on this document without professional supervision. It contains personal health data: the user is responsible for its safekeeping and sharing.'**
   String get mhxFooterDisclaimer;
 
-
   /// No description provided for @mhxButton.
   ///
   /// In en, this message translates to:
   /// **'Export complete medical history'**
   String get mhxButton;
-
 
   /// No description provided for @mhxHubHint.
   ///
@@ -3576,13 +3560,11 @@ abstract class AppLocalizations {
   /// **'One PDF with your four indicators to show your doctor.'**
   String get mhxHubHint;
 
-
   /// No description provided for @mhxChoosePeriod.
   ///
   /// In en, this message translates to:
   /// **'Choose the period'**
   String get mhxChoosePeriod;
-
 
   /// No description provided for @mhxPeriod6Months.
   ///
@@ -3590,13 +3572,11 @@ abstract class AppLocalizations {
   /// **'Last 6 months'**
   String get mhxPeriod6Months;
 
-
   /// No description provided for @mhxPeriod1Year.
   ///
   /// In en, this message translates to:
   /// **'Last year'**
   String get mhxPeriod1Year;
-
 
   /// No description provided for @mhxPeriodAll.
   ///
@@ -3604,13 +3584,11 @@ abstract class AppLocalizations {
   /// **'All history'**
   String get mhxPeriodAll;
 
-
   /// No description provided for @mhxGenerate.
   ///
   /// In en, this message translates to:
   /// **'Generate PDF'**
   String get mhxGenerate;
-
 
   /// No description provided for @mhxNoData.
   ///
@@ -3618,18 +3596,16 @@ abstract class AppLocalizations {
   /// **'There are no measurements to export yet.'**
   String get mhxNoData;
 
-
   /// No description provided for @mhxAgeYears.
   ///
   /// In en, this message translates to:
-  /// **'$years yr'**
+  /// **'{years} yr'**
   String mhxAgeYears(int years);
-
 
   /// No description provided for @mhxPageOf.
   ///
   /// In en, this message translates to:
-  /// **'Page $current of $total'**
+  /// **'Page {current} of {total}'**
   String mhxPageOf(int current, int total);
 }
 

@@ -30,9 +30,10 @@ import '../../features/profile/presentation/screens/data_backup_screen.dart';
 import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
-import '../../features/welcome/presentation/screens/intro_screen.dart';
-import '../../features/auth/presentation/screens/identify_screen.dart';
+import '../../features/welcome/presentation/screens/welcome_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
+import '../../features/auth/presentation/screens/otp_verify_screen.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
@@ -62,23 +63,36 @@ class AppRouter {
       // Portada del flujo real: logotipo, las tres características y los dos
       // caminos de entrada. Es a donde manda el arranque a quien no tiene
       // sesión ni perfil local.
-      GoRoute(path: '/intro', builder: (context, state) => const IntroScreen()),
       GoRoute(
-        path: '/identify',
-        builder: (context, state) => const IdentifyScreen(),
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/verify',
         builder: (context, state) {
-          // El identificador llega del paso de identificación; sin él, volver a identificar.
+          // El identificador llega del paso de login; sin él, volver a iniciar sesión.
           final id = state.extra as String?;
           return (id == null || id.isEmpty)
-              ? const IdentifyScreen()
+              ? const LoginScreen()
               : VerifyScreen(identifier: id);
         },
       ),
       // Alta de paciente nuevo. Ya no admite parámetro `mode`: el asistente
       // siempre crea la cuenta, porque el modo local se ha eliminado.
+      GoRoute(
+        path: '/verify-otp',
+        builder: (context, state) {
+          // Verificación OTP del paciente legacy; sin identificador, volver a login.
+          final id = state.extra as String?;
+          return (id == null || id.isEmpty)
+              ? const LoginScreen()
+              : OtpVerifyScreen(identifier: id);
+        },
+      ),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingShell(),

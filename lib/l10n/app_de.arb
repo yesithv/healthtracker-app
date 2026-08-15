@@ -348,6 +348,9 @@
   "onboardingWelcomeFeature3": "100% privat, alles bleibt auf deinem Gerät",
   "onboardingNext": "Weiter",
   "onboardingFinish": "Loslegen!",
+  "welcomeGetStarted": "Loslegen",
+  "welcomeLogIn": "Anmelden",
+  "welcomeAlreadyHaveAccount": "Schon ein Konto?",
   "onboardingStep": "Schritt {current} von {total}",
   "@onboardingStep": {
     "placeholders": {

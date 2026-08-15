@@ -87,7 +87,9 @@ void main() {
           if (code.startsWith('//')) continue;
           if (line.contains('BoxShape.circle')) count++;
         }
-        if (count > 0) found[file.path] = count;
+        // Normaliza el separador: el inventario usa `/`, pero en Windows
+        // `File.path` devuelve `\` y la clave no casaría.
+        if (count > 0) found[file.path.replaceAll(r'\', '/')] = count;
       }
 
       final problems = <String>[];

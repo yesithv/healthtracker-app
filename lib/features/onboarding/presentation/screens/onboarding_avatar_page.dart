@@ -295,11 +295,13 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
+      builder: (_) => Material(
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
+        child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -351,6 +353,7 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
               },
             ),
           ],
+        ),
         ),
       ),
     );
