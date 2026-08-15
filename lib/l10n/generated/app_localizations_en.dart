@@ -54,6 +54,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logOut => 'Log Out';
 
   @override
+  String get logOutConfirmTitle => 'Log out?';
+
+  @override
+  String get logOutConfirmBody =>
+      'We\'ll upload your pending data and then remove your information from this device. You can see it again when you log back in.';
+
+  @override
   String level(int value) {
     return 'Level $value';
   }
@@ -232,6 +239,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailOptional => 'Email (Optional)';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get validationEnterEmail => 'Enter a valid email';
 
   @override
   String get phoneOptional => 'Phone (Optional)';
@@ -1067,13 +1080,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingWelcomeFeature3 =>
-      '100% private, everything stays on your device';
+      'Securely backed up and synced with your care team';
+
+  @override
+  String get welcomeGetStarted => 'Get Started';
+
+  @override
+  String get welcomeLogIn => 'Log In';
+
+  @override
+  String get welcomeAlreadyHaveAccount => 'Already have an account?';
 
   @override
   String get onboardingNext => 'Next';
 
   @override
-  String get onboardingFinish => 'Get Started!';
+  String get onboardingFinish => 'Finish';
 
   @override
   String get onboardingSkip => 'Skip';

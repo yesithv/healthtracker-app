@@ -30,8 +30,9 @@ import '../../features/profile/presentation/screens/reminders_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
-import '../../features/auth/presentation/screens/identify_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
+import '../../features/auth/presentation/screens/otp_verify_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -47,17 +48,27 @@ class AppRouter {
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
-        path: '/identify',
-        builder: (context, state) => const IdentifyScreen(),
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/verify',
         builder: (context, state) {
-          // El identificador llega del paso de identificación; sin él, volver a identificar.
+          // El identificador llega del paso de login; sin él, volver a iniciar sesión.
           final id = state.extra as String?;
           return (id == null || id.isEmpty)
-              ? const IdentifyScreen()
+              ? const LoginScreen()
               : VerifyScreen(identifier: id);
+        },
+      ),
+      GoRoute(
+        path: '/verify-otp',
+        builder: (context, state) {
+          // Verificación OTP del paciente legacy; sin identificador, volver a login.
+          final id = state.extra as String?;
+          return (id == null || id.isEmpty)
+              ? const LoginScreen()
+              : OtpVerifyScreen(identifier: id);
         },
       ),
       GoRoute(

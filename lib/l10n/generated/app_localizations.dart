@@ -194,6 +194,18 @@ abstract class AppLocalizations {
   /// **'Log Out'**
   String get logOut;
 
+  /// No description provided for @logOutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out?'**
+  String get logOutConfirmTitle;
+
+  /// No description provided for @logOutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll upload your pending data and then remove your information from this device. You can see it again when you log back in.'**
+  String get logOutConfirmBody;
+
   /// No description provided for @level.
   ///
   /// In en, this message translates to:
@@ -535,6 +547,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email (Optional)'**
   String get emailOptional;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @validationEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get validationEnterEmail;
 
   /// No description provided for @phoneOptional.
   ///
@@ -2099,8 +2123,26 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeFeature3.
   ///
   /// In en, this message translates to:
-  /// **'100% private, everything stays on your device'**
+  /// **'Securely backed up and synced with your care team'**
   String get onboardingWelcomeFeature3;
+
+  /// No description provided for @welcomeGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get welcomeGetStarted;
+
+  /// No description provided for @welcomeLogIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get welcomeLogIn;
+
+  /// No description provided for @welcomeAlreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get welcomeAlreadyHaveAccount;
 
   /// No description provided for @onboardingNext.
   ///
@@ -2111,7 +2153,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFinish.
   ///
   /// In en, this message translates to:
-  /// **'Get Started!'**
+  /// **'Finish'**
   String get onboardingFinish;
 
   /// No description provided for @onboardingSkip.

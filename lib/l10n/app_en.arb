@@ -14,6 +14,8 @@
   "privacySecurity": "Privacy & Security",
   "helpSupport": "Help & Support",
   "logOut": "Log Out",
+  "logOutConfirmTitle": "Log out?",
+  "logOutConfirmBody": "We'll upload your pending data and then remove your information from this device. You can see it again when you log back in.",
   "level": "Level {value}",
   "@level": {
     "placeholders": {
@@ -84,6 +86,8 @@
   "fullName": "Full name",
   "birthDate": "Date of birth",
   "emailOptional": "Email (Optional)",
+  "email": "Email",
+  "validationEnterEmail": "Enter a valid email",
   "phoneOptional": "Phone (Optional)",
   "selectCountry": "Select your country",
   "searchCountry": "Search country",
@@ -367,9 +371,12 @@
   "onboardingWelcomeSubtitle": "Your personal health companion",
   "onboardingWelcomeFeature1": "Record your vital signs and body measurements",
   "onboardingWelcomeFeature2": "Visualize your progress with charts and stats",
-  "onboardingWelcomeFeature3": "100% private, everything stays on your device",
+  "onboardingWelcomeFeature3": "Securely backed up and synced with your care team",
+  "welcomeGetStarted": "Get Started",
+  "welcomeLogIn": "Log In",
+  "welcomeAlreadyHaveAccount": "Already have an account?",
   "onboardingNext": "Next",
-  "onboardingFinish": "Get Started!",
+  "onboardingFinish": "Finish",
   "onboardingSkip": "Skip",
   "onboardingStep": "Step {current} of {total}",
   "@onboardingStep": {

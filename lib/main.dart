@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -146,6 +147,11 @@ class MyVitalsApp extends StatelessWidget {
       title: 'My Vitals',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      // En web/escritorio Flutter deshabilita el arrastre con mouse en los
+      // scrollables por defecto; lo habilitamos para que las listas horizontales
+      // (p. ej. Nivel de actividad) se puedan desplazar con el mouse. En móvil el
+      // gesto táctil ya funcionaba.
+      scrollBehavior: const _AppScrollBehavior(),
       routerConfig: AppRouter.router,
       locale: localeUnits.locale,
       localizationsDelegates: const [
@@ -157,4 +163,19 @@ class MyVitalsApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
     );
   }
+}
+
+/// Permite arrastrar los scrollables con mouse y trackpad (además del táctil), para
+/// que en la web/escritorio se puedan desplazar las listas —notablemente las filas
+/// horizontales— igual que en el móvil.
+class _AppScrollBehavior extends MaterialScrollBehavior {
+  const _AppScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }

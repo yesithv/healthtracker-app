@@ -16,6 +16,8 @@
   "privacySecurity": "Privacidad y Seguridad",
   "helpSupport": "Ayuda y Soporte",
   "logOut": "Cerrar Sesión",
+  "logOutConfirmTitle": "¿Cerrar sesión?",
+  "logOutConfirmBody": "Subiremos tus datos pendientes y luego borraremos tu información de este dispositivo. Podrás volver a verla al iniciar sesión de nuevo.",
   "level": "Nivel {value}",
   "@level": {
     "placeholders": {
@@ -86,6 +88,8 @@
   "fullName": "Nombre completo",
   "birthDate": "Fecha de nacimiento",
   "emailOptional": "Correo electrónico (Opcional)",
+  "email": "Correo electrónico",
+  "validationEnterEmail": "Ingresa un correo válido",
   "phoneOptional": "Teléfono (Opcional)",
   "selectCountry": "Selecciona tu país",
   "searchCountry": "Buscar país",
@@ -366,9 +370,12 @@
   "onboardingWelcomeSubtitle": "Tu compañero de salud personal",
   "onboardingWelcomeFeature1": "Registra tus signos vitales y medidas corporales",
   "onboardingWelcomeFeature2": "Visualiza tu progreso con gráficas y estadísticas",
-  "onboardingWelcomeFeature3": "100% privado, todo se guarda en tu dispositivo",
+  "onboardingWelcomeFeature3": "Respaldo seguro y sincronizado con tu equipo de salud",
+  "welcomeGetStarted": "Comenzar",
+  "welcomeLogIn": "Iniciar sesión",
+  "welcomeAlreadyHaveAccount": "¿Ya tienes cuenta?",
   "onboardingNext": "Siguiente",
-  "onboardingFinish": "¡Empezar!",
+  "onboardingFinish": "Finalizar",
   "onboardingSkip": "Omitir",
   "onboardingStep": "Paso {current} de {total}",
   "@onboardingStep": {

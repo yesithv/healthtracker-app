@@ -34,4 +34,13 @@ class OnboardingProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_onboardingKey, true);
   }
+
+  /// Vuelve al estado sin onboarding (al cerrar sesión / cambiar de paciente),
+  /// para que el siguiente usuario recorra el asistente desde cero.
+  Future<void> reset() async {
+    _isComplete = false;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_onboardingKey);
+  }
 }

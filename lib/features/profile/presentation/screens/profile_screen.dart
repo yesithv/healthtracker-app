@@ -7,9 +7,65 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/providers/user_profile_provider.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/services/image_picker_service.dart';
+import '../../../../core/auth/patient_session.dart';
+import '../../../../core/auth/local_data_reset.dart';
+import '../../../../core/sync/sync_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  /// Pide confirmación, sube lo pendiente (best-effort), CIERRA la sesión y BORRA
+  /// los datos locales del paciente para que el siguiente usuario del dispositivo no
+  /// los vea, y devuelve a la portada de bienvenida.
+  Future<void> _confirmLogout(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final router = GoRouter.of(context);
+    final sync = context.read<SyncService>();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(l10n.logOutConfirmTitle),
+        content: Text(l10n.logOutConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: Color(0xFF64748B)),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(
+              l10n.logOut,
+              style: const TextStyle(
+                color: Color(0xFFEF4444),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    // 1) Best-effort: subir lo pendiente antes de borrar (si hay red).
+    try {
+      await sync.syncNow().timeout(const Duration(seconds: 8));
+    } catch (_) {
+      // Sin red o timeout: se continúa; los no sincronizados se perderán.
+    }
+
+    // 2) Cerrar sesión ANTES de vaciar los repos: así el notify del vaciado no
+    //    re-dispara el auto-sync (que corta cuando no hay sesión).
+    await PatientSession.instance.clear();
+
+    // 3) Borrar los datos locales del paciente.
+    if (context.mounted) await wipeLocalUserData(context);
+
+    router.go('/welcome');
+  }
 
   void _showImageSourceSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -417,7 +473,7 @@ class ProfileScreen extends StatelessWidget {
 
                 // --- LOG OUT BUTTON ---
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => _confirmLogout(context),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),

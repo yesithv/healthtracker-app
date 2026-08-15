@@ -179,13 +179,14 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage>
                   ),
                   const SizedBox(height: 14),
                   _FeatureCard(
-                    icon: Icons.lock_outline,
+                    icon: Icons.cloud_done_outlined,
                     color: const Color(0xFF60A5FA),
                     text: l10n.onboardingWelcomeFeature3,
                     delay: 200,
                   ),
 
-                  const SizedBox(height: 32),
+                  // Espacio para los CTAs fijos de WelcomeScreen (no tapan la última tarjeta).
+                  const SizedBox(height: 140),
                 ],
               ),
             ),

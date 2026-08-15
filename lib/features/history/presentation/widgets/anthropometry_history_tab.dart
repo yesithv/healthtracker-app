@@ -792,53 +792,58 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dateFormat,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF94A3B8),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${record.weight} kg',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E293B),
-                    ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dateFormat,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF94A3B8),
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(width: 8),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${record.weight} kg',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '(${l10n.historyBmiLabel}: ${record.bmi.toStringAsFixed(1)})',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                  ],
+                ),
+                if (record.hasCircumferences) ...[
+                  const SizedBox(height: 4),
                   Text(
-                    '(${l10n.historyBmiLabel}: ${record.bmi.toStringAsFixed(1)})',
+                    _circumferencesLine(record),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 10,
                       color: Color(0xFF64748B),
                     ),
                   ),
                 ],
-              ),
-              if (record.hasCircumferences) ...[
-                const SizedBox(height: 4),
-                Text(
-                  _circumferencesLine(record),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
+          const SizedBox(width: 12),
           BmiStatusBadge(bmi: record.bmi, label: statusLabel),
         ],
       ),

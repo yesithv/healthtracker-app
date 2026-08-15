@@ -17,10 +17,15 @@ class PersonalInfoScreen extends StatefulWidget {
   /// Whether to show the SecondaryAppBar. Defaults to true (Profile mode).
   final bool showAppBar;
 
+  /// When true, the email becomes required (used by the account-creation onboarding,
+  /// where the email is the identifier the account is registered with).
+  final bool requireEmail;
+
   const PersonalInfoScreen({
     super.key,
     this.onNext,
     this.showAppBar = true,
+    this.requireEmail = false,
   });
 
   @override
@@ -44,6 +49,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   bool _nameError = false;
   bool _dateError = false;
   bool _genderError = false;
+  bool _emailError = false;
 
   @override
   void initState() {
@@ -139,15 +145,21 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
     final nameEmpty = _nameController.text.trim().isEmpty;
     final dateEmpty = _selectedDate == null;
     final genderEmpty = _selectedGender.isEmpty;
+    // Email: solo se valida cuando es requerido (onboarding de creación de cuenta).
+    final email = _emailController.text.trim();
+    final emailInvalid = widget.requireEmail &&
+        !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
 
     if (nameEmpty) errors.add(l10n.validationEnterName);
     if (dateEmpty) errors.add(l10n.validationSelectBirthDate);
     if (genderEmpty) errors.add(l10n.validationSelectGender);
+    if (emailInvalid) errors.add(l10n.validationEnterEmail);
 
     setState(() {
       _nameError = nameEmpty;
       _dateError = dateEmpty;
       _genderError = genderEmpty;
+      _emailError = emailInvalid;
     });
 
     return errors;
@@ -265,18 +277,37 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
 
                 const SizedBox(height: 20),
 
-                // --- Email (optional) ---
-                _buildLabel(l10n.emailOptional, required: false),
-                TextFormField(
-                  controller: _emailController,
-                  onChanged: (_) => _saveCurrentState(),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration(
-                    'email@ejemplo.com',
-                    Icons.email_outlined,
-                    const Color(0xFF8B5CF6),
+                // --- Email (required only when creating an account) ---
+                _buildLabel(
+                  widget.requireEmail ? l10n.email : l10n.emailOptional,
+                  required: widget.requireEmail,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: _emailError
+                        ? Border.all(color: const Color(0xFFEF4444), width: 1.5)
+                        : Border.all(color: Colors.transparent),
+                  ),
+                  child: TextFormField(
+                    controller: _emailController,
+                    onChanged: (v) {
+                      if (_emailError && v.trim().isNotEmpty) {
+                        setState(() => _emailError = false);
+                      }
+                      _saveCurrentState();
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: _inputDecoration(
+                      'email@ejemplo.com',
+                      Icons.email_outlined,
+                      const Color(0xFF8B5CF6),
+                      hasError: _emailError,
+                    ),
                   ),
                 ),
+                if (_emailError) _buildInlineError(l10n.validationEnterEmail),
 
                 const SizedBox(height: 20),
 

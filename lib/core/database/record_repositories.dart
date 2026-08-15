@@ -86,6 +86,14 @@ abstract class RecordRepository<T> extends ChangeNotifier {
     return count;
   }
 
+  /// Vacía toda la tabla. Se usa al cerrar sesión / cambiar de paciente para que
+  /// los datos de un usuario no queden visibles ni se suban a la cuenta de otro.
+  Future<void> clearAll() async {
+    final db = await _db;
+    await db.delete(table);
+    await refresh();
+  }
+
   /// The single record matching [id], or null if none.
   Future<T?> getById(String id) async {
     final db = await _db;

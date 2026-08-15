@@ -1,46 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Bienvenida: un ÚNICO CTA protagonista, sin pedirle al usuario que se autoclasifique
-/// (paciente/nuevo/invitado). Al pulsar "Comenzar" se le pide un solo dato (documento o
-/// email) y el backend decide si ya es paciente o es nuevo — el usuario nunca elige categoría.
-/// El modo sin cuenta queda como enlace secundario, sin robar protagonismo al flujo principal.
+import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/features/onboarding/presentation/screens/onboarding_welcome_page.dart';
+
+/// Pantalla de entrada (sin sesión): muestra la reseña de funcionalidades y los dos
+/// caminos:
+///   - "Comenzar" (CTA principal): usuario NUEVO → onboarding de registro.
+///   - "Iniciar sesión" (enlace secundario): usuario que YA es paciente (cuenta o legacy).
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF0D48A0), Color(0xFF1565C0), Color(0xFF0D48A0)],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
-            child: Column(
-              children: [
-                const Spacer(flex: 2),
-                const Icon(Icons.monitor_heart_outlined, size: 76, color: Colors.white),
-                const SizedBox(height: 22),
-                const Text(
-                  'MY VITALS',
-                  style: TextStyle(
-                    color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold, letterSpacing: 6),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Tu salud, en tus manos',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 15, letterSpacing: 1),
-                ),
-                const Spacer(flex: 3),
+    final l10n = AppLocalizations.of(context)!;
 
-                // Único CTA protagonista.
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Reseña de funcionalidades animada, a pantalla completa (gradiente + tarjetas).
+          const Positioned.fill(child: OnboardingWelcomePage()),
+
+          // CTAs fijos abajo sobre el gradiente.
+          Positioned(
+            left: 28,
+            right: 28,
+            bottom: MediaQuery.of(context).padding.bottom + 20,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // CTA principal: usuario nuevo → onboarding de registro.
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -48,31 +37,48 @@ class WelcomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF0D48A0),
                       padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                    onPressed: () => context.go('/identify'),
-                    child: const Text('Comenzar', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                    onPressed: () => context.go('/onboarding?mode=account'),
+                    child: Text(
+                      l10n.welcomeGetStarted,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
 
-                // Escape secundario: sin cuenta (local-first). No compite con el CTA.
+                // Secundario, de menor peso: usuario que ya es paciente.
                 TextButton(
-                  onPressed: () => context.go('/onboarding?mode=offline'),
-                  child: Text(
-                    'Explorar sin cuenta',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
+                  onPressed: () => context.go('/login'),
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 14,
+                      ),
+                      children: [
+                        TextSpan(text: '${l10n.welcomeAlreadyHaveAccount} '),
+                        TextSpan(
+                          text: l10n.welcomeLogIn,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

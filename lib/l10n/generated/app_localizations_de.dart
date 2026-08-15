@@ -54,6 +54,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logOut => 'Abmelden';
 
   @override
+  String get logOutConfirmTitle => 'Abmelden?';
+
+  @override
+  String get logOutConfirmBody =>
+      'Wir laden Ihre ausstehenden Daten hoch und entfernen anschließend Ihre Informationen von diesem Gerät. Bei der nächsten Anmeldung sind sie wieder verfügbar.';
+
+  @override
   String level(int value) {
     return 'Level $value';
   }
@@ -231,6 +238,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get emailOptional => 'E-Mail (Optional)';
+
+  @override
+  String get email => 'E-Mail';
+
+  @override
+  String get validationEnterEmail => 'Gib eine gültige E-Mail ein';
 
   @override
   String get phoneOptional => 'Telefon (Optional)';
@@ -1070,13 +1083,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingWelcomeFeature3 =>
-      '100% privat, alles bleibt auf deinem Gerät';
+      'Sicher gesichert und mit deinem Behandlungsteam synchronisiert';
+
+  @override
+  String get welcomeGetStarted => 'Loslegen';
+
+  @override
+  String get welcomeLogIn => 'Anmelden';
+
+  @override
+  String get welcomeAlreadyHaveAccount => 'Schon ein Konto?';
 
   @override
   String get onboardingNext => 'Weiter';
 
   @override
-  String get onboardingFinish => 'Loslegen!';
+  String get onboardingFinish => 'Fertig';
 
   @override
   String get onboardingSkip => 'Überspringen';

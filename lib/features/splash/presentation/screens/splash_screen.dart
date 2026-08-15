@@ -80,6 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
         onboarding.isComplete && prefs.userName.trim().isNotEmpty;
 
     if (!hasSession && !hasLocalProfile) {
+      // Sin sesión ni perfil local: a la portada (reseña + Comenzar / Iniciar sesión).
       context.go('/welcome');
       return;
     }
