@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provider.dart';
 import 'package:myvitals_healthtracker_app/core/sync/device_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
 
 /// Selector "¿qué báscula de bioimpedancia usas?". Fuente de verdad editable siempre; la
 /// elección se guarda local y se sincroniza a la API, que la usa para interpretar (el semáforo
@@ -68,62 +68,69 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
     return Scaffold(
       backgroundColor: surfaces.canvas,
       appBar: const SecondaryAppBar(),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        children: [
-          // Encabezado común: ícono + título + descripción centrados.
-          SettingsPageHeader(
-            icon: Icons.monitor_heart_outlined,
-            title: l10n.deviceScreenTitle,
-            description: l10n.deviceScreenDescription,
-          ),
-          const SizedBox(height: 32),
-          _headerCard(),
-          const SizedBox(height: 20),
-          if (provider.loadingCatalog)
-            const Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: LinearProgressIndicator(minHeight: 3),
-            ),
-          if (provider.catalogError != null)
-            _noticeBanner(l10n.deviceCatalogError),
+      // Mismo esqueleto que Información personal, Idioma y Unidades: el widget
+      // común aporta el encabezado (ícono centrado + título + descripción) y el
+      // botón «Guardar preferencias», para que el botón sea idéntico en color,
+      // dimensiones y borde en todas las pantallas de la cuenta.
+      body: SingleChildScrollView(
+        child: SettingsPageLayout(
+          icon: Icons.monitor_heart_outlined,
+          title: l10n.deviceScreenTitle,
+          description: l10n.deviceScreenDescription,
+          // La elección ya se guarda y sincroniza al tocar cada opción (igual
+          // que en Idioma y Unidades); el botón sólo confirma y regresa.
+          onConfirm: () => Navigator.pop(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _headerCard(),
+              const SizedBox(height: 20),
+              if (provider.loadingCatalog)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: LinearProgressIndicator(minHeight: 3),
+                ),
+              if (provider.catalogError != null)
+                _noticeBanner(l10n.deviceCatalogError),
 
-          // Opción "ninguna".
-          _deviceTile(
-            title: l10n.deviceNoneTitle,
-            subtitle: l10n.deviceNoneSubtitle,
-            icon: Icons.block,
-            selected: provider.usesNoDevice,
-            onTap: _selectNone,
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 8, top: 8),
-            child: Text(
-              l10n.deviceAvailableScales,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: surfaces.inkMuted,
-                letterSpacing: 0.8,
+              // Opción "ninguna".
+              _deviceTile(
+                title: l10n.deviceNoneTitle,
+                subtitle: l10n.deviceNoneSubtitle,
+                icon: Icons.block,
+                selected: provider.usesNoDevice,
+                onTap: _selectNone,
               ),
-            ),
-          ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.only(left: 4, bottom: 8, top: 8),
+                child: Text(
+                  l10n.deviceAvailableScales,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: surfaces.inkMuted,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
 
-          // Catálogo.
-          ...provider.catalog.map(
-            (d) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _deviceTile(
-                title: d.name,
-                subtitle: '${d.brand} · ${d.model}',
-                icon: Icons.monitor_heart_outlined,
-                selected: provider.selectedCode == d.code,
-                onTap: () => _select(d),
+              // Catálogo.
+              ...provider.catalog.map(
+                (d) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _deviceTile(
+                    title: d.name,
+                    subtitle: '${d.brand} · ${d.model}',
+                    icon: Icons.monitor_heart_outlined,
+                    selected: provider.selectedCode == d.code,
+                    onTap: () => _select(d),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
