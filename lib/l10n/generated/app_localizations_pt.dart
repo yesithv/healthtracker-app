@@ -1117,7 +1117,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingWelcomeFeature3 =>
-      '100% privado, tudo fica no seu dispositivo';
+      'Sincronize seu histórico com segurança nos seus dispositivos';
 
   @override
   String get onboardingNext => 'Próximo';
