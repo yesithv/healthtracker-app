@@ -61,10 +61,15 @@ class AnthropometricHistoryCard extends StatelessWidget {
     }
 
     final latestRecord = list.first;
+    final previousRecord = list.length > 1 ? list[1] : null;
 
     Widget bmiCard = CompositionIndicatorCard(
       bmi: latestRecord.bmi,
       status: BmiCategory.of(latestRecord.bmi).label(l10n),
+      bmiPrevious: previousRecord?.bmi,
+      weight: latestRecord.weight,
+      bmiSpark: [for (final r in list.reversed) r.bmi],
+      seriesColor: family.accent,
     );
 
     if (goals.targetWeight != null) {

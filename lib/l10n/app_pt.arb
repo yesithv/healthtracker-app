@@ -401,6 +401,7 @@
   "dashboardCompositionMuscle": "MÚSCULO",
   "dashboardCompositionVisceral": "VISCERAL",
   "dashboardCompositionBmr": "TMB",
+  "dashboardLastMeasured": "Última medição",
   "dashboardCompositionLevel": "Nv. {level}",
   "vitalsPdfTitle": "Histórico de Sinais Vitais",
   "vitalsShareCsvSubject": "Exportação CSV de Sinais Vitais",

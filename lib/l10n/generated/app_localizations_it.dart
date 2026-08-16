@@ -1240,6 +1240,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardCompositionBmr => 'MB';
 
   @override
+  String get dashboardLastMeasured => 'Ultima misurazione';
+
+  @override
   String dashboardCompositionLevel(int level) {
     return 'Liv. $level';
   }

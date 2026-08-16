@@ -1239,6 +1239,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashboardCompositionBmr => 'TMB';
 
   @override
+  String get dashboardLastMeasured => 'Última medição';
+
+  @override
   String dashboardCompositionLevel(int level) {
     return 'Nv. $level';
   }

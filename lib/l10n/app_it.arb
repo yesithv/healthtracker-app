@@ -418,6 +418,7 @@
   "dashboardCompositionMuscle": "MUSCOLO",
   "dashboardCompositionVisceral": "VISCERALE",
   "dashboardCompositionBmr": "MB",
+  "dashboardLastMeasured": "Ultima misurazione",
   "dashboardCompositionLevel": "Liv. {level}",
   "vitalsPdfTitle": "Storico dei Segni Vitali",
   "vitalsShareCsvSubject": "Esportazione CSV dei Segni Vitali",

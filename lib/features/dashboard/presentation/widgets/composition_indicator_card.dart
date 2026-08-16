@@ -4,6 +4,8 @@ import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dashed_border_container.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'metric_delta.dart';
+import 'metric_sparkline.dart';
 
 /// Escala de IMC con marcador de posición.
 ///
@@ -11,14 +13,35 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 /// alto), no un degradado escrito a mano, y el color del marcador sale del
 /// clasificador. Así degradado, marcador e insignia no pueden contradecirse:
 /// los tres beben de la misma paleta clínica y de los mismos umbrales.
+///
+/// Encima de la escala se muestra el IMC vigente como cifra protagonista (en el
+/// color de su estado, igual que el marcador), el peso de la última medición y
+/// —a la derecha— la variación respecto a la lectura previa sobre una
+/// mini‑gráfica de tendencia del IMC.
 class CompositionIndicatorCard extends StatelessWidget {
   final double bmi;
   final String status;
+
+  /// IMC de la medición anterior, para el delta. `null` la primera vez.
+  final double? bmiPrevious;
+
+  /// Peso de la última medición y su unidad, para la línea de contexto.
+  final double? weight;
+  final String weightUnit;
+
+  /// Serie cronológica de IMC para la sparkline (acento [seriesColor]).
+  final List<double> bmiSpark;
+  final Color? seriesColor;
 
   const CompositionIndicatorCard({
     super.key,
     required this.bmi,
     required this.status,
+    this.bmiPrevious,
+    this.weight,
+    this.weightUnit = 'kg',
+    this.bmiSpark = const [],
+    this.seriesColor,
   });
 
   /// Extremos de la escala visible. Fuera de ellos el marcador se ancla al
@@ -58,6 +81,51 @@ class CompositionIndicatorCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 BmiStatusBadge(bmi: bmi, label: status),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            bmi.toStringAsFixed(1),
+                            style: theme.type.numeral.copyWith(color: knobColor),
+                          ),
+                          const SizedBox(width: 8),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: MetricDelta(
+                              current: bmi,
+                              previous: bmiPrevious,
+                              decimals: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (weight != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          '${l10n.weightLabel} · '
+                          '${weight!.toStringAsFixed(1)} $weightUnit',
+                          style: theme.type.meta,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                MetricSparkline(
+                  values: bmiSpark,
+                  color: seriesColor ?? surfaces.brand,
+                ),
               ],
             ),
             const SizedBox(height: 24),
