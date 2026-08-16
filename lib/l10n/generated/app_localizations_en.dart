@@ -443,6 +443,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heartRateTitle => 'HEART RATE (BPM)';
 
   @override
+  String get vitalMetricBpShort => 'Blood Pressure';
+
+  @override
+  String get vitalMetricHrShort => 'Heart Rate';
+
+  @override
+  String get heartRateSeriesLabel => 'Heart Rate';
+
+  @override
   String get contextAndSymptoms => 'CONTEXT & SYMPTOMS';
 
   @override
