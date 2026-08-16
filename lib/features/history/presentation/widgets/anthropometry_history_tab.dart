@@ -18,6 +18,9 @@ import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/metric_chip_bar.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/metric_highlight_banner.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/period_filter_dropdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -103,7 +106,7 @@ class AnthropometryHistoryTab extends StatefulWidget {
 }
 
 class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
-  String _selectedFilter = 'all';
+  HistoryPeriod _selectedPeriod = HistoryPeriod.allTime;
   AnthroMetric _selectedMetric = AnthroMetric.bmi;
 
   static const int _pageSize = 15;
@@ -231,21 +234,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
 
     final recordsListTemp = repo.items;
 
-    final now = DateTime.now();
-    List<AnthropometricRecord> filteredRecords = recordsListTemp;
-    if (_selectedFilter == '7days') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 7)
-          .toList();
-    } else if (_selectedFilter == '30days') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 30)
-          .toList();
-    } else if (_selectedFilter == '6months') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 180)
-          .toList();
-    }
+    final filteredRecords = _selectedPeriod
+        .filter<AnthropometricRecord>(recordsListTemp, (r) => r.date)
+        .toList();
 
     if (filteredRecords.isEmpty) {
       return Center(
@@ -292,68 +283,44 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       }
     }
 
-    String filterLabel = l10n.filterAllTime;
-    if (_selectedFilter == '7days') filterLabel = l10n.filterLast7Days;
-    if (_selectedFilter == '30days') filterLabel = l10n.filterLast30Days;
-    if (_selectedFilter == '6months') filterLabel = l10n.filterLast6Months;
+    final String filterLabel = _selectedPeriod.label(l10n);
 
     return ListView(
       padding: const EdgeInsets.all(20.0),
       children: [
-        // Good Job Banner
-        _buildGoodJobBanner(l10n, bannerSubtitle),
+        // Mensaje superior: «vas bien» va en el tono ÓPTIMO, no en el de la
+        // familia, porque afirma algo sobre la salud del usuario.
+        MetricHighlightBanner(
+          tone: _theme.clinical.optimal,
+          icon: Icons.check_circle_outline,
+          title: l10n.historyGoodJob,
+          subtitle: bannerSubtitle,
+        ),
         const SizedBox(height: 16),
 
-        // Filter Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            DropdownButton<String>(
-              value: _selectedFilter,
-              icon: Icon(
-                Icons.filter_list,
-                size: 18,
-                color: surfaces.inkSecondary,
-              ),
-              underline: const SizedBox(),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              borderRadius: BorderRadius.circular(surfaces.radiusControl),
-              dropdownColor: surfaces.card,
-              style: _theme.type.button.copyWith(
-                fontSize: 13,
-                color: surfaces.inkSecondary,
-              ),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    _selectedFilter = newValue;
-                    _visibleCount = _pageSize;
-                  });
-                }
-              },
-              items: [
-                DropdownMenuItem(
-                  value: '7days',
-                  child: Text(l10n.filterLast7Days),
-                ),
-                DropdownMenuItem(
-                  value: '30days',
-                  child: Text(l10n.filterLast30Days),
-                ),
-                DropdownMenuItem(
-                  value: '6months',
-                  child: Text(l10n.filterLast6Months),
-                ),
-                DropdownMenuItem(value: 'all', child: Text(l10n.filterAllTime)),
-              ],
-            ),
-          ],
+        // Filtro de periodo de la gráfica.
+        PeriodFilterDropdown(
+          value: _selectedPeriod,
+          onChanged: (p) => setState(() {
+            _selectedPeriod = p;
+            _visibleCount = _pageSize;
+          }),
         ),
-        const SizedBox(height: 8),
-
-        // Metric selector (BMI / WHtR / WHR / perímetros)
-        _buildMetricSelector(l10n),
         const SizedBox(height: 12),
+
+        // Selector de métrica (IMC / índices / perímetros) que reparte la
+        // gráfica entre varias series.
+        MetricChipBar<AnthroMetric>(
+          items: [
+            for (final m in _metricOrder)
+              // El sexo solo afecta al corte del ICC, no a la etiqueta del chip.
+              MetricChip(value: m, label: _metricSpec(m, l10n, '').chipLabel),
+          ],
+          selected: _selectedMetric,
+          onSelected: (m) => setState(() => _selectedMetric = m),
+          family: _family,
+        ),
+        const SizedBox(height: 16),
 
         // Graph Container
         _buildChartContainer(
@@ -434,99 +401,6 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
           l10n.historyShowMore(remaining),
           style: _theme.type.button.copyWith(color: surfaces.brand),
         ),
-      ),
-    );
-  }
-
-  Widget _buildGoodJobBanner(AppLocalizations l10n, String text) {
-    final theme = _theme;
-    final ok = theme.clinical.optimal;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        // Cuatro verdes a mano —fondo, filete, círculo y texto— que eran otro
-        // verde distinto del de la paleta. Es un mensaje de que vas bien: eso
-        // es ÓPTIMO, y el tono trae fondo y color de texto ya emparejados.
-        color: ok.surface,
-        borderRadius: BorderRadius.circular(theme.surfaces.radiusCard),
-        border: Border.all(color: ok.accent.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: ok.accent.withValues(alpha: 0.15),
-            radius: 16,
-            child: Icon(Icons.check_circle_outline, color: ok.accent, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.historyGoodJob,
-                  style: theme.type.cardTitle.copyWith(
-                    fontSize: 16,
-                    color: ok.accent,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: theme.type.body.copyWith(
-                    fontSize: 13,
-                    color: ok.accent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Fila de píldoras para elegir qué métrica dibuja la gráfica: los índices
-  /// clínicos (IMC/ICA/ICC) y luego cada perímetro. Desplazable en horizontal.
-  Widget _buildMetricSelector(AppLocalizations l10n) {
-    final surfaces = _theme.surfaces;
-    final family = _family;
-    return SizedBox(
-      height: 34,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _metricOrder.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, i) {
-          final m = _metricOrder[i];
-          // El sexo solo afecta al corte del ICC, no a la etiqueta del chip.
-          final label = _metricSpec(m, l10n, '').chipLabel;
-          final selected = m == _selectedMetric;
-          return GestureDetector(
-            onTap: () => setState(() => _selectedMetric = m),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: selected ? family.accent : surfaces.inset,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: selected ? family.accent : surfaces.divider,
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                label,
-                style: _theme.type.button.copyWith(
-                  fontSize: 12,
-                  color: selected ? family.onAccent : surfaces.inkSecondary,
-                ),
-              ),
-            ),
-          );
-        },
       ),
     );
   }

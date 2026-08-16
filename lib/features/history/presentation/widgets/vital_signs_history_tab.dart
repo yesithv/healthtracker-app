@@ -8,6 +8,8 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart
 import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/metric_highlight_banner.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/period_filter_dropdown.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
@@ -32,7 +34,7 @@ class VitalSignsHistoryTab extends StatefulWidget {
 }
 
 class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
-  String _selectedFilter = 'all';
+  HistoryPeriod _selectedPeriod = HistoryPeriod.allTime;
 
   static const int _pageSize = 15;
   int _visibleCount = _pageSize;
@@ -55,21 +57,9 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
 
     final recordsListTemp = repo.items;
 
-    final now = DateTime.now();
-    List<VitalSignRecord> filteredRecords = recordsListTemp;
-    if (_selectedFilter == '7days') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 7)
-          .toList();
-    } else if (_selectedFilter == '30days') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 30)
-          .toList();
-    } else if (_selectedFilter == '6months') {
-      filteredRecords = recordsListTemp
-          .where((r) => now.difference(r.date).inDays <= 180)
-          .toList();
-    }
+    final filteredRecords = _selectedPeriod
+        .filter<VitalSignRecord>(recordsListTemp, (r) => r.date)
+        .toList();
 
     if (filteredRecords.isEmpty) {
       return Center(
@@ -105,61 +95,28 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
 
     String bannerSubtitle = l10n.historyGoalProgress;
 
-    String filterLabel = l10n.filterAllTime;
-    if (_selectedFilter == '7days') filterLabel = l10n.filterLast7Days;
-    if (_selectedFilter == '30days') filterLabel = l10n.filterLast30Days;
-    if (_selectedFilter == '6months') filterLabel = l10n.filterLast6Months;
+    final String filterLabel = _selectedPeriod.label(l10n);
 
     return ListView(
       padding: const EdgeInsets.all(20.0),
       children: [
-        _buildGoodJobBanner(l10n, bannerSubtitle),
+        // Mensaje superior: encabeza el indicador con el color de su FAMILIA;
+        // no afirma nada sobre la salud, solo dice de qué habla el panel.
+        MetricHighlightBanner(
+          tone: _family,
+          icon: Icons.favorite,
+          title: l10n.historyGoodJob,
+          subtitle: bannerSubtitle,
+        ),
         const SizedBox(height: 16),
 
-        // Filter Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            DropdownButton<String>(
-              value: _selectedFilter,
-              icon: Icon(
-                Icons.filter_list,
-                size: 18,
-                color: surfaces.inkSecondary,
-              ),
-              underline: const SizedBox(),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              borderRadius: BorderRadius.circular(surfaces.radiusControl),
-              dropdownColor: surfaces.card,
-              style: _theme.type.button.copyWith(
-                fontSize: 13,
-                color: surfaces.inkSecondary,
-              ),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    _selectedFilter = newValue;
-                    _visibleCount = _pageSize;
-                  });
-                }
-              },
-              items: [
-                DropdownMenuItem(
-                  value: '7days',
-                  child: Text(l10n.filterLast7Days),
-                ),
-                DropdownMenuItem(
-                  value: '30days',
-                  child: Text(l10n.filterLast30Days),
-                ),
-                DropdownMenuItem(
-                  value: '6months',
-                  child: Text(l10n.filterLast6Months),
-                ),
-                DropdownMenuItem(value: 'all', child: Text(l10n.filterAllTime)),
-              ],
-            ),
-          ],
+        // Filtro de periodo de la gráfica.
+        PeriodFilterDropdown(
+          value: _selectedPeriod,
+          onChanged: (p) => setState(() {
+            _selectedPeriod = p;
+            _visibleCount = _pageSize;
+          }),
         ),
         const SizedBox(height: 8),
 
@@ -232,55 +189,6 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           l10n.historyShowMore(remaining),
           style: _theme.type.button.copyWith(color: surfaces.brand),
         ),
-      ),
-    );
-  }
-
-  Widget _buildGoodJobBanner(AppLocalizations l10n, String text) {
-    final theme = _theme;
-    // El aviso va del color de la FAMILIA, no de la paleta clínica: no
-    // afirma nada sobre la salud del usuario, solo dice de qué indicador
-    // habla. Eran cinco tonos a mano; ahora salen los tres del mismo tono.
-    final family = _family;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: family.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: family.accent.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: family.accent.withValues(alpha: 0.15),
-            radius: 16,
-            child: Icon(Icons.favorite, color: family.accent, size: 18),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.historyGoodJob,
-                  style: theme.type.cardTitle.copyWith(
-                    fontSize: 16,
-                    color: family.accent,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: theme.type.body.copyWith(
-                    fontSize: 13,
-                    color: family.accent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
