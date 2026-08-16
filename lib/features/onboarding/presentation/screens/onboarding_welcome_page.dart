@@ -86,40 +86,9 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
 
-                  // --- ECG MONITOR ---
-                  Container(
-                    width: 220,
-                    height: 130,
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF020617),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 2,
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: AnimatedBuilder(
-                        animation: _ecgController,
-                        builder: (context, _) {
-                          return CustomPaint(
-                            painter: _EcgPainter(
-                              progress: _ecgController.value,
-                              color: const Color(0xFF22C55E),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // --- APP TITLE ---
+                  // --- APP TITLE (encima del logo) ---
                   Text(
                     'MY VITALS',
                     style: TextStyle(
@@ -138,7 +107,40 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage>
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const SizedBox(height: 12),
+
+                  const SizedBox(height: 24),
+
+                  // --- ECG MONITOR (reducido) ---
+                  Container(
+                    width: 170,
+                    height: 100,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF020617),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: AnimatedBuilder(
+                        animation: _ecgController,
+                        builder: (context, _) {
+                          return CustomPaint(
+                            painter: _EcgPainter(
+                              progress: _ecgController.value,
+                              color: const Color(0xFF22C55E),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
                   Text(
                     l10n.onboardingWelcomeSubtitle,
                     textAlign: TextAlign.center,
@@ -150,7 +152,7 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage>
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 28),
 
                   // --- FEATURE CARDS ---
                   _FeatureCard(
@@ -159,16 +161,16 @@ class _OnboardingWelcomePageState extends State<OnboardingWelcomePage>
                     text: l10n.onboardingWelcomeFeature1,
                     delay: 0,
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   _FeatureCard(
                     icon: Icons.show_chart_rounded,
                     color: const Color(0xFF22C55E),
                     text: l10n.onboardingWelcomeFeature2,
                     delay: 100,
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   _FeatureCard(
-                    icon: Icons.cloud_done_outlined,
+                    icon: Icons.cloud_sync_outlined,
                     color: const Color(0xFF60A5FA),
                     text: l10n.onboardingWelcomeFeature3,
                     delay: 200,
@@ -233,7 +235,7 @@ class _FeatureCardState extends State<_FeatureCard>
     return ScaleTransition(
       scale: _anim,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(18),
