@@ -9,16 +9,18 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart
 import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/status_chip.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/metric_chip_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/metric_highlight_banner.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/period_filter_dropdown.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/trend_chart_card.dart';
+import 'package:myvitals_healthtracker_app/core/charts/trend_line_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
 import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/action_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/body_composition_record.dart';
+import 'package:myvitals_healthtracker_app/features/history/presentation/widgets/metric_history_scaffold.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -27,6 +29,55 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
+/// Las series del análisis de composición corporal que la gráfica del historial
+/// puede dibujar. Cada una es una serie única con su propia unidad; la báscula de
+/// bioimpedancia guarda todas, pero hasta ahora solo se pintaba el % de grasa.
+enum CompMetric {
+  bodyFat,
+  muscle,
+  visceral,
+  metabolicAge,
+  bodyWater,
+  boneMass,
+  bmr,
+}
+
+/// Configuración de una serie de composición: de dónde sale el valor, el título
+/// de la tarjeta (con su unidad), cuántos decimales rotula el eje y —si existe—
+/// el código de referencia del servidor para pintar las zonas de fondo.
+///
+/// A diferencia de lípidos, aquí NO se dibujan cortes fijos: la interpretación de
+/// la composición depende de sexo/edad/dispositivo y la da el servidor
+/// ([bandRangeAnnotations]). Sin bandas aplicables → línea limpia, sin inventar
+/// nada en el cliente.
+class _CompSeriesSpec {
+  const _CompSeriesSpec({
+    required this.value,
+    required this.title,
+    this.yDecimals = 0,
+    this.bandCode,
+  });
+
+  /// Lee el valor de la serie del registro (null si esa toma no lo trae).
+  final double? Function(BodyCompositionRecord) value;
+
+  /// Título de la tarjeta de la gráfica (ya localizado; se muestra en mayúsculas).
+  final String title;
+
+  /// Decimales del eje izquierdo (0 para niveles/edad/kcal, 1 para %/masa, 2 masa ósea).
+  final int yDecimals;
+
+  /// Código de indicador del servidor para las zonas de referencia; null si esa
+  /// serie no tiene bandas (p. ej. la edad metabólica).
+  final String? bandCode;
+}
+
+/// Historial de composición corporal. La estructura común (mensaje superior,
+/// filtro, chips que reparten la gráfica entre series, la gráfica, export y la
+/// lista con borrado/edición y paginación) la aporta [MetricHistoryScaffold];
+/// aquí solo vive lo específico de composición: las gráficas —una por medida que
+/// hasta ahora se guardaba pero no se pintaba—, la tarjeta de medición y los
+/// export.
 class BodyCompositionHistoryTab extends StatefulWidget {
   const BodyCompositionHistoryTab({super.key});
 
@@ -36,373 +87,262 @@ class BodyCompositionHistoryTab extends StatefulWidget {
 }
 
 class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
-  HistoryPeriod _selectedPeriod = HistoryPeriod.allTime;
-
-  static const int _pageSize = 15;
-  int _visibleCount = _pageSize;
-
-  // ── Tokens ────────────────────────────────────────────────────────────────
-
   ThemeData get _theme => Theme.of(context);
 
   /// Identidad de la familia «composición corporal»: el matiz no cambia con el tema.
   Tone get _family => _theme.metrics.tone(MetricFamily.bodyComposition);
 
+  /// Configuración de cada serie. Se construye por `build` porque los rótulos
+  /// dependen de la localización.
+  Map<CompMetric, _CompSeriesSpec> _specs(AppLocalizations l10n) => {
+    CompMetric.bodyFat: _CompSeriesSpec(
+      value: (r) => r.bodyFatPercent,
+      title: l10n.compositionBodyFat,
+      yDecimals: 1,
+      bandCode: 'BODY_FAT',
+    ),
+    CompMetric.muscle: _CompSeriesSpec(
+      value: (r) => r.musclePct,
+      title: '${l10n.compositionSkeletalMuscle} (%)',
+      yDecimals: 1,
+      bandCode: 'MUSCLE_PCT',
+    ),
+    CompMetric.visceral: _CompSeriesSpec(
+      value: (r) => r.visceralFatLevel?.toDouble(),
+      title: l10n.compositionVisceralFat,
+      bandCode: 'VISCERAL_FAT',
+    ),
+    CompMetric.metabolicAge: _CompSeriesSpec(
+      value: (r) => r.metabolicAge?.toDouble(),
+      title: l10n.compositionMetabolicAge,
+    ),
+    CompMetric.bodyWater: _CompSeriesSpec(
+      value: (r) => r.bodyWaterPercent,
+      title: '${l10n.compositionBodyWater} (%)',
+      yDecimals: 1,
+      bandCode: 'BODY_WATER',
+    ),
+    CompMetric.boneMass: _CompSeriesSpec(
+      value: (r) => r.boneMassKg,
+      title: '${l10n.compositionBoneMass} (kg)',
+      yDecimals: 2,
+      bandCode: 'BONE_MASS',
+    ),
+    CompMetric.bmr: _CompSeriesSpec(
+      value: (r) => r.bmrKcal?.toDouble(),
+      title: l10n.compositionBmr,
+      bandCode: 'BMR',
+    ),
+  };
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final repo = context.watch<BodyCompositionRepository>();
-    if (!repo.isLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    final surfaces = _theme.surfaces;
+    final specs = _specs(l10n);
 
-    final recordsListTemp = repo.items;
-
-    final filteredRecords = _selectedPeriod
-        .filter<BodyCompositionRecord>(recordsListTemp, (r) => r.date)
-        .toList();
-
-    if (filteredRecords.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.accessibility_new, size: 60, color: surfaces.inkMuted),
-              const SizedBox(height: 16),
-              Text(
-                l10n.noDataYet,
-                textAlign: TextAlign.center,
-                style: _theme.type.body.copyWith(fontSize: 16),
-              ),
-              const SizedBox(height: 24),
-              ActionButton(
-                text: l10n.completeBodyProfile,
-                color: _family.accent,
-                solid: true,
-                onPressed: () => context.push('/record-body-composition'),
-              ),
-            ],
-          ),
+    return MetricHistoryScaffold<BodyCompositionRecord, CompMetric>(
+      isLoaded: repo.isLoaded,
+      records: repo.items,
+      dateOf: (r) => r.date,
+      idOf: (r) => r.id,
+      family: _family,
+      initialMetric: CompMetric.bodyFat,
+      // Chips con rótulos cortos: la barra desplaza en horizontal, así que caben
+      // las siete series sin desbordar. El nombre largo va en el título de la
+      // gráfica, que el andamiaje recorta con «…».
+      metricChips: [
+        MetricChip(
+          value: CompMetric.bodyFat,
+          label: l10n.dashboardCompositionFat,
         ),
-      );
-    }
-
-    final recordsList = List<BodyCompositionRecord>.from(filteredRecords)
-      ..sort((a, b) => a.date.compareTo(b.date));
-
-    final reversedRecords = recordsList.reversed.toList();
-
-    String bannerSubtitle = l10n.historyGoalProgress;
-
-    final String filterLabel = _selectedPeriod.label(l10n);
-
-    return ListView(
-      padding: const EdgeInsets.all(20.0),
-      children: [
-        // Mensaje superior: encabeza el indicador con el color de su FAMILIA.
-        MetricHighlightBanner(
-          tone: _family,
-          icon: Icons.accessibility_new,
-          title: l10n.historyGoodJob,
-          subtitle: bannerSubtitle,
+        MetricChip(
+          value: CompMetric.muscle,
+          label: l10n.dashboardCompositionMuscle,
         ),
-        const SizedBox(height: 16),
-
-        // Filtro de periodo de la gráfica.
-        PeriodFilterDropdown(
-          value: _selectedPeriod,
-          onChanged: (p) => setState(() {
-            _selectedPeriod = p;
-            _visibleCount = _pageSize;
-          }),
+        MetricChip(
+          value: CompMetric.visceral,
+          label: l10n.dashboardCompositionVisceral,
         ),
-        const SizedBox(height: 8),
-
-        _buildChartContainer(l10n, recordsList, filterLabel),
-        const SizedBox(height: 24),
-
-        Row(
-          children: [
-            Expanded(
-              child: _buildExportButton(
-                Icons.picture_as_pdf,
-                l10n.historyExportPdf,
-                Colors.red[600]!,
-                () => _exportPdf(reversedRecords, l10n),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildExportButton(
-                Icons.table_chart,
-                l10n.historyExportCsv,
-                Colors.green[700]!,
-                () => _exportCsv(reversedRecords, l10n),
-              ),
-            ),
-          ],
+        MetricChip(
+          value: CompMetric.metabolicAge,
+          label: l10n.exportColMetabolicAge,
         ),
-        const SizedBox(height: 32),
-
-        Text(
-          l10n.historyMeasurements,
-          style: _theme.type.sectionLabel.copyWith(
-            color: surfaces.inkSecondary,
-          ),
+        MetricChip(
+          value: CompMetric.bodyWater,
+          label: l10n.exportColBodyWater,
         ),
-        const SizedBox(height: 16),
-        ...reversedRecords
-            .take(_visibleCount)
-            .map(
-              (r) => Dismissible(
-                key: ValueKey(r.id),
-                direction: DismissDirection.endToStart,
-                background: _deleteSwipeBackground(),
-                confirmDismiss: (_) => _confirmDelete(l10n, r.id),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () =>
-                      context.push('/record-body-composition', extra: r),
-                  child: _buildHistoryItem(r, l10n),
-                ),
-              ),
-            ),
-        if (reversedRecords.length > _visibleCount)
-          _buildShowMoreButton(reversedRecords.length, l10n),
-        const SizedBox(height: 40),
+        MetricChip(
+          value: CompMetric.boneMass,
+          label: l10n.exportColBoneMass,
+        ),
+        MetricChip(value: CompMetric.bmr, label: l10n.dashboardCompositionBmr),
       ],
-    );
-  }
-
-  /// "Show N more" button that reveals the next page of history items. The full
-  /// list stays in memory for charts/filters/export; this only caps how many
-  /// item widgets are built at once.
-  Widget _buildShowMoreButton(int total, AppLocalizations l10n) {
-    final remaining = total - _visibleCount;
-    final surfaces = _theme.surfaces;
-    return Center(
-      child: TextButton.icon(
-        onPressed: () => setState(() => _visibleCount += _pageSize),
-        icon: Icon(Icons.expand_more, size: 18, color: surfaces.brand),
-        label: Text(
-          l10n.historyShowMore(remaining),
-          style: _theme.type.button.copyWith(color: surfaces.brand),
-        ),
+      // Mensaje superior: encabeza el indicador con el color de su FAMILIA; no
+      // afirma nada sobre la salud, solo dice de qué habla el panel.
+      bannerBuilder: (_) => MetricHighlightBanner(
+        tone: _family,
+        icon: Icons.accessibility_new,
+        title: l10n.historyGoodJob,
+        subtitle: l10n.historyGoalProgress,
       ),
+      chartBuilder: (metric, ascending, filterLabel) =>
+          _buildChart(l10n, specs[metric]!, ascending, filterLabel),
+      itemBuilder: (r) => _buildHistoryItem(r, l10n),
+      onEdit: (r) => context.push('/record-body-composition', extra: r),
+      onDelete: (id) => BodyCompositionRepository.instance.delete(id),
+      onExportPdf: (records) => _exportPdf(records, l10n),
+      onExportCsv: (records) => _exportCsv(records, l10n),
+      emptyIcon: Icons.accessibility_new,
+      emptyText: l10n.noDataYet,
+      emptyActionLabel: l10n.completeBodyProfile,
+      onEmptyAction: () => context.push('/record-body-composition'),
     );
   }
 
-  Widget _buildChartContainer(
+  /// Gráfica de una serie de composición: una línea del color de la familia y,
+  /// si el servidor trae bandas para esa medida (dispositivo/sexo/edad del
+  /// paciente), sus zonas de referencia de fondo. Solo se trazan las tomas que
+  /// traen esa serie (cada medida es opcional), así que si la serie elegida no se
+  /// midió nunca la tarjeta se oculta y la lista de abajo sigue visible.
+  Widget _buildChart(
     AppLocalizations l10n,
+    _CompSeriesSpec spec,
     List<BodyCompositionRecord> records,
     String filterLabel,
   ) {
-    final surfaces = _theme.surfaces;
     final family = _family;
-    // We only plot records that have Body Fat
-    final validRecords = records
-        .where((r) => r.bodyFatPercent != null)
-        .toList();
-    if (validRecords.isEmpty) return const SizedBox.shrink();
+    final valid = records.where((r) => spec.value(r) != null).toList();
+    if (valid.isEmpty) return const SizedBox.shrink();
 
-    // Muestreo uniforme de toda la serie filtrada (conserva primero y último), en
-    // vez del viejo `sublist(length - 6)` que ignoraba el filtro.
-    final recentRecords = downsample(validRecords);
-    final axisFmt = axisDateFormat(
-      recentRecords.first.date,
-      recentRecords.last.date,
-    );
-    final labelStep = axisLabelStep(recentRecords.length);
-    final List<FlSpot> spotsFat = [];
-    double minV = recentRecords.first.bodyFatPercent!;
-    double maxV = recentRecords.first.bodyFatPercent!;
+    // Muestreo uniforme de TODA la lista filtrada (conserva primero y último).
+    final recent = downsample(valid);
+    final axisFmt = axisDateFormat(recent.first.date, recent.last.date);
+    final labelStep = axisLabelStep(recent.length);
 
-    for (int i = 0; i < recentRecords.length; i++) {
-      double v = recentRecords[i].bodyFatPercent!;
-      spotsFat.add(FlSpot(i.toDouble(), v));
+    final List<FlSpot> spots = [];
+    double minV = spec.value(recent.first)!;
+    double maxV = minV;
+    for (int i = 0; i < recent.length; i++) {
+      final v = spec.value(recent[i])!;
+      spots.add(FlSpot(i.toDouble(), v));
       if (v < minV) minV = v;
       if (v > maxV) maxV = v;
     }
 
-    double minDisplay = math.min(minV - 5, 0.0);
-    double maxDisplay = math.max(maxV + 5, 40.0);
+    // Aire alrededor de la serie; si el rango es plano, un mínimo relativo.
+    final double span = (maxV - minV).abs();
+    final double pad = span == 0 ? (maxV.abs() * 0.1 + 1) : span * 0.2;
+    double minDisplay = minV - pad;
+    double maxDisplay = maxV + pad;
+    // Los indicadores de composición no toman valores negativos.
+    if (minV >= 0 && minDisplay < 0) minDisplay = 0;
+    final double leftInterval = math.max(
+      spec.yDecimals >= 2 ? 0.5 : 1.0,
+      (maxDisplay - minDisplay) / 4,
+    );
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: surfaces.cardDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    // Zonas del SERVIDOR recortadas al dominio visible; vacío si no hay bandas
+    // aplicables (o si la serie no tiene código de referencia).
+    final RangeAnnotations zones = spec.bandCode == null
+        ? const RangeAnnotations()
+        : bandRangeAnnotations(
+            spec.bandCode!,
+            palette: _theme.clinical,
+            minY: minDisplay,
+            maxY: maxDisplay,
+          );
+    final bool hasZones = zones.horizontalRangeAnnotations.isNotEmpty;
+
+    final dates = [for (final r in recent) r.date];
+
+    return TrendChartCard(
+      title: spec.title.toUpperCase(),
+      filterLabel: filterLabel,
+      chart: LineChart(
+        LineChartData(
+          minY: minDisplay,
+          maxY: maxDisplay,
+          rangeAnnotations: zones,
+          gridData: trendGridData(_theme),
+          titlesData: trendAxisTitles(
+            _theme,
+            dates: dates,
+            fmt: axisFmt,
+            labelStep: labelStep,
+            leftInterval: leftInterval,
+            yDecimals: spec.yDecimals,
+          ),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            // La serie va en el acento de SU familia (composición): una serie no
+            // está «bien» ni «mal»; su color sale de la identidad del indicador,
+            // no de la paleta clínica. El juicio lo dan las zonas del servidor.
+            trendLineBar(
+              _theme,
+              spots,
+              family.accent,
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  colors: [
+                    family.accent.withValues(alpha: 0.1),
+                    family.accent.withValues(alpha: 0.0),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      legend: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
             children: [
+              Container(width: 12, height: 2, color: family.accent),
+              const SizedBox(width: 4),
               Text(
-                l10n.compositionBodyFat.toUpperCase(),
-                style: _theme.type.sectionLabel.copyWith(
-                  fontSize: 11,
-                  color: surfaces.inkSecondary,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: surfaces.inset,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  filterLabel,
-                  style: _theme.type.badge.copyWith(
-                    fontSize: 10,
-                    color: surfaces.inkSecondary,
-                  ),
-                ),
+                spec.title,
+                style: _theme.type.meta.copyWith(fontSize: 10),
               ),
             ],
           ),
-          const SizedBox(height: 32),
-          SizedBox(
-            height: 180,
-            child: LineChart(
-              LineChartData(
-                minY: minDisplay,
-                maxY: maxDisplay,
-                // Zonas de referencia del paciente (su báscula/sexo/edad, desde el
-                // servidor): la gráfica se pinta como el CRM la ve en "Vista del paciente".
-                rangeAnnotations: bandRangeAnnotations(
-                  'BODY_FAT',
-                  palette: _theme.clinical,
-                  minY: minDisplay,
-                  maxY: maxDisplay,
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine: (value) =>
-                      FlLine(color: surfaces.divider, strokeWidth: 1),
-                ),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 1,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        final isLast = index == recentRecords.length - 1;
-                        if (index >= 0 &&
-                            index < recentRecords.length &&
-                            (index % labelStep == 0 || isLast)) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              axisFmt.format(recentRecords[index].date),
-                              style: _theme.type.numeralUnit.copyWith(
-                                fontSize: 10,
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
+          // Solo cuando el servidor aporta zonas: su clave de leyenda, igual que
+          // en la gráfica de frecuencia cardíaca.
+          if (hasZones)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 12,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: _theme.clinical.optimal.accent.withValues(
+                      alpha: 0.3,
                     ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 10,
-                      getTitlesWidget: (value, meta) => Text(
-                        '${value.toInt()}%',
-                        style: _theme.type.numeralUnit.copyWith(fontSize: 10),
+                    border: Border.all(
+                      color: _theme.clinical.optimal.accent.withValues(
+                        alpha: 0.6,
                       ),
+                      width: 1,
                     ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spotsFat,
-                    isCurved: true,
-                    color: family.accent,
-                    barWidth: surfaces.chartLineWidth,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (s, p, b, i) => FlDotCirclePainter(
-                        radius: 4,
-                        color: family.accent,
-                        strokeWidth: 0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildExportButton(
-    IconData icon,
-    String label,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    final theme = _theme;
-    final surfaces = theme.surfaces;
-    return Material(
-      color: surfaces.card,
-      borderRadius: BorderRadius.circular(surfaces.radiusCard),
-      // Los temas planos no elevan los controles.
-      elevation: surfaces.cardShadow.isEmpty ? 0 : 3,
-      shadowColor: color.withValues(alpha: 0.3),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(surfaces.radiusCard),
-            border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
-            gradient: LinearGradient(
-              colors: [
-                color.withValues(alpha: 0.02),
-                color.withValues(alpha: 0.1),
+                const SizedBox(width: 4),
+                Text(
+                  l10n.historyTargetZone,
+                  style: _theme.type.meta.copyWith(fontSize: 10),
+                ),
               ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 20, color: color),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  label,
-                  style: theme.type.button.copyWith(
-                    color: color,
-                    fontSize: 13,
-                    letterSpacing: 0.5,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
@@ -425,8 +365,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       ...records.map((r) {
         return [
           DateFormat('dd MMM yyyy').format(r.date),
-          r.bodyFatPercent != null ? '${r.bodyFatPercent}%' : '-',
-          r.muscleMassKg != null ? '${r.muscleMassKg}kg' : '-',
+          r.bodyFatPercent != null ? '${_num(r.bodyFatPercent)}%' : '-',
+          r.muscleMassKg != null ? '${_num(r.muscleMassKg)}kg' : '-',
           r.visceralFatLevel?.toString() ?? '-',
         ];
       }),
@@ -547,84 +487,15 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     showShareFeedback(messenger, theme, l10n, outcome);
   }
 
-  /// Red background revealed when swiping a history item left to delete it.
-  Widget _deleteSwipeBackground() {
-    final surfaces = _theme.surfaces;
-    final danger = _theme.clinical.alert;
-    return Container(
-      alignment: Alignment.centerRight,
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.only(right: 24),
-      decoration: BoxDecoration(
-        color: danger.accent,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-      ),
-      child: Icon(Icons.delete_outline, color: danger.onAccent),
-    );
-  }
-
-  /// Asks the user to confirm deletion, then deletes the record. Always returns
-  /// false so the [Dismissible] never self-removes: the repository listener
-  /// re-fetches the list and drops the row, which is what updates the UI.
-  Future<bool> _confirmDelete(AppLocalizations l10n, String id) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final theme = _theme;
-    final surfaces = theme.surfaces;
-    final danger = theme.clinical.alert;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: surfaces.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        ),
-        title: Text(l10n.deleteRecordTitle, style: theme.type.cardTitle),
-        content: Text(l10n.deleteRecordBody, style: theme.type.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              l10n.cancel,
-              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(
-              l10n.deleteRecordConfirm,
-              // Borrar es la acción destructiva: va en el rojo de ALERTA, el
-              // mismo que un valor fuera de rango. Aquí también significa
-              // «esto no se deshace».
-              style: theme.type.button.copyWith(color: danger.accent),
-            ),
-          ),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await BodyCompositionRepository.instance.delete(id);
-      final ok = theme.clinical.optimal;
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.recordDeleted,
-            style: theme.type.body.copyWith(color: ok.onAccent),
-          ),
-          backgroundColor: ok.accent,
-        ),
-      );
-    }
-    return false;
-  }
-
   /// Línea compacta con los demás valores del registro (músculo %/kg, visceral,
-  /// edad metabólica, TMB) — visible p. ej. en la historia importada del legacy.
+  /// edad metabólica, TMB) — así la lista muestra de un vistazo lo que antes solo
+  /// quedaba guardado. `null` cuando no hay ninguno.
   String? _secondaryLine(BodyCompositionRecord r, AppLocalizations l10n) {
     final parts = <String>[
       if (r.musclePct != null)
-        '${l10n.dashboardCompositionMuscle} ${r.musclePct}%',
+        '${l10n.dashboardCompositionMuscle} ${_num(r.musclePct)}%',
       if (r.musclePct == null && r.muscleMassKg != null)
-        '${l10n.dashboardCompositionMuscle} ${r.muscleMassKg}kg',
+        '${l10n.dashboardCompositionMuscle} ${_num(r.muscleMassKg)}kg',
       if (r.visceralFatLevel != null)
         '${l10n.dashboardCompositionVisceral} ${r.visceralFatLevel}',
       if (r.metabolicAge != null)
@@ -632,6 +503,12 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       if (r.bmrKcal != null) '${r.bmrKcal} kcal',
     ];
     return parts.isEmpty ? null : parts.join(' · ');
+  }
+
+  /// Formatea un valor sin el «.0» sobrante (26.0 → «26»; 2.35 se conserva).
+  String _num(double? v) {
+    if (v == null) return '-';
+    return v == v.roundToDouble() ? v.toInt().toString() : v.toString();
   }
 
   Widget _buildHistoryItem(
@@ -649,7 +526,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            record.bodyFatPercent != null ? '${record.bodyFatPercent}' : 'N/A',
+            record.bodyFatPercent != null ? _num(record.bodyFatPercent) : 'N/A',
             style: theme.type.numeralSmall.copyWith(fontSize: 18),
           ),
           const SizedBox(width: 4),
@@ -660,10 +537,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         ],
       ),
       detail: _secondaryLine(record, l10n),
-      // Era una insignia calcada a mano con el color de FÁBRICA del
-      // clasificador (`fatCat.color`), que ignoraba el tema y además
-      // siempre se dibujaba suave. StatusChip pide el ESTADO y deja que el
-      // tema resuelva el acabado. Mismo texto, misma condición, mismo sitio.
+      // StatusChip pide el ESTADO y deja que el tema resuelva el acabado: sólido
+      // en «Pulso Clínico», suave en «Consulta Serena».
       trailing: record.bodyFatPercent != null
           ? StatusChip(
               status: fatCat.status,
