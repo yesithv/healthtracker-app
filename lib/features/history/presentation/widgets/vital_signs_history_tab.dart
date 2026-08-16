@@ -853,6 +853,33 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
     return false;
   }
 
+  /// Etiqueta localizada del estado de actividad; `null` si no se registró.
+  String? _activityLabel(String? raw, AppLocalizations l10n) => switch (raw) {
+    'reposo' => l10n.activityRest,
+    'ejercicio' => l10n.activityExercise,
+    'post-op' => l10n.activityPostOp,
+    _ => null,
+  };
+
+  /// Etiqueta localizada del síntoma. «normal» y `null` se omiten: no aportan
+  /// contexto clínico y solo harían ruido en la línea.
+  String? _symptomLabel(String? raw, AppLocalizations l10n) => switch (raw) {
+    'mareo' => l10n.symptomDizziness,
+    'dolor' => l10n.symptomPain,
+    'fatiga' => l10n.symptomFatigue,
+    _ => null,
+  };
+
+  /// Línea de contexto compacta de una lectura (p. ej. «Ejercicio · Mareo»).
+  /// `null` cuando no hay actividad ni síntoma relevante que mostrar.
+  String? _contextLine(VitalSignRecord r, AppLocalizations l10n) {
+    final parts = <String>[
+      ?_activityLabel(r.activityState, l10n),
+      ?_symptomLabel(r.symptom, l10n),
+    ];
+    return parts.isEmpty ? null : parts.join(' · ');
+  }
+
   Widget _buildHistoryItem(VitalSignRecord record, AppLocalizations l10n) {
     final theme = _theme;
     final BpCategory bpCat = BpCategory.of(record.systolic, record.diastolic);
@@ -860,6 +887,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
 
     return MeasurementHistoryCard(
       date: record.date,
+      detail: _contextLine(record, l10n),
       value: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
