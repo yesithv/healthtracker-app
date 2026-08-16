@@ -11,6 +11,7 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:myvitals_healthtracker_app/core/charts/chart_series.dart';
+import 'package:myvitals_healthtracker_app/core/charts/trend_line_chart.dart';
 import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
@@ -20,7 +21,8 @@ import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/measurement_history_card.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/metric_chip_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/metric_highlight_banner.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/period_filter_dropdown.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/trend_chart_card.dart';
+import 'package:myvitals_healthtracker_app/features/history/presentation/widgets/metric_history_scaffold.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -97,6 +99,10 @@ class _MetricSpec {
   final _MetricRef? ref;
 }
 
+/// Historial de antropometría. La estructura común (mensaje superior, filtro,
+/// chips, gráfica, export, lista con borrado/edición y paginación) la aporta
+/// [MetricHistoryScaffold]; aquí solo vive lo específico de antropometría: los
+/// descriptores por métrica, la gráfica, la tarjeta de medición y los export.
 class AnthropometryHistoryTab extends StatefulWidget {
   const AnthropometryHistoryTab({super.key});
 
@@ -106,12 +112,6 @@ class AnthropometryHistoryTab extends StatefulWidget {
 }
 
 class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
-  HistoryPeriod _selectedPeriod = HistoryPeriod.allTime;
-  AnthroMetric _selectedMetric = AnthroMetric.bmi;
-
-  static const int _pageSize = 15;
-  int _visibleCount = _pageSize;
-
   /// Orden de aparición de las métricas en el selector.
   static const List<AnthroMetric> _metricOrder = [
     AnthroMetric.bmi,
@@ -124,6 +124,73 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     AnthroMetric.leg,
     AnthroMetric.chest,
   ];
+
+  ThemeData get _theme => Theme.of(context);
+
+  /// Identidad de la familia «antropometría»: el matiz no cambia con el tema.
+  Tone get _family => _theme.metrics.tone(MetricFamily.anthropometry);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final repo = context.watch<AnthropometricRepository>();
+    final gender = context.watch<UserProfileProvider>().userGender;
+
+    return MetricHistoryScaffold<AnthropometricRecord, AnthroMetric>(
+      isLoaded: repo.isLoaded,
+      records: repo.items,
+      dateOf: (r) => r.date,
+      idOf: (r) => r.id,
+      family: _family,
+      initialMetric: AnthroMetric.bmi,
+      metricChips: [
+        for (final m in _metricOrder)
+          // El sexo solo afecta al corte del ICC, no a la etiqueta del chip.
+          MetricChip(value: m, label: _metricSpec(m, l10n, '').chipLabel),
+      ],
+      // Mensaje superior: «vas bien» va en el tono ÓPTIMO, no en el de la
+      // familia, porque afirma algo sobre la salud del usuario.
+      bannerBuilder: (ascending) => MetricHighlightBanner(
+        tone: _theme.clinical.optimal,
+        icon: Icons.check_circle_outline,
+        title: l10n.historyGoodJob,
+        subtitle: _bannerSubtitle(ascending, l10n),
+      ),
+      chartBuilder: (metric, ascending, filterLabel) => _buildChartContainer(
+        l10n,
+        ascending,
+        filterLabel,
+        _metricSpec(metric, l10n, gender),
+      ),
+      itemBuilder: (r) => _buildHistoryItem(r, l10n),
+      onEdit: (r) => context.push('/record-anthropometric', extra: r),
+      onDelete: (id) => AnthropometricRepository.instance.delete(id),
+      onExportPdf: (records) => _exportPdf(records, l10n),
+      onExportCsv: (records) => _exportCsv(records, l10n),
+      emptyIcon: Icons.straighten,
+      emptyText: l10n.historyNoMeasurements,
+      emptyActionLabel: l10n.recordFirstMeasure,
+      onEmptyAction: () => context.push('/record-anthropometric'),
+    );
+  }
+
+  /// Subtítulo del banner: progreso de meta, o la pérdida de peso entre las dos
+  /// últimas tomas si la hubo.
+  String _bannerSubtitle(
+    List<AnthropometricRecord> ascending,
+    AppLocalizations l10n,
+  ) {
+    String subtitle = l10n.historyGoalProgress;
+    if (ascending.length >= 2) {
+      final last = ascending.last;
+      final prev = ascending[ascending.length - 2];
+      final diff = (prev.weight - last.weight);
+      if (diff > 0) {
+        subtitle = l10n.historyWeightLoss(diff.toStringAsFixed(1));
+      }
+    }
+    return subtitle;
+  }
 
   /// Descriptor de la métrica [m] resuelto con el idioma y el sexo del perfil (este
   /// último solo mueve el corte del ICC). Concentra en un sitio todo lo variable
@@ -187,7 +254,11 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       case AnthroMetric.hip:
         return _perimeterSpec((r) => r.hipCm, l10n.circHip, l10n);
       case AnthroMetric.abdomen:
-        return _perimeterSpec((r) => r.lowerAbdomenCm, l10n.circAbdomenShort, l10n);
+        return _perimeterSpec(
+          (r) => r.lowerAbdomenCm,
+          l10n.circAbdomenShort,
+          l10n,
+        );
       case AnthroMetric.arm:
         return _perimeterSpec((r) => r.armCm, l10n.circArm, l10n);
       case AnthroMetric.leg:
@@ -212,196 +283,6 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       seriesLabel: l10n.unitCm,
       needsMeasure: name,
       ref: null,
-    );
-  }
-
-  // ── Tokens ────────────────────────────────────────────────────────────────
-
-  ThemeData get _theme => Theme.of(context);
-
-  /// Identidad de la familia «antropometría»: el matiz no cambia con el tema.
-  Tone get _family => _theme.metrics.tone(MetricFamily.anthropometry);
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final repo = context.watch<AnthropometricRepository>();
-    final gender = context.watch<UserProfileProvider>().userGender;
-    if (!repo.isLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    final surfaces = _theme.surfaces;
-
-    final recordsListTemp = repo.items;
-
-    final filteredRecords = _selectedPeriod
-        .filter<AnthropometricRecord>(recordsListTemp, (r) => r.date)
-        .toList();
-
-    if (filteredRecords.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.straighten, size: 60, color: surfaces.inkMuted),
-              const SizedBox(height: 16),
-              Text(
-                l10n.historyNoMeasurements,
-                textAlign: TextAlign.center,
-                style: _theme.type.body.copyWith(fontSize: 16),
-              ),
-              const SizedBox(height: 24),
-              ActionButton(
-                text: l10n.recordFirstMeasure,
-                color: _family.accent,
-                solid: true,
-                onPressed: () => context.push('/record-anthropometric'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // We have records. Sort by date just to be sure
-    final recordsList = List<AnthropometricRecord>.from(filteredRecords)
-      ..sort((a, b) => a.date.compareTo(b.date)); // Oldest first
-
-    // For the history list, we want newest first
-    final reversedRecords = recordsList.reversed.toList();
-
-    // Progress Banner logic
-    String bannerSubtitle = l10n.historyGoalProgress;
-    if (recordsList.length >= 2) {
-      final last = recordsList.last;
-      final prev = recordsList[recordsList.length - 2];
-      final diff = (prev.weight - last.weight);
-      if (diff > 0) {
-        bannerSubtitle = l10n.historyWeightLoss(diff.toStringAsFixed(1));
-      }
-    }
-
-    final String filterLabel = _selectedPeriod.label(l10n);
-
-    return ListView(
-      padding: const EdgeInsets.all(20.0),
-      children: [
-        // Mensaje superior: «vas bien» va en el tono ÓPTIMO, no en el de la
-        // familia, porque afirma algo sobre la salud del usuario.
-        MetricHighlightBanner(
-          tone: _theme.clinical.optimal,
-          icon: Icons.check_circle_outline,
-          title: l10n.historyGoodJob,
-          subtitle: bannerSubtitle,
-        ),
-        const SizedBox(height: 16),
-
-        // Filtro de periodo de la gráfica.
-        PeriodFilterDropdown(
-          value: _selectedPeriod,
-          onChanged: (p) => setState(() {
-            _selectedPeriod = p;
-            _visibleCount = _pageSize;
-          }),
-        ),
-        const SizedBox(height: 12),
-
-        // Selector de métrica (IMC / índices / perímetros) que reparte la
-        // gráfica entre varias series.
-        MetricChipBar<AnthroMetric>(
-          items: [
-            for (final m in _metricOrder)
-              // El sexo solo afecta al corte del ICC, no a la etiqueta del chip.
-              MetricChip(value: m, label: _metricSpec(m, l10n, '').chipLabel),
-          ],
-          selected: _selectedMetric,
-          onSelected: (m) => setState(() => _selectedMetric = m),
-          family: _family,
-        ),
-        const SizedBox(height: 16),
-
-        // Graph Container
-        _buildChartContainer(
-          l10n,
-          recordsList,
-          filterLabel,
-          _metricSpec(_selectedMetric, l10n, gender),
-        ),
-        const SizedBox(height: 24),
-
-        // Export Buttons
-        Row(
-          children: [
-            Expanded(
-              child: _buildExportButton(
-                Icons.picture_as_pdf,
-                l10n.historyExportPdf,
-                Colors.red[600]!,
-                () => _exportPdf(reversedRecords, l10n),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildExportButton(
-                Icons.table_chart,
-                l10n.historyExportCsv,
-                Colors.green[700]!,
-                () => _exportCsv(reversedRecords, l10n),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 32),
-
-        // History List Header
-        Text(
-          l10n.historyMeasurements,
-          style: _theme.type.sectionLabel.copyWith(
-            color: surfaces.inkSecondary,
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Items
-        ...reversedRecords
-            .take(_visibleCount)
-            .map(
-              (r) => Dismissible(
-                key: ValueKey(r.id),
-                direction: DismissDirection.endToStart,
-                background: _deleteSwipeBackground(),
-                confirmDismiss: (_) => _confirmDelete(l10n, r.id),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => context.push('/record-anthropometric', extra: r),
-                  child: _buildHistoryItem(r, l10n),
-                ),
-              ),
-            ),
-        if (reversedRecords.length > _visibleCount)
-          _buildShowMoreButton(reversedRecords.length, l10n),
-        const SizedBox(height: 40),
-      ],
-    );
-  }
-
-  /// "Show N more" button that reveals the next page of history items. The full
-  /// list stays in memory for charts/filters/export; this only caps how many
-  /// item widgets are built at once.
-  Widget _buildShowMoreButton(int total, AppLocalizations l10n) {
-    final remaining = total - _visibleCount;
-    final surfaces = _theme.surfaces;
-    return Center(
-      child: TextButton.icon(
-        onPressed: () => setState(() => _visibleCount += _pageSize),
-        icon: Icon(Icons.expand_more, size: 18, color: surfaces.brand),
-        label: Text(
-          l10n.historyShowMore(remaining),
-          style: _theme.type.button.copyWith(color: surfaces.brand),
-        ),
-      ),
     );
   }
 
@@ -442,7 +323,6 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     String filterLabel,
     _MetricSpec spec,
   ) {
-    final surfaces = _theme.surfaces;
     final clinical = _theme.clinical;
     final family = _family;
 
@@ -546,226 +426,81 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
         ? 0.05
         : math.max(1, ((maxDisplay - minDisplay) / 4).roundToDouble());
     final bool showTargetLegend = hasServerZones || (ref?.hasBand ?? false);
+    final dates = [for (final r in recentRecords) r.date];
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: surfaces.cardDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  spec.title,
-                  style: _theme.type.sectionLabel.copyWith(
-                    fontSize: 11,
-                    color: surfaces.inkSecondary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: surfaces.inset,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  filterLabel,
-                  style: _theme.type.badge.copyWith(
-                    fontSize: 10,
-                    color: surfaces.inkSecondary,
-                  ),
-                ),
-              ),
-            ],
+    return TrendChartCard(
+      title: spec.title,
+      filterLabel: filterLabel,
+      chart: LineChart(
+        LineChartData(
+          minY: minDisplay,
+          maxY: maxDisplay,
+          rangeAnnotations: rangeAnnotations,
+          extraLinesData: extraLines,
+          gridData: trendGridData(_theme),
+          titlesData: trendAxisTitles(
+            _theme,
+            dates: dates,
+            fmt: axisFmt,
+            labelStep: labelStep,
+            leftInterval: leftInterval,
+            yDecimals: spec.yDecimals,
           ),
-          const SizedBox(height: 32),
-          SizedBox(
-            height: 180,
-            child: LineChart(
-              LineChartData(
-                minY: minDisplay,
-                maxY: maxDisplay,
-                rangeAnnotations: rangeAnnotations,
-                extraLinesData: extraLines,
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine: (value) =>
-                      FlLine(color: surfaces.divider, strokeWidth: 1),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            // La serie va en el acento de SU familia (antropometría es ámbar):
+            // una serie no está «bien» ni «mal», así que NO sale de la paleta
+            // clínica sino de la identidad del indicador. Sin curva y con relleno
+            // degradado bajo la línea.
+            trendLineBar(
+              _theme,
+              spots,
+              family.accent,
+              isCurved: false,
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  colors: [
+                    family.accent.withValues(alpha: 0.1),
+                    family.accent.withValues(alpha: 0.0),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 1,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        final isLast = index == recentRecords.length - 1;
-                        if (index >= 0 &&
-                            index < recentRecords.length &&
-                            (index % labelStep == 0 || isLast)) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              axisFmt.format(recentRecords[index].date),
-                              style: _theme.type.numeralUnit.copyWith(
-                                fontSize: 10,
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: leftInterval,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toStringAsFixed(spec.yDecimals),
-                          style: _theme.type.numeralUnit.copyWith(fontSize: 10),
-                        );
-                      },
-                    ),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: false,
-                    // La serie va en el acento de SU familia (antropometría es
-                    // ámbar): una serie no está «bien» ni «mal», así que NO sale
-                    // de la paleta clínica sino de la identidad del indicador.
-                    color: family.accent,
-                    barWidth: surfaces.chartLineWidth,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, percent, barData, index) {
-                        return FlDotCirclePainter(
-                          radius: 4,
-                          color: family.accent,
-                          strokeWidth: 0,
-                        );
-                      },
-                    ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          family.accent.withValues(alpha: 0.1),
-                          family.accent.withValues(alpha: 0.0),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (showTargetLegend) ...[
-                Container(
-                  width: 12,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: refColor.withValues(alpha: 0.3),
-                    border: Border.all(
-                      color: refColor.withValues(alpha: 0.6),
-                      width: 1,
-                    ),
-                  ),
+          ],
+        ),
+      ),
+      legend: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (showTargetLegend) ...[
+            Container(
+              width: 12,
+              height: 8,
+              decoration: BoxDecoration(
+                color: refColor.withValues(alpha: 0.3),
+                border: Border.all(
+                  color: refColor.withValues(alpha: 0.6),
+                  width: 1,
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  l10n.historyTargetZone,
-                  style: _theme.type.meta.copyWith(fontSize: 10),
-                ),
-                const SizedBox(width: 16),
-              ],
-              Container(width: 12, height: 2, color: family.accent),
-              const SizedBox(width: 4),
-              Text(
-                spec.seriesLabel,
-                style: _theme.type.meta.copyWith(fontSize: 10),
               ),
-            ],
+            ),
+            const SizedBox(width: 4),
+            Text(
+              l10n.historyTargetZone,
+              style: _theme.type.meta.copyWith(fontSize: 10),
+            ),
+            const SizedBox(width: 16),
+          ],
+          Container(width: 12, height: 2, color: family.accent),
+          const SizedBox(width: 4),
+          Text(
+            spec.seriesLabel,
+            style: _theme.type.meta.copyWith(fontSize: 10),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildExportButton(
-    IconData icon,
-    String label,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    final theme = _theme;
-    final surfaces = theme.surfaces;
-    return Material(
-      color: surfaces.card,
-      borderRadius: BorderRadius.circular(surfaces.radiusCard),
-      // Los temas planos no elevan los controles.
-      elevation: surfaces.cardShadow.isEmpty ? 0 : 3,
-      shadowColor: color.withValues(alpha: 0.3),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(surfaces.radiusCard),
-            border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
-            gradient: LinearGradient(
-              colors: [
-                color.withValues(alpha: 0.02),
-                color.withValues(alpha: 0.1),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 20, color: color),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  label,
-                  style: theme.type.button.copyWith(
-                    color: color,
-                    fontSize: 13,
-                    letterSpacing: 0.5,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -827,9 +562,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                 fontWeight: pw.FontWeight.bold,
                 color: PdfColors.white,
               ),
-              headerDecoration: const pw.BoxDecoration(
-                color: PdfColors.blue800,
-              ),
+              headerDecoration: const pw.BoxDecoration(color: PdfColors.blue800),
               rowDecoration: const pw.BoxDecoration(
                 border: pw.Border(
                   bottom: pw.BorderSide(color: PdfColors.grey200),
@@ -912,76 +645,6 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     showShareFeedback(messenger, theme, l10n, outcome);
   }
 
-  /// Red background revealed when swiping a history item left to delete it.
-  Widget _deleteSwipeBackground() {
-    final surfaces = _theme.surfaces;
-    final danger = _theme.clinical.alert;
-    return Container(
-      alignment: Alignment.centerRight,
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.only(right: 24),
-      decoration: BoxDecoration(
-        color: danger.accent,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-      ),
-      child: Icon(Icons.delete_outline, color: danger.onAccent),
-    );
-  }
-
-  /// Asks the user to confirm deletion, then deletes the record. Always returns
-  /// false so the [Dismissible] never self-removes: the repository listener
-  /// re-fetches the list and drops the row, which is what updates the UI.
-  Future<bool> _confirmDelete(AppLocalizations l10n, String id) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final theme = _theme;
-    final surfaces = theme.surfaces;
-    final danger = theme.clinical.alert;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: surfaces.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        ),
-        title: Text(l10n.deleteRecordTitle, style: theme.type.cardTitle),
-        content: Text(l10n.deleteRecordBody, style: theme.type.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              l10n.cancel,
-              style: theme.type.button.copyWith(color: surfaces.inkSecondary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(
-              l10n.deleteRecordConfirm,
-              // Borrar es la acción destructiva: va en el rojo de ALERTA, el
-              // mismo que un valor fuera de rango. Aquí también significa
-              // «esto no se deshace».
-              style: theme.type.button.copyWith(color: danger.accent),
-            ),
-          ),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await AnthropometricRepository.instance.delete(id);
-      final ok = theme.clinical.optimal;
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.recordDeleted,
-            style: theme.type.body.copyWith(color: ok.onAccent),
-          ),
-          backgroundColor: ok.accent,
-        ),
-      );
-    }
-    return false;
-  }
-
   Widget _buildHistoryItem(AnthropometricRecord record, AppLocalizations l10n) {
     final theme = _theme;
     final statusLabel = BmiCategory.of(record.bmi).label(l10n);
@@ -1002,7 +665,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
           ),
         ],
       ),
-      detail: record.hasCircumferences ? _circumferencesLine(record, l10n) : null,
+      detail: record.hasCircumferences
+          ? _circumferencesLine(record, l10n)
+          : null,
       trailing: BmiStatusBadge(bmi: record.bmi, label: statusLabel),
     );
   }
