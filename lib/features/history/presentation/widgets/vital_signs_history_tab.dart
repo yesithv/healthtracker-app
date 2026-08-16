@@ -348,8 +348,37 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
     );
   }
 
-  /// Serie de línea con puntos, del color dado.
-  LineChartBarData _lineBar(List<FlSpot> spots, Color color) {
+  /// Pinta cada punto de una serie: los índices en [flagged] (lecturas con un
+  /// síntoma relevante) salen como un círculo ÁMBAR más grande con un aro del
+  /// color de la tarjeta, que lo separa de la línea; el resto, el punto normal.
+  ///
+  /// Se usa `clinical.caution` (ámbar) y no `alert` (rojo) a propósito: el
+  /// marcador señala «esta lectura trae contexto», no que el VALOR sea crítico;
+  /// además contrasta con la línea roja de «vitals» y la banda verde en todo tema.
+  FlDotPainter Function(FlSpot, double, LineChartBarData, int) _dotPainter(
+    Color base, {
+    Set<int> flagged = const {},
+  }) {
+    final marker = _theme.clinical.caution.accent;
+    final ring = _theme.surfaces.card;
+    return (spot, percent, bar, i) => flagged.contains(i)
+        ? FlDotCirclePainter(
+            radius: 5,
+            color: marker,
+            strokeColor: ring,
+            strokeWidth: 2,
+          )
+        : FlDotCirclePainter(radius: 4, color: base, strokeWidth: 0);
+  }
+
+  /// Serie de línea con puntos, del color dado. [flagged] marca las lecturas con
+  /// síntoma; [belowBarData] pinta el relleno bajo la línea (solo la FC lo usa).
+  LineChartBarData _lineBar(
+    List<FlSpot> spots,
+    Color color, {
+    Set<int> flagged = const {},
+    BarAreaData? belowBarData,
+  }) {
     return LineChartBarData(
       spots: spots,
       isCurved: true,
@@ -358,9 +387,41 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
       isStrokeCapRound: true,
       dotData: FlDotData(
         show: true,
-        getDotPainter: (s, p, b, i) =>
-            FlDotCirclePainter(radius: 4, color: color, strokeWidth: 0),
+        getDotPainter: _dotPainter(color, flagged: flagged),
       ),
+      belowBarData: belowBarData ?? BarAreaData(),
+    );
+  }
+
+  /// Índices de [recentRecords] cuya lectura trae un síntoma relevante
+  /// (mareo/dolor/fatiga); «normal»/ausente no cuentan. Alinea 1:1 con los
+  /// puntos de la gráfica, que se construyen en el mismo orden.
+  Set<int> _flaggedSymptoms(
+    List<VitalSignRecord> recentRecords,
+    AppLocalizations l10n,
+  ) => {
+    for (int i = 0; i < recentRecords.length; i++)
+      if (_symptomLabel(recentRecords[i].symptom, l10n) != null) i,
+  };
+
+  /// Ítem de leyenda del marcador de síntoma (círculo ámbar + rótulo).
+  Widget _symptomLegend(AppLocalizations l10n) {
+    final marker = _theme.clinical.caution.accent;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(width: 16),
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: marker, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          l10n.symptomMarkerLegend,
+          style: _theme.type.meta.copyWith(fontSize: 10),
+        ),
+      ],
     );
   }
 
@@ -383,6 +444,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
       recentRecords.last.date,
     );
     final labelStep = axisLabelStep(recentRecords.length);
+    final flagged = _flaggedSymptoms(recentRecords, l10n);
     final List<FlSpot> spotsSys = [];
     final List<FlSpot> spotsDia = [];
     double minV = recentRecords.first.diastolic.toDouble();
@@ -411,7 +473,9 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           titlesData: _axisTitles(recentRecords, axisFmt, labelStep, 20),
           borderData: FlBorderData(show: false),
           lineBarsData: [
-            _lineBar(spotsSys, family.accent),
+            // Solo la serie superior (sistólica) lleva el marcador de síntoma,
+            // para no duplicar el punto por lectura.
+            _lineBar(spotsSys, family.accent, flagged: flagged),
             _lineBar(spotsDia, cool),
           ],
         ),
@@ -432,6 +496,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
             l10n.diastolicLabel,
             style: _theme.type.meta.copyWith(fontSize: 10),
           ),
+          if (flagged.isNotEmpty) _symptomLegend(l10n),
         ],
       ),
     );
@@ -455,6 +520,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
       recentRecords.last.date,
     );
     final labelStep = axisLabelStep(recentRecords.length);
+    final flagged = _flaggedSymptoms(recentRecords, l10n);
 
     final List<FlSpot> spots = [];
     double minV = recentRecords.first.heartRate.toDouble();
@@ -528,23 +594,14 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           titlesData: _axisTitles(recentRecords, axisFmt, labelStep, leftInterval),
           borderData: FlBorderData(show: false),
           lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              // La serie va en el acento de SU familia (vitals es rojo): una
-              // serie no está «bien» ni «mal», así que su color sale de la
-              // identidad del indicador, no de la paleta clínica.
-              color: family.accent,
-              barWidth: _theme.surfaces.chartLineWidth,
-              isStrokeCapRound: true,
-              dotData: FlDotData(
-                show: true,
-                getDotPainter: (s, p, b, i) => FlDotCirclePainter(
-                  radius: 4,
-                  color: family.accent,
-                  strokeWidth: 0,
-                ),
-              ),
+            // La serie va en el acento de SU familia (vitals es rojo): una serie
+            // no está «bien» ni «mal», así que su color sale de la identidad del
+            // indicador, no de la paleta clínica. Los puntos con síntoma se
+            // marcan en ámbar vía [flagged].
+            _lineBar(
+              spots,
+              family.accent,
+              flagged: flagged,
               belowBarData: BarAreaData(
                 show: true,
                 gradient: LinearGradient(
@@ -586,6 +643,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
             l10n.heartRateSeriesLabel,
             style: _theme.type.meta.copyWith(fontSize: 10),
           ),
+          if (flagged.isNotEmpty) _symptomLegend(l10n),
         ],
       ),
     );

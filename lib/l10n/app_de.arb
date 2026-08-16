@@ -133,6 +133,7 @@
   "vitalMetricBpShort": "Blutdruck",
   "vitalMetricHrShort": "Herzfrequenz",
   "heartRateSeriesLabel": "Herzfrequenz",
+  "symptomMarkerLegend": "Symptom vermerkt",
   "contextAndSymptoms": "KONTEXT & SYMPTOME",
   "activityState": "AKTIVITÄTSZUSTAND",
   "activityRest": "Ruhe",

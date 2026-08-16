@@ -179,6 +179,7 @@
   "vitalMetricBpShort": "Presión Arterial",
   "vitalMetricHrShort": "Frecuencia Cardíaca",
   "heartRateSeriesLabel": "Frecuencia Cardíaca",
+  "symptomMarkerLegend": "Con síntoma",
   "contextAndSymptoms": "CONTEXTO Y SÍNTOMAS",
   "activityState": "ESTADO DE ACTIVIDAD",
   "activityRest": "Reposo",

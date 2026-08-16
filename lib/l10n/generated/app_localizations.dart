@@ -911,6 +911,12 @@ abstract class AppLocalizations {
   /// **'Heart Rate'**
   String get heartRateSeriesLabel;
 
+  /// No description provided for @symptomMarkerLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptom noted'**
+  String get symptomMarkerLegend;
+
   /// No description provided for @contextAndSymptoms.
   ///
   /// In en, this message translates to:

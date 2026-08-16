@@ -177,6 +177,7 @@
   "vitalMetricBpShort": "Blood Pressure",
   "vitalMetricHrShort": "Heart Rate",
   "heartRateSeriesLabel": "Heart Rate",
+  "symptomMarkerLegend": "Symptom noted",
   "contextAndSymptoms": "CONTEXT & SYMPTOMS",
   "activityState": "ACTIVITY STATE",
   "activityRest": "Rest",

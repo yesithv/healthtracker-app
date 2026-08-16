@@ -451,6 +451,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get heartRateSeriesLabel => 'Frequência Cardíaca';
 
   @override
+  String get symptomMarkerLegend => 'Com sintoma';
+
+  @override
   String get contextAndSymptoms => 'CONTEXTO E SINTOMAS';
 
   @override

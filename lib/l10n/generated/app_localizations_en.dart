@@ -452,6 +452,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heartRateSeriesLabel => 'Heart Rate';
 
   @override
+  String get symptomMarkerLegend => 'Symptom noted';
+
+  @override
   String get contextAndSymptoms => 'CONTEXT & SYMPTOMS';
 
   @override
