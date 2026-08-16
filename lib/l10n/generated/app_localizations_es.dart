@@ -442,6 +442,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get heartRateTitle => 'FRECUENCIA CARDÍACA (BPM)';
 
   @override
+  String get vitalMetricBpShort => 'Presión Arterial';
+
+  @override
+  String get vitalMetricHrShort => 'Frecuencia Cardíaca';
+
+  @override
+  String get heartRateSeriesLabel => 'Frecuencia Cardíaca';
+
+  @override
+  String get symptomMarkerLegend => 'Con síntoma';
+
+  @override
   String get contextAndSymptoms => 'CONTEXTO Y SÍNTOMAS';
 
   @override

@@ -893,6 +893,30 @@ abstract class AppLocalizations {
   /// **'HEART RATE (BPM)'**
   String get heartRateTitle;
 
+  /// No description provided for @vitalMetricBpShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Pressure'**
+  String get vitalMetricBpShort;
+
+  /// No description provided for @vitalMetricHrShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get vitalMetricHrShort;
+
+  /// No description provided for @heartRateSeriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get heartRateSeriesLabel;
+
+  /// No description provided for @symptomMarkerLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptom noted'**
+  String get symptomMarkerLegend;
+
   /// No description provided for @contextAndSymptoms.
   ///
   /// In en, this message translates to:
