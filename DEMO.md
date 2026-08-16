@@ -34,7 +34,7 @@ Con un usuario que ya tenía tema `consultaSerena` e idioma `pt`:
 
 | | Antes | En demo | Después de salir |
 |---|---|---|---|
-| Ruta | `/intro` | `/dashboard` | `/intro` |
+| Ruta | `/welcome` | `/dashboard` | `/welcome` |
 | Tema · idioma | consultaSerena · pt | consultaSerena · pt | consultaSerena · pt |
 | Perfil | vacío | Camila Herrera | vacío |
 | Panel | sin datos | ~80 registros | sin datos |
