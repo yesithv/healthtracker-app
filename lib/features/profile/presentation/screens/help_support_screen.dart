@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../../../core/widgets/settings_page_header.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});

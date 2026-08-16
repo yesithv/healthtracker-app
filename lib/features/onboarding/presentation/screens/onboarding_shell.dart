@@ -28,7 +28,7 @@ enum _RegisterOutcome {
 
 /// Asistente de alta en 3 pasos (datos → unidades → avatar).
 ///
-/// La portada vive en /intro; el idioma se autodetecta del dispositivo
+/// La portada vive en /welcome; el idioma se autodetecta del dispositivo
 /// (LocaleUnitsProvider) y se cambia desde Preferencias, no aquí.
 /// Envuelve un [PageView] con indicadores de paso y botones Siguiente/Finalizar,
 /// y reutiliza pantallas de Perfil vía sus parámetros `onNext` / `showAppBar`.

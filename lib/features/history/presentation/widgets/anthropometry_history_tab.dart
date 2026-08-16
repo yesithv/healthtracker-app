@@ -45,7 +45,6 @@ class _MetricRef {
     required this.lines,
     this.bandLo,
     this.bandHi,
-    this.bandStatus = ClinicalStatus.optimal,
     required this.displayMin,
     required this.displayMax,
   });
@@ -53,7 +52,10 @@ class _MetricRef {
   final List<double> lines;
   final double? bandLo;
   final double? bandHi;
-  final ClinicalStatus bandStatus;
+
+  // La franja saludable de estas métricas siempre representa el rango ÓPTIMO
+  // (cortes OMS/Ashwell); ningún constructor necesita variar el estado.
+  final ClinicalStatus bandStatus = ClinicalStatus.optimal;
   final double displayMin;
   final double displayMax;
 
@@ -495,7 +497,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: _metricOrder.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, i) {
           final m = _metricOrder[i];
           // El sexo solo afecta al corte del ICC, no a la etiqueta del chip.
@@ -637,8 +639,8 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       rangeAnnotations = RangeAnnotations(
         horizontalRangeAnnotations: [
           HorizontalRangeAnnotation(
-            y1: ref!.bandLo!,
-            y2: ref!.bandHi!,
+            y1: ref.bandLo!,
+            y2: ref.bandHi!,
             // La franja saludable = ÓPTIMO. Los cortes son OMS/Ashwell; el
             // color lo pone el tema.
             color: refColor.withValues(alpha: 0.15),
@@ -653,7 +655,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
         ? ExtraLinesData(
             extraLinesOnTop: false,
             horizontalLines: [
-              for (final y in ref!.lines)
+              for (final y in ref.lines)
                 HorizontalLine(
                   y: y,
                   color: refColor.withValues(alpha: 0.6),
