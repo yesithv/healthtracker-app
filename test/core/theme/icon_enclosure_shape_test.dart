@@ -67,6 +67,14 @@ const _legitimateCircles = <String, ({int count, String reason})>{
         'El halo decorativo de la esquina de la tarjeta. No hay icono dentro: '
         'es una mancha de color del fondo.',
   ),
+  'lib/features/history/presentation/widgets/vital_signs_history_tab.dart': (
+    count: 1,
+    reason:
+        'El punto de la leyenda que marca las lecturas con síntoma. Es un '
+        'PUNTO redondo que replica el marcador del dato en la gráfica '
+        '(FlDotCirclePainter, redondo por convención de fl_chart); no encierra '
+        'ningún icono, es la clave de leyenda de ese marcador.',
+  ),
 };
 
 void main() {
