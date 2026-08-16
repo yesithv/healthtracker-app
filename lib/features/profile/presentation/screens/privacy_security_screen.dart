@@ -6,6 +6,7 @@ import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.
 import 'package:myvitals_healthtracker_app/core/services/biometric_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 class PrivacySecurityScreen extends StatefulWidget {
@@ -48,6 +49,7 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
           icon: Icons.security_outlined,
           title: l10n.privacySecurity,
           description: l10n.privacySecurityDescription,
+          accent: SettingsSection.privacy.tone(Theme.of(context)),
           onConfirm: () {
             Navigator.pop(context);
           },

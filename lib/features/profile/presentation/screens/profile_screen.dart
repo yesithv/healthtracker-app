@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/providers/user_profile_provider.dart';
 import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/settings_accent.dart';
 import '../../../../core/theme/tokens/content_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/main_app_bar.dart';
@@ -528,71 +529,74 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // --- MENU ITEMS ---
+                // El acento DE ORIENTACIÓN de cada fila sale de [SettingsSection]
+                // —la misma fuente que lee el encabezado de cada pantalla de
+                // detalle—, así que abrir una fila lleva su color adentro.
                 _MenuTile(
                   icon: Icons.sync,
                   title: l10n.accountSyncTitle,
-                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
+                  tone: SettingsSection.accountSync.tone(theme),
                   onTap: () => context.push('/profile/account'),
                 ),
                 _MenuTile(
                   icon: Icons.badge_outlined,
                   title: l10n.personalInfo,
-                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
+                  tone: SettingsSection.personalInfo.tone(theme),
                   onTap: () => context.push('/profile/info'),
                 ),
                 _MenuTile(
                   icon: Icons.monitor_heart_outlined,
                   title: l10n.deviceScreenTitle,
-                  tone: Tone.from(surfaces.brand, canvas: surfaces.card),
+                  tone: SettingsSection.device.tone(theme),
                   onTap: () => context.push('/profile/device'),
                 ),
                 _MenuTile(
                   icon: Icons.flag_circle_outlined,
                   title: l10n.healthGoalsTitle,
-                  tone: _wayfinding(theme, ContentCategory.heart),
+                  tone: SettingsSection.healthGoals.tone(theme),
                   onTap: () => context.push('/profile/goals'),
                 ),
                 // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
                 _MenuTile(
                   icon: Icons.palette_outlined,
                   title: l10n.profileAppTheme,
-                  tone: _wayfinding(theme, ContentCategory.emotional),
+                  tone: SettingsSection.appTheme.tone(theme),
                   onTap: () => context.push('/profile/theme'),
                 ),
                 _MenuTile(
                   icon: Icons.language,
                   title: l10n.language,
-                  tone: _wayfinding(theme, ContentCategory.nutrition),
+                  tone: SettingsSection.language.tone(theme),
                   onTap: () => context.push('/profile/language'),
                 ),
                 _MenuTile(
                   icon: Icons.straighten,
                   title: l10n.measurementUnits,
-                  tone: _wayfinding(theme, ContentCategory.sports),
+                  tone: SettingsSection.measurementUnits.tone(theme),
                   onTap: () => context.push('/profile/units'),
                 ),
                 _MenuTile(
                   icon: Icons.notifications_active_outlined,
                   title: l10n.remindersTitle,
-                  tone: _wayfinding(theme, ContentCategory.daily),
+                  tone: SettingsSection.reminders.tone(theme),
                   onTap: () => context.push('/profile/reminders'),
                 ),
                 _MenuTile(
                   icon: Icons.security_outlined,
                   title: l10n.privacySecurity,
-                  tone: _wayfinding(theme, ContentCategory.emotional),
+                  tone: SettingsSection.privacy.tone(theme),
                   onTap: () => context.push('/profile/privacy'),
                 ),
                 _MenuTile(
                   icon: Icons.cloud_sync,
                   title: l10n.myDataBackup,
-                  tone: _wayfinding(theme, ContentCategory.sleep),
+                  tone: SettingsSection.backup.tone(theme),
                   onTap: () => context.push('/profile/backup'),
                 ),
                 _MenuTile(
                   icon: Icons.help_outline,
                   title: l10n.helpSupport,
-                  tone: theme.clinical.neutral,
+                  tone: SettingsSection.help.tone(theme),
                   onTap: () => context.push('/profile/help'),
                 ),
                 const SizedBox(height: 24),

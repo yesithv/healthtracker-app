@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// EL ENCABEZADO COMÚN de una pantalla de submenú: ícono redondo centrado,
@@ -17,28 +18,38 @@ class SettingsPageHeader extends StatelessWidget {
   final String title;
   final String description;
 
+  /// Acento DE ORIENTACIÓN de la sección. Cuando llega, el icono se pinta con el
+  /// mismo color (y tinte de fondo) que tenía la fila del menú de Perfil que
+  /// abrió esta pantalla, para que la navegación se sienta continua. Cuando es
+  /// `null`, el icono usa el azul de marca por defecto (usos fuera de ajustes).
+  final Tone? accent;
+
   const SettingsPageHeader({
     super.key,
     required this.icon,
     required this.title,
     required this.description,
+    this.accent,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
+    final accentColor = accent?.accent;
 
     return Column(
       // Centrado como en SettingsPageLayout. El texto descriptivo ocupa el
       // ancho disponible, así que el bloque queda centrado aunque el padre
       // alinee su contenido a la izquierda (p. ej. Metas de salud).
       children: [
-        // El ICONO es el mismo en todos los temas; sólo cambia su vestido.
+        // El ICONO es el mismo en todos los temas; sólo cambia su vestido. Si
+        // la sección trae acento de orientación, lo lleva puesto —mismo color y
+        // tinte que su fila en Perfil—; si no, el azul de marca.
         IconBadge(
           icon,
-          color: surfaces.brand,
-          background: surfaces.selection,
+          color: accentColor ?? surfaces.brand,
+          background: accentColor?.withValues(alpha: 0.12) ?? surfaces.selection,
           size: 80,
           iconSize: 32,
         ),

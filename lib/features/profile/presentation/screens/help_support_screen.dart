@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../../../core/widgets/settings_page_header.dart';
+import '../../../../core/theme/settings_accent.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
@@ -61,6 +62,7 @@ class HelpSupportScreen extends StatelessWidget {
                   icon: Icons.support_agent,
                   title: l10n.helpSupportPageTitle,
                   description: l10n.helpSupportPageDescription,
+                  accent: SettingsSection.help.tone(Theme.of(context)),
                 ),
                 const SizedBox(height: 32),
 
