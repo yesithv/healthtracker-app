@@ -8,6 +8,7 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/models/reminder.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
+import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
 
 class RemindersScreen extends StatefulWidget {
   const RemindersScreen({super.key});
@@ -147,7 +148,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   Widget build(BuildContext context) {
     final surfaces = Theme.of(context).surfaces;
-    final content = Theme.of(context).content;
     final l10n = AppLocalizations.of(context)!;
     final remindersProvider = Provider.of<RemindersProvider>(context);
     final reminders = remindersProvider.reminders;
@@ -166,37 +166,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       vertical: 24,
                     ),
                     children: [
-                      Center(
-                        child: IconBadge(
-                          Icons.notifications_active_outlined,
-                          color: content.tone(ContentCategory.emotional).accent,
-                          background: content
-                              .tone(ContentCategory.emotional)
-                              .accent
-                              .withValues(alpha: 0.1),
-                          padding: 16,
-                          iconSize: 40,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        l10n.remindersTitle,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: surfaces.ink,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.remindersDescription,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: surfaces.inkSecondary,
-                          height: 1.5,
-                        ),
+                      // Encabezado común: ícono centrado + título + descripción,
+                      // idéntico al resto de pantallas de Perfil.
+                      SettingsPageHeader(
+                        icon: Icons.notifications_active_outlined,
+                        title: l10n.remindersTitle,
+                        description: l10n.remindersDescription,
                       ),
                       const SizedBox(height: 32),
                       ...List.generate(reminders.length, (index) {
