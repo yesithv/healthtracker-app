@@ -9,7 +9,7 @@ import '../../../../core/theme/tokens/content_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
-import '../../../../core/widgets/settings_page_header.dart';
+import '../../../../core/widgets/settings_page_layout.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HealthGoalsScreen extends StatefulWidget {
@@ -88,173 +88,149 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
           const SecondaryAppBar(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Encabezado común: ícono + título + descripción centrados.
-                  SettingsPageHeader(
-                    icon: Icons.flag_circle_outlined,
-                    title: l10n.healthGoalsTitle,
-                    description: l10n.goalsScreenDescription,
-                  ),
-                  const SizedBox(height: 32),
-                  // --- INFO & TOGGLE CARD ---
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: surfaces.cardDecoration(
-                      radius: surfaces.radiusCard + 4,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            IconBadge(
-                              Icons.flag_circle_outlined,
-                              color: accent.accent,
-                              background: accent.accent.withValues(alpha: 0.1),
-                              padding: 10,
-                              iconSize: 28,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.medicalGoalsToggle,
-                                    style: theme.type.cardTitle.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    l10n.medicalGoalsSubtitle,
-                                    style: theme.type.body.copyWith(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
+              // El widget común aporta el encabezado (ícono centrado + título +
+              // descripción) y el botón «Guardar preferencias» estándar, para
+              // que sean idénticos al resto de pantallas de Perfil.
+              child: SettingsPageLayout(
+                icon: Icons.flag_circle_outlined,
+                title: l10n.healthGoalsTitle,
+                description: l10n.goalsScreenDescription,
+                onConfirm: _saveGoals,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // --- INFO & TOGGLE CARD ---
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: surfaces.cardDecoration(
+                        radius: surfaces.radiusCard + 4,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              IconBadge(
+                                Icons.flag_circle_outlined,
+                                color: accent.accent,
+                                background: accent.accent.withValues(
+                                  alpha: 0.1,
+                                ),
+                                padding: 10,
+                                iconSize: 28,
                               ),
-                            ),
-                            Switch(
-                              value: _goalsEnabled,
-                              activeThumbColor: accent.accent,
-                              activeTrackColor: accent.accent.withValues(
-                                alpha: 0.2,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.medicalGoalsToggle,
+                                      style: theme.type.cardTitle.copyWith(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      l10n.medicalGoalsSubtitle,
+                                      style: theme.type.body.copyWith(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              onChanged: (val) =>
-                                  setState(() => _goalsEnabled = val),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  if (_goalsEnabled) ...[
-                    // --- TARGET WEIGHT ---
-                    _buildSectionCard(
-                      icon: Icons.monitor_weight_outlined,
-                      title: l10n.targetWeight,
-                      child: _buildSliderField(
-                        value: _targetWeight,
-                        unit: 'kg', // Could be unit aware later
-                        min: 30,
-                        max: 200,
-                        // El peso es antropometría; la grasa, el músculo y la
-                        // grasa visceral son composición corporal. Cada objetivo
-                        // lleva la identidad del indicador al que apunta, no un
-                        // color elegido para que la pantalla quede variada.
-                        tone: theme.metrics.tone(MetricFamily.anthropometry),
-                        onChanged: (v) =>
-                            setState(() => _targetWeight = _round1(v)),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // --- TARGET BODY FAT ---
-                    _buildSectionCard(
-                      icon: Icons.pie_chart_outline,
-                      title: l10n.targetBodyFat,
-                      child: _buildSliderField(
-                        value: _targetBodyFat,
-                        unit: '%',
-                        min: 3,
-                        max: 60,
-                        tone: theme.metrics.tone(MetricFamily.bodyComposition),
-                        onChanged: (v) =>
-                            setState(() => _targetBodyFat = _round1(v)),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // --- TARGET MUSCLE MASS ---
-                    _buildSectionCard(
-                      icon: Icons.fitness_center,
-                      title: l10n.targetMuscleMass,
-                      child: _buildSliderField(
-                        value: _targetMuscleMass,
-                        unit: 'kg',
-                        min: 10,
-                        max: 100,
-                        tone: theme.metrics.tone(MetricFamily.bodyComposition),
-                        onChanged: (v) =>
-                            setState(() => _targetMuscleMass = _round1(v)),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // --- TARGET VISCERAL FAT ---
-                    _buildSectionCard(
-                      icon: Icons.monitor_heart_outlined,
-                      title: l10n.targetVisceralFat,
-                      child: _buildIntPickerCard(
-                        value: _targetVisceralFat,
-                        unit: l10n.compositionLevel,
-                        tone: theme.metrics.tone(MetricFamily.bodyComposition),
-                        onDecrement: () => setState(() {
-                          if (_targetVisceralFat > 1) _targetVisceralFat--;
-                        }),
-                        onIncrement: () => setState(() {
-                          if (_targetVisceralFat < 30) _targetVisceralFat++;
-                        }),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
-
-                  // --- SAVE BUTTON ---
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _saveGoals,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accent.accent,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            surfaces.radiusControl,
+                              Switch(
+                                value: _goalsEnabled,
+                                activeThumbColor: accent.accent,
+                                activeTrackColor: accent.accent.withValues(
+                                  alpha: 0.2,
+                                ),
+                                onChanged: (val) =>
+                                    setState(() => _goalsEnabled = val),
+                              ),
+                            ],
                           ),
-                        ),
-                        // Los temas planos no elevan los controles.
-                        elevation: surfaces.cardShadow.isEmpty ? 0 : 4,
-                        shadowColor: accent.accent.withValues(alpha: 0.4),
-                      ),
-                      child: Text(
-                        l10n.savePreferences,
-                        style: theme.type.button.copyWith(
-                          fontSize: 16,
-                          color: accent.onAccent,
-                        ),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                ],
+
+                    const SizedBox(height: 24),
+
+                    if (_goalsEnabled) ...[
+                      // --- TARGET WEIGHT ---
+                      _buildSectionCard(
+                        icon: Icons.monitor_weight_outlined,
+                        title: l10n.targetWeight,
+                        child: _buildSliderField(
+                          value: _targetWeight,
+                          unit: 'kg', // Could be unit aware later
+                          min: 30,
+                          max: 200,
+                          // El peso es antropometría; la grasa, el músculo y la
+                          // grasa visceral son composición corporal. Cada
+                          // objetivo lleva la identidad del indicador al que
+                          // apunta, no un color elegido para que la pantalla
+                          // quede variada.
+                          tone: theme.metrics.tone(MetricFamily.anthropometry),
+                          onChanged: (v) =>
+                              setState(() => _targetWeight = _round1(v)),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // --- TARGET BODY FAT ---
+                      _buildSectionCard(
+                        icon: Icons.pie_chart_outline,
+                        title: l10n.targetBodyFat,
+                        child: _buildSliderField(
+                          value: _targetBodyFat,
+                          unit: '%',
+                          min: 3,
+                          max: 60,
+                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          onChanged: (v) =>
+                              setState(() => _targetBodyFat = _round1(v)),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // --- TARGET MUSCLE MASS ---
+                      _buildSectionCard(
+                        icon: Icons.fitness_center,
+                        title: l10n.targetMuscleMass,
+                        child: _buildSliderField(
+                          value: _targetMuscleMass,
+                          unit: 'kg',
+                          min: 10,
+                          max: 100,
+                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          onChanged: (v) =>
+                              setState(() => _targetMuscleMass = _round1(v)),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // --- TARGET VISCERAL FAT ---
+                      _buildSectionCard(
+                        icon: Icons.monitor_heart_outlined,
+                        title: l10n.targetVisceralFat,
+                        child: _buildIntPickerCard(
+                          value: _targetVisceralFat,
+                          unit: l10n.compositionLevel,
+                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          onDecrement: () => setState(() {
+                            if (_targetVisceralFat > 1) _targetVisceralFat--;
+                          }),
+                          onIncrement: () => setState(() {
+                            if (_targetVisceralFat < 30) _targetVisceralFat++;
+                          }),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
