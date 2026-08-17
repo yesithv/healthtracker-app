@@ -656,5 +656,17 @@
   "mhxGenerate": "PDF erstellen",
   "mhxNoData": "Es gibt noch keine Messwerte zum Exportieren.",
   "mhxAgeYears": "{years} J.",
-  "mhxPageOf": "Seite {current} von {total}"
+  "mhxPageOf": "Seite {current} von {total}",
+  "medicationsTitle": "Medikamente",
+  "medicationsMenuTitle": "Medikamente",
+  "medicationAdd": "Medikament hinzufügen",
+  "medicationTaken": "Eingenommen",
+  "medicationSkipped": "Übersprungen",
+  "medicationRefill": "Nachfüllen",
+  "medicationDoseNotifTitle": "Zeit für {name}",
+  "medicationDoseNotifBody": "Es ist Zeit für deine Einnahme.",
+  "medicationRefillNotifTitle": "{name} nachfüllen",
+  "medicationRefillNotifBody": "Dein Vorrat geht zur Neige.",
+  "medicationUnitsLeft": "Noch {count} Einheiten",
+  "medicationOutOfStock": "Nicht vorrätig"
 }

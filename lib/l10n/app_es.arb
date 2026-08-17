@@ -887,5 +887,17 @@
   "mhxGenerate": "Generar PDF",
   "mhxNoData": "Todavía no hay mediciones que exportar.",
   "mhxAgeYears": "{years} años",
-  "mhxPageOf": "Página {current} de {total}"
+  "mhxPageOf": "Página {current} de {total}",
+  "medicationsTitle": "Medicamentos",
+  "medicationsMenuTitle": "Medicamentos",
+  "medicationAdd": "Añadir medicamento",
+  "medicationTaken": "Tomado",
+  "medicationSkipped": "Omitido",
+  "medicationRefill": "Recargar",
+  "medicationDoseNotifTitle": "Hora de {name}",
+  "medicationDoseNotifBody": "Es hora de tu toma.",
+  "medicationRefillNotifTitle": "Reabastecer {name}",
+  "medicationRefillNotifBody": "Tu inventario está por agotarse.",
+  "medicationUnitsLeft": "Quedan {count} unidades",
+  "medicationOutOfStock": "Sin existencias"
 }

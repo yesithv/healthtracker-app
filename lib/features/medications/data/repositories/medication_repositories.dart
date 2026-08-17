@@ -90,4 +90,11 @@ class MedicationLogRepository extends RecordRepository<MedicationLog> {
     }
     return null;
   }
+
+  /// Borra todos los registros de un medicamento (al eliminarlo).
+  Future<void> deleteForMedication(String medicationId) async {
+    for (final log in forMedication(medicationId)) {
+      await delete(log.id);
+    }
+  }
 }
