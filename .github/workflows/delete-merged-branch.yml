@@ -1,0 +1,46 @@
+name: Eliminar rama fusionada
+
+# Cuando un pull request contra `main` se cierra por fusión, borra su rama de
+# origen para que no se acumulen ramas ya integradas. Sólo actúa si el PR fue
+# realmente fusionado (no si se cerró sin fusionar) y nunca sobre ramas de otro
+# repositorio (forks), que no se pueden ni se deben eliminar desde aquí.
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+# Sólo se necesita permiso de escritura sobre el contenido para borrar la rama.
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    name: Borrar rama de origen
+    runs-on: ubuntu-latest
+    # `merged == true` distingue una fusión de un cierre sin fusionar.
+    # La comparación de repos evita intentar borrar la rama de un fork.
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Eliminar la rama
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = context.payload.pull_request.head.ref;
+            try {
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `heads/${branch}`,
+              });
+              core.info(`Rama eliminada: ${branch}`);
+            } catch (error) {
+              // Si la rama ya no existe (p. ej. borrada manualmente), no es un
+              // fallo del despliegue: se registra y se continúa.
+              if (error.status === 422) {
+                core.info(`La rama ${branch} ya no existe, nada que borrar.`);
+              } else {
+                throw error;
+              }
+            }
