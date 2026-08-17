@@ -20,6 +20,17 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   Map<String, dynamic> toMap(T record);
   String idOf(T record);
 
+  /// Cláusula ORDER BY para las lecturas de cache/lista. Las tablas de registros
+  /// clínicos ordenan por su `measurement_date` (más reciente primero); las
+  /// tablas sin esa columna (p. ej. `appointments`) sobreescriben este getter con
+  /// su propio orden. Se centraliza aquí para no repetir el literal.
+  String get orderBy => 'measurement_date DESC';
+
+  /// ORDER BY para la cola de sincronización ([getUnsynced]): por defecto los más
+  /// antiguos primero para que el servidor los reciba en orden cronológico. Las
+  /// tablas sin `measurement_date` lo sobreescriben (p. ej. por `created_at`).
+  String get unsyncedOrderBy => 'measurement_date ASC';
+
   RecordRepository() {
     refresh();
   }
@@ -41,7 +52,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   /// Reloads the cache from the database and notifies listeners.
   Future<void> refresh() async {
     final db = await _db;
-    final maps = await db.query(table, orderBy: 'measurement_date DESC');
+    final maps = await db.query(table, orderBy: orderBy);
     _items = maps.map(fromMap).toList();
     _loaded = true;
     notifyListeners();
@@ -58,10 +69,10 @@ abstract class RecordRepository<T> extends ChangeNotifier {
     await refresh();
   }
 
-  /// All records, newest measurement first.
+  /// All records, in the repository's configured order.
   Future<List<T>> getAll() async {
     final db = await _db;
-    final maps = await db.query(table, orderBy: 'measurement_date DESC');
+    final maps = await db.query(table, orderBy: orderBy);
     return maps.map(fromMap).toList();
   }
 
@@ -112,7 +123,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
     final db = await _db;
     final maps = await db.query(
       table,
-      orderBy: 'measurement_date DESC',
+      orderBy: orderBy,
       limit: limit,
       offset: offset,
     );
@@ -134,7 +145,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
       table,
       where: 'is_synced = ?',
       whereArgs: [0],
-      orderBy: 'measurement_date ASC',
+      orderBy: unsyncedOrderBy,
     );
     return maps.map(fromMap).toList();
   }

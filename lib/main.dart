@@ -18,6 +18,9 @@ import 'core/providers/discover_provider.dart';
 import 'package:myvitals_healthtracker_app/features/discover/data/repositories/discover_repository.dart';
 import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/data/repositories/appointment_repository.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_scheduler.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/presentation/controllers/appointments_controller.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
@@ -59,6 +62,18 @@ void main() {
         await NotificationService().init();
       } catch (e, st) {
         debugPrint('=== NOTIFICATION INIT ERROR: $e\n$st');
+      }
+
+      // 2b. Reprogramar los avisos del inventario de citas dentro de la ventana
+      // móvil (ver AppointmentScheduler). Como el plugin no repite "cada N meses",
+      // cada arranque vuelve a materializar las ocurrencias futuras. No-op en web.
+      try {
+        final appointments = AppointmentRepository.instance;
+        if (!appointments.isLoaded) await appointments.refresh();
+        await AppointmentScheduler()
+            .rescheduleAll(appointments: appointments.items);
+      } catch (e, st) {
+        debugPrint('=== APPOINTMENT RESCHEDULE ERROR: $e\n$st');
       }
 
       // 3. Restore the patient session (identity used to sync with the API).
@@ -131,6 +146,17 @@ void main() {
             ),
             ChangeNotifierProvider<BodyCompositionRepository>.value(
               value: BodyCompositionRepository.instance,
+            ),
+            // Inventario de citas médicas: mismo singleton de por vida que el
+            // resto de repositorios; las pantallas lo `watch` para refrescarse.
+            ChangeNotifierProvider<AppointmentRepository>.value(
+              value: AppointmentRepository.instance,
+            ),
+            // Orquestador del inventario de citas: las pantallas crean, agendan y
+            // confirman citas a través de él (generación de la siguiente
+            // ocurrencia recurrente y reprogramación de avisos incluidas).
+            ChangeNotifierProvider<AppointmentsController>(
+              create: (_) => AppointmentsController(),
             ),
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(

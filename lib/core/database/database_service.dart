@@ -73,7 +73,8 @@ class DatabaseService {
   /// Bumped whenever the schema changes. v2: `lab_code` on lipid_records (lab picker).
   /// v3: perímetros corporales en anthropometric_records + muscle_pct en
   /// body_composition_records (paridad con lo que guarda el legacy).
-  static const int _dbVersion = 3;
+  /// v4: inventario de citas médicas (tabla `appointments`).
+  static const int _dbVersion = 4;
 
   /// Incremental migrations for existing installs. Each step is idempotent-friendly
   /// and additive (no destructive changes to the user's local data).
@@ -102,6 +103,9 @@ class DatabaseService {
       await db.execute(
         'UPDATE anthropometric_records SET height = height * 100 WHERE height < 3',
       );
+    }
+    if (oldVersion < 4) {
+      await _createAppointmentsTable(db);
     }
   }
 
@@ -185,7 +189,48 @@ CREATE TABLE body_composition_records (
 )
 ''');
 
+    await _createAppointmentsTable(db);
     await _createIndexes(db);
+  }
+
+  /// Tabla del inventario de citas médicas. Una sola tabla (a diferencia del
+  /// módulo de medicamentos): guarda tanto las citas ya agendadas (`scheduled_at`)
+  /// como las que hay que sacar (`due_to_book_on`), su estado, y —para los
+  /// controles periódicos— el intervalo en meses y el `series_id` que enlaza las
+  /// ocurrencias de una misma serie. Sigue las convenciones del resto de tablas:
+  /// `id` TEXT, fechas ISO-8601, booleanos 0/1 y `is_synced` para la sync futura.
+  ///
+  /// Se extrae a su propio método porque también la usa [_upgradeDB] al migrar
+  /// una instalación existente de la versión anterior.
+  Future<void> _createAppointmentsTable(Database db) async {
+    await db.execute('''
+CREATE TABLE appointments (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  specialty TEXT,
+  provider TEXT,
+  location TEXT,
+  notes TEXT,
+  status TEXT NOT NULL,
+  scheduled_at TEXT,
+  due_to_book_on TEXT,
+  is_recurring INTEGER NOT NULL DEFAULT 0,
+  interval_months INTEGER,
+  lead_days INTEGER,
+  series_id TEXT,
+  reminder_offsets TEXT,
+  snoozed_until TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  is_synced INTEGER NOT NULL DEFAULT 0
+)
+''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_appointments_scheduled ON appointments(scheduled_at)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_appointments_due ON appointments(due_to_book_on)',
+    );
   }
 
   /// Creates indexes on `measurement_date` for all record tables. Every query
