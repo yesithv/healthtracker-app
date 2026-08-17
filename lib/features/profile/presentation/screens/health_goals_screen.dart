@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/providers/health_goals_provider.dart';
 import '../../../../core/theme/theme_context.dart';
-import '../../../../core/theme/tokens/content_palette.dart';
+import '../../../../core/theme/settings_accent.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
@@ -70,9 +70,9 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
   ThemeData get _theme => Theme.of(context);
 
   /// Acento de la pantalla: el MISMO que su fila en Perfil, para que al entrar
-  /// se reconozca de dónde viene. Ver la nota sobre acentos de orientación en
-  /// `profile_screen.dart`.
-  Tone get _accent => _theme.content.tone(ContentCategory.heart);
+  /// se reconozca de dónde viene. Sale de [SettingsSection], la fuente única que
+  /// también lee el menú de Perfil, así que no pueden divergir.
+  Tone get _accent => SettingsSection.healthGoals.tone(_theme);
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +95,7 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
                 icon: Icons.flag_circle_outlined,
                 title: l10n.healthGoalsTitle,
                 description: l10n.goalsScreenDescription,
+                accent: accent,
                 onConfirm: _saveGoals,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

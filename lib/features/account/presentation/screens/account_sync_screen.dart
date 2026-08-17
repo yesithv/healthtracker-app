@@ -14,6 +14,7 @@ import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dar
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
 /// Pantalla de cuenta y sincronización (andamio de Fase 0). Reúne los dos flujos:
@@ -130,6 +131,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                 icon: Icons.sync,
                 title: l10n.accountSyncTitle,
                 description: l10n.accountSyncDescription,
+                accent: SettingsSection.accountSync.tone(Theme.of(context)),
               ),
               const SizedBox(height: 32),
               session.isAuthenticated ? _loggedIn(session) : _loggedOut(),

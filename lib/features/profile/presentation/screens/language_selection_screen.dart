@@ -5,6 +5,7 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 
 /// Mixin that exposes a [validate] method for wizard-embedded screens.
 mixin WizardValidatable {
@@ -80,6 +81,7 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
         icon: Icons.language_rounded,
         title: l10n.languageTitle,
         description: l10n.languageDescription,
+        accent: SettingsSection.language.tone(Theme.of(context)),
         showConfirmButton: widget.showAppBar,
         onConfirm: () {
           if (_tempSelectedCode != null) {

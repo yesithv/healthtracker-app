@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/theme/theme_catalog.dart';
 import '../../../../core/theme/theme_context.dart';
+import '../../../../core/theme/settings_accent.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../../../core/widgets/settings_page_layout.dart';
 import '../../../../l10n/generated/app_localizations.dart';
@@ -68,6 +69,11 @@ class ThemePickerScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: SettingsPageLayout(
                   icon: Icons.palette_outlined,
+                  // Sólo en Perfil el ícono lleva el acento de su fila; en la
+                  // pantalla 0 de arranque no se entra desde ninguna fila.
+                  accent: _isSettings
+                      ? SettingsSection.appTheme.tone(Theme.of(context))
+                      : null,
                   title: _isSettings
                       ? l10n.profileAppTheme
                       : l10n.themePickTitle,

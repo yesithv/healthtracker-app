@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provi
 import 'package:myvitals_healthtracker_app/core/sync/device_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 
 /// Selector "¿qué báscula de bioimpedancia usas?". Fuente de verdad editable siempre; la
 /// elección se guarda local y se sincroniza a la API, que la usa para interpretar (el semáforo
@@ -77,6 +78,7 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
           icon: Icons.monitor_heart_outlined,
           title: l10n.deviceScreenTitle,
           description: l10n.deviceScreenDescription,
+          accent: SettingsSection.device.tone(Theme.of(context)),
           // La elección ya se guarda y sincroniza al tocar cada opción (igual
           // que en Idioma y Unidades); el botón sólo confirma y regresa.
           onConfirm: () => Navigator.pop(context),

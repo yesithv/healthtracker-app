@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 
 class UnitOfMeasureSelection extends StatefulWidget {
   final MeasurementUnit initialUnit;
@@ -39,6 +40,7 @@ class _UnitOfMeasureSelectionState extends State<UnitOfMeasureSelection> {
       icon: Icons.straighten_rounded,
       title: l10n.unitOfMeasureTitle,
       description: l10n.unitOfMeasureDescription,
+      accent: SettingsSection.measurementUnits.tone(Theme.of(context)),
       showConfirmButton: widget.showConfirmButton,
       onConfirm: widget.onConfirm,
       child: Column(
