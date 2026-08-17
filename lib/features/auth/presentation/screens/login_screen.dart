@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
+import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 /// Paso 1 de "Iniciar sesión". El usuario que YA es paciente ingresa un solo dato
@@ -107,6 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _idController,
                 autofocus: true,
                 textInputAction: TextInputAction.go,
+                // Sirve para documento O correo, así que no se restringe a un
+                // tipo; pero ninguno de los dos lleva espacios, y el tope corta
+                // pegados absurdos.
+                inputFormatters: InputRules.identifier(),
                 decoration: InputDecoration(
                   labelText: l10n.identifyFieldLabel,
                   hintText: l10n.identifyFieldHint,

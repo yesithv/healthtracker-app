@@ -851,6 +851,9 @@ class _RecordAnthropometricScreenState
       child: TextField(
         controller: _commentController,
         maxLines: 4,
+        // Texto libre, pero acotado: un pegado accidental no debe meter miles
+        // de caracteres en la base.
+        inputFormatters: InputRules.freeText(),
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,

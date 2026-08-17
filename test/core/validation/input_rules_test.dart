@@ -127,6 +127,77 @@ void main() {
     });
   });
 
+  group('Nombre', () {
+    test('acepta letras con tildes, ñ, guion y apóstrofo', () {
+      final f = InputRules.name();
+      expect(type(f, 'José Ñáñez'), 'José Ñáñez');
+      expect(type(f, 'Anne-Marie'), 'Anne-Marie');
+      expect(type(f, "O'Brien"), "O'Brien");
+      expect(type(f, 'María del Carmen'), 'María del Carmen');
+    });
+
+    test('bloquea dígitos y signos', () {
+      final f = InputRules.name();
+      // El dígito y la arroba sencillamente no entran; lo demás sí.
+      expect(type(f, 'Juan3', previous: 'Juan'), 'Juan');
+      expect(type(f, 'ana@', previous: 'ana'), 'ana');
+      expect(type(f, 'Peréz_', previous: 'Peréz'), 'Peréz');
+      expect(type(f, 'Ana#2', previous: 'Ana'), 'Ana');
+    });
+
+    test('respeta el tope de longitud', () {
+      final f = InputRules.name(maxLength: 5);
+      expect(type(f, 'abcdefg'), 'abcde');
+    });
+  });
+
+  group('Correo (formateador)', () {
+    test('no deja teclear ni pegar espacios', () {
+      final f = InputRules.email();
+      expect(type(f, 'ana ruiz', previous: 'ana'), 'ana');
+      expect(type(f, ' ana@x.com'), 'ana@x.com');
+      expect(type(f, 'ana@ejemplo.com'), 'ana@ejemplo.com');
+    });
+
+    test('corta direcciones absurdamente largas', () {
+      final f = InputRules.email(maxLength: 10);
+      expect(type(f, 'a' * 20), 'a' * 10);
+    });
+  });
+
+  group('Identificador de acceso', () {
+    test('sirve para documento o correo, pero sin espacios', () {
+      final f = InputRules.identifier();
+      expect(type(f, '12345678Z'), '12345678Z');
+      expect(type(f, 'ana@ejemplo.com'), 'ana@ejemplo.com');
+      expect(type(f, 'ana ruiz', previous: 'ana'), 'ana');
+    });
+  });
+
+  group('Texto libre', () {
+    test('deja pasar signos que una nota clínica sí usa', () {
+      final f = InputRules.freeText();
+      expect(type(f, 'TA 120/80, #2 (%)'), 'TA 120/80, #2 (%)');
+    });
+
+    test('pero pone un techo de longitud', () {
+      final f = InputRules.freeText(maxLength: 4);
+      expect(type(f, 'abcdef'), 'abcd');
+    });
+  });
+
+  group('Fecha de nacimiento', () {
+    test('la más antigua admisible es hoy menos 120 años', () {
+      final hoy = DateTime(2026, 8, 17);
+      final min = InputRules.earliestBirthDate(hoy);
+      expect(min, DateTime(1906, 8, 17));
+    });
+
+    test('la constante de edad máxima es 120', () {
+      expect(InputRules.maxHumanAgeYears, 120);
+    });
+  });
+
   group('Teléfono y documento', () {
     test('el teléfono admite cifras y espacios, nada más', () {
       final f = InputRules.phone();

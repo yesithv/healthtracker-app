@@ -425,6 +425,9 @@ class _RegisterCardState extends State<_RegisterCard> {
           // nada por sí solo. El formulario estaba muerto.
           onChanged: (_) => setState(() {}),
           textCapitalization: TextCapitalization.words,
+          // Sin dígitos ni signos: un nombre son letras (con tildes y ñ),
+          // espacios y a lo sumo guion o apóstrofo.
+          inputFormatters: InputRules.name(),
           decoration: InputDecoration(labelText: l10n.fullName),
         ),
         const SizedBox(height: 12),
@@ -434,6 +437,9 @@ class _RegisterCardState extends State<_RegisterCard> {
           keyboardType: TextInputType.emailAddress,
           autocorrect: false,
           textCapitalization: TextCapitalization.none,
+          // El espacio del autocorrector o de un pegado no entra; la forma la
+          // valida InputRules.isEmail (emailMalformed) más abajo.
+          inputFormatters: InputRules.email(),
           decoration: InputDecoration(
             labelText: l10n.emailLabel,
             errorText: emailMalformed ? l10n.validationEmailFormat : null,

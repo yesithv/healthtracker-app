@@ -933,7 +933,11 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
             // El teclado numérico es una SUGERENCIA al móvil, no un filtro: en
             // escritorio, en web y al pegar entra cualquier cosa. Quien pide
             // número tiene además que filtrar.
-            inputFormatters: isNumeric ? InputRules.decimal() : null,
+            // Numérico: filtro decimal. Texto (nombre del laboratorio): libre
+            // pero acotado, para que un pegado no desborde el campo.
+            inputFormatters: isNumeric
+                ? InputRules.decimal()
+                : InputRules.freeText(maxLength: 80),
             style: theme.type.body.copyWith(color: surfaces.ink),
             decoration: InputDecoration(
               hintText: hint,
@@ -962,6 +966,9 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
       child: TextField(
         controller: _commentController,
         maxLines: 3,
+        // Texto libre, pero acotado: un pegado accidental no debe meter miles
+        // de caracteres en la base.
+        inputFormatters: InputRules.freeText(),
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
