@@ -120,11 +120,23 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    // Nadie tiene más de 120 años: no se puede ni retroceder más allá. Antes
+    // el selector llegaba hasta 1900, así que dejaba elegir una edad imposible.
+    final DateTime firstDate = InputRules.earliestBirthDate();
+    final DateTime lastDate = DateTime.now();
+    // El punto de partida ha de caer dentro del rango; una fecha guardada fuera
+    // de él (un dato viejo) reventaría el selector, así que se ajusta.
+    final DateTime stored = _selectedDate ?? DateTime(2000);
+    final DateTime initial = stored.isBefore(firstDate)
+        ? firstDate
+        : stored.isAfter(lastDate)
+        ? lastDate
+        : stored;
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      initialDate: initial,
+      firstDate: firstDate,
+      lastDate: lastDate,
       builder: (context, child) {
         final surfaces = Theme.of(context).surfaces;
         return Theme(
@@ -245,6 +257,9 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                   ),
                   child: TextFormField(
                     controller: _nameController,
+                    // Un nombre no lleva dígitos ni signos: se filtran al teclear
+                    // y al pegar, no sólo se avisan al confirmar.
+                    inputFormatters: InputRules.name(),
                     onChanged: (v) {
                       if (_nameError && v.trim().isNotEmpty) {
                         setState(() => _nameError = false);
@@ -321,6 +336,9 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                   // el autocorrector del móvil mete ambas cosas.
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
+                  // El espacio del autocorrector o de un pegado no entra; la
+                  // forma entera la comprueba InputRules.isEmail al confirmar.
+                  inputFormatters: InputRules.email(),
                   decoration: _inputDecoration(
                     'email@ejemplo.com',
                     Icons.email_outlined,

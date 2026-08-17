@@ -933,6 +933,9 @@ class _RecordVitalSignsScreenState extends State<RecordVitalSignsScreen> {
       child: TextField(
         controller: _commentController,
         maxLines: 3,
+        // Texto libre, pero acotado: un pegado accidental no debe meter miles
+        // de caracteres en la base.
+        inputFormatters: InputRules.freeText(),
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,

@@ -50,6 +50,61 @@ abstract final class InputRules {
     if (maxLength != null) LengthLimitingTextInputFormatter(maxLength),
   ];
 
+  /// Un nombre de persona: letras y nada más que separe o una nombres.
+  ///
+  /// Deja pasar letras de cualquier alfabeto (`\p{L}` cubre tildes y la ñ),
+  /// espacios, el guion de los compuestos («Anne-Marie») y el apóstrofo
+  /// («O'Brien»). Fuera quedan los dígitos y los signos: un nombre no lleva `3`
+  /// ni `@`, y colarlos suele ser un descuido al teclear o texto pegado por
+  /// error. El límite ataja pegados larguísimos.
+  static List<TextInputFormatter> name({int maxLength = 60}) => [
+    FilteringTextInputFormatter.allow(RegExp(r"[\p{L} \-']", unicode: true)),
+    LengthLimitingTextInputFormatter(maxLength),
+  ];
+
+  /// Un correo mientras se escribe: sin espacios, ni al teclear ni al pegar.
+  ///
+  /// No comprueba la FORMA entera —de eso se encarga [isEmail] al confirmar—,
+  /// sólo impide el error más común y silencioso: el espacio que el autocorrector
+  /// del móvil o un copiar-pegar deja delante o en medio de la dirección. El
+  /// tope de 254 es el máximo que acepta cualquier servidor.
+  static List<TextInputFormatter> email({int maxLength = 254}) => [
+    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+    LengthLimitingTextInputFormatter(maxLength),
+  ];
+
+  /// El identificador de acceso, que puede ser documento O correo.
+  ///
+  /// Como no se sabe cuál de los dos es, no se restringe el juego de caracteres;
+  /// pero ninguno de los dos lleva espacios, así que ésos se bloquean —al
+  /// teclear y al pegar— y se pone un tope que corta pegados absurdos.
+  static List<TextInputFormatter> identifier({int maxLength = 254}) => [
+    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+    LengthLimitingTextInputFormatter(maxLength),
+  ];
+
+  /// Texto libre acotado: comentarios, notas, nombre del laboratorio.
+  ///
+  /// Aquí no se filtran caracteres —una observación clínica puede llevar
+  /// «120/80», «#2» o «%»—, sólo se pone un techo para que un pegado accidental
+  /// no meta miles de caracteres en la base.
+  static List<TextInputFormatter> freeText({int maxLength = 500}) => [
+    LengthLimitingTextInputFormatter(maxLength),
+  ];
+
+  /// Nadie vive más de esto. El límite deja fuera fechas de nacimiento que sólo
+  /// pueden ser un error de dedo (un `1800` por un `1980`).
+  static const int maxHumanAgeYears = 120;
+
+  /// La fecha de nacimiento más antigua admisible: hoy menos [maxHumanAgeYears].
+  /// Se usa como `firstDate` del selector para que ni siquiera se pueda navegar
+  /// más atrás. En un solo sitio, para que la regla no se desperdigue por las
+  /// pantallas.
+  static DateTime earliestBirthDate([DateTime? now]) {
+    final ref = now ?? DateTime.now();
+    return DateTime(ref.year - maxHumanAgeYears, ref.month, ref.day);
+  }
+
   /// Un número con decimales y UN solo separador.
   ///
   /// El filtro que había antes era `RegExp(r'[0-9.,]')`, que deja teclear

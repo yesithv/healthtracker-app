@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -1041,7 +1040,9 @@ class _RecordBodyCompositionScreenState
                 child: TextField(
                   controller: _bmrController,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  // Por el helper común, y con tope: un metabolismo basal cabe
+                  // en cuatro cifras (máx. 9999 kcal).
+                  inputFormatters: InputRules.digits(maxLength: 4),
                   style: theme.type.numeral.copyWith(
                     color: onAccent,
                     fontSize: 38,
@@ -1153,6 +1154,9 @@ class _RecordBodyCompositionScreenState
       child: TextField(
         controller: _commentController,
         maxLines: 3,
+        // Texto libre, pero acotado: un pegado accidental no debe meter miles
+        // de caracteres en la base.
+        inputFormatters: InputRules.freeText(),
         style: theme.type.body.copyWith(color: surfaces.ink),
         decoration: InputDecoration(
           hintText: l10n.commentHint,
