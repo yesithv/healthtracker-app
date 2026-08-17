@@ -401,6 +401,7 @@
   "dashboardCompositionMuscle": "MUSKEL",
   "dashboardCompositionVisceral": "VISZERAL",
   "dashboardCompositionBmr": "GU",
+  "dashboardLastMeasured": "Zuletzt gemessen",
   "dashboardCompositionLevel": "St. {level}",
   "vitalsPdfTitle": "Vitalzeichen-Verlauf",
   "vitalsShareCsvSubject": "Vitalzeichen-CSV",

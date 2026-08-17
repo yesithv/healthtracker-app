@@ -466,6 +466,7 @@
   "dashboardCompositionMuscle": "MUSCLE",
   "dashboardCompositionVisceral": "VISCERAL",
   "dashboardCompositionBmr": "BMR",
+  "dashboardLastMeasured": "Last measured",
   "dashboardCompositionLevel": "Lv. {level}",
   "@dashboardCompositionLevel": {
     "placeholders": {

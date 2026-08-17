@@ -2369,6 +2369,12 @@ abstract class AppLocalizations {
   /// **'BMR'**
   String get dashboardCompositionBmr;
 
+  /// No description provided for @dashboardLastMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'Last measured'**
+  String get dashboardLastMeasured;
+
   /// No description provided for @dashboardCompositionLevel.
   ///
   /// In en, this message translates to:

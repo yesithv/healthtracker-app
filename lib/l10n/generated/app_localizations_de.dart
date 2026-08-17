@@ -1242,6 +1242,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dashboardCompositionBmr => 'GU';
 
   @override
+  String get dashboardLastMeasured => 'Zuletzt gemessen';
+
+  @override
   String dashboardCompositionLevel(int level) {
     return 'St. $level';
   }
