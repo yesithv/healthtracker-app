@@ -12,7 +12,9 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/vital_si
 void main() {
   // Mismo «hoy» que la demo, para que el recorte por periodo sea determinista.
   final today = DateTime(2026, 7, 29, 8);
-  final data = buildDemoDataset(today: today);
+  // Opt-in: los edge cases están apagados por defecto (aplastan las gráficas del
+  // home), así que esta prueba de blindaje enciende la bandera a mano.
+  final data = buildDemoDataset(today: today, includeEdgeCases: true);
 
   final summary = buildClinicalSummary(
     period: ExportPeriod.all,
