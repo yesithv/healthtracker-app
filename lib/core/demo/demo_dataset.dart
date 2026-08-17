@@ -60,14 +60,24 @@ const int _seed = 20260729;
 /// Construye la historia completa. [today] existe para las pruebas; en la app
 /// siempre es la fecha real, de modo que la demo termina «hoy» y las pantallas
 /// muestran datos recientes en vez de un archivo muerto.
-DemoDataset buildDemoDataset({DateTime? today, String language = 'es'}) {
+///
+/// [includeEdgeCases] anexa un puñado de registros EXTREMOS pero válidos (topes
+/// clínicos, colisiones de fecha, bordes de la ventana) para estresar las
+/// gráficas, las estadísticas y el PDF sin salirse de rango. Viene encendido por
+/// defecto —así la demo del home los siembra siempre—; las pruebas que fijan la
+/// narrativa limpia lo apagan. Ver `_buildEdgeCases`.
+DemoDataset buildDemoDataset({
+  DateTime? today,
+  String language = 'es',
+  bool includeEdgeCases = true,
+}) {
   final end = _atHour(today ?? DateTime.now(), 8);
   final start = end.subtract(const Duration(days: _spanDays));
   final rnd = math.Random(_seed);
   final notes = _DemoNotes(language);
 
   final anthropometric = _buildAnthropometric(start, end, rnd, notes);
-  return DemoDataset(
+  final base = DemoDataset(
     anthropometric: anthropometric,
     vitalSigns: _buildVitalSigns(start, end, rnd, notes),
     lipids: _buildLipids(start, end, rnd, notes),
@@ -76,7 +86,40 @@ DemoDataset buildDemoDataset({DateTime? today, String language = 'es'}) {
     // músculo en kg se calcula sobre el peso de ese día.
     bodyComposition: _buildBodyComposition(anthropometric, rnd, notes),
   );
+
+  if (!includeEdgeCases) return base;
+
+  // Anexa los extremos y REORDENA cada familia por fecha. Reordenar es un no-op
+  // para la serie curada (ya viene ascendente), pero coloca cada extremo en su
+  // sitio y mantiene el contrato «lista ya ordenada» que asumen las gráficas
+  // (`downsample`) y el resumen del PDF (`clinical_summary`).
+  final edge = _buildEdgeCases(start, end, notes);
+  return DemoDataset(
+    anthropometric: _mergeByDate(
+      base.anthropometric,
+      edge.anthropometric,
+      (r) => r.date,
+    ),
+    vitalSigns: _mergeByDate(base.vitalSigns, edge.vitalSigns, (r) => r.date),
+    lipids: _mergeByDate(base.lipids, edge.lipids, (r) => r.date),
+    bodyComposition: _mergeByDate(
+      base.bodyComposition,
+      edge.bodyComposition,
+      (r) => r.date,
+    ),
+  );
 }
+
+/// Une [base] y [extra] y devuelve la lista ordenada ASCENDENTEMENTE por fecha.
+/// Dos registros con el mismo instante quedan contiguos, pero su orden relativo
+/// no está garantizado (`List.sort` no es estable): quien lea la serie no puede
+/// apoyarse en cuál va primero de una colisión de fecha.
+List<T> _mergeByDate<T>(
+  List<T> base,
+  List<T> extra,
+  DateTime Function(T) dateOf,
+) =>
+    [...base, ...extra]..sort((a, b) => dateOf(a).compareTo(dateOf(b)));
 
 // ── La cadencia de cada examen ─────────────────────────────────────────────
 
@@ -563,6 +606,240 @@ List<BodyCompositionRecord> _buildBodyComposition(
   return records;
 }
 
+// ── Casos extremos (edge cases) ────────────────────────────────────────────
+
+/// Un puñado de registros EXTREMOS pero dentro de rango, para blindar la app.
+///
+/// La serie curada cuenta una mejora bonita y suave: nunca toca los topes
+/// clínicos ni las rarezas de tiempo (dos tomas en el mismo instante, valores al
+/// borde del clamp, presión de pulso mínima) que un usuario real sí producirá.
+/// Estos registros existen para VER CÓMO SE REVIENTA la app —gráficas de
+/// `fl_chart`, estadísticas del PDF, semáforos clínicos— antes de que lo haga en
+/// producción. Todo aquí cumple tres reglas:
+///
+///  1. **Dentro de rango.** Nada se sale de lo que un aparato podría enseñar ni
+///     de los clamps del generador (tensión 95–172/58–108, pulso 48–168…).
+///  2. **Coherente entre familias.** El IMC sale de peso y talla, el VLDL de los
+///     triglicéridos y el total es la suma de las tres fracciones — igual que en
+///     la serie curada.
+///  3. **En medio de la serie, nunca lo más reciente.** Se colocan con offsets
+///     fijos dentro de la ventana pero antes del último registro real de cada
+///     familia, para que el panel siga abriendo con los valores actuales de
+///     Camila y sea el HISTORIAL el que reciba el golpe.
+///
+/// Es DETERMINISTA sin depender de `rnd`: los valores van escritos a mano, así
+/// que dos generaciones seguidas dan exactamente lo mismo.
+DemoDataset _buildEdgeCases(DateTime start, DateTime end, _DemoNotes notes) {
+  DateTime at(int daysFromStart, int hour, [int minute = 0]) =>
+      _atHour(start.add(Duration(days: daysFromStart)), hour, minute);
+
+  // ── Signos vitales ─────────────────────────────────────────────────────
+  // El instante que comparten las dos tomas «gemelas»: colisión de fecha exacta
+  // (misma marca de tiempo, valores distintos), el caso que rompe cualquier
+  // gráfica que dé por hecho que no hay dos puntos en la misma X.
+  final collision = at(255, 9, 30);
+  final vitalSigns = <VitalSignRecord>[
+    // Crisis hipertensiva al tope del clamp, con el pulso también al máximo.
+    _vitalSign(
+      id: 'demo-edge-vitals-crisis',
+      at: at(150, 6, 40),
+      systolic: 172,
+      diastolic: 108,
+      heartRate: 168,
+      activity: 'ejercicio',
+      symptom: 'dolor',
+      comment: notes.pick(notes.edges, 0, every: 1),
+    ),
+    // Mínimos: hipotensión y bradicardia al borde inferior del clamp.
+    _vitalSign(
+      id: 'demo-edge-vitals-min',
+      at: at(430, 5, 5),
+      systolic: 95,
+      diastolic: 58,
+      heartRate: 48,
+      activity: 'reposo',
+      symptom: 'mareo',
+      comment: notes.pick(notes.edges, 1, every: 1),
+    ),
+    // Presión de pulso mínima: sistólica apenas 1 mmHg por encima de la
+    // diastólica. Dos líneas casi pegadas en la gráfica de tensión.
+    _vitalSign(
+      id: 'demo-edge-vitals-narrow',
+      at: at(600, 7, 0),
+      systolic: 100,
+      diastolic: 99,
+      heartRate: 90,
+      activity: 'post-op',
+      symptom: 'fatiga',
+    ),
+    // Colisión de tiempo A: misma marca exacta que la B, valores distintos.
+    _vitalSign(
+      id: 'demo-edge-vitals-collision-a',
+      at: collision,
+      systolic: 168,
+      diastolic: 104,
+      heartRate: 150,
+      activity: 'ejercicio',
+      symptom: 'normal',
+    ),
+    // Colisión de tiempo B.
+    _vitalSign(
+      id: 'demo-edge-vitals-collision-b',
+      at: collision,
+      systolic: 110,
+      diastolic: 70,
+      heartRate: 62,
+      activity: 'reposo',
+      symptom: 'normal',
+    ),
+  ];
+
+  // ── Antropometría ──────────────────────────────────────────────────────
+  double bmiOf(double weight) =>
+      _round(weight / math.pow(_heightCm / 100, 2), 1);
+  final anthropometric = <AnthropometricRecord>[
+    // Obesidad extrema (IMC 43,3) sin perímetros: aísla el tope de peso/IMC.
+    AnthropometricRecord(
+      id: 'demo-edge-anthro-obese',
+      date: at(60, 7, 20),
+      weight: 118.0,
+      height: _heightCm,
+      bmi: bmiOf(118.0),
+      comment: notes.pick(notes.edges, 2, every: 1),
+      createdAt: at(60, 7, 20),
+      updatedAt: at(60, 7, 20),
+      isSynced: true,
+    ),
+    // Bajo peso (IMC 16,2): el otro extremo de la escala del IMC.
+    AnthropometricRecord(
+      id: 'demo-edge-anthro-underweight',
+      date: at(320, 7, 25),
+      weight: 44.0,
+      height: _heightCm,
+      bmi: bmiOf(44.0),
+      createdAt: at(320, 7, 25),
+      updatedAt: at(320, 7, 25),
+      isSynced: true,
+    ),
+    // Perímetros extremos con CINTURA MAYOR QUE CADERA: WHR 1,31 (obesidad
+    // androide) y WHtR 0,78, muy por encima de los cortes de alerta.
+    AnthropometricRecord(
+      id: 'demo-edge-anthro-circumferences',
+      date: at(540, 7, 30),
+      weight: 70.0,
+      height: _heightCm,
+      bmi: bmiOf(70.0),
+      waistCm: 128.0,
+      hipCm: 98.0,
+      lowerAbdomenCm: 132.0,
+      armCm: 42.0,
+      legCm: 72.0,
+      chestBustCm: 128.0,
+      createdAt: at(540, 7, 30),
+      updatedAt: at(540, 7, 30),
+      isSynced: true,
+    ),
+  ];
+
+  // ── Perfil lipídico ────────────────────────────────────────────────────
+  // Friedewald: VLDL = TG/5, y el total es la suma de las tres fracciones —la
+  // misma aritmética que la serie curada, para que la analítica se sostenga.
+  LipidRecord lipid({
+    required String id,
+    required DateTime date,
+    required double ldl,
+    required double hdl,
+    required double triglycerides,
+    required String labName,
+    String? comment,
+  }) {
+    final vldl = _round(triglycerides / 5, 0);
+    return LipidRecord(
+      id: id,
+      date: date,
+      totalCholesterol: _round(ldl + hdl + vldl, 0),
+      ldl: ldl,
+      hdl: hdl,
+      vldl: vldl,
+      triglycerides: triglycerides,
+      labName: labName,
+      comment: comment,
+      createdAt: date,
+      updatedAt: date,
+      isSynced: true,
+    );
+  }
+
+  final lipids = <LipidRecord>[
+    // Panel muy alto: LDL 300, HDL bajo (20, el extremo de riesgo), TG 600.
+    lipid(
+      id: 'demo-edge-lipid-high',
+      date: at(110, 8, 30),
+      ldl: 300,
+      hdl: 20,
+      triglycerides: 600,
+      labName: 'Laboratorio Clínico Andes',
+      comment: notes.pick(notes.edges, 3, every: 1),
+    ),
+    // Panel óptimo extremo: HDL 100 (muy protector), LDL 45, TG 45.
+    lipid(
+      id: 'demo-edge-lipid-optimal',
+      date: at(660, 8, 30),
+      ldl: 45,
+      hdl: 100,
+      triglycerides: 45,
+      labName: 'Centro Médico San Rafael',
+    ),
+  ];
+
+  // ── Composición corporal ───────────────────────────────────────────────
+  final bodyComposition = <BodyCompositionRecord>[
+    // Topes: grasa 55 %, visceral al máximo de la escala (30), edad metabólica
+    // al tope (80). Los sube todos a la vez para estresar cada semáforo.
+    BodyCompositionRecord(
+      id: 'demo-edge-body-max',
+      date: at(95, 7, 40),
+      bodyFatPercent: 55.0,
+      muscleMassKg: 24.0,
+      musclePct: 21.0,
+      visceralFatLevel: 30,
+      metabolicAge: 80,
+      bmrKcal: 1900,
+      bodyWaterPercent: 55.0,
+      boneMassKg: 3.20,
+      deviceName: demoDeviceName,
+      comment: notes.pick(notes.edges, 4, every: 1),
+      createdAt: at(95, 7, 40),
+      updatedAt: at(95, 7, 40),
+      isSynced: true,
+    ),
+    // Mínimos: grasa 8 %, visceral 1, edad metabólica 18 (el suelo de la escala).
+    BodyCompositionRecord(
+      id: 'demo-edge-body-min',
+      date: at(670, 7, 40),
+      bodyFatPercent: 8.0,
+      muscleMassKg: 21.0,
+      musclePct: 33.0,
+      visceralFatLevel: 1,
+      metabolicAge: 18,
+      bmrKcal: 1200,
+      bodyWaterPercent: 42.0,
+      boneMassKg: 1.80,
+      deviceName: demoDeviceName,
+      createdAt: at(670, 7, 40),
+      updatedAt: at(670, 7, 40),
+      isSynced: true,
+    ),
+  ];
+
+  return DemoDataset(
+    anthropometric: anthropometric,
+    vitalSigns: vitalSigns,
+    lipids: lipids,
+    bodyComposition: bodyComposition,
+  );
+}
+
 // ── Comentarios ────────────────────────────────────────────────────────────
 
 /// Las notas que el personaje deja en algunos registros. Son DATOS DEL USUARIO,
@@ -576,6 +853,11 @@ class _DemoNotes {
   final List<String> lipids;
   final List<String> body;
 
+  /// Notas para los registros extremos (ver `_buildEdgeCases`). Se eligen por
+  /// índice, así que el orden importa: 0=crisis, 1=hipotensión, 2=obesidad,
+  /// 3=analítica alta, 4=composición al tope.
+  final List<String> edges;
+
   /// La nota del primer día del tramo de siete de automedición.
   final String monitoring;
 
@@ -587,6 +869,7 @@ class _DemoNotes {
     required this.vitals,
     required this.lipids,
     required this.body,
+    required this.edges,
     required this.monitoring,
   });
 
@@ -618,6 +901,13 @@ class _DemoNotes {
       'La grasa visceral bajó otro punto.',
       'Empecé rutina de fuerza tres días por semana.',
     ],
+    edges: [
+      'Lectura en urgencias, tensión muy alta.',
+      'Me levanté mareada, la tensión salió muy baja.',
+      'Antes de empezar a cuidarme.',
+      'Analítica de control, el médico ajustó la medicación.',
+      'Primera bioimpedancia, punto de partida.',
+    ],
   );
 
   factory _DemoNotes._english() => const _DemoNotes._(
@@ -647,6 +937,13 @@ class _DemoNotes {
       'Morning reading, fasting.',
       'Visceral fat down another point.',
       'Started strength training three days a week.',
+    ],
+    edges: [
+      'Reading at the ER, blood pressure very high.',
+      'Woke up dizzy, blood pressure came out very low.',
+      'Before I started taking care of myself.',
+      'Follow-up panel, the doctor adjusted the medication.',
+      'First bioimpedance reading, starting point.',
     ],
   );
 
