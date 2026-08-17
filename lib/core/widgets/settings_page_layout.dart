@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
+import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
 
@@ -23,6 +24,10 @@ class SettingsPageLayout extends StatelessWidget {
   /// no guarda nada —la elección ya se aplicó— sino que sigue adelante.
   final String? confirmLabel;
 
+  /// Acento DE ORIENTACIÓN de la sección, que se pasa tal cual al encabezado
+  /// para que el icono lleve el color de la fila que abrió esta pantalla.
+  final Tone? accent;
+
   const SettingsPageLayout({
     super.key,
     required this.icon,
@@ -32,6 +37,7 @@ class SettingsPageLayout extends StatelessWidget {
     required this.onConfirm,
     this.showConfirmButton = true,
     this.confirmLabel,
+    this.accent,
   });
 
   @override
@@ -51,6 +57,7 @@ class SettingsPageLayout extends StatelessWidget {
             icon: icon,
             title: title,
             description: description,
+            accent: accent,
           ),
           const SizedBox(height: 32),
           child,

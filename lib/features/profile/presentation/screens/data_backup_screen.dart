@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/core/services/backup_service.dart';
 import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
@@ -165,6 +166,7 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                       icon: Icons.cloud_sync,
                       title: l10n.myDataBackup,
                       description: l10n.backupDescription,
+                      accent: SettingsSection.backup.tone(Theme.of(context)),
                     ),
                     const SizedBox(height: 32),
                     // PRIVACY INFO BOX

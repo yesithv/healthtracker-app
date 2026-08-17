@@ -9,6 +9,7 @@ import 'package:myvitals_healthtracker_app/core/services/notification_service.da
 import 'package:myvitals_healthtracker_app/core/models/reminder.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 
 class RemindersScreen extends StatefulWidget {
   const RemindersScreen({super.key});
@@ -172,6 +173,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         icon: Icons.notifications_active_outlined,
                         title: l10n.remindersTitle,
                         description: l10n.remindersDescription,
+                        accent: SettingsSection.reminders.tone(
+                          Theme.of(context),
+                        ),
                       ),
                       const SizedBox(height: 32),
                       ...List.generate(reminders.length, (index) {

@@ -6,6 +6,7 @@ import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/language_selection_screen.dart'
     show WizardValidatable;
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dart';
+import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
@@ -204,6 +205,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
           icon: Icons.badge_outlined,
           title: l10n.personalInfoTitle,
           description: l10n.personalInfoDescription,
+          accent: SettingsSection.personalInfo.tone(theme),
           showConfirmButton: widget.showAppBar,
           onConfirm: () {
             if (_formKey.currentState!.validate()) {
