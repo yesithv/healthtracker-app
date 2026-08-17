@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/reminders_provider.dart';
@@ -27,9 +28,9 @@ Future<void> setDataOwner(String publicId) async {
 }
 
 /// Borra TODOS los datos personales/de salud del dispositivo para que no se filtren
-/// entre usuarios: las 4 tablas de registros, el perfil, el estado del onboarding, las
-/// metas y los recordatorios. NO toca preferencias de app/dispositivo (idioma, unidades,
-/// catálogos, rangos de referencia, caché de Descubrir).
+/// entre usuarios: las 4 tablas de registros, las 3 de medicamentos, el perfil, el
+/// estado del onboarding, las metas y los recordatorios. NO toca preferencias de
+/// app/dispositivo (idioma, unidades, catálogos, rangos de referencia, caché de Descubrir).
 ///
 /// Lee los providers del [context] antes de los await para no usar el BuildContext tras
 /// un gap asíncrono.
@@ -43,6 +44,10 @@ Future<void> wipeLocalUserData(BuildContext context) async {
   await VitalSignsRepository.instance.clearAll();
   await LipidRepository.instance.clearAll();
   await BodyCompositionRepository.instance.clearAll();
+
+  await MedicationRepository.instance.clearAll();
+  await MedicationDoseRepository.instance.clearAll();
+  await MedicationLogRepository.instance.clearAll();
 
   await profile.clear();
   await onboarding.reset();

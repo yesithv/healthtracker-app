@@ -18,6 +18,7 @@ import 'core/providers/discover_provider.dart';
 import 'package:myvitals_healthtracker_app/features/discover/data/repositories/discover_repository.dart';
 import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
@@ -131,6 +132,18 @@ void main() {
             ),
             ChangeNotifierProvider<BodyCompositionRepository>.value(
               value: BodyCompositionRepository.instance,
+            ),
+            // Módulo de medicamentos: maestro + pauta/inventario, horas de toma
+            // y eventos de toma. Mismos singletons de por vida que el resto de
+            // repositorios; las pantallas los `watch` para refrescarse.
+            ChangeNotifierProvider<MedicationRepository>.value(
+              value: MedicationRepository.instance,
+            ),
+            ChangeNotifierProvider<MedicationDoseRepository>.value(
+              value: MedicationDoseRepository.instance,
+            ),
+            ChangeNotifierProvider<MedicationLogRepository>.value(
+              value: MedicationLogRepository.instance,
             ),
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(
