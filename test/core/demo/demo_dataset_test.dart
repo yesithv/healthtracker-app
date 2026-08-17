@@ -14,7 +14,11 @@ import 'package:myvitals_healthtracker_app/core/demo/demo_dataset.dart';
 void main() {
   // Fecha fija: así la prueba no cambia de resultado según el día en que corra.
   final today = DateTime(2026, 7, 29, 8);
-  final data = buildDemoDataset(today: today);
+  // Estas pruebas fijan la NARRATIVA LIMPIA (la mejora curada de dos años), así
+  // que se construyen sin los casos extremos: éstos tienen su propio archivo
+  // (`demo_edge_cases_test.dart`) y meterlos aquí rompería a propósito las
+  // cadencias, los rangos y la tendencia que estas pruebas protegen.
+  final data = buildDemoDataset(today: today, includeEdgeCases: false);
 
   group('el conjunto de la demo ·', () {
     test('cubre dos años en las cuatro familias', () {
@@ -55,7 +59,7 @@ void main() {
     });
 
     test('es determinista: la misma fecha da exactamente los mismos datos', () {
-      final again = buildDemoDataset(today: today);
+      final again = buildDemoDataset(today: today, includeEdgeCases: false);
       expect(
         again.anthropometric.map((r) => r.weight),
         data.anthropometric.map((r) => r.weight),
@@ -237,14 +241,29 @@ void main() {
       String firstComment(DemoDataset d) =>
           d.anthropometric.firstWhere((r) => r.comment != null).comment!;
 
-      expect(firstComment(buildDemoDataset(today: today)), contains('gimnasio'));
       expect(
-        firstComment(buildDemoDataset(today: today, language: 'en')),
+        firstComment(buildDemoDataset(today: today, includeEdgeCases: false)),
+        contains('gimnasio'),
+      );
+      expect(
+        firstComment(
+          buildDemoDataset(
+            today: today,
+            language: 'en',
+            includeEdgeCases: false,
+          ),
+        ),
         contains('gym'),
       );
       // Los idiomas sin juego propio caen al inglés, no al español.
       expect(
-        firstComment(buildDemoDataset(today: today, language: 'de')),
+        firstComment(
+          buildDemoDataset(
+            today: today,
+            language: 'de',
+            includeEdgeCases: false,
+          ),
+        ),
         contains('gym'),
       );
     });
