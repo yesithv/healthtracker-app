@@ -152,7 +152,7 @@ class _Body extends StatelessWidget {
 
     final Widget hero;
     if (hasPending) {
-      hero = _NextDoseHero(next: next!, l10n: l10n);
+      hero = _NextDoseHero(next: next, l10n: l10n);
     } else {
       hero = _StreakHero(streak: streak, l10n: l10n);
     }
