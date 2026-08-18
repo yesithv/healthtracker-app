@@ -75,13 +75,18 @@ void main() {
       frequencyType: FrequencyType.daily,
       startDate: DateTime(2020, 1, 1),
     );
-    await controller.addMedication(med, [
-      MedicationDose(medicationId: med.id, hour: 8, minute: 0),
-    ]);
+    // Las escrituras a SQLite (ffi) son E/S real. En un test de widget el cuerpo
+    // corre bajo el reloj FALSO de `testWidgets`, que no avanza los
+    // temporizadores/E-S reales, así que un `await` directo sobre la base se
+    // colgaría. `tester.runAsync` ejecuta la E/S en la zona async real.
+    await tester.runAsync(() async {
+      await controller.addMedication(med, [
+        MedicationDose(medicationId: med.id, hour: 8, minute: 0),
+      ]);
+    });
 
-    // Se usa `pump()` (no `pumpAndSettle`): la pantalla no tiene animaciones que
-    // asentar y `pumpAndSettle` se quedaría esperando indefinidamente. Es la
-    // misma convención que el resto de tests de widget del repo.
+    // Un `pump()` (no `pumpAndSettle`): la pantalla no tiene animaciones que
+    // asentar; solo hace falta un frame para pintar los datos ya sembrados.
     await tester.pumpWidget(_host(controller));
     await tester.pump();
 
@@ -89,14 +94,17 @@ void main() {
     expect(find.text('Vytorin'), findsOneWidget);
     expect(_tile(tester).dose.state, DoseState.pending);
 
-    // Registrarla como tomada por el controlador reconstruye la pantalla.
+    // Registrarla como tomada por el controlador reconstruye la pantalla (de
+    // nuevo con `runAsync` por la escritura a la base).
     final entry = controller.entriesForDay(DateTime.now()).first;
-    await controller.logDose(entry, taken: true);
+    await tester.runAsync(() async {
+      await controller.logDose(entry, taken: true);
+    });
     await tester.pump();
 
     expect(find.text('Vytorin'), findsOneWidget);
     expect(_tile(tester).dose.state, DoseState.taken);
 
     controller.dispose();
-  });
+  }, timeout: const Timeout(Duration(seconds: 60)));
 }
