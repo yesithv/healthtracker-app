@@ -79,8 +79,11 @@ void main() {
       MedicationDose(medicationId: med.id, hour: 8, minute: 0),
     ]);
 
+    // Se usa `pump()` (no `pumpAndSettle`): la pantalla no tiene animaciones que
+    // asentar y `pumpAndSettle` se quedaría esperando indefinidamente. Es la
+    // misma convención que el resto de tests de widget del repo.
     await tester.pumpWidget(_host(controller));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // La toma aparece, pendiente.
     expect(find.text('Vytorin'), findsOneWidget);
@@ -89,7 +92,7 @@ void main() {
     // Registrarla como tomada por el controlador reconstruye la pantalla.
     final entry = controller.entriesForDay(DateTime.now()).first;
     await controller.logDose(entry, taken: true);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.text('Vytorin'), findsOneWidget);
     expect(_tile(tester).dose.state, DoseState.taken);
