@@ -1039,5 +1039,14 @@
   "medDashSeeModule": "Ver módulo ›",
   "medDashNextDose": "Próxima toma",
   "medDashNoDoses": "Sin tomas próximas",
-  "medLowStockBannerTitle": "A {name} le quedan {count} unidades"
+  "medLowStockBannerTitle": "A {name} le quedan {count} unidades",
+
+  "medDashMedsTitle": "Medicamentos",
+  "medDashApptsTitle": "Citas médicas",
+  "medDashApptsSoon": "Próximamente",
+  "medDashTodayProgress": "{done}/{total} hoy",
+  "medDashStreakShort": "{days} d",
+  "medDashAllDone": "Todo al día",
+  "medDashAddMed": "Añadir",
+  "medDashLowShort": "Quedan {count}"
 }

@@ -2506,4 +2506,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String medLowStockBannerTitle(String name, int count) {
     return '$name has $count units left';
   }
+
+  @override
+  String get medDashMedsTitle => 'Medications';
+
+  @override
+  String get medDashApptsTitle => 'Medical appointments';
+
+  @override
+  String get medDashApptsSoon => 'Coming soon';
+
+  @override
+  String medDashTodayProgress(int done, int total) {
+    return '$done/$total today';
+  }
+
+  @override
+  String medDashStreakShort(int days) {
+    return '$days d';
+  }
+
+  @override
+  String get medDashAllDone => 'All caught up';
+
+  @override
+  String get medDashAddMed => 'Add';
+
+  @override
+  String medDashLowShort(int count) {
+    return '$count left';
+  }
 }

@@ -825,5 +825,14 @@
   "medDashSeeModule": "Vedi modulo ›",
   "medDashNextDose": "Prossima dose",
   "medDashNoDoses": "Nessuna dose in arrivo",
-  "medLowStockBannerTitle": "A {name} restano {count} unità"
+  "medLowStockBannerTitle": "A {name} restano {count} unità",
+
+  "medDashMedsTitle": "Farmaci",
+  "medDashApptsTitle": "Visite mediche",
+  "medDashApptsSoon": "In arrivo",
+  "medDashTodayProgress": "{done}/{total} oggi",
+  "medDashStreakShort": "{days} g",
+  "medDashAllDone": "Tutto in regola",
+  "medDashAddMed": "Aggiungi",
+  "medDashLowShort": "Restano {count}"
 }

@@ -808,5 +808,14 @@
   "medDashSeeModule": "Modul ansehen ›",
   "medDashNextDose": "Nächste Einnahme",
   "medDashNoDoses": "Keine anstehenden Einnahmen",
-  "medLowStockBannerTitle": "{name} hat noch {count} Einheiten"
+  "medLowStockBannerTitle": "{name} hat noch {count} Einheiten",
+
+  "medDashMedsTitle": "Medikamente",
+  "medDashApptsTitle": "Arzttermine",
+  "medDashApptsSoon": "Demnächst",
+  "medDashTodayProgress": "{done}/{total} heute",
+  "medDashStreakShort": "{days} T",
+  "medDashAllDone": "Alles erledigt",
+  "medDashAddMed": "Hinzufügen",
+  "medDashLowShort": "Noch {count}"
 }

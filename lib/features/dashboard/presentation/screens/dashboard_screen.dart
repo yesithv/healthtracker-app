@@ -3,11 +3,11 @@ import '../../../../core/theme/theme_context.dart';
 import '../../../../core/widgets/main_app_bar.dart';
 import '../../../../core/widgets/pending_account_banner.dart';
 import '../widgets/user_profile_card.dart';
-import '../widgets/medications_today_card.dart';
 import '../widgets/anthropometric_history_card.dart';
 import '../widgets/vital_signs_card.dart';
 import '../widgets/lipid_profile_card.dart';
 import '../widgets/body_composition_card.dart';
+import '../widgets/dashboard_summary_row.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -31,8 +31,6 @@ class DashboardScreen extends StatelessWidget {
                 PendingAccountBanner(),
                 UserProfileCard(),
                 SizedBox(height: 24),
-                MedicationsTodayCard(),
-                SizedBox(height: 24),
                 AnthropometricHistoryCard(),
                 SizedBox(height: 24),
                 VitalSignsCard(),
@@ -40,6 +38,8 @@ class DashboardScreen extends StatelessWidget {
                 LipidProfileCard(),
                 SizedBox(height: 24),
                 BodyCompositionCard(),
+                SizedBox(height: 24),
+                DashboardSummaryRow(),
                 SizedBox(height: 80),
               ],
             ),

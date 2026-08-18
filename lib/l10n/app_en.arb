@@ -938,5 +938,17 @@
   "medDashNextDose": "Next dose",
   "medDashNoDoses": "No upcoming doses",
   "medLowStockBannerTitle": "{name} has {count} units left",
-  "@medLowStockBannerTitle": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } }
+  "@medLowStockBannerTitle": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
+
+  "medDashMedsTitle": "Medications",
+  "medDashApptsTitle": "Medical appointments",
+  "medDashApptsSoon": "Coming soon",
+  "medDashTodayProgress": "{done}/{total} today",
+  "@medDashTodayProgress": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "medDashStreakShort": "{days} d",
+  "@medDashStreakShort": { "placeholders": { "days": { "type": "int" } } },
+  "medDashAllDone": "All caught up",
+  "medDashAddMed": "Add",
+  "medDashLowShort": "{count} left",
+  "@medDashLowShort": { "placeholders": { "count": { "type": "int" } } }
 }
