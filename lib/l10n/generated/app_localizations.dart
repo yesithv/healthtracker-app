@@ -4543,6 +4543,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} has {count} units left'**
   String medLowStockBannerTitle(String name, int count);
+
+  /// No description provided for @medDashMedsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get medDashMedsTitle;
+
+  /// No description provided for @medDashApptsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical appointments'**
+  String get medDashApptsTitle;
+
+  /// No description provided for @medDashApptsSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get medDashApptsSoon;
+
+  /// No description provided for @medDashTodayProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{total} today'**
+  String medDashTodayProgress(int done, int total);
+
+  /// No description provided for @medDashStreakShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} d'**
+  String medDashStreakShort(int days);
+
+  /// No description provided for @medDashAllDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All caught up'**
+  String get medDashAllDone;
+
+  /// No description provided for @medDashAddMed.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get medDashAddMed;
+
+  /// No description provided for @medDashLowShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} left'**
+  String medDashLowShort(int count);
 }
 
 class _AppLocalizationsDelegate

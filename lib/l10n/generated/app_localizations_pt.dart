@@ -2509,4 +2509,34 @@ class AppLocalizationsPt extends AppLocalizations {
   String medLowStockBannerTitle(String name, int count) {
     return '$name tem $count unidades restantes';
   }
+
+  @override
+  String get medDashMedsTitle => 'Medicamentos';
+
+  @override
+  String get medDashApptsTitle => 'Consultas médicas';
+
+  @override
+  String get medDashApptsSoon => 'Em breve';
+
+  @override
+  String medDashTodayProgress(int done, int total) {
+    return '$done/$total hoje';
+  }
+
+  @override
+  String medDashStreakShort(int days) {
+    return '$days d';
+  }
+
+  @override
+  String get medDashAllDone => 'Tudo em dia';
+
+  @override
+  String get medDashAddMed => 'Adicionar';
+
+  @override
+  String medDashLowShort(int count) {
+    return 'Restam $count';
+  }
 }
