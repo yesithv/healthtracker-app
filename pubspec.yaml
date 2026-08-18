@@ -41,6 +41,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Base SQLite sobre FFI para las pruebas de integración de datos (repos y
+  # controlador). Ya venía transitiva vía sqflite_common_ffi_web; se declara
+  # explícita porque los tests la importan directamente.
+  sqflite_common_ffi: ^2.4.0
 
 flutter:
   generate: true
