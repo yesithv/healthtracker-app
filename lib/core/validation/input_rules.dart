@@ -69,7 +69,7 @@ abstract final class InputRules {
   /// del móvil o un copiar-pegar deja delante o en medio de la dirección. El
   /// tope de 254 es el máximo que acepta cualquier servidor.
   static List<TextInputFormatter> email({int maxLength = 254}) => [
-    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+    const _NoInteriorSpaceFormatter(),
     LengthLimitingTextInputFormatter(maxLength),
   ];
 
@@ -79,7 +79,7 @@ abstract final class InputRules {
   /// pero ninguno de los dos lleva espacios, así que ésos se bloquean —al
   /// teclear y al pegar— y se pone un tope que corta pegados absurdos.
   static List<TextInputFormatter> identifier({int maxLength = 254}) => [
-    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+    const _NoInteriorSpaceFormatter(),
     LengthLimitingTextInputFormatter(maxLength),
   ];
 
@@ -165,5 +165,38 @@ class _DecimalFormatter extends TextInputFormatter {
     // Lo que no encaja no se escribe: se devuelve el texto anterior con su
     // cursor, que es cómo se comporta un campo que rechaza una tecla.
     return oldValue;
+  }
+}
+
+/// Formateador de correo/identificador: recorta los espacios de los EXTREMOS
+/// (los que deja el autocorrector del móvil o un copiar-pegar) pero RECHAZA la
+/// edición si queda un espacio EN MEDIO —ni un correo ni un documento lo
+/// llevan—, conservando el texto anterior.
+///
+/// Sustituye a `FilteringTextInputFormatter.deny(\s)`, que se limitaba a borrar
+/// los espacios: eso podía pegar dos palabras (`ana ruiz` → `anaruiz`) en vez de
+/// impedir la mezcla. Recortar los extremos y rechazar sólo el espacio interior
+/// deja limpiar un pegado con espacios de sobra sin fabricar una dirección falsa.
+class _NoInteriorSpaceFormatter extends TextInputFormatter {
+  const _NoInteriorSpaceFormatter();
+
+  static final RegExp _whitespace = RegExp(r'\s');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final trimmed = newValue.text.trim();
+    // Espacio interior (tras recortar los extremos): edición inválida, se
+    // mantiene lo que había —igual que un campo que rechaza una tecla—.
+    if (_whitespace.hasMatch(trimmed)) return oldValue;
+    // Nada que recortar: se acepta tal cual (con su cursor).
+    if (trimmed == newValue.text) return newValue;
+    // Se recortaron espacios de los extremos: texto limpio, cursor al final.
+    return TextEditingValue(
+      text: trimmed,
+      selection: TextSelection.collapsed(offset: trimmed.length),
+    );
   }
 }
