@@ -14,6 +14,12 @@ class NotificationService {
 
   NotificationService._internal();
 
+  /// Constructor generativo para poder crear dobles de prueba (subclases que
+  /// sobrescriben `scheduleOneTimeNotification`/`cancel`) sin tocar los plugins.
+  /// La app siempre usa el singleton vía la fábrica `NotificationService()`.
+  @visibleForTesting
+  NotificationService.forTesting();
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -71,6 +77,19 @@ class NotificationService {
     if (payload != null && payload.isNotEmpty) {
       onNotificationTap?.call(payload);
     }
+  }
+
+  /// Si la app se ABRIÓ tocando una notificación (arranque en frío), devuelve su
+  /// payload; null en caso contrario o en web. El `initialize` no dispara
+  /// `onDidReceiveNotificationResponse` para ese toque inicial, así que la app lo
+  /// consulta al arrancar y hace el deep-link ella misma. Ver `main.dart`.
+  Future<String?> launchPayload() async {
+    if (kIsWeb) return null;
+    final details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp != true) return null;
+    final payload = details!.notificationResponse?.payload;
+    return (payload != null && payload.isNotEmpty) ? payload : null;
   }
 
   Future<bool> requestPermissions() async {

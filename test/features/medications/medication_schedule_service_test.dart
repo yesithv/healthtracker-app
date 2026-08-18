@@ -192,22 +192,29 @@ void main() {
       expect(result[1].quantity, 1);
     });
 
-    test('empty on a day that is not due', () {
+    test('empty on a day that is not due, non-empty on a due day', () {
       final med = _med(
         frequency: FrequencyType.daysOfWeek,
         daysOfWeek: _bit(DateTime.sunday),
       );
-      final notSunday = DateTime(2026, 8, 17); // any non-Sunday walk handled above
-      if (notSunday.weekday != DateTime.sunday) {
-        expect(
-          MedicationScheduleService.expectedDosesForDay(
-            med,
-            [_dose(med.id, 8, 0)],
-            notSunday,
-          ),
-          isEmpty,
-        );
-      }
+      // 2026-08-17 es lunes (no toca) y 2026-08-16 es domingo (toca): fechas
+      // fijas, sin la guarda condicional anterior que dejaba la aserción muda si
+      // el día caía en domingo.
+      final monday = DateTime(2026, 8, 17);
+      final sunday = DateTime(2026, 8, 16);
+      expect(monday.weekday, DateTime.monday);
+      expect(sunday.weekday, DateTime.sunday);
+
+      expect(
+        MedicationScheduleService.expectedDosesForDay(
+            med, [_dose(med.id, 8, 0)], monday),
+        isEmpty,
+      );
+      expect(
+        MedicationScheduleService.expectedDosesForDay(
+            med, [_dose(med.id, 8, 0)], sunday),
+        hasLength(1),
+      );
     });
   });
 

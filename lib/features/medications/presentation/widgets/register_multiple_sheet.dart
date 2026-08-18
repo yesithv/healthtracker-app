@@ -55,22 +55,23 @@ class _RegisterMultipleSheetState extends State<_RegisterMultipleSheet> {
   Future<void> _registerSelected() async {
     final controller = context.read<MedicationsController>();
     final navigator = Navigator.of(context);
-    for (var i = 0; i < widget.entries.length; i++) {
-      if (_selected.contains(i)) {
-        await controller.logDose(widget.entries[i], taken: true);
-      }
-    }
+    final selected = [
+      for (var i = 0; i < widget.entries.length; i++)
+        if (_selected.contains(i)) widget.entries[i],
+    ];
+    // Registro en lote: reprograma los avisos una sola vez (no una por toma).
+    await controller.logDoses(selected, taken: true);
     navigator.pop();
   }
 
   Future<void> _skipRest() async {
     final controller = context.read<MedicationsController>();
     final navigator = Navigator.of(context);
-    for (var i = 0; i < widget.entries.length; i++) {
-      if (!_selected.contains(i)) {
-        await controller.logDose(widget.entries[i], taken: false);
-      }
-    }
+    final rest = [
+      for (var i = 0; i < widget.entries.length; i++)
+        if (!_selected.contains(i)) widget.entries[i],
+    ];
+    await controller.logDoses(rest, taken: false);
     navigator.pop();
   }
 

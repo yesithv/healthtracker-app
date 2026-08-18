@@ -233,8 +233,13 @@ class AppRouter {
       ),
       GoRoute(
         path: '/profile/medications/detail',
+        // El id llega por `extra` en la navegación interna y por query param
+        // (`?med=`) en el deep-link desde una notificación (que no puede
+        // transportar `extra` en memoria, sobre todo en arranque en frío).
         builder: (context, state) => MedicationDetailScreen(
-          medicationId: state.extra as String? ?? '',
+          medicationId: state.uri.queryParameters['med'] ??
+              state.extra as String? ??
+              '',
         ),
       ),
       GoRoute(
@@ -244,8 +249,12 @@ class AppRouter {
       ),
       GoRoute(
         path: '/profile/medications/refill',
+        // Igual que detalle: `extra` para la navegación interna y `?med=` para
+        // el deep-link desde la alerta de recompra.
         builder: (context, state) => RefillInventoryScreen(
-          medicationId: state.extra as String? ?? '',
+          medicationId: state.uri.queryParameters['med'] ??
+              state.extra as String? ??
+              '',
         ),
       ),
       ShellRoute(

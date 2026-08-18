@@ -57,8 +57,18 @@ void main() {
       }
 
       // 2. Notifications (already guarded with kIsWeb inside)
+      String? medicationLaunchPayload;
       try {
         await NotificationService().init();
+        // Deep-link: enruta el toque de una notificación de medicamentos a su
+        // pantalla. El payload lo fija MedicationScheduler
+        // (dose|id|iso / inventory|id).
+        NotificationService.onNotificationTap =
+            _handleMedicationNotificationTap;
+        // Si la app se abrió tocando una notificación (arranque en frío), el
+        // `initialize` no dispara el callback para ese toque; se recupera aquí
+        // y se enruta tras el primer frame (cuando el router ya está montado).
+        medicationLaunchPayload = await NotificationService().launchPayload();
       } catch (e, st) {
         debugPrint('=== NOTIFICATION INIT ERROR: $e\n$st');
       }
@@ -183,6 +193,15 @@ void main() {
           child: const MyVitalsApp(),
         ),
       );
+
+      // Arranque en frío desde una notificación: una vez montado el primer
+      // frame (y con él el router), hace el deep-link al payload recuperado.
+      if (medicationLaunchPayload != null) {
+        final payload = medicationLaunchPayload;
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _handleMedicationNotificationTap(payload),
+        );
+      }
     },
     (Object error, StackTrace stack) {
       // Catches ALL unhandled async errors that would silently crash the app
@@ -191,6 +210,24 @@ void main() {
       debugPrint('Stack: $stack');
     },
   );
+}
+
+/// Enruta el toque de una notificación de medicamentos a su pantalla. El payload
+/// lo fija [MedicationScheduler] (`dose|medId|iso` / `inventory|medId`). Usa el
+/// router global directamente porque el toque llega fuera del árbol de widgets
+/// (callback del plugin de notificaciones), sin `BuildContext`.
+void _handleMedicationNotificationTap(String payload) {
+  final parts = payload.split('|');
+  if (parts.isEmpty) return;
+  switch (parts.first) {
+    case 'dose':
+      // La toma: a la vista «Hoy», que ya muestra la dosis pendiente lista para
+      // registrar (no hace falta transportar la dosis concreta por la ruta).
+      AppRouter.router.push('/profile/medications/today');
+    case 'inventory':
+      final medId = parts.length > 1 ? parts[1] : '';
+      AppRouter.router.push('/profile/medications/refill?med=$medId');
+  }
 }
 
 class MyVitalsApp extends StatelessWidget {
@@ -214,6 +251,11 @@ class MyVitalsApp extends StatelessWidget {
       // gesto táctil ya funcionaba.
       scrollBehavior: const _AppScrollBehavior(),
       routerConfig: AppRouter.router,
+      // Envuelve todas las rutas para gobernar el ciclo de vida de los avisos de
+      // medicamentos: se ejecuta por debajo de Localizations (tiene idioma) y de
+      // los Provider (tiene el controlador).
+      builder: (context, child) =>
+          _MedicationsLifecycle(child: child ?? const SizedBox.shrink()),
       locale: localeUnits.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -224,6 +266,76 @@ class MyVitalsApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
     );
   }
+}
+
+/// Gobierna el ciclo de vida de las notificaciones de medicamentos: fija los
+/// textos localizados y reprograma la ventana móvil de avisos **al arrancar** y
+/// **al volver del segundo plano**. Es necesario porque el planificador solo
+/// materializa 14 días por delante: sin esta pasada, si el usuario no toca el
+/// módulo durante ese tiempo, los avisos se agotarían. Vive por debajo de
+/// `MaterialApp` para tener idioma (Localizations) y controlador (Provider).
+class _MedicationsLifecycle extends StatefulWidget {
+  const _MedicationsLifecycle({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_MedicationsLifecycle> createState() => _MedicationsLifecycleState();
+}
+
+class _MedicationsLifecycleState extends State<_MedicationsLifecycle>
+    with WidgetsBindingObserver {
+  bool _didInitialReschedule = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _didInitialReschedule) return;
+      _didInitialReschedule = true;
+      _syncNotifications();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Al volver del segundo plano se rellena la ventana móvil de avisos.
+    if (state == AppLifecycleState.resumed && _didInitialReschedule) {
+      _syncNotifications();
+    }
+  }
+
+  /// Fija los textos localizados (con el idioma activo) y reprograma. Se hace en
+  /// este orden para que un reschedule de arranque no salga con los textos por
+  /// defecto en español. No-op efectivo en web (el planificador se protege solo).
+  void _syncNotifications() {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+    final controller = context.read<MedicationsController>();
+    controller.setNotificationTextBuilders(
+      doseText: (med, dose) => (
+        title: l10n.medicationDoseNotifTitle(med.name),
+        body: l10n.medicationDoseNotifBody,
+      ),
+      inventoryText: (med) => (
+        title: l10n.medicationRefillNotifTitle(med.name),
+        body: l10n.medicationRefillNotifBody,
+      ),
+    );
+    // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
+    // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
+    controller.refreshAndReschedule();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 /// Permite arrastrar los scrollables con mouse y trackpad (además del táctil), para

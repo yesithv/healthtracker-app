@@ -148,9 +148,14 @@ class Medication {
     bool? isSynced,
     // Los null no se distinguen de "no provisto" en copyWith; estos flags
     // permiten limpiar explícitamente los campos opcionales que el dominio
-    // necesita borrar (ej. quitar el silenciado al recargar).
+    // necesita borrar (ej. quitar el silenciado al recargar). En particular, al
+    // cambiar de frecuencia hay que limpiar los campos de la pauta anterior
+    // (p. ej. daysOfWeek→daily debe borrar `daysOfWeek`), o quedarían obsoletos.
     bool clearRefillSnooze = false,
     bool clearEndDate = false,
+    bool clearDaysOfWeek = false,
+    bool clearIntervalDays = false,
+    bool clearAnchorDate = false,
   }) {
     return Medication(
       id: id,
@@ -163,9 +168,10 @@ class Medication {
       shape: shape ?? this.shape,
       notes: notes ?? this.notes,
       frequencyType: frequencyType ?? this.frequencyType,
-      daysOfWeek: daysOfWeek ?? this.daysOfWeek,
-      intervalDays: intervalDays ?? this.intervalDays,
-      anchorDate: anchorDate ?? this.anchorDate,
+      daysOfWeek: clearDaysOfWeek ? null : (daysOfWeek ?? this.daysOfWeek),
+      intervalDays:
+          clearIntervalDays ? null : (intervalDays ?? this.intervalDays),
+      anchorDate: clearAnchorDate ? null : (anchorDate ?? this.anchorDate),
       startDate: startDate ?? this.startDate,
       endDate: clearEndDate ? null : (endDate ?? this.endDate),
       isActive: isActive ?? this.isActive,

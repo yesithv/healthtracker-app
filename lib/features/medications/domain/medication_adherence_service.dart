@@ -57,11 +57,20 @@ class MedicationAdherenceService {
     required List<MedicationLog> logs,
   })  : _meds = medications,
         _doses = dosesByMedication,
-        _logs = logs;
+        _takenIndex = {
+          for (final log in logs)
+            if (log.status == MedicationLogStatus.taken)
+              '${log.medicationId}|${log.scheduledAt.toIso8601String()}': true,
+        };
 
   final List<Medication> _meds;
   final Map<String, List<MedicationDose>> _doses;
-  final List<MedicationLog> _logs;
+
+  /// Conjunto de tomas registradas como `taken`, indexado por
+  /// `medId|scheduledAtIso` para resolver [_isTaken] en O(1). Antes era un
+  /// escaneo lineal sobre todos los registros dentro de bucles anidados
+  /// (racha: hasta 366 días × medicamentos × dosis), lo que resultaba cúbico.
+  final Map<String, bool> _takenIndex;
 
   /// Tope de días que se retrocede al calcular la racha, para no iterar sin fin
   /// cuando ningún día tiene tomas esperadas (p. ej. una pauta que aún no empieza).
@@ -73,15 +82,8 @@ class MedicationAdherenceService {
       a.year == b.year && a.month == b.month && a.day == b.day;
 
   /// ¿Está registrada como tomada la toma esperada [scheduledAt] de [medId]?
-  bool _isTaken(String medId, DateTime scheduledAt) {
-    for (final log in _logs) {
-      if (log.medicationId == medId &&
-          log.scheduledAt.isAtSameMomentAs(scheduledAt)) {
-        return log.status == MedicationLogStatus.taken;
-      }
-    }
-    return false;
-  }
+  bool _isTaken(String medId, DateTime scheduledAt) =>
+      _takenIndex['$medId|${scheduledAt.toIso8601String()}'] ?? false;
 
   /// (esperadas, tomadas) del día [day] sumando todos los medicamentos activos.
   ({int expected, int taken}) _countsForDay(DateTime day) {

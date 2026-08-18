@@ -724,6 +724,9 @@
   "medThisMonth": "este mês",
   "medEdit": "Editar",
   "medDelete": "Excluir",
+  "medPause": "Pausar",
+  "medResume": "Retomar",
+  "medPausedBadge": "Em pausa",
   "medDeleteTitle": "Excluir medicamento?",
   "medDeleteBody": "O medicamento e todo o seu histórico serão apagados. Esta ação não pode ser desfeita.",
   "medInfoSoon": "Em breve",
@@ -787,6 +790,7 @@
   "medErrorNameRequired": "Digite um nome",
   "medErrorSelectDays": "Escolha ao menos um dia",
   "medErrorAddTime": "Adicione ao menos um horário",
+  "medErrorSaveFailed": "Não foi possível salvar. Tente novamente.",
   "medUnitsSuffix": "un.",
 
   "medRefillTitle": "Reabastecer estoque",

@@ -724,6 +724,9 @@
   "medThisMonth": "diesen Monat",
   "medEdit": "Bearbeiten",
   "medDelete": "Löschen",
+  "medPause": "Pausieren",
+  "medResume": "Fortsetzen",
+  "medPausedBadge": "Pausiert",
   "medDeleteTitle": "Medikament löschen?",
   "medDeleteBody": "Das Medikament und sein gesamter Verlauf werden gelöscht. Dies kann nicht rückgängig gemacht werden.",
   "medInfoSoon": "Bald",
@@ -787,6 +790,7 @@
   "medErrorNameRequired": "Gib einen Namen ein",
   "medErrorSelectDays": "Wähle mindestens einen Tag",
   "medErrorAddTime": "Füge mindestens eine Zeit hinzu",
+  "medErrorSaveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
   "medUnitsSuffix": "Einh.",
 
   "medRefillTitle": "Bestand nachfüllen",

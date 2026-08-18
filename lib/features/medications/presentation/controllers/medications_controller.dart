@@ -85,6 +85,16 @@ class MedicationsController extends ChangeNotifier {
     await _logs.refresh();
   }
 
+  /// Asegura que los repositorios están cargados y reprograma los avisos. La
+  /// llama la cáscara de la app al arrancar y al volver del segundo plano para
+  /// rellenar la ventana móvil de notificaciones aunque el usuario no haya tocado
+  /// el módulo. Reprogramar con la caché vacía cancelaría los avisos existentes
+  /// sin recrearlos, así que primero se garantiza la carga.
+  Future<void> refreshAndReschedule() async {
+    if (!isLoaded) await reloadRepositories();
+    await reschedule();
+  }
+
   // Constructores de texto localizado para las notificaciones. La UI los fija
   // (con l10n); mientras sean null, el planificador usa sus textos por defecto.
   DoseTextBuilder? _doseText;
@@ -187,6 +197,15 @@ class MedicationsController extends ChangeNotifier {
     await reschedule();
   }
 
+  /// Pausa o reanuda un medicamento sin tocar su pauta ni sus horas. Un
+  /// medicamento pausado (`isActive == false`) no genera tomas esperadas ni
+  /// avisos —lo respeta el dominio—, pero conserva su historial. Reprograma.
+  Future<void> setActive(Medication medication, bool active) async {
+    if (medication.isActive == active) return;
+    await _meds.update(medication.copyWith(isActive: active));
+    await reschedule();
+  }
+
   /// Elimina un medicamento y todo lo suyo (horas, registros). Reprograma.
   Future<void> deleteMedication(String medicationId) async {
     await _doses.deleteForMedication(medicationId);
@@ -201,12 +220,46 @@ class MedicationsController extends ChangeNotifier {
     MedicationDayEntry entry, {
     required bool taken,
   }) async {
+    await _applyDoseLog(entry, taken: taken);
+    await reschedule();
+  }
+
+  /// Registra VARIAS tomas de una vez y reprograma **una sola vez** al final, en
+  /// lugar de por cada toma. Lo usa la hoja de «varias tomas» (misma hora, varios
+  /// medicamentos): antes cada toma disparaba una reprogramación completa
+  /// (cancelar N + reconstruir el plan de 14 días + programar N), lo que hacía
+  /// ese registro cuadrático.
+  Future<void> logDoses(
+    Iterable<MedicationDayEntry> entries, {
+    required bool taken,
+  }) async {
+    var any = false;
+    for (final entry in entries) {
+      await _applyDoseLog(entry, taken: taken);
+      any = true;
+    }
+    if (any) await reschedule();
+  }
+
+  /// Escribe el registro de una toma y ajusta el inventario, SIN reprogramar (de
+  /// eso se encargan [logDose]/[logDoses]). Aislado para poder registrar en lote.
+  Future<void> _applyDoseLog(
+    MedicationDayEntry entry, {
+    required bool taken,
+  }) async {
     final newStatus =
         taken ? MedicationLogStatus.taken : MedicationLogStatus.skipped;
     final effect = inventoryEffectOf(
       previous: entry.log?.status,
       next: newStatus,
     );
+
+    // Cantidad que se devolvería al deshacer una toma: la que se consumió de
+    // verdad (guardada en el log), no la esperada actual —que puede haber
+    // cambiado tras editar la pauta—, para que el stock no derive. `entry.log`
+    // sigue teniendo la cantidad antigua en memoria aunque abajo se sobrescriba
+    // el registro. Restaurar solo ocurre cuando había una toma previa (log ≠ null).
+    final restoreQuantity = entry.log?.quantity ?? entry.quantity;
 
     // Registro (nuevo o actualizado).
     if (entry.log != null) {
@@ -226,18 +279,18 @@ class MedicationsController extends ChangeNotifier {
       ));
     }
 
-    // Inventario.
+    // Inventario. Se lee el medicamento ACTUAL del repositorio (no la copia
+    // capturada en `entry`, que puede estar obsoleta tras registrar otra toma
+    // del mismo medicamento en el mismo lote) para no perder descuentos.
     if (effect != InventoryEffect.none) {
-      final med = entry.medication;
+      final med = medicationById(entry.medication.id) ?? entry.medication;
       final updated = effect == InventoryEffect.consume
           ? MedicationInventoryService.applyIntake(med, entry.quantity)
-          : MedicationInventoryService.revertIntake(med, entry.quantity);
+          : MedicationInventoryService.revertIntake(med, restoreQuantity);
       if (!identical(updated, med)) {
         await _meds.update(updated);
       }
     }
-
-    await reschedule();
   }
 
   /// Recarga el inventario (suma [amount] o el tamaño de caja) y reprograma.

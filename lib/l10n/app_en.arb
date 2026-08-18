@@ -847,6 +847,9 @@
   "medThisMonth": "this month",
   "medEdit": "Edit",
   "medDelete": "Delete",
+  "medPause": "Pause",
+  "medResume": "Resume",
+  "medPausedBadge": "Paused",
   "medDeleteTitle": "Delete medication?",
   "medDeleteBody": "This deletes the medication and all its history. This can't be undone.",
   "medInfoSoon": "Soon",
@@ -914,6 +917,7 @@
   "medErrorNameRequired": "Enter a name",
   "medErrorSelectDays": "Pick at least one day",
   "medErrorAddTime": "Add at least one time",
+  "medErrorSaveFailed": "Couldn't save. Please try again.",
   "medUnitsSuffix": "units",
 
   "medRefillTitle": "Refill inventory",
