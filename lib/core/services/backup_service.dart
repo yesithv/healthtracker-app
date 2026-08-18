@@ -12,6 +12,10 @@ import 'package:myvitals_healthtracker_app/features/history/data/models/anthropo
 import 'package:myvitals_healthtracker_app/features/history/data/models/vital_sign_record.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/body_composition_record.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/models/medication.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/models/medication_dose.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/models/medication_log.dart';
 
 class BackupService {
   static const String _version = "1.0";
@@ -32,6 +36,9 @@ class BackupService {
       final lipids = await LipidRepository.instance.getAll();
       final bodyCompositions = await BodyCompositionRepository.instance
           .getAll();
+      final medications = await MedicationRepository.instance.getAll();
+      final medicationDoses = await MedicationDoseRepository.instance.getAll();
+      final medicationLogs = await MedicationLogRepository.instance.getAll();
 
       // Fetch all preferences
       final prefs = await SharedPreferences.getInstance();
@@ -86,6 +93,9 @@ class BackupService {
           "vital_signs": vitalSigns.map((e) => e.toMap()).toList(),
           "lipid": lipids.map((e) => e.toMap()).toList(),
           "body_composition": bodyCompositions.map((e) => e.toMap()).toList(),
+          "medications": medications.map((e) => e.toMap()).toList(),
+          "medication_doses": medicationDoses.map((e) => e.toMap()).toList(),
+          "medication_logs": medicationLogs.map((e) => e.toMap()).toList(),
         },
       };
 
@@ -217,6 +227,30 @@ class BackupService {
           for (var item in records['body_composition']) {
             await BodyCompositionRepository.instance.insert(
               BodyCompositionRecord.fromMap(item),
+            );
+          }
+        }
+
+        // Módulo de medicamentos. `containsKey` protege la compatibilidad con
+        // backups antiguos (formato 1.0) creados antes de esta feature.
+        if (records.containsKey('medications')) {
+          for (var item in records['medications']) {
+            await MedicationRepository.instance.insert(Medication.fromMap(item));
+          }
+        }
+
+        if (records.containsKey('medication_doses')) {
+          for (var item in records['medication_doses']) {
+            await MedicationDoseRepository.instance.insert(
+              MedicationDose.fromMap(item),
+            );
+          }
+        }
+
+        if (records.containsKey('medication_logs')) {
+          for (var item in records['medication_logs']) {
+            await MedicationLogRepository.instance.insert(
+              MedicationLog.fromMap(item),
             );
           }
         }

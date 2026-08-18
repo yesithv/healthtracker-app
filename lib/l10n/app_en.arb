@@ -746,5 +746,32 @@
       "current": { "type": "int" },
       "total": { "type": "int" }
     }
-  }
+  },
+  "medicationsTitle": "Medications",
+  "medicationsMenuTitle": "Medications",
+  "medicationAdd": "Add medication",
+  "medicationTaken": "Taken",
+  "medicationSkipped": "Skipped",
+  "medicationRefill": "Refill",
+  "medicationDoseNotifTitle": "Time for {name}",
+  "@medicationDoseNotifTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "medicationDoseNotifBody": "It's time to take your medication.",
+  "medicationRefillNotifTitle": "Refill {name}",
+  "@medicationRefillNotifTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "medicationRefillNotifBody": "Your stock is running low.",
+  "medicationUnitsLeft": "{count} units left",
+  "@medicationUnitsLeft": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "medicationOutOfStock": "Out of stock"
 }

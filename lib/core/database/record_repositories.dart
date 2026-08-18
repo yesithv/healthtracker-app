@@ -20,6 +20,15 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   Map<String, dynamic> toMap(T record);
   String idOf(T record);
 
+  /// Ordering for reads (cache refresh, pagination, list queries). Defaults to
+  /// the record tables' `measurement_date DESC`; tables without that column
+  /// (e.g. medications) override it.
+  String get orderBy => 'measurement_date DESC';
+
+  /// Ordering for the outbound sync query, oldest first so the server receives
+  /// records in chronological order. Overridable for tables keyed differently.
+  String get unsyncedOrderBy => 'measurement_date ASC';
+
   RecordRepository() {
     refresh();
   }
@@ -41,7 +50,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   /// Reloads the cache from the database and notifies listeners.
   Future<void> refresh() async {
     final db = await _db;
-    final maps = await db.query(table, orderBy: 'measurement_date DESC');
+    final maps = await db.query(table, orderBy: orderBy);
     _items = maps.map(fromMap).toList();
     _loaded = true;
     notifyListeners();
@@ -61,7 +70,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
   /// All records, newest measurement first.
   Future<List<T>> getAll() async {
     final db = await _db;
-    final maps = await db.query(table, orderBy: 'measurement_date DESC');
+    final maps = await db.query(table, orderBy: orderBy);
     return maps.map(fromMap).toList();
   }
 
@@ -112,7 +121,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
     final db = await _db;
     final maps = await db.query(
       table,
-      orderBy: 'measurement_date DESC',
+      orderBy: orderBy,
       limit: limit,
       offset: offset,
     );
@@ -134,7 +143,7 @@ abstract class RecordRepository<T> extends ChangeNotifier {
       table,
       where: 'is_synced = ?',
       whereArgs: [0],
-      orderBy: 'measurement_date ASC',
+      orderBy: unsyncedOrderBy,
     );
     return maps.map(fromMap).toList();
   }
