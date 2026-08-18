@@ -178,10 +178,18 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
         MedicationDose(medicationId: med.id, hour: t.hour, minute: t.minute),
     ];
 
-    if (_existing != null) {
-      await controller.updateMedication(med, doses);
-    } else {
-      await controller.addMedication(med, doses);
+    try {
+      if (_existing != null) {
+        await controller.updateMedication(med, doses);
+      } else {
+        await controller.addMedication(med, doses);
+      }
+    } catch (e) {
+      // Si la escritura falla, NO se navega atrás: se avisa y se deja el
+      // formulario intacto para reintentar (antes se cerraba como si hubiera
+      // guardado).
+      if (mounted) _error(l10n.medErrorSaveFailed);
+      return;
     }
     router.pop();
   }
@@ -301,14 +309,18 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
         const SizedBox(height: 20),
         _FieldLabel(l10n.medFieldForm),
         _ChipWrap(
+          // Una opción por cada valor de MedicationForm, en el mismo orden que
+          // el enum, para que el índice mapee directo (incluido `other`, que
+          // antes no era seleccionable y al editar se degradaba a `drops`).
           options: [
             l10n.medFormNameCapsule,
             l10n.medFormNameTablet,
             l10n.medFormNameLiquid,
             l10n.medFormNameInjection,
             l10n.medFormNameDrops,
+            l10n.medFormNameOther,
           ],
-          selected: _form.index.clamp(0, 4),
+          selected: _form.index,
           onSelect: (i) => setState(() => _form = MedicationForm.values[i]),
         ),
         const SizedBox(height: 20),

@@ -63,6 +63,10 @@ class MedicationScheduler {
   /// Días por delante que se materializan en cada pasada.
   static const int defaultHorizonDays = 14;
 
+  /// Hora local (0–23) a la que se lanza el aviso de recompra el día de su fecha
+  /// límite: por la mañana, para dar margen a comprar durante el día.
+  static const int inventoryAlertHour = 9;
+
   static const String _ledgerKey = 'medication_notif_ids';
 
   /// Construye el plan de notificaciones (tomas + inventario) para [medications]
@@ -124,14 +128,15 @@ class MedicationScheduler {
         when = from.add(const Duration(minutes: 1));
       } else if (buyBy != null && buyBy.isAfter(from)) {
         // Aún hay margen: avisar la mañana de la fecha límite de compra.
-        when = DateTime(buyBy.year, buyBy.month, buyBy.day, 9);
+        when = DateTime(buyBy.year, buyBy.month, buyBy.day, inventoryAlertHour);
       }
       if (when == null) continue;
 
       // Respetar un silenciado que aún no ha vencido.
       final snooze = med.refillSnoozedUntil;
       if (snooze != null && when.isBefore(snooze)) {
-        when = DateTime(snooze.year, snooze.month, snooze.day, 9);
+        when =
+            DateTime(snooze.year, snooze.month, snooze.day, inventoryAlertHour);
       }
 
       final text = (inventoryText ?? _defaultInventoryText)(med);

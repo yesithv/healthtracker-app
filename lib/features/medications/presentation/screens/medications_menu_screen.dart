@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/settings_accent.dart';
@@ -16,6 +18,7 @@ import '../widgets/low_inventory_banner.dart';
 import '../widgets/med_icon.dart';
 import '../view_models/med_view_models.dart';
 import '../widgets/medication_list_row.dart';
+import '../widgets/notifications_permission_sheet.dart';
 
 /// Menú del módulo Medicamentos, ya dentro de Perfil y conectado a datos reales.
 ///
@@ -31,25 +34,35 @@ class MedicationsMenuScreen extends StatefulWidget {
 }
 
 class _MedicationsMenuScreenState extends State<MedicationsMenuScreen> {
+  /// Clave del flag que recuerda si ya pedimos el permiso de notificaciones
+  /// desde el módulo, para no repetir la hoja en cada visita al hub.
+  static const String _permissionPromptedKey = 'med_notif_permission_prompted';
+
   @override
   void initState() {
     super.initState();
-    // Fija los textos localizados de las notificaciones para que la
-    // reprogramación de avisos use el idioma activo.
+    // Los textos localizados de los avisos y la reprogramación los gobierna
+    // ahora `_MedicationsLifecycle` (en main.dart) al arrancar y al volver del
+    // segundo plano. Aquí solo pedimos el permiso de notificaciones la primera
+    // vez que hay algo que recordar.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      context.read<MedicationsController>().setNotificationTextBuilders(
-            doseText: (med, dose) => (
-              title: l10n.medicationDoseNotifTitle(med.name),
-              body: l10n.medicationDoseNotifBody,
-            ),
-            inventoryText: (med) => (
-              title: l10n.medicationRefillNotifTitle(med.name),
-              body: l10n.medicationRefillNotifBody,
-            ),
-          );
+      _maybePromptNotificationPermission();
     });
+  }
+
+  /// Muestra la hoja de permiso de notificaciones **una sola vez**: cuando ya hay
+  /// medicamentos activos (hay avisos que entregar) y aún no se ha preguntado. En
+  /// web no hay notificaciones, así que se omite.
+  Future<void> _maybePromptNotificationPermission() async {
+    if (kIsWeb) return;
+    final controller = context.read<MedicationsController>();
+    if (controller.activeMedications.isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_permissionPromptedKey) ?? false) return;
+    await prefs.setBool(_permissionPromptedKey, true);
+    if (!mounted) return;
+    await showNotificationsPermissionSheet(context);
   }
 
   @override

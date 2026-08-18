@@ -78,18 +78,31 @@ class MedicationLogRepository extends RecordRepository<MedicationLog> {
   List<MedicationLog> forMedication(String medicationId) =>
       items.where((l) => l.medicationId == medicationId).toList();
 
+  /// Índice `(medicamento, hora prevista) → registro`, para resolver
+  /// [findByScheduled] en O(1). Se reconstruye perezosamente tras cada refresco
+  /// (ver [refresh]); antes era un escaneo lineal invocado dentro de bucles
+  /// (planificador y adherencia), lo que degradaba a cuadrático/cúbico.
+  Map<String, MedicationLog>? _byScheduled;
+
+  static String _scheduledKey(String medicationId, DateTime scheduledAt) =>
+      '$medicationId|${scheduledAt.toIso8601String()}';
+
+  Map<String, MedicationLog> get _scheduledIndex => _byScheduled ??= {
+        for (final log in items)
+          _scheduledKey(log.medicationId, log.scheduledAt): log,
+      };
+
+  @override
+  Future<void> refresh() async {
+    await super.refresh();
+    _byScheduled = null; // invalidar; se reconstruye al primer uso
+  }
+
   /// El registro de una toma concreta, identificada por medicamento y hora
   /// prevista. Sirve para saber si una dosis esperada ya se marcó (tomada u
   /// omitida) y evitar duplicados al registrar.
-  MedicationLog? findByScheduled(String medicationId, DateTime scheduledAt) {
-    for (final log in items) {
-      if (log.medicationId == medicationId &&
-          log.scheduledAt.isAtSameMomentAs(scheduledAt)) {
-        return log;
-      }
-    }
-    return null;
-  }
+  MedicationLog? findByScheduled(String medicationId, DateTime scheduledAt) =>
+      _scheduledIndex[_scheduledKey(medicationId, scheduledAt)];
 
   /// Borra todos los registros de un medicamento (al eliminarlo).
   Future<void> deleteForMedication(String medicationId) async {

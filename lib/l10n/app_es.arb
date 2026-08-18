@@ -955,6 +955,9 @@
   "medThisMonth": "este mes",
   "medEdit": "Editar",
   "medDelete": "Eliminar",
+  "medPause": "Pausar",
+  "medResume": "Reanudar",
+  "medPausedBadge": "En pausa",
   "medDeleteTitle": "¿Eliminar medicamento?",
   "medDeleteBody": "Se borrará el medicamento y todo su historial. Esta acción no se puede deshacer.",
   "medInfoSoon": "Pronto",
@@ -1018,6 +1021,7 @@
   "medErrorNameRequired": "Escribe un nombre",
   "medErrorSelectDays": "Elige al menos un día",
   "medErrorAddTime": "Añade al menos una hora",
+  "medErrorSaveFailed": "No se pudo guardar. Inténtalo de nuevo.",
   "medUnitsSuffix": "uds",
 
   "medRefillTitle": "Recargar inventario",

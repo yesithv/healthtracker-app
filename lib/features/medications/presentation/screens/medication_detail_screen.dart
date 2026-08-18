@@ -125,6 +125,23 @@ class MedicationDetailScreen extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(headerParts, style: theme.type.meta),
                           ],
+                          if (!med.isActive) ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: theme.clinical.caution.surface,
+                                borderRadius: BorderRadius.circular(
+                                    surfaces.radiusControl),
+                              ),
+                              child: Text(
+                                l10n.medPausedBadge,
+                                style: theme.type.meta.copyWith(
+                                    color: theme.clinical.caution.accent),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -266,6 +283,17 @@ class MedicationDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
+                // Pausar/reanudar: un medicamento pausado deja de generar tomas
+                // y avisos pero conserva su historial (a diferencia de eliminar).
+                ActionButton(
+                  text: med.isActive ? l10n.medPause : l10n.medResume,
+                  color: med.isActive
+                      ? theme.clinical.caution.accent
+                      : theme.clinical.optimal.accent,
+                  solid: false,
+                  onPressed: () => controller.setActive(med, !med.isActive),
+                ),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(

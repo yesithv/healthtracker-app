@@ -6,8 +6,9 @@ import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import 'register_dose_sheet.dart';
 
-/// Hoja «Activa los recordatorios»: solicitud de permiso de notificaciones.
-/// Demo navegable — los botones sólo cierran la hoja.
+/// Hoja «Activa los recordatorios»: solicitud de permiso de notificaciones. El
+/// botón principal pide el permiso real al sistema
+/// ([NotificationService.requestPermissions]); «Ahora no» solo cierra la hoja.
 Future<void> showNotificationsPermissionSheet(BuildContext context) {
   final surfaces = Theme.of(context).surfaces;
   return showModalBottomSheet<void>(
