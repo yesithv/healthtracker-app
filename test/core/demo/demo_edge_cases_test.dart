@@ -4,9 +4,10 @@ import 'package:myvitals_healthtracker_app/core/demo/demo_dataset.dart';
 /// La serie curada de la demo cuenta una mejora bonita y suave, y por eso NUNCA
 /// toca los topes clínicos ni las rarezas de tiempo que un usuario real sí
 /// produce: dos tomas en el mismo instante, la tensión al borde del clamp, una
-/// presión de pulso de 1 mmHg. `buildDemoDataset` los añade a propósito
-/// (`includeEdgeCases`, encendido por defecto) para ver cómo se comporta la app
-/// con datos extremos ANTES de que lleguen en producción.
+/// presión de pulso de 1 mmHg. `buildDemoDataset` los sabe generar bajo la
+/// bandera `includeEdgeCases` (opt-in: apagada por defecto, porque los extremos
+/// aplastan la escala de las gráficas del home; esta prueba la enciende a mano)
+/// para ver cómo se comporta la app con datos extremos ANTES de producción.
 ///
 /// Estas pruebas blindan ese contrato: que los extremos existan, que sigan
 /// siendo válidos y coherentes (no basta con que sean feos, tienen que poder
@@ -15,7 +16,7 @@ import 'package:myvitals_healthtracker_app/core/demo/demo_dataset.dart';
 void main() {
   // Fecha fija: la demo es determinista, así que la prueba no depende del reloj.
   final today = DateTime(2026, 7, 29, 8);
-  final withEdges = buildDemoDataset(today: today);
+  final withEdges = buildDemoDataset(today: today, includeEdgeCases: true);
   final clean = buildDemoDataset(today: today, includeEdgeCases: false);
 
   bool isEdge(String id) => id.startsWith('demo-edge-');
@@ -161,7 +162,7 @@ void main() {
 
   group('los extremos también son deterministas ·', () {
     test('dos generaciones dan exactamente los mismos extremos', () {
-      final again = buildDemoDataset(today: today);
+      final again = buildDemoDataset(today: today, includeEdgeCases: true);
       String sig(Iterable<dynamic> rs) => rs
           .where((r) => isEdge(r.id as String))
           .map((r) => '${r.id}@${r.date.toIso8601String()}')

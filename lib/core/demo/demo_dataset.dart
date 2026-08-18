@@ -63,13 +63,16 @@ const int _seed = 20260729;
 ///
 /// [includeEdgeCases] anexa un puñado de registros EXTREMOS pero válidos (topes
 /// clínicos, colisiones de fecha, bordes de la ventana) para estresar las
-/// gráficas, las estadísticas y el PDF sin salirse de rango. Viene encendido por
-/// defecto —así la demo del home los siembra siempre—; las pruebas que fijan la
-/// narrativa limpia lo apagan. Ver `_buildEdgeCases`.
+/// gráficas, las estadísticas y el PDF sin salirse de rango. Viene **apagado por
+/// defecto**: los extremos aplastan la escala de las gráficas (un IMC de 43 o de
+/// 16 borra la mejora curada), así que la demo del home enseña solo la serie
+/// bonita. Es opt-in —lo encienden a mano las pruebas de blindaje que ejercitan
+/// el generador (`demo_edge_cases_test.dart`, `clinical_summary_edge_test.dart`)—.
+/// Ver `_buildEdgeCases`.
 DemoDataset buildDemoDataset({
   DateTime? today,
   String language = 'es',
-  bool includeEdgeCases = true,
+  bool includeEdgeCases = false,
 }) {
   final end = _atHour(today ?? DateTime.now(), 8);
   final start = end.subtract(const Duration(days: _spanDays));
