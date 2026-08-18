@@ -342,6 +342,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyBmiUnit => 'BMI';
 
   @override
+  String get historyExportPdf => 'Export to PDF';
+
+  @override
+  String get historyExportCsv => 'Excel (CSV)';
+
+  @override
+  String get historyMeasurements => 'MEASUREMENT HISTORY';
+
+  @override
+  String get historyNoMeasurements =>
+      'No measurements yet. Record your first one to start your history.';
+
+  @override
+  String get historyColDate => 'Date';
+
+  @override
+  String get historyColWeight => 'Weight (kg)';
+
+  @override
+  String get historyColBmi => 'BMI';
+
+  @override
+  String get historyColCategory => 'Category';
+
+  @override
+  String get historyUnknown => 'Unknown';
+
+  @override
+  String get historyPdfTitle => 'Anthropometric History';
+
+  @override
+  String get historyShareCsvSubject => 'Measurement History CSV';
+
+  @override
+  String get historyBmiLabel => 'BMI';
+
+  @override
   String historyTrendOf(String metric) {
     return '$metric TREND';
   }
@@ -389,43 +426,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unitCm => 'cm';
-
-  @override
-  String get historyExportPdf => 'Export to PDF';
-
-  @override
-  String get historyExportCsv => 'Excel (CSV)';
-
-  @override
-  String get historyMeasurements => 'MEASUREMENT HISTORY';
-
-  @override
-  String get historyNoMeasurements =>
-      'No measurements yet. Record your first one to start your history.';
-
-  @override
-  String get historyColDate => 'Date';
-
-  @override
-  String get historyColWeight => 'Weight (kg)';
-
-  @override
-  String get historyColBmi => 'BMI';
-
-  @override
-  String get historyColCategory => 'Category';
-
-  @override
-  String get historyUnknown => 'Unknown';
-
-  @override
-  String get historyPdfTitle => 'Anthropometric History';
-
-  @override
-  String get historyShareCsvSubject => 'Measurement History CSV';
-
-  @override
-  String get historyBmiLabel => 'BMI';
 
   @override
   String get recordVitalSignsTitle => 'VITAL SIGNS';
@@ -796,6 +796,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthGoalsTitle => 'Health Goals';
+
+  @override
+  String get goalsScreenDescription =>
+      'Set your target values and track your progress.';
 
   @override
   String get healthGoalsDescription =>
@@ -1635,14 +1639,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in and sync your records with the server.';
 
   @override
-  String get deviceScreenDescription =>
-      'Choose the scale you use so we can interpret your measurements.';
-
-  @override
-  String get goalsScreenDescription =>
-      'Set your target values and track your progress.';
-
-  @override
   String get accountYourAccount => 'Your account';
 
   @override
@@ -1701,6 +1697,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deviceScreenTitle => 'My measuring device';
+
+  @override
+  String get deviceScreenDescription =>
+      'Choose the scale you use so we can interpret your measurements.';
 
   @override
   String get deviceNoneTitle => 'I don’t use one';
@@ -1967,5 +1967,543 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String mhxPageOf(int current, int total) {
     return 'Page $current of $total';
+  }
+
+  @override
+  String get medicationsTitle => 'Medications';
+
+  @override
+  String get medicationsMenuTitle => 'Medications';
+
+  @override
+  String get medicationAdd => 'Add medication';
+
+  @override
+  String get medicationTaken => 'Taken';
+
+  @override
+  String get medicationSkipped => 'Skipped';
+
+  @override
+  String get medicationRefill => 'Refill';
+
+  @override
+  String medicationDoseNotifTitle(String name) {
+    return 'Time for $name';
+  }
+
+  @override
+  String get medicationDoseNotifBody => 'It\'s time to take your medication.';
+
+  @override
+  String medicationRefillNotifTitle(String name) {
+    return 'Refill $name';
+  }
+
+  @override
+  String get medicationRefillNotifBody => 'Your stock is running low.';
+
+  @override
+  String medicationUnitsLeft(int count) {
+    return '$count units left';
+  }
+
+  @override
+  String get medicationOutOfStock => 'Out of stock';
+
+  @override
+  String get medFormNameCapsule => 'Capsule';
+
+  @override
+  String get medFormNameTablet => 'Tablet';
+
+  @override
+  String get medFormNameLiquid => 'Liquid';
+
+  @override
+  String get medFormNameInjection => 'Injection';
+
+  @override
+  String get medFormNameDrops => 'Drops';
+
+  @override
+  String get medFormNameOther => 'Unit';
+
+  @override
+  String medUnitCapsule(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'capsules',
+      one: 'capsule',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medUnitTablet(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tablets',
+      one: 'tablet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medUnitLiquid(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ml',
+      one: 'ml',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medUnitInjection(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'injections',
+      one: 'injection',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medUnitDrops(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'drops',
+      one: 'drop',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medUnitOther(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'units',
+      one: 'unit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get medScheduleDaily => 'Every day';
+
+  @override
+  String medScheduleEveryNDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Every $count days',
+      one: 'Every day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get medMenuDescription =>
+      'Manage your doses, your inventory and your adherence in one place.';
+
+  @override
+  String medMenuTodaySubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses pending',
+      one: '1 dose pending',
+      zero: 'No doses pending',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medMenuInventorySubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count running low',
+      one: '1 running low',
+      zero: 'All stocked up',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medMenuAdherenceSubtitle(int pct, int streak) {
+    return '$pct% this month · $streak day streak';
+  }
+
+  @override
+  String get medTodayTitle => 'Today';
+
+  @override
+  String get medTodayDescription =>
+      'Log today\'s doses and review what\'s done.';
+
+  @override
+  String get medSectionToTakeToday => 'TO TAKE TODAY';
+
+  @override
+  String get medSectionLogged => 'LOGGED';
+
+  @override
+  String get medSectionYourMeds => 'YOUR MEDICATIONS';
+
+  @override
+  String medDosesProgress(int done, int total) {
+    return '$done of $total';
+  }
+
+  @override
+  String get medNoPendingToday => 'No doses left for today.';
+
+  @override
+  String get medInventoryTitle => 'Inventory';
+
+  @override
+  String get medInventoryDescription =>
+      'How many units you have left and when to refill.';
+
+  @override
+  String get medSectionInventory => 'INVENTORY';
+
+  @override
+  String medStockLeftUnits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count units left',
+      one: '1 unit left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String medRunsOutOn(String date) {
+    return 'runs out $date';
+  }
+
+  @override
+  String medStockDonutOf(int total) {
+    return 'of $total';
+  }
+
+  @override
+  String get medAdherenceTitle => 'Adherence';
+
+  @override
+  String get medAdherenceDescription =>
+      'Your consistency with the treatment over the month.';
+
+  @override
+  String medComplianceMonth(String month) {
+    return 'adherence · $month';
+  }
+
+  @override
+  String get medStreakDays => 'day streak';
+
+  @override
+  String get medLegendTaken => 'Taken';
+
+  @override
+  String get medLegendSkipped => 'Missed';
+
+  @override
+  String get medLegendNoData => 'No data';
+
+  @override
+  String get medSectionSchedule => 'SCHEDULE';
+
+  @override
+  String get medSectionAdherence => 'ADHERENCE';
+
+  @override
+  String get medSectionInformation => 'INFORMATION';
+
+  @override
+  String medRemainingUnits(int count) {
+    return '$count units';
+  }
+
+  @override
+  String medBuyBefore(String date) {
+    return 'Buy before $date';
+  }
+
+  @override
+  String medPackAndThreshold(int pack, int threshold) {
+    return 'Box of $pack · alert at: $threshold';
+  }
+
+  @override
+  String get medThisMonth => 'this month';
+
+  @override
+  String get medEdit => 'Edit';
+
+  @override
+  String get medDelete => 'Delete';
+
+  @override
+  String get medDeleteTitle => 'Delete medication?';
+
+  @override
+  String get medDeleteBody =>
+      'This deletes the medication and all its history. This can\'t be undone.';
+
+  @override
+  String get medInfoSoon => 'Soon';
+
+  @override
+  String get medInfoSoonBody => 'Interactions, pregnancy and breastfeeding.';
+
+  @override
+  String get medRegisterDose => 'Log dose';
+
+  @override
+  String medDoseAtTime(String amount, String time) {
+    return '$amount at $time';
+  }
+
+  @override
+  String get medSkip => 'Skip';
+
+  @override
+  String medMultipleTitle(int count, String time) {
+    return '$count doses at $time';
+  }
+
+  @override
+  String get medMultipleSubtitle => 'Check each one or log them all at once.';
+
+  @override
+  String get medSkipRest => 'Skip rest';
+
+  @override
+  String medRegisterNSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Log $count doses',
+      one: 'Log 1 dose',
+      zero: 'Log doses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get medNotifTitle => 'Turn on reminders';
+
+  @override
+  String get medNotifBody =>
+      'We\'ll remind you at each dose time and when your stock is running low. You can change this anytime.';
+
+  @override
+  String get medNotifWebWarning =>
+      'Notifications aren\'t available on the web version. Use the iOS or Android app.';
+
+  @override
+  String get medAllowNotifications => 'Allow notifications';
+
+  @override
+  String get medNotNow => 'Not now';
+
+  @override
+  String medWizardStepOf(int step, int total) {
+    return 'STEP $step OF $total';
+  }
+
+  @override
+  String get medBack => 'Back';
+
+  @override
+  String get medStepIdentity => 'Identity';
+
+  @override
+  String get medStepDose => 'Dose';
+
+  @override
+  String get medStepFrequency => 'Frequency';
+
+  @override
+  String get medStepDates => 'Dates';
+
+  @override
+  String get medStepInventory => 'Inventory';
+
+  @override
+  String get medFieldName => 'NAME';
+
+  @override
+  String get medFieldForm => 'FORM';
+
+  @override
+  String get medFieldStrength => 'STRENGTH';
+
+  @override
+  String get medFieldColorIcon => 'COLOR & ICON';
+
+  @override
+  String get medShapeCapsule => 'Capsule';
+
+  @override
+  String get medShapeRound => 'Round';
+
+  @override
+  String get medFieldReason => 'WHAT FOR (OPTIONAL)';
+
+  @override
+  String get medFieldQtyPerDose => 'AMOUNT PER DOSE';
+
+  @override
+  String get medWithFood => 'Take with food';
+
+  @override
+  String get medWithFoodSub => 'Hint in the reminder';
+
+  @override
+  String get medSpecialInstruction => 'Special instruction';
+
+  @override
+  String get medSpecialInstructionSub => 'E.g. dissolve in water';
+
+  @override
+  String get medFreqDaily => 'Daily';
+
+  @override
+  String get medFreqSpecificDays => 'Specific days';
+
+  @override
+  String get medFreqEveryNDays => 'Every N days';
+
+  @override
+  String get medFieldWeekdays => 'DAYS OF THE WEEK';
+
+  @override
+  String get medFieldDoseTimes => 'DOSE TIMES';
+
+  @override
+  String get medAddTime => 'Add time';
+
+  @override
+  String get medIntervalLabel => 'Every how many days';
+
+  @override
+  String get medFieldStart => 'START';
+
+  @override
+  String get medWithEndDate => 'With end date';
+
+  @override
+  String get medWithEndDateSub => 'End the treatment on a date';
+
+  @override
+  String get medFieldEnd => 'END';
+
+  @override
+  String get medTrackInventory => 'Track inventory';
+
+  @override
+  String get medTrackInventorySub => 'Deduct stock on each dose';
+
+  @override
+  String get medCurrentUnits => 'Current units';
+
+  @override
+  String get medAlertWhenRemaining => 'Alert me when I have';
+
+  @override
+  String get medLeadTimeDays => 'Lead time (days)';
+
+  @override
+  String get medPackSize => 'Box size';
+
+  @override
+  String get medRefillAlerts => 'Refill alerts';
+
+  @override
+  String get medRefillAlertsSub => 'With an estimated deadline';
+
+  @override
+  String get medSaveMedication => 'Save medication';
+
+  @override
+  String get medContinue => 'Continue';
+
+  @override
+  String get medErrorNameRequired => 'Enter a name';
+
+  @override
+  String get medErrorSelectDays => 'Pick at least one day';
+
+  @override
+  String get medErrorAddTime => 'Add at least one time';
+
+  @override
+  String get medUnitsSuffix => 'units';
+
+  @override
+  String get medRefillTitle => 'Refill inventory';
+
+  @override
+  String medRunsOutInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'Runs out in ~$_temp0';
+  }
+
+  @override
+  String get medAddABox => 'Add a box';
+
+  @override
+  String get medAddABoxSub => 'Adds to the current stock';
+
+  @override
+  String medWillRemain(int units, int days) {
+    return '$units units left · lasts ~$days days';
+  }
+
+  @override
+  String get medRemindOneDay => 'Remind me in 1 day';
+
+  @override
+  String get medBought => 'I bought it';
+
+  @override
+  String get medEmptyTitle => 'No medications yet';
+
+  @override
+  String get medEmptyBody =>
+      'Add your first medication and we\'ll remind you of every dose and warn you before it runs out.';
+
+  @override
+  String get medDashTodayLabel => 'TODAY\'S DOSES';
+
+  @override
+  String get medDashSeeModule => 'See module ›';
+
+  @override
+  String get medDashNextDose => 'Next dose';
+
+  @override
+  String get medDashNoDoses => 'No upcoming doses';
+
+  @override
+  String medLowStockBannerTitle(String name, int count) {
+    return '$name has $count units left';
   }
 }

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_medications_seed.dart';
+import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/measuring_device_provider.dart';
@@ -29,6 +31,9 @@ Future<void> enterDemo(BuildContext context) async {
   final language = context.read<LocaleUnitsProvider>().locale.languageCode;
 
   await DemoSession.instance.enter(languageCode: language);
+  // Puebla el módulo de medicamentos para que la demo no se vea vacía (solo si
+  // aún no hay ninguno en la base de la demostración).
+  await seedDemoMedicationsIfEmpty();
   await reload();
 
   router.go('/dashboard');
@@ -74,5 +79,10 @@ Future<void> Function() _providerReload(BuildContext context) {
     await reminders.reload();
     await localeUnits.reload();
     await device.load();
+    // Los repositorios de medicamentos son singletons: tras conmutar la base
+    // (entrar o salir de la demo) su caché queda obsoleta y hay que releerla.
+    await MedicationRepository.instance.refresh();
+    await MedicationDoseRepository.instance.refresh();
+    await MedicationLogRepository.instance.refresh();
   };
 }

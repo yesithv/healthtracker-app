@@ -746,51 +746,6 @@ abstract class AppLocalizations {
   /// **'BMI'**
   String get historyBmiUnit;
 
-  /// No description provided for @historyTrendOf.
-  String historyTrendOf(String metric);
-
-  /// No description provided for @historyMetricNeedsData.
-  String historyMetricNeedsData(String measure);
-
-  /// No description provided for @whtrName.
-  String get whtrName;
-
-  /// No description provided for @whtrShort.
-  String get whtrShort;
-
-  /// No description provided for @whtrLow.
-  String get whtrLow;
-
-  /// No description provided for @whtrNormal.
-  String get whtrNormal;
-
-  /// No description provided for @whtrIncreased.
-  String get whtrIncreased;
-
-  /// No description provided for @whtrHigh.
-  String get whtrHigh;
-
-  /// No description provided for @whrName.
-  String get whrName;
-
-  /// No description provided for @whrShort.
-  String get whrShort;
-
-  /// No description provided for @whrNormal.
-  String get whrNormal;
-
-  /// No description provided for @whrIncreased.
-  String get whrIncreased;
-
-  /// No description provided for @measureWaist.
-  String get measureWaist;
-
-  /// No description provided for @measureWaistAndHip.
-  String get measureWaistAndHip;
-
-  /// No description provided for @unitCm.
-  String get unitCm;
-
   /// No description provided for @historyExportPdf.
   ///
   /// In en, this message translates to:
@@ -862,6 +817,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BMI'**
   String get historyBmiLabel;
+
+  /// History chart card title, per the selected metric
+  ///
+  /// In en, this message translates to:
+  /// **'{metric} TREND'**
+  String historyTrendOf(String metric);
+
+  /// Empty state when the derived metric lacks enough data
+  ///
+  /// In en, this message translates to:
+  /// **'Log {measure} to see this indicator.'**
+  String historyMetricNeedsData(String measure);
+
+  /// No description provided for @whtrName.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist-to-height'**
+  String get whtrName;
+
+  /// No description provided for @whtrShort.
+  ///
+  /// In en, this message translates to:
+  /// **'WHtR'**
+  String get whtrShort;
+
+  /// No description provided for @whtrLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get whtrLow;
+
+  /// No description provided for @whtrNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get whtrNormal;
+
+  /// No description provided for @whtrIncreased.
+  ///
+  /// In en, this message translates to:
+  /// **'INCREASED'**
+  String get whtrIncreased;
+
+  /// No description provided for @whtrHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get whtrHigh;
+
+  /// No description provided for @whrName.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist-to-hip'**
+  String get whrName;
+
+  /// No description provided for @whrShort.
+  ///
+  /// In en, this message translates to:
+  /// **'WHR'**
+  String get whrShort;
+
+  /// No description provided for @whrNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NORMAL'**
+  String get whrNormal;
+
+  /// No description provided for @whrIncreased.
+  ///
+  /// In en, this message translates to:
+  /// **'INCREASED'**
+  String get whrIncreased;
+
+  /// No description provided for @measureWaist.
+  ///
+  /// In en, this message translates to:
+  /// **'your waist'**
+  String get measureWaist;
+
+  /// No description provided for @measureWaistAndHip.
+  ///
+  /// In en, this message translates to:
+  /// **'waist and hip'**
+  String get measureWaistAndHip;
+
+  /// No description provided for @unitCm.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get unitCm;
 
   /// No description provided for @recordVitalSignsTitle.
   ///
@@ -1565,6 +1610,12 @@ abstract class AppLocalizations {
   /// **'Health Goals'**
   String get healthGoalsTitle;
 
+  /// No description provided for @goalsScreenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your target values and track your progress.'**
+  String get goalsScreenDescription;
+
   /// No description provided for @healthGoalsDescription.
   ///
   /// In en, this message translates to:
@@ -2168,7 +2219,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeFeature3.
   ///
   /// In en, this message translates to:
-  /// **'100% private, everything stays on your device'**
+  /// **'Sync your history securely across your devices'**
   String get onboardingWelcomeFeature3;
 
   /// No description provided for @onboardingNext.
@@ -3083,18 +3134,6 @@ abstract class AppLocalizations {
   /// **'Sign in and sync your records with the server.'**
   String get accountSyncDescription;
 
-  /// No description provided for @deviceScreenDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the scale you use so we can interpret your measurements.'**
-  String get deviceScreenDescription;
-
-  /// No description provided for @goalsScreenDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Set your target values and track your progress.'**
-  String get goalsScreenDescription;
-
   /// No description provided for @accountYourAccount.
   ///
   /// In en, this message translates to:
@@ -3208,6 +3247,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My measuring device'**
   String get deviceScreenTitle;
+
+  /// No description provided for @deviceScreenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the scale you use so we can interpret your measurements.'**
+  String get deviceScreenDescription;
 
   /// No description provided for @deviceNoneTitle.
   ///
@@ -3700,6 +3745,804 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Page {current} of {total}'**
   String mhxPageOf(int current, int total);
+
+  /// No description provided for @medicationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get medicationsTitle;
+
+  /// No description provided for @medicationsMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get medicationsMenuTitle;
+
+  /// No description provided for @medicationAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add medication'**
+  String get medicationAdd;
+
+  /// No description provided for @medicationTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken'**
+  String get medicationTaken;
+
+  /// No description provided for @medicationSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get medicationSkipped;
+
+  /// No description provided for @medicationRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Refill'**
+  String get medicationRefill;
+
+  /// No description provided for @medicationDoseNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for {name}'**
+  String medicationDoseNotifTitle(String name);
+
+  /// No description provided for @medicationDoseNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s time to take your medication.'**
+  String get medicationDoseNotifBody;
+
+  /// No description provided for @medicationRefillNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Refill {name}'**
+  String medicationRefillNotifTitle(String name);
+
+  /// No description provided for @medicationRefillNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your stock is running low.'**
+  String get medicationRefillNotifBody;
+
+  /// No description provided for @medicationUnitsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} units left'**
+  String medicationUnitsLeft(int count);
+
+  /// No description provided for @medicationOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get medicationOutOfStock;
+
+  /// No description provided for @medFormNameCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'Capsule'**
+  String get medFormNameCapsule;
+
+  /// No description provided for @medFormNameTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get medFormNameTablet;
+
+  /// No description provided for @medFormNameLiquid.
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid'**
+  String get medFormNameLiquid;
+
+  /// No description provided for @medFormNameInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Injection'**
+  String get medFormNameInjection;
+
+  /// No description provided for @medFormNameDrops.
+  ///
+  /// In en, this message translates to:
+  /// **'Drops'**
+  String get medFormNameDrops;
+
+  /// No description provided for @medFormNameOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get medFormNameOther;
+
+  /// No description provided for @medUnitCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{capsule} other{capsules}}'**
+  String medUnitCapsule(int count);
+
+  /// No description provided for @medUnitTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{tablet} other{tablets}}'**
+  String medUnitTablet(int count);
+
+  /// No description provided for @medUnitLiquid.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{ml} other{ml}}'**
+  String medUnitLiquid(int count);
+
+  /// No description provided for @medUnitInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{injection} other{injections}}'**
+  String medUnitInjection(int count);
+
+  /// No description provided for @medUnitDrops.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{drop} other{drops}}'**
+  String medUnitDrops(int count);
+
+  /// No description provided for @medUnitOther.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{unit} other{units}}'**
+  String medUnitOther(int count);
+
+  /// No description provided for @medScheduleDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get medScheduleDaily;
+
+  /// No description provided for @medScheduleEveryNDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Every day} other{Every {count} days}}'**
+  String medScheduleEveryNDays(int count);
+
+  /// No description provided for @medMenuDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your doses, your inventory and your adherence in one place.'**
+  String get medMenuDescription;
+
+  /// No description provided for @medMenuTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doses pending} one{1 dose pending} other{{count} doses pending}}'**
+  String medMenuTodaySubtitle(int count);
+
+  /// No description provided for @medMenuInventorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All stocked up} one{1 running low} other{{count} running low}}'**
+  String medMenuInventorySubtitle(int count);
+
+  /// No description provided for @medMenuAdherenceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% this month · {streak} day streak'**
+  String medMenuAdherenceSubtitle(int pct, int streak);
+
+  /// No description provided for @medTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get medTodayTitle;
+
+  /// No description provided for @medTodayDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Log today\'s doses and review what\'s done.'**
+  String get medTodayDescription;
+
+  /// No description provided for @medSectionToTakeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'TO TAKE TODAY'**
+  String get medSectionToTakeToday;
+
+  /// No description provided for @medSectionLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGGED'**
+  String get medSectionLogged;
+
+  /// No description provided for @medSectionYourMeds.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR MEDICATIONS'**
+  String get medSectionYourMeds;
+
+  /// No description provided for @medDosesProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String medDosesProgress(int done, int total);
+
+  /// No description provided for @medNoPendingToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No doses left for today.'**
+  String get medNoPendingToday;
+
+  /// No description provided for @medInventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get medInventoryTitle;
+
+  /// No description provided for @medInventoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How many units you have left and when to refill.'**
+  String get medInventoryDescription;
+
+  /// No description provided for @medSectionInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'INVENTORY'**
+  String get medSectionInventory;
+
+  /// No description provided for @medStockLeftUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 unit left} other{{count} units left}}'**
+  String medStockLeftUnits(int count);
+
+  /// No description provided for @medRunsOutOn.
+  ///
+  /// In en, this message translates to:
+  /// **'runs out {date}'**
+  String medRunsOutOn(String date);
+
+  /// No description provided for @medStockDonutOf.
+  ///
+  /// In en, this message translates to:
+  /// **'of {total}'**
+  String medStockDonutOf(int total);
+
+  /// No description provided for @medAdherenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adherence'**
+  String get medAdherenceTitle;
+
+  /// No description provided for @medAdherenceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your consistency with the treatment over the month.'**
+  String get medAdherenceDescription;
+
+  /// No description provided for @medComplianceMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'adherence · {month}'**
+  String medComplianceMonth(String month);
+
+  /// No description provided for @medStreakDays.
+  ///
+  /// In en, this message translates to:
+  /// **'day streak'**
+  String get medStreakDays;
+
+  /// No description provided for @medLegendTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken'**
+  String get medLegendTaken;
+
+  /// No description provided for @medLegendSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get medLegendSkipped;
+
+  /// No description provided for @medLegendNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get medLegendNoData;
+
+  /// No description provided for @medSectionSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'SCHEDULE'**
+  String get medSectionSchedule;
+
+  /// No description provided for @medSectionAdherence.
+  ///
+  /// In en, this message translates to:
+  /// **'ADHERENCE'**
+  String get medSectionAdherence;
+
+  /// No description provided for @medSectionInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'INFORMATION'**
+  String get medSectionInformation;
+
+  /// No description provided for @medRemainingUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} units'**
+  String medRemainingUnits(int count);
+
+  /// No description provided for @medBuyBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy before {date}'**
+  String medBuyBefore(String date);
+
+  /// No description provided for @medPackAndThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Box of {pack} · alert at: {threshold}'**
+  String medPackAndThreshold(int pack, int threshold);
+
+  /// No description provided for @medThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'this month'**
+  String get medThisMonth;
+
+  /// No description provided for @medEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get medEdit;
+
+  /// No description provided for @medDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get medDelete;
+
+  /// No description provided for @medDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete medication?'**
+  String get medDeleteTitle;
+
+  /// No description provided for @medDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes the medication and all its history. This can\'t be undone.'**
+  String get medDeleteBody;
+
+  /// No description provided for @medInfoSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Soon'**
+  String get medInfoSoon;
+
+  /// No description provided for @medInfoSoonBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactions, pregnancy and breastfeeding.'**
+  String get medInfoSoonBody;
+
+  /// No description provided for @medRegisterDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Log dose'**
+  String get medRegisterDose;
+
+  /// No description provided for @medDoseAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} at {time}'**
+  String medDoseAtTime(String amount, String time);
+
+  /// No description provided for @medSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get medSkip;
+
+  /// No description provided for @medMultipleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} doses at {time}'**
+  String medMultipleTitle(int count, String time);
+
+  /// No description provided for @medMultipleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check each one or log them all at once.'**
+  String get medMultipleSubtitle;
+
+  /// No description provided for @medSkipRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip rest'**
+  String get medSkipRest;
+
+  /// No description provided for @medRegisterNSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Log doses} one{Log 1 dose} other{Log {count} doses}}'**
+  String medRegisterNSelected(int count);
+
+  /// No description provided for @medNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on reminders'**
+  String get medNotifTitle;
+
+  /// No description provided for @medNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll remind you at each dose time and when your stock is running low. You can change this anytime.'**
+  String get medNotifBody;
+
+  /// No description provided for @medNotifWebWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications aren\'t available on the web version. Use the iOS or Android app.'**
+  String get medNotifWebWarning;
+
+  /// No description provided for @medAllowNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get medAllowNotifications;
+
+  /// No description provided for @medNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get medNotNow;
+
+  /// No description provided for @medWizardStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'STEP {step} OF {total}'**
+  String medWizardStepOf(int step, int total);
+
+  /// No description provided for @medBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get medBack;
+
+  /// No description provided for @medStepIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get medStepIdentity;
+
+  /// No description provided for @medStepDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get medStepDose;
+
+  /// No description provided for @medStepFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get medStepFrequency;
+
+  /// No description provided for @medStepDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get medStepDates;
+
+  /// No description provided for @medStepInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get medStepInventory;
+
+  /// No description provided for @medFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'NAME'**
+  String get medFieldName;
+
+  /// No description provided for @medFieldForm.
+  ///
+  /// In en, this message translates to:
+  /// **'FORM'**
+  String get medFieldForm;
+
+  /// No description provided for @medFieldStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'STRENGTH'**
+  String get medFieldStrength;
+
+  /// No description provided for @medFieldColorIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'COLOR & ICON'**
+  String get medFieldColorIcon;
+
+  /// No description provided for @medShapeCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'Capsule'**
+  String get medShapeCapsule;
+
+  /// No description provided for @medShapeRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Round'**
+  String get medShapeRound;
+
+  /// No description provided for @medFieldReason.
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT FOR (OPTIONAL)'**
+  String get medFieldReason;
+
+  /// No description provided for @medFieldQtyPerDose.
+  ///
+  /// In en, this message translates to:
+  /// **'AMOUNT PER DOSE'**
+  String get medFieldQtyPerDose;
+
+  /// No description provided for @medWithFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Take with food'**
+  String get medWithFood;
+
+  /// No description provided for @medWithFoodSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Hint in the reminder'**
+  String get medWithFoodSub;
+
+  /// No description provided for @medSpecialInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Special instruction'**
+  String get medSpecialInstruction;
+
+  /// No description provided for @medSpecialInstructionSub.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. dissolve in water'**
+  String get medSpecialInstructionSub;
+
+  /// No description provided for @medFreqDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get medFreqDaily;
+
+  /// No description provided for @medFreqSpecificDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Specific days'**
+  String get medFreqSpecificDays;
+
+  /// No description provided for @medFreqEveryNDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Every N days'**
+  String get medFreqEveryNDays;
+
+  /// No description provided for @medFieldWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'DAYS OF THE WEEK'**
+  String get medFieldWeekdays;
+
+  /// No description provided for @medFieldDoseTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'DOSE TIMES'**
+  String get medFieldDoseTimes;
+
+  /// No description provided for @medAddTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Add time'**
+  String get medAddTime;
+
+  /// No description provided for @medIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Every how many days'**
+  String get medIntervalLabel;
+
+  /// No description provided for @medFieldStart.
+  ///
+  /// In en, this message translates to:
+  /// **'START'**
+  String get medFieldStart;
+
+  /// No description provided for @medWithEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'With end date'**
+  String get medWithEndDate;
+
+  /// No description provided for @medWithEndDateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'End the treatment on a date'**
+  String get medWithEndDateSub;
+
+  /// No description provided for @medFieldEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'END'**
+  String get medFieldEnd;
+
+  /// No description provided for @medTrackInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Track inventory'**
+  String get medTrackInventory;
+
+  /// No description provided for @medTrackInventorySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduct stock on each dose'**
+  String get medTrackInventorySub;
+
+  /// No description provided for @medCurrentUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Current units'**
+  String get medCurrentUnits;
+
+  /// No description provided for @medAlertWhenRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert me when I have'**
+  String get medAlertWhenRemaining;
+
+  /// No description provided for @medLeadTimeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead time (days)'**
+  String get medLeadTimeDays;
+
+  /// No description provided for @medPackSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Box size'**
+  String get medPackSize;
+
+  /// No description provided for @medRefillAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Refill alerts'**
+  String get medRefillAlerts;
+
+  /// No description provided for @medRefillAlertsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'With an estimated deadline'**
+  String get medRefillAlertsSub;
+
+  /// No description provided for @medSaveMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Save medication'**
+  String get medSaveMedication;
+
+  /// No description provided for @medContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get medContinue;
+
+  /// No description provided for @medErrorNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get medErrorNameRequired;
+
+  /// No description provided for @medErrorSelectDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one day'**
+  String get medErrorSelectDays;
+
+  /// No description provided for @medErrorAddTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one time'**
+  String get medErrorAddTime;
+
+  /// No description provided for @medUnitsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'units'**
+  String get medUnitsSuffix;
+
+  /// No description provided for @medRefillTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Refill inventory'**
+  String get medRefillTitle;
+
+  /// No description provided for @medRunsOutInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs out in ~{days, plural, one{1 day} other{{days} days}}'**
+  String medRunsOutInDays(int days);
+
+  /// No description provided for @medAddABox.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a box'**
+  String get medAddABox;
+
+  /// No description provided for @medAddABoxSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds to the current stock'**
+  String get medAddABoxSub;
+
+  /// No description provided for @medWillRemain.
+  ///
+  /// In en, this message translates to:
+  /// **'{units} units left · lasts ~{days} days'**
+  String medWillRemain(int units, int days);
+
+  /// No description provided for @medRemindOneDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me in 1 day'**
+  String get medRemindOneDay;
+
+  /// No description provided for @medBought.
+  ///
+  /// In en, this message translates to:
+  /// **'I bought it'**
+  String get medBought;
+
+  /// No description provided for @medEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No medications yet'**
+  String get medEmptyTitle;
+
+  /// No description provided for @medEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first medication and we\'ll remind you of every dose and warn you before it runs out.'**
+  String get medEmptyBody;
+
+  /// No description provided for @medDashTodayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TODAY\'S DOSES'**
+  String get medDashTodayLabel;
+
+  /// No description provided for @medDashSeeModule.
+  ///
+  /// In en, this message translates to:
+  /// **'See module ›'**
+  String get medDashSeeModule;
+
+  /// No description provided for @medDashNextDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Next dose'**
+  String get medDashNextDose;
+
+  /// No description provided for @medDashNoDoses.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming doses'**
+  String get medDashNoDoses;
+
+  /// No description provided for @medLowStockBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has {count} units left'**
+  String medLowStockBannerTitle(String name, int count);
 }
 
 class _AppLocalizationsDelegate
