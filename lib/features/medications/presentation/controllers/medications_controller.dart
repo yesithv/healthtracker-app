@@ -6,6 +6,7 @@ import 'package:myvitals_healthtracker_app/features/medications/data/models/medi
 import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
 import 'package:myvitals_healthtracker_app/features/medications/domain/medication_schedule_service.dart';
 import 'package:myvitals_healthtracker_app/features/medications/domain/medication_inventory_service.dart';
+import 'package:myvitals_healthtracker_app/features/medications/domain/medication_adherence_service.dart';
 import 'package:myvitals_healthtracker_app/features/medications/domain/medication_scheduler.dart';
 
 /// Efecto de un cambio de estado de una toma sobre el inventario.
@@ -50,12 +51,39 @@ class MedicationsController extends ChangeNotifier {
   })  : _meds = medications ?? MedicationRepository.instance,
         _doses = doses ?? MedicationDoseRepository.instance,
         _logs = logs ?? MedicationLogRepository.instance,
-        _scheduler = scheduler ?? MedicationScheduler();
+        _scheduler = scheduler ?? MedicationScheduler() {
+    // Los repositorios ya notifican en cada escritura, pero el controlador no se
+    // enteraba: se suscribe a los tres y reemite, para que las pantallas hagan
+    // un único `watch<MedicationsController>()` y se reconstruyan tras cualquier
+    // alta, registro o recarga.
+    _meds.addListener(notifyListeners);
+    _doses.addListener(notifyListeners);
+    _logs.addListener(notifyListeners);
+  }
 
   final MedicationRepository _meds;
   final MedicationDoseRepository _doses;
   final MedicationLogRepository _logs;
   final MedicationScheduler _scheduler;
+
+  @override
+  void dispose() {
+    _meds.removeListener(notifyListeners);
+    _doses.removeListener(notifyListeners);
+    _logs.removeListener(notifyListeners);
+    super.dispose();
+  }
+
+  /// ¿Terminó la carga inicial de los tres repositorios desde la base?
+  bool get isLoaded => _meds.isLoaded && _doses.isLoaded && _logs.isLoaded;
+
+  /// Relee los tres repositorios desde la base. Se usa tras cambiar de base
+  /// (entrar/salir de la demostración), donde la caché en memoria queda obsoleta.
+  Future<void> reloadRepositories() async {
+    await _meds.refresh();
+    await _doses.refresh();
+    await _logs.refresh();
+  }
 
   // Constructores de texto localizado para las notificaciones. La UI los fija
   // (con l10n); mientras sean null, el planificador usa sus textos por defecto.
@@ -77,8 +105,35 @@ class MedicationsController extends ChangeNotifier {
   List<Medication> get medications => _meds.items;
   List<Medication> get activeMedications => _meds.active;
 
+  /// Todos los registros de toma (para adherencia/calendario).
+  List<MedicationLog> get logs => _logs.items;
+
   List<MedicationDose> dosesFor(String medicationId) =>
       _doses.forMedication(medicationId);
+
+  /// El medicamento con [id], o null si no existe.
+  Medication? medicationById(String id) {
+    for (final m in _meds.items) {
+      if (m.id == id) return m;
+    }
+    return null;
+  }
+
+  /// Mapa medicamento→horas de toma, para los servicios de dominio.
+  Map<String, List<MedicationDose>> dosesByMedication() => {
+        for (final m in _meds.items) m.id: _doses.forMedication(m.id),
+      };
+
+  /// Servicio de adherencia sobre el estado actual. Por defecto abarca los
+  /// medicamentos activos; pasa [only] para restringirlo a uno (vista detalle).
+  MedicationAdherenceService adherence({Medication? only}) {
+    final meds = only != null ? [only] : _meds.active;
+    return MedicationAdherenceService(
+      medications: meds,
+      dosesByMedication: dosesByMedication(),
+      logs: _logs.items,
+    );
+  }
 
   /// Las tomas de [day] (por defecto hoy) con su estado, ordenadas por hora.
   List<MedicationDayEntry> entriesForDay([DateTime? day]) {

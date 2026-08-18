@@ -556,6 +556,12 @@ class ProfileScreen extends StatelessWidget {
                   tone: SettingsSection.healthGoals.tone(theme),
                   onTap: () => context.push('/profile/goals'),
                 ),
+                _MenuTile(
+                  icon: Icons.medication_outlined,
+                  title: l10n.medicationsTitle,
+                  tone: SettingsSection.medications.tone(theme),
+                  onTap: () => context.push('/profile/medications'),
+                ),
                 // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
                 _MenuTile(
                   icon: Icons.palette_outlined,

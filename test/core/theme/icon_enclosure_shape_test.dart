@@ -75,6 +75,33 @@ const _legitimateCircles = <String, ({int count, String reason})>{
         '(FlDotCirclePainter, redondo por convención de fl_chart); no encierra '
         'ningún icono, es la clave de leyenda de ese marcador.',
   ),
+  'lib/features/medications/presentation/widgets/week_strip.dart': (
+    count: 2,
+    reason:
+        'La ficha del día (el número dentro de un disco, convención de '
+        'calendario) y el punto de estado que va debajo. Ninguno encierra un '
+        'icono.',
+  ),
+  'lib/features/medications/presentation/widgets/medication_dose_tile.dart': (
+    count: 2,
+    reason:
+        'El marcador de estado de la toma: el disco vacío de «por tomar» y el '
+        'disco relleno con el ✓/✕. Es la marca de completado (convención de '
+        'casilla), no un icono metido en una caja.',
+  ),
+  'lib/features/medications/presentation/widgets/register_multiple_sheet.dart': (
+    count: 1,
+    reason:
+        'La casilla redonda de «marcada» (convención de checkbox); el ✓ es su '
+        'relleno cuando está activa, no un icono encerrado.',
+  ),
+  'lib/features/medications/presentation/screens/medication_wizard_screen.dart':
+      (
+        count: 2,
+        reason:
+            'El selector de color (un punto de color) y el círculo de día de la '
+            'semana (un radio/toggle). Ninguno encierra un icono.',
+      ),
 };
 
 void main() {

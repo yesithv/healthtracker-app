@@ -26,6 +26,7 @@ enum SettingsSection {
   personalInfo,
   device,
   healthGoals,
+  medications,
   appTheme,
   language,
   measurementUnits,
@@ -45,6 +46,9 @@ extension SettingsSectionAccent on SettingsSection {
     SettingsSection.personalInfo => theme.content.sleep,
     SettingsSection.device => theme.content.daily,
     SettingsSection.healthGoals => theme.content.heart,
+    // Medicamentos entra entre Metas (corazón) y Tema (emocional); toma el
+    // matiz de «deporte» para no repetir el color de ninguna fila vecina.
+    SettingsSection.medications => theme.content.sports,
     SettingsSection.appTheme => theme.content.emotional,
     SettingsSection.language => theme.content.nutrition,
     SettingsSection.measurementUnits => theme.content.sports,

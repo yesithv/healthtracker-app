@@ -35,6 +35,13 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/verify_screen.dart';
 import '../../features/auth/presentation/screens/otp_verify_screen.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
+import '../../features/medications/presentation/screens/medications_menu_screen.dart';
+import '../../features/medications/presentation/screens/medications_today_screen.dart';
+import '../../features/medications/presentation/screens/medication_inventory_screen.dart';
+import '../../features/medications/presentation/screens/medication_adherence_screen.dart';
+import '../../features/medications/presentation/screens/medication_detail_screen.dart';
+import '../../features/medications/presentation/screens/medication_wizard_screen.dart';
+import '../../features/medications/presentation/screens/refill_inventory_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -203,6 +210,43 @@ class AppRouter {
         path: '/history/body-composition',
         builder: (context, state) =>
             const HistoryCategoryScreen(child: BodyCompositionHistoryTab()),
+      ),
+      // Módulo Medicamentos (prototipo navegable), ya dentro de Perfil.
+      // Rutas de pantalla completa fuera del shell, como el resto de
+      // subpantallas de Perfil: el menú y sus vistas usan la cabecera azul y
+      // vuelven atrás con el botón estándar.
+      GoRoute(
+        path: '/profile/medications',
+        builder: (context, state) => const MedicationsMenuScreen(),
+      ),
+      GoRoute(
+        path: '/profile/medications/today',
+        builder: (context, state) => const MedicationsTodayScreen(),
+      ),
+      GoRoute(
+        path: '/profile/medications/inventory',
+        builder: (context, state) => const MedicationInventoryScreen(),
+      ),
+      GoRoute(
+        path: '/profile/medications/adherence',
+        builder: (context, state) => const MedicationAdherenceScreen(),
+      ),
+      GoRoute(
+        path: '/profile/medications/detail',
+        builder: (context, state) => MedicationDetailScreen(
+          medicationId: state.extra as String? ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/profile/medications/add',
+        builder: (context, state) =>
+            MedicationWizardScreen(medicationId: state.extra as String?),
+      ),
+      GoRoute(
+        path: '/profile/medications/refill',
+        builder: (context, state) => RefillInventoryScreen(
+          medicationId: state.extra as String? ?? '',
+        ),
       ),
       ShellRoute(
         builder: (context, state, child) {
