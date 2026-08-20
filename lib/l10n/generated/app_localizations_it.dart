@@ -2514,7 +2514,64 @@ class AppLocalizationsIt extends AppLocalizations {
   String get medDashMedsTitle => 'Farmaci';
 
   @override
-  String get medDashApptsTitle => 'Visite mediche';
+  String get medDashApptsTitle => 'Visite';
+
+  @override
+  String get specialtyNone => 'Nessuna specialità';
+
+  @override
+  String get specialtyGeneralMedicine => 'Medicina generale';
+
+  @override
+  String get specialtyCardiology => 'Cardiologia';
+
+  @override
+  String get specialtyEndocrinology => 'Endocrinologia';
+
+  @override
+  String get specialtyDermatology => 'Dermatologia';
+
+  @override
+  String get specialtyGynecology => 'Ginecologia';
+
+  @override
+  String get specialtyDentistry => 'Odontoiatria';
+
+  @override
+  String get specialtyOphthalmology => 'Oculistica';
+
+  @override
+  String get specialtyOtolaryngology => 'Otorinolaringoiatria';
+
+  @override
+  String get specialtyNeurology => 'Neurologia';
+
+  @override
+  String get specialtyNeuropsychology => 'Neuropsicologia';
+
+  @override
+  String get specialtyPsychiatry => 'Psichiatria';
+
+  @override
+  String get specialtyOrthopedics => 'Ortopedia';
+
+  @override
+  String get specialtyUrology => 'Urologia';
+
+  @override
+  String get specialtyGastroenterology => 'Gastroenterologia';
+
+  @override
+  String get specialtyNutrition => 'Nutrizione';
+
+  @override
+  String get specialtyPediatrics => 'Pediatria';
+
+  @override
+  String get specialtyPhysiotherapy => 'Fisioterapia';
+
+  @override
+  String get specialtyClinicalLaboratory => 'Laboratorio clinico';
 
   @override
   String get medDashApptsSoon => 'In arrivo';

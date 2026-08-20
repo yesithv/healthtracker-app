@@ -21,8 +21,10 @@ class DashboardScreen extends StatelessWidget {
           const MainAppBar(title: 'MY VITALS', subtitle: 'Health Tracker'),
           Expanded(
             child: ListView(
+              // Menos margen lateral: las tarjetas ganan ancho y su contenido
+              // llega un poco más cerca del borde de cada una.
               padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
+                horizontal: 16.0,
                 vertical: 24.0,
               ),
               children: const [
@@ -40,7 +42,10 @@ class DashboardScreen extends StatelessWidget {
                 BodyCompositionCard(),
                 SizedBox(height: 24),
                 DashboardSummaryRow(),
-                SizedBox(height: 80),
+                // Colchón mínimo para que el botón flotante no tape el borde
+                // inferior; el scroll termina en las minicards, sin cola en
+                // blanco (antes 80 dejaba un tramo scrolleable vacío).
+                SizedBox(height: 16),
               ],
             ),
           ),

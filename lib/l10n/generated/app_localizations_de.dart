@@ -2521,6 +2521,63 @@ class AppLocalizationsDe extends AppLocalizations {
   String get medDashApptsTitle => 'Arzttermine';
 
   @override
+  String get specialtyNone => 'Keine Fachrichtung';
+
+  @override
+  String get specialtyGeneralMedicine => 'Allgemeinmedizin';
+
+  @override
+  String get specialtyCardiology => 'Kardiologie';
+
+  @override
+  String get specialtyEndocrinology => 'Endokrinologie';
+
+  @override
+  String get specialtyDermatology => 'Dermatologie';
+
+  @override
+  String get specialtyGynecology => 'Gynäkologie';
+
+  @override
+  String get specialtyDentistry => 'Zahnmedizin';
+
+  @override
+  String get specialtyOphthalmology => 'Augenheilkunde';
+
+  @override
+  String get specialtyOtolaryngology => 'HNO-Heilkunde';
+
+  @override
+  String get specialtyNeurology => 'Neurologie';
+
+  @override
+  String get specialtyNeuropsychology => 'Neuropsychologie';
+
+  @override
+  String get specialtyPsychiatry => 'Psychiatrie';
+
+  @override
+  String get specialtyOrthopedics => 'Orthopädie';
+
+  @override
+  String get specialtyUrology => 'Urologie';
+
+  @override
+  String get specialtyGastroenterology => 'Gastroenterologie';
+
+  @override
+  String get specialtyNutrition => 'Ernährungsberatung';
+
+  @override
+  String get specialtyPediatrics => 'Pädiatrie';
+
+  @override
+  String get specialtyPhysiotherapy => 'Physiotherapie';
+
+  @override
+  String get specialtyClinicalLaboratory => 'Labormedizin';
+
+  @override
   String get medDashApptsSoon => 'Demnächst';
 
   @override

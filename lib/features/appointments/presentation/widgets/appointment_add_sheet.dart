@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/data/models/appointment.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_specialties.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/presentation/controllers/appointments_controller.dart';
 
 /// Hoja de alta/edición de una cita, en dos modos con un solo formulario:
@@ -30,10 +31,12 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
   late bool _scheduledMode;
 
   late final TextEditingController _titleController;
-  late final TextEditingController _specialtyController;
   late final TextEditingController _providerController;
   late final TextEditingController _locationController;
   late final TextEditingController _notesController;
+
+  /// Especialidad elegida del desplegable; `null` = «Sin especialidad».
+  String? _specialty;
 
   DateTime? _date;
   TimeOfDay? _time;
@@ -54,7 +57,13 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
     final e = widget.existing;
     _scheduledMode = e?.status == AppointmentStatus.scheduled;
     _titleController = TextEditingController(text: e?.title ?? '');
-    _specialtyController = TextEditingController(text: e?.specialty ?? '');
+    // La especialidad ya no se teclea: se preselecciona el valor guardado (si lo
+    // hay). Si no coincide con ninguna opción del idioma actual, el desplegable
+    // lo añade como opción extra para no perderlo (ver build).
+    final existingSpecialty = e?.specialty?.trim();
+    _specialty = (existingSpecialty == null || existingSpecialty.isEmpty)
+        ? null
+        : existingSpecialty;
     _providerController = TextEditingController(text: e?.provider ?? '');
     _locationController = TextEditingController(text: e?.location ?? '');
     _notesController = TextEditingController(text: e?.notes ?? '');
@@ -74,7 +83,6 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
   @override
   void dispose() {
     _titleController.dispose();
-    _specialtyController.dispose();
     _providerController.dispose();
     _locationController.dispose();
     _notesController.dispose();
@@ -108,7 +116,7 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
     }
 
     final controller = context.read<AppointmentsController>();
-    final specialty = _specialtyController.text.trim();
+    final specialty = _specialty?.trim() ?? '';
     final provider = _providerController.text.trim();
     final location = _locationController.text.trim();
     final notes = _notesController.text.trim();
@@ -271,15 +279,12 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
                 ),
               ),
 
+              // Especialidad como lista cerrada: el usuario elige, no teclea.
               _Field(
                 label: l10n.appointmentFieldSpecialty,
-                child: TextField(
-                  controller: _specialtyController,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: _inputDecoration(
-                    context,
-                    hint: l10n.appointmentFieldSpecialtyHint,
-                  ),
+                child: _SpecialtyDropdown(
+                  value: _specialty,
+                  onChanged: (v) => setState(() => _specialty = v),
                 ),
               ),
 
@@ -578,6 +583,65 @@ class _Field extends StatelessWidget {
           const SizedBox(height: 6),
           child,
         ],
+      ),
+    );
+  }
+}
+
+/// Desplegable CERRADO de especialidad: el usuario elige de un catálogo curado
+/// en vez de teclear, para reducir la copia y evitar variantes sueltas. La
+/// primera opción («Sin especialidad») deja el campo vacío, que es opcional.
+///
+/// Al editar una cita cuya especialidad guardada no esté en el catálogo del
+/// idioma actual (un valor demo en otro idioma o texto libre heredado), se añade
+/// como opción extra para no perder lo que ya estaba.
+class _SpecialtyDropdown extends StatelessWidget {
+  const _SpecialtyDropdown({required this.value, required this.onChanged});
+
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final l10n = AppLocalizations.of(context)!;
+
+    final options = appointmentSpecialties(l10n);
+    // Preserva un valor guardado que no esté en el catálogo actual.
+    final extras = (value != null && value!.isNotEmpty && !options.contains(value))
+        ? [value!]
+        : const <String>[];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: surfaces.inset,
+        borderRadius: BorderRadius.circular(surfaces.radiusControl),
+        border: Border.all(color: surfaces.divider),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String?>(
+          value: value,
+          isExpanded: true,
+          dropdownColor: surfaces.card,
+          style: theme.type.body,
+          items: [
+            DropdownMenuItem<String?>(
+              value: null,
+              child: Text(
+                l10n.specialtyNone,
+                style: theme.type.body.copyWith(color: surfaces.inkMuted),
+              ),
+            ),
+            for (final s in [...extras, ...options])
+              DropdownMenuItem<String?>(
+                value: s,
+                child: Text(s, overflow: TextOverflow.ellipsis),
+              ),
+          ],
+          onChanged: onChanged,
+        ),
       ),
     );
   }

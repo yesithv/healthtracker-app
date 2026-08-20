@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
-import 'package:myvitals_healthtracker_app/core/widgets/dashed_border_container.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'metric_delta.dart';
 import 'metric_sparkline.dart';
@@ -59,9 +58,13 @@ class CompositionIndicatorCard extends StatelessWidget {
     final percent = ((bmi - _min) / (_max - _min)).clamp(0.0, 1.0);
     final knobColor = clinical.tone(BmiCategory.of(bmi).status).accent;
 
-    return DashedBorderContainer(
-      color: surfaces.brand.withValues(alpha: 0.35),
-      borderRadius: surfaces.radiusControl,
+    return Container(
+      // Antes un filete punteado; ahora un borde sólido y continuo, igual que el
+      // resto de tarjetas del inicio, para que se lea como el marco de la card.
+      decoration: surfaces.cardDecoration(
+        borderColor: surfaces.divider,
+        borderWidth: 1.5,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

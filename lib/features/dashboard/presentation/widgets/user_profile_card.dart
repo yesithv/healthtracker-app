@@ -17,7 +17,11 @@ class UserProfileCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      decoration: theme.surfaces.cardDecoration(),
+      // Filete sólido y visible, igual que el resto de tarjetas del inicio.
+      decoration: theme.surfaces.cardDecoration(
+        borderColor: theme.surfaces.divider,
+        borderWidth: 1.5,
+      ),
       child: Row(
         children: [
           _buildAvatar(context, prefs.profileImageBase64),

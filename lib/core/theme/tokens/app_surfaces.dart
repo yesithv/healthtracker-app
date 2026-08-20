@@ -177,12 +177,24 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
   /// construye evita que cada pantalla reinvente la sombra y el radio, que es
   /// precisamente cómo se acumularon los cientos de colores sueltos que este
   /// sistema viene a ordenar.
-  BoxDecoration cardDecoration({double? radius}) => BoxDecoration(
-    color: card,
-    borderRadius: BorderRadius.circular(radius ?? radiusCard),
-    border: cardBorder == null ? null : Border.all(color: cardBorder!),
-    boxShadow: cardShadow,
-  );
+  BoxDecoration cardDecoration({
+    double? radius,
+    Color? borderColor,
+    double borderWidth = 1,
+  }) {
+    // Un `borderColor` explícito pide un filete SÓLIDO para esta tarjeta sin
+    // tocar el token global `cardBorder` (que sigue mandando en el resto de la
+    // app). Si no se pide, se respeta el contrato del tema.
+    final Color? effectiveBorder = borderColor ?? cardBorder;
+    return BoxDecoration(
+      color: card,
+      borderRadius: BorderRadius.circular(radius ?? radiusCard),
+      border: effectiveBorder == null
+          ? null
+          : Border.all(color: effectiveBorder, width: borderWidth),
+      boxShadow: cardShadow,
+    );
+  }
 
   @override
   AppSurfaces copyWith({
