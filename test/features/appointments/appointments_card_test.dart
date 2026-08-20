@@ -62,7 +62,7 @@ void main() {
     await tester.pumpWidget(_host(controller));
     await tester.pump();
 
-    expect(find.text('Citas médicas'), findsOneWidget);
+    expect(find.text('Citas'), findsOneWidget);
     expect(find.text('Añadir cita'), findsOneWidget);
 
     controller.dispose();
