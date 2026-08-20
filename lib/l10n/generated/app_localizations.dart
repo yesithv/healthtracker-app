@@ -4556,6 +4556,63 @@ abstract class AppLocalizations {
   /// **'Medical appointments'**
   String get medDashApptsTitle;
 
+  /// No description provided for @specialtyNone.
+  String get specialtyNone;
+
+  /// No description provided for @specialtyGeneralMedicine.
+  String get specialtyGeneralMedicine;
+
+  /// No description provided for @specialtyCardiology.
+  String get specialtyCardiology;
+
+  /// No description provided for @specialtyEndocrinology.
+  String get specialtyEndocrinology;
+
+  /// No description provided for @specialtyDermatology.
+  String get specialtyDermatology;
+
+  /// No description provided for @specialtyGynecology.
+  String get specialtyGynecology;
+
+  /// No description provided for @specialtyDentistry.
+  String get specialtyDentistry;
+
+  /// No description provided for @specialtyOphthalmology.
+  String get specialtyOphthalmology;
+
+  /// No description provided for @specialtyOtolaryngology.
+  String get specialtyOtolaryngology;
+
+  /// No description provided for @specialtyNeurology.
+  String get specialtyNeurology;
+
+  /// No description provided for @specialtyNeuropsychology.
+  String get specialtyNeuropsychology;
+
+  /// No description provided for @specialtyPsychiatry.
+  String get specialtyPsychiatry;
+
+  /// No description provided for @specialtyOrthopedics.
+  String get specialtyOrthopedics;
+
+  /// No description provided for @specialtyUrology.
+  String get specialtyUrology;
+
+  /// No description provided for @specialtyGastroenterology.
+  String get specialtyGastroenterology;
+
+  /// No description provided for @specialtyNutrition.
+  String get specialtyNutrition;
+
+  /// No description provided for @specialtyPediatrics.
+  String get specialtyPediatrics;
+
+  /// No description provided for @specialtyPhysiotherapy.
+  String get specialtyPhysiotherapy;
+
+  /// No description provided for @specialtyClinicalLaboratory.
+  String get specialtyClinicalLaboratory;
+
   /// No description provided for @medDashApptsSoon.
   ///
   /// In en, this message translates to:

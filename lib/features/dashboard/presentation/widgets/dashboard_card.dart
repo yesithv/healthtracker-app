@@ -44,7 +44,11 @@ class DashboardCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: theme.surfaces.cardDecoration(),
+      // Filete sólido y visible para que se note el marco de la tarjeta.
+      decoration: theme.surfaces.cardDecoration(
+        borderColor: theme.surfaces.divider,
+        borderWidth: 1.5,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

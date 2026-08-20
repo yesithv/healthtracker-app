@@ -38,7 +38,12 @@ class MedicationsSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        border: Border.all(color: surfaces.brand.withValues(alpha: 0.5)),
+        // Filete sólido y claramente visible, para que se note el marco de la
+        // minicard como en las tarjetas principales (conserva el tinte de marca).
+        border: Border.all(
+          color: surfaces.brand.withValues(alpha: 0.7),
+          width: 1.5,
+        ),
         boxShadow: surfaces.glow(surfaces.brand, alpha: 0.10),
       ),
       child: Material(
