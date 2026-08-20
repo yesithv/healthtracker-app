@@ -20,6 +20,10 @@ class _FakeNotificationService extends NotificationService {
     required String body,
     required DateTime dateTime,
     String? payload,
+    String channelId = NotificationService.medicationChannelId,
+    String channelName = 'Recordatorios de medicamentos',
+    String channelDescription =
+        'Avisos de tomas de medicamentos y de recompra de inventario',
   }) async {
     scheduled.add(id);
   }
