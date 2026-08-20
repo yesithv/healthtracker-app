@@ -50,8 +50,12 @@ class MedicationsSummaryCard extends StatelessWidget {
           onTap: () => context.push('/profile/medications'),
           child: Padding(
             padding: const EdgeInsets.all(16),
+            // El alto lo manda el contenido (mainAxisSize.min): la fila lo iguala
+            // con su gemela vía IntrinsicHeight, sin `Spacer` —un hijo flexible
+            // hace inestable la medición intrínseca—.
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: [
@@ -68,7 +72,7 @@ class MedicationsSummaryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Spacer(),
+                const SizedBox(height: 14),
                 if (meds.isEmpty)
                   _AddContent(label: l10n.medDashAddMed)
                 else

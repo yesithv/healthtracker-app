@@ -62,8 +62,13 @@ class AppointmentsCard extends StatelessWidget {
           onTap: () => context.push('/profile/appointments'),
           child: Padding(
             padding: const EdgeInsets.all(16),
+            // El alto lo manda el contenido (mainAxisSize.min): la fila lo iguala
+            // con su gemela vía IntrinsicHeight, sin hijos flexibles —un `Expanded`
+            // hace inestable la medición intrínseca y dejaba el texto fuera del
+            // recuadro decorado—.
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: [
@@ -92,18 +97,11 @@ class AppointmentsCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                // El contenido se expande para llenar el alto de la tarjeta (antes
-                // un `Spacer` dejaba media casilla en blanco).
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: !hasAny
-                        ? _AddContent(label: l10n.apptDashAdd)
-                        : next == null
-                            ? _AllClear(l10n: l10n)
-                            : _NextHero(appointment: next, l10n: l10n),
-                  ),
-                ),
+                !hasAny
+                    ? _AddContent(label: l10n.apptDashAdd)
+                    : next == null
+                        ? _AllClear(l10n: l10n)
+                        : _NextHero(appointment: next, l10n: l10n),
               ],
             ),
           ),
