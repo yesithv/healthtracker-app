@@ -149,5 +149,119 @@ void main() {
       expect(next!.seriesId, isNotNull);
       expect(next.dueToBookOn, DateTime(2027, 2, 17));
     });
+
+    test('null si el intervalo es 0 o negativo aunque sea recurrente', () {
+      final zero = _toBook(
+        due: DateTime(2026, 8, 1),
+        recurring: true,
+        months: 0,
+      );
+      expect(
+        AppointmentStatusService.nextRecurringOccurrence(
+          AppointmentStatusService.markAttended(zero),
+          completedOn: DateTime(2026, 8, 17),
+        ),
+        isNull,
+      );
+    });
+
+    test('sin completedOn, la base es la fecha agendada de la cita cerrada', () {
+      final recurring = Appointment(
+        title: 'Endocrino',
+        status: AppointmentStatus.scheduled,
+        scheduledAt: DateTime(2026, 5, 10, 9),
+        isRecurring: true,
+        intervalMonths: 6,
+      );
+      final next = AppointmentStatusService.nextRecurringOccurrence(
+        AppointmentStatusService.markAttended(recurring),
+      );
+      expect(next!.dueToBookOn, DateTime(2026, 11, 10));
+    });
+  });
+
+  group('isOverdue · bordes', () {
+    final now = DateTime(2026, 8, 17, 10);
+
+    test('toBook sin fecha objetivo no está vencida', () {
+      expect(AppointmentStatusService.isOverdue(_toBook(), now: now), isFalse);
+    });
+
+    test('toBook cuya fecha objetivo es hoy aún no está vencida', () {
+      expect(
+        AppointmentStatusService.isOverdue(
+          _toBook(due: DateTime(2026, 8, 17)),
+          now: now,
+        ),
+        isFalse,
+      );
+    });
+
+    test('scheduled sin fecha/hora no está vencida', () {
+      expect(
+        AppointmentStatusService.isOverdue(_scheduled(), now: now),
+        isFalse,
+      );
+    });
+
+    test('scheduled exactamente en el instante actual no está vencida', () {
+      expect(
+        AppointmentStatusService.isOverdue(_scheduled(at: now), now: now),
+        isFalse,
+      );
+    });
+
+    test('missed y cancelled nunca están vencidas', () {
+      final missed = Appointment(
+        title: 'x',
+        status: AppointmentStatus.missed,
+        scheduledAt: DateTime(2020, 1, 1),
+      );
+      final cancelled = Appointment(
+        title: 'y',
+        status: AppointmentStatus.cancelled,
+        dueToBookOn: DateTime(2020, 1, 1),
+      );
+      expect(AppointmentStatusService.isOverdue(missed, now: now), isFalse);
+      expect(AppointmentStatusService.isOverdue(cancelled, now: now), isFalse);
+    });
+  });
+
+  group('addMonths · bordes', () {
+    test('cae en 29-feb de un año bisiesto', () {
+      expect(
+        AppointmentStatusService.addMonths(DateTime(2028, 1, 31), 1),
+        DateTime(2028, 2, 29),
+      );
+    });
+
+    test('conserva la hora y los minutos', () {
+      expect(
+        AppointmentStatusService.addMonths(DateTime(2026, 1, 15, 14, 30), 2),
+        DateTime(2026, 3, 15, 14, 30),
+      );
+    });
+  });
+
+  group('transiciones limpian el silenciado', () {
+    test('markAttended fija asistí y limpia snoozedUntil', () {
+      final a = Appointment(
+        title: 'x',
+        status: AppointmentStatus.scheduled,
+        scheduledAt: DateTime(2026, 8, 20),
+        snoozedUntil: DateTime(2026, 9, 1),
+      );
+      final done = AppointmentStatusService.markAttended(a);
+      expect(done.status, AppointmentStatus.attended);
+      expect(done.snoozedUntil, isNull);
+    });
+
+    test('book limpia el silenciado al agendar', () {
+      final a = _toBook(due: DateTime(2026, 9, 1)).copyWith(
+        snoozedUntil: DateTime(2026, 9, 1),
+      );
+      final booked = AppointmentStatusService.book(a, DateTime(2026, 9, 5, 8));
+      expect(booked.snoozedUntil, isNull);
+    });
   });
 }

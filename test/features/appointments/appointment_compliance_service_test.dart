@@ -109,5 +109,62 @@ void main() {
       final list = [_toBook('a', DateTime(2026, 9, 1))];
       expect(AppointmentComplianceService.attendanceRate(list), isNull);
     });
+
+    test('acota con since por la fecha agendada', () {
+      final list = [
+        _closed('vieja', AppointmentStatus.attended), // scheduledAt 2026-07-01
+        _scheduled('reciente-asistida', DateTime(2026, 8, 1))
+            .copyWith(status: AppointmentStatus.attended),
+        _scheduled('reciente-perdida', DateTime(2026, 8, 5))
+            .copyWith(status: AppointmentStatus.missed),
+      ];
+      // Con since = 15-jul solo cuentan las dos de agosto: 1 de 2 = 0.5.
+      expect(
+        AppointmentComplianceService.attendanceRate(
+          list,
+          since: DateTime(2026, 7, 15),
+        ),
+        closeTo(0.5, 1e-9),
+      );
+    });
+  });
+
+  group('escenarios de ventana y próxima acción', () {
+    test('dueSoonCount incluye el límite exacto de la ventana', () {
+      final list = [_toBook('borde', DateTime(2026, 8, 24, 10))]; // now + 7 días
+      expect(
+        AppointmentComplianceService.dueSoonCount(list, now: now, withinDays: 7),
+        1,
+      );
+    });
+
+    test('semáforo ámbar cuando lo inminente es una cita agendada', () {
+      final list = [_scheduled('pronto', DateTime(2026, 8, 19, 9))];
+      expect(
+        AppointmentComplianceService.semaphore(list, now: now),
+        ComplianceLevel.amber,
+      );
+    });
+
+    test('sin vencidas, nextAction devuelve la de fecha más temprana', () {
+      final list = [
+        _scheduled('tarde', DateTime(2026, 9, 10, 9)),
+        _toBook('temprano', DateTime(2026, 8, 25)),
+        _scheduled('media', DateTime(2026, 9, 1, 9)),
+      ];
+      final next = AppointmentComplianceService.nextAction(list, now: now);
+      expect(next!.title, 'temprano');
+    });
+
+    test('nextAction ignora las citas cerradas', () {
+      final list = [
+        _closed('ida', AppointmentStatus.attended),
+        _scheduled('abierta', DateTime(2026, 9, 1, 9)),
+      ];
+      expect(
+        AppointmentComplianceService.nextAction(list, now: now)!.title,
+        'abierta',
+      );
+    });
   });
 }

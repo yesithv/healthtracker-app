@@ -104,4 +104,82 @@ void main() {
     );
     expect(plan, isEmpty);
   });
+
+  test('por sacar sin leadDays: aviso a las 9:00 de la propia fecha objetivo',
+      () {
+    final appt = Appointment(
+      id: 'f1',
+      title: 'Laboratorio',
+      status: AppointmentStatus.toBook,
+      dueToBookOn: DateTime(2026, 9, 1),
+    );
+    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
+    expect(plan.single.scheduledAt, DateTime(2026, 9, 1, 9));
+  });
+
+  test('por sacar fuera del horizonte no genera aviso', () {
+    final appt = Appointment(
+      id: 'g1',
+      title: 'Control lejano',
+      status: AppointmentStatus.toBook,
+      dueToBookOn: DateTime(2026, 12, 1), // > 60 días desde `from`
+    );
+    expect(
+      AppointmentScheduler.buildPlan(appointments: [appt], from: from),
+      isEmpty,
+    );
+  });
+
+  test('agendada: los offsets que caen antes de la ventana se descartan', () {
+    final appt = Appointment(
+      id: 'h1',
+      title: 'Cardiología',
+      status: AppointmentStatus.scheduled,
+      scheduledAt: DateTime(2026, 8, 17, 12), // hoy, aún futura (from 08:00)
+      reminderOffsets: const [1440, 60], // 24 h antes queda antes de `from`.
+    );
+    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
+    expect(plan.length, 1);
+    expect(plan.single.scheduledAt, DateTime(2026, 8, 17, 11)); // solo 1 h antes
+  });
+
+  test('agendada en el pasado sin confirmar genera re-empuje de vencida', () {
+    final appt = Appointment(
+      id: 'i1',
+      title: 'Cardiología',
+      status: AppointmentStatus.scheduled,
+      scheduledAt: DateTime(2026, 8, 10, 9), // antes de `from`
+      reminderOffsets: const [1440, 60],
+    );
+    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
+    expect(plan.single.kind, AppointmentNotificationKind.overdue);
+    expect(plan.single.payload, 'appointment|i1|overdue');
+  });
+
+  test('varias citas: ids únicos por tipo dentro de su rango', () {
+    final plan = AppointmentScheduler.buildPlan(
+      appointments: [
+        Appointment(
+          id: 'a1',
+          title: 'Uno',
+          status: AppointmentStatus.scheduled,
+          scheduledAt: DateTime(2026, 8, 20, 10),
+          reminderOffsets: const [60],
+        ),
+        Appointment(
+          id: 'a2',
+          title: 'Dos',
+          status: AppointmentStatus.scheduled,
+          scheduledAt: DateTime(2026, 8, 21, 10),
+          reminderOffsets: const [60],
+        ),
+      ],
+      from: from,
+    );
+    final ids = plan.map((p) => p.id).toSet();
+    expect(ids, {
+      AppointmentScheduler.scheduledIdBase,
+      AppointmentScheduler.scheduledIdBase + 1,
+    });
+  });
 }
