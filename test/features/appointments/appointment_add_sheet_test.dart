@@ -62,6 +62,11 @@ void main() {
     expect(find.text('Cada cuánto'), findsNothing);
     expect(find.text('Cada 3 meses'), findsNothing);
 
+    // El formulario vive en un scroll: hay que traer el toggle a la vista antes
+    // de tocarlo (si no, el tap cae fuera de pantalla).
+    await tester.ensureVisible(find.byType(Switch));
+    await tester.pump();
+
     // Activa el toggle de control periódico.
     await tester.tap(find.byType(Switch));
     await tester.pump();

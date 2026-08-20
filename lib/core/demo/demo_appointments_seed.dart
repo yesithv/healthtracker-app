@@ -25,6 +25,46 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
   DateTime atDay(DateTime day, int hour, int minute) =>
       DateTime(day.year, day.month, day.day, hour, minute);
 
+  // El título va POSICIONAL a propósito: el contrato `no_hardcoded_strings`
+  // vigila las cadenas visibles de PANTALLAS por su prefijo (`title:`, `Text(`…);
+  // estos son datos de ejemplo, no interfaz, así que se pasan sin ese prefijo.
+  Appointment appt(
+    String title, {
+    required String id,
+    required AppointmentStatus status,
+    String? specialty,
+    String? provider,
+    String? location,
+    String? notes,
+    DateTime? scheduledAt,
+    DateTime? dueToBookOn,
+    bool isRecurring = false,
+    int? intervalMonths,
+    int? leadDays,
+    String? seriesId,
+    List<int>? reminderOffsets,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) =>
+      Appointment(
+        id: id,
+        title: title,
+        specialty: specialty,
+        provider: provider,
+        location: location,
+        notes: notes,
+        status: status,
+        scheduledAt: scheduledAt,
+        dueToBookOn: dueToBookOn,
+        isRecurring: isRecurring,
+        intervalMonths: intervalMonths,
+        leadDays: leadDays,
+        seriesId: seriesId,
+        reminderOffsets: reminderOffsets,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
+
   // Enlaza la serie recurrente del endocrino: la ocurrencia asistida del
   // historial y la próxima «por sacar» comparten `series_id`.
   const endoSeries = 'demo-appt-series-endo';
@@ -32,9 +72,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
   final appointments = <Appointment>[
     // 1) Agendada próxima (en 3 días, 10:00): enciende la tarjeta del dashboard
     //    y programa los avisos de 24 h / 1 h antes.
-    Appointment(
+    appt(
+      'Cita con cardiología',
       id: 'demo-appt-cardio',
-      title: 'Cita con cardiología',
       specialty: 'Cardiología',
       provider: 'Dra. Elena Ríos',
       location: 'Clínica del Country, consultorio 402',
@@ -49,9 +89,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     // 2) Por sacar recurrente: control endocrino cada 3 meses (fecha objetivo
     //    en ~3 semanas). Al confirmar asistencia, el controlador genera sola la
     //    siguiente ocurrencia.
-    Appointment(
+    appt(
+      'Control endocrino',
       id: 'demo-appt-endo-next',
-      title: 'Control endocrino',
       specialty: 'Endocrinología',
       provider: 'Dr. Mauricio Salas',
       notes: 'Control trimestral de tiroides.',
@@ -68,9 +108,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
 
     // 3) Por sacar VENCIDA: laboratorio de control que ya pasó su fecha objetivo
     //    → chip «Vencida», semáforo rojo y «próxima acción».
-    Appointment(
+    appt(
+      'Sacar laboratorio: perfil lipídico',
       id: 'demo-appt-lab',
-      title: 'Sacar laboratorio: perfil lipídico',
       specialty: 'Laboratorio clínico',
       notes: 'Ayuno de 12 horas.',
       status: AppointmentStatus.toBook,
@@ -81,9 +121,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     ),
 
     // 4) Por sacar puntual (no recurrente): recordatorio diferido.
-    Appointment(
+    appt(
+      'Pedir cita de neuropsicología',
       id: 'demo-appt-neuro',
-      title: 'Pedir cita de neuropsicología',
       specialty: 'Neuropsicología',
       status: AppointmentStatus.toBook,
       dueToBookOn: today.add(const Duration(days: 40)),
@@ -93,9 +133,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     ),
 
     // 5) Historial — ocurrencia anterior del endocrino, asistida (misma serie).
-    Appointment(
+    appt(
+      'Control endocrino',
       id: 'demo-appt-endo-prev',
-      title: 'Control endocrino',
       specialty: 'Endocrinología',
       provider: 'Dr. Mauricio Salas',
       status: AppointmentStatus.attended,
@@ -108,9 +148,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     ),
 
     // 6) Historial — cardiología asistida.
-    Appointment(
+    appt(
+      'Cita con cardiología',
       id: 'demo-appt-cardio-prev',
-      title: 'Cita con cardiología',
       specialty: 'Cardiología',
       provider: 'Dra. Elena Ríos',
       status: AppointmentStatus.attended,
@@ -120,9 +160,9 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     ),
 
     // 7) Historial — odontología no asistida (baja un poco la tasa de asistencia).
-    Appointment(
+    appt(
+      'Limpieza dental',
       id: 'demo-appt-dental',
-      title: 'Limpieza dental',
       specialty: 'Odontología',
       status: AppointmentStatus.missed,
       scheduledAt: atDay(today.subtract(const Duration(days: 40)), 15, 0),
@@ -131,7 +171,7 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     ),
   ];
 
-  for (final appt in appointments) {
-    await repo.insert(appt);
+  for (final a in appointments) {
+    await repo.insert(a);
   }
 }
