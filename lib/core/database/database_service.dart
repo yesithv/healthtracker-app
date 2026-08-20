@@ -74,7 +74,8 @@ class DatabaseService {
   /// v3: perímetros corporales en anthropometric_records + muscle_pct en
   /// body_composition_records (paridad con lo que guarda el legacy).
   /// v4: módulo de medicamentos (medications, medication_doses, medication_logs).
-  static const int _dbVersion = 4;
+  /// v5: inventario de citas médicas (tabla `appointments`).
+  static const int _dbVersion = 5;
 
   /// Incremental migrations for existing installs. Each step is idempotent-friendly
   /// and additive (no destructive changes to the user's local data).
@@ -110,6 +111,11 @@ class DatabaseService {
       // existentes.
       await _createMedicationTables(db);
       await _createMedicationIndexes(db);
+    }
+    if (oldVersion < 5) {
+      // Igual que arriba: `onUpgrade` no ejecuta `_createDB`, así que la tabla e
+      // índices del inventario de citas se crean aquí para instalaciones previas.
+      await _createAppointmentsTable(db);
     }
   }
 
@@ -194,8 +200,49 @@ CREATE TABLE body_composition_records (
 ''');
 
     await _createMedicationTables(db);
+    await _createAppointmentsTable(db);
     await _createIndexes(db);
     await _createMedicationIndexes(db);
+  }
+
+  /// Tabla del inventario de citas médicas. Una sola tabla (a diferencia del
+  /// módulo de medicamentos): guarda tanto las citas ya agendadas (`scheduled_at`)
+  /// como las que hay que sacar (`due_to_book_on`), su estado, y —para los
+  /// controles periódicos— el intervalo en meses y el `series_id` que enlaza las
+  /// ocurrencias de una misma serie. Sigue las convenciones del resto de tablas:
+  /// `id` TEXT, fechas ISO-8601, booleanos 0/1 y `is_synced` para la sync futura.
+  ///
+  /// Se extrae a su propio método porque también la usa [_upgradeDB] al migrar
+  /// una instalación existente desde una versión anterior.
+  Future<void> _createAppointmentsTable(Database db) async {
+    await db.execute('''
+CREATE TABLE appointments (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  specialty TEXT,
+  provider TEXT,
+  location TEXT,
+  notes TEXT,
+  status TEXT NOT NULL,
+  scheduled_at TEXT,
+  due_to_book_on TEXT,
+  is_recurring INTEGER NOT NULL DEFAULT 0,
+  interval_months INTEGER,
+  lead_days INTEGER,
+  series_id TEXT,
+  reminder_offsets TEXT,
+  snoozed_until TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  is_synced INTEGER NOT NULL DEFAULT 0
+)
+''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_appointments_scheduled ON appointments(scheduled_at)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_appointments_due ON appointments(due_to_book_on)',
+    );
   }
 
   /// Tablas del módulo de medicamentos (v4). Separadas para poder crearlas tanto

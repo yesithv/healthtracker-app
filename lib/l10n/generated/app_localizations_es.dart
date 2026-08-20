@@ -2537,4 +2537,158 @@ class AppLocalizationsEs extends AppLocalizations {
   String medDashLowShort(int count) {
     return 'Quedan $count';
   }
+
+  @override
+  String get appointmentsTitle => 'Mis citas';
+
+  @override
+  String get appointmentsDescription => 'Lleva el control de las citas que tienes y de las que aún debes sacar.';
+
+  @override
+  String get appointmentsAddCta => 'Añadir cita';
+
+  @override
+  String get appointmentsSectionToBook => 'Por sacar';
+
+  @override
+  String get appointmentsSectionScheduled => 'Agendadas';
+
+  @override
+  String get appointmentsSectionHistory => 'Historial';
+
+  @override
+  String get appointmentsEmptyTitle => 'Aún no tienes citas';
+
+  @override
+  String get appointmentsEmptyBody => 'Añade las citas que debes sacar o las que ya tienes agendadas.';
+
+  @override
+  String get appointmentsOverdueChip => 'Vencida';
+
+  @override
+  String appointmentDueOn(String date) {
+    return 'Sacar antes del $date';
+  }
+
+  @override
+  String get appointmentNoDate => 'Sin fecha';
+
+  @override
+  String appointmentScheduledOn(String date, String time) {
+    return '$date a las $time';
+  }
+
+  @override
+  String get appointmentStatusAttended => 'Asististe';
+
+  @override
+  String get appointmentStatusMissed => 'No asististe';
+
+  @override
+  String get appointmentStatusCancelled => 'Anulada';
+
+  @override
+  String get appointmentActionBook => 'Ya la saqué';
+
+  @override
+  String get appointmentActionPostpone => 'Posponer';
+
+  @override
+  String get appointmentActionAttended => 'Ya asistí';
+
+  @override
+  String get appointmentActionMissed => 'No asistí';
+
+  @override
+  String get appointmentActionDelete => 'Eliminar';
+
+  @override
+  String get appointmentDeleteTitle => '¿Eliminar esta cita?';
+
+  @override
+  String get appointmentAddTitle => 'Nueva cita';
+
+  @override
+  String get appointmentModeToBook => 'Debo sacarla';
+
+  @override
+  String get appointmentModeScheduled => 'Ya tengo fecha';
+
+  @override
+  String get appointmentFieldTitle => 'Título';
+
+  @override
+  String get appointmentFieldTitleHint => 'Ej. Control con endocrino';
+
+  @override
+  String get appointmentFieldSpecialty => 'Especialidad';
+
+  @override
+  String get appointmentFieldSpecialtyHint => 'Ej. Endocrinología';
+
+  @override
+  String get appointmentFieldDate => 'Fecha';
+
+  @override
+  String get appointmentFieldTargetDate => 'Fecha objetivo para agendar';
+
+  @override
+  String get appointmentFieldProvider => 'Médico o lugar';
+
+  @override
+  String get appointmentFieldNotes => 'Notas';
+
+  @override
+  String get appointmentPickDate => 'Elegir fecha';
+
+  @override
+  String get appointmentPickTime => 'Elegir hora';
+
+  @override
+  String get appointmentTitleRequired => 'Escribe un título para la cita';
+
+  @override
+  String get appointmentDateRequired => 'Elige una fecha';
+
+  @override
+  String get appointmentSave => 'Guardar';
+
+  @override
+  String get apptDashAdd => 'Añadir cita';
+
+  @override
+  String get apptDashNextTitle => 'Próxima cita';
+
+  @override
+  String get apptDashToBookTitle => 'Por sacar';
+
+  @override
+  String get apptDashOverdue => 'Vencida';
+
+  @override
+  String get apptDashAllClear => 'Todo al día';
+
+  @override
+  String apptScheduledNotifTitle(String title) {
+    return 'Cita: $title';
+  }
+
+  @override
+  String get apptScheduledNotifBody => 'Tienes una cita próximamente.';
+
+  @override
+  String apptToBookNotifTitle(String title) {
+    return 'Es hora de agendar: $title';
+  }
+
+  @override
+  String get apptToBookNotifBody => 'Es momento de pedir esta cita.';
+
+  @override
+  String apptOverdueNotifTitle(String title) {
+    return 'Cita pendiente: $title';
+  }
+
+  @override
+  String get apptOverdueNotifBody => 'Tienes una cita vencida.';
 }

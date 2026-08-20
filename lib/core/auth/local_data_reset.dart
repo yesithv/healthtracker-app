@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/data/repositories/appointment_repository.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_scheduler.dart';
 import 'package:myvitals_healthtracker_app/core/providers/health_goals_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/reminders_provider.dart';
@@ -28,9 +30,10 @@ Future<void> setDataOwner(String publicId) async {
 }
 
 /// Borra TODOS los datos personales/de salud del dispositivo para que no se filtren
-/// entre usuarios: las 4 tablas de registros, las 3 de medicamentos, el perfil, el
-/// estado del onboarding, las metas y los recordatorios. NO toca preferencias de
-/// app/dispositivo (idioma, unidades, catálogos, rangos de referencia, caché de Descubrir).
+/// entre usuarios: las 4 tablas de registros, las 3 de medicamentos, la de citas, el
+/// perfil, el estado del onboarding, las metas y los recordatorios (y cancela los
+/// avisos de citas). NO toca preferencias de app/dispositivo (idioma, unidades,
+/// catálogos, rangos de referencia, caché de Descubrir).
 ///
 /// Lee los providers del [context] antes de los await para no usar el BuildContext tras
 /// un gap asíncrono.
@@ -48,6 +51,11 @@ Future<void> wipeLocalUserData(BuildContext context) async {
   await MedicationRepository.instance.clearAll();
   await MedicationDoseRepository.instance.clearAll();
   await MedicationLogRepository.instance.clearAll();
+
+  await AppointmentRepository.instance.clearAll();
+  // Cancela los avisos de citas programados y vacía su libro de ids, para que no
+  // salten notificaciones del paciente anterior en el dispositivo.
+  await AppointmentScheduler().cancelAll();
 
   await profile.clear();
   await onboarding.reset();

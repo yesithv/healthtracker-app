@@ -20,6 +20,8 @@ import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/features/medications/data/repositories/medication_repositories.dart';
 import 'package:myvitals_healthtracker_app/features/medications/presentation/controllers/medications_controller.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/data/repositories/appointment_repository.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/presentation/controllers/appointments_controller.dart';
 import 'package:myvitals_healthtracker_app/core/services/notification_service.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
@@ -57,18 +59,17 @@ void main() {
       }
 
       // 2. Notifications (already guarded with kIsWeb inside)
-      String? medicationLaunchPayload;
+      String? notificationLaunchPayload;
       try {
         await NotificationService().init();
-        // Deep-link: enruta el toque de una notificación de medicamentos a su
-        // pantalla. El payload lo fija MedicationScheduler
-        // (dose|id|iso / inventory|id).
-        NotificationService.onNotificationTap =
-            _handleMedicationNotificationTap;
+        // Deep-link: enruta el toque de una notificación a su pantalla según el
+        // prefijo del payload (`dose`/`inventory` → medicamentos; `appointment`
+        // → citas). Lo fijan MedicationScheduler y AppointmentScheduler.
+        NotificationService.onNotificationTap = _handleNotificationTap;
         // Si la app se abrió tocando una notificación (arranque en frío), el
         // `initialize` no dispara el callback para ese toque; se recupera aquí
         // y se enruta tras el primer frame (cuando el router ya está montado).
-        medicationLaunchPayload = await NotificationService().launchPayload();
+        notificationLaunchPayload = await NotificationService().launchPayload();
       } catch (e, st) {
         debugPrint('=== NOTIFICATION INIT ERROR: $e\n$st');
       }
@@ -162,6 +163,16 @@ void main() {
             ChangeNotifierProvider<MedicationsController>(
               create: (_) => MedicationsController(),
             ),
+            // Inventario de citas médicas: mismo singleton de por vida que el
+            // resto de repositorios; las pantallas lo `watch` para refrescarse.
+            ChangeNotifierProvider<AppointmentRepository>.value(
+              value: AppointmentRepository.instance,
+            ),
+            // Orquestador del inventario de citas: las pantallas crean, agendan y
+            // confirman citas a través de él (reprogramación de avisos incluida).
+            ChangeNotifierProvider<AppointmentsController>(
+              create: (_) => AppointmentsController(),
+            ),
             // Sesión del paciente (identidad para sincronizar con la API).
             ChangeNotifierProvider<PatientSession>.value(
               value: PatientSession.instance,
@@ -196,10 +207,10 @@ void main() {
 
       // Arranque en frío desde una notificación: una vez montado el primer
       // frame (y con él el router), hace el deep-link al payload recuperado.
-      if (medicationLaunchPayload != null) {
-        final payload = medicationLaunchPayload;
+      if (notificationLaunchPayload != null) {
+        final payload = notificationLaunchPayload;
         WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _handleMedicationNotificationTap(payload),
+          (_) => _handleNotificationTap(payload),
         );
       }
     },
@@ -212,11 +223,12 @@ void main() {
   );
 }
 
-/// Enruta el toque de una notificación de medicamentos a su pantalla. El payload
-/// lo fija [MedicationScheduler] (`dose|medId|iso` / `inventory|medId`). Usa el
-/// router global directamente porque el toque llega fuera del árbol de widgets
-/// (callback del plugin de notificaciones), sin `BuildContext`.
-void _handleMedicationNotificationTap(String payload) {
+/// Enruta el toque de CUALQUIER notificación a su pantalla según el prefijo del
+/// payload. Lo fijan [MedicationScheduler] (`dose|medId|iso` / `inventory|medId`)
+/// y [AppointmentScheduler] (`appointment|id|kind`). Usa el router global
+/// directamente porque el toque llega fuera del árbol de widgets (callback del
+/// plugin de notificaciones), sin `BuildContext`.
+void _handleNotificationTap(String payload) {
   final parts = payload.split('|');
   if (parts.isEmpty) return;
   switch (parts.first) {
@@ -227,6 +239,10 @@ void _handleMedicationNotificationTap(String payload) {
     case 'inventory':
       final medId = parts.length > 1 ? parts[1] : '';
       AppRouter.router.push('/profile/medications/refill?med=$medId');
+    case 'appointment':
+      // Cualquier aviso de cita (agendada, por sacar o vencida) abre el
+      // inventario, donde el usuario confirma o agenda desde la propia lista.
+      AppRouter.router.push('/profile/appointments');
   }
 }
 
@@ -255,7 +271,7 @@ class MyVitalsApp extends StatelessWidget {
       // medicamentos: se ejecuta por debajo de Localizations (tiene idioma) y de
       // los Provider (tiene el controlador).
       builder: (context, child) =>
-          _MedicationsLifecycle(child: child ?? const SizedBox.shrink()),
+          _NotificationsLifecycle(child: child ?? const SizedBox.shrink()),
       locale: localeUnits.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -268,22 +284,24 @@ class MyVitalsApp extends StatelessWidget {
   }
 }
 
-/// Gobierna el ciclo de vida de las notificaciones de medicamentos: fija los
-/// textos localizados y reprograma la ventana móvil de avisos **al arrancar** y
-/// **al volver del segundo plano**. Es necesario porque el planificador solo
-/// materializa 14 días por delante: sin esta pasada, si el usuario no toca el
-/// módulo durante ese tiempo, los avisos se agotarían. Vive por debajo de
-/// `MaterialApp` para tener idioma (Localizations) y controlador (Provider).
-class _MedicationsLifecycle extends StatefulWidget {
-  const _MedicationsLifecycle({required this.child});
+/// Gobierna el ciclo de vida de las notificaciones de medicamentos Y de citas:
+/// fija los textos localizados y reprograma la ventana móvil de avisos **al
+/// arrancar** y **al volver del segundo plano**. Es necesario porque los
+/// planificadores solo materializan una ventana finita por delante: sin esta
+/// pasada, si el usuario no toca los módulos durante ese tiempo, los avisos se
+/// agotarían. Vive por debajo de `MaterialApp` para tener idioma (Localizations)
+/// y controladores (Provider).
+class _NotificationsLifecycle extends StatefulWidget {
+  const _NotificationsLifecycle({required this.child});
 
   final Widget child;
 
   @override
-  State<_MedicationsLifecycle> createState() => _MedicationsLifecycleState();
+  State<_NotificationsLifecycle> createState() =>
+      _NotificationsLifecycleState();
 }
 
-class _MedicationsLifecycleState extends State<_MedicationsLifecycle>
+class _NotificationsLifecycleState extends State<_NotificationsLifecycle>
     with WidgetsBindingObserver {
   bool _didInitialReschedule = false;
 
@@ -332,6 +350,24 @@ class _MedicationsLifecycleState extends State<_MedicationsLifecycle>
     // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
     // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
     controller.refreshAndReschedule();
+
+    // Mismo ciclo para el inventario de citas: textos localizados + reprograma.
+    final appointments = context.read<AppointmentsController>();
+    appointments.setNotificationTextBuilders(
+      scheduledText: (a) => (
+        title: l10n.apptScheduledNotifTitle(a.title),
+        body: l10n.apptScheduledNotifBody,
+      ),
+      toBookText: (a) => (
+        title: l10n.apptToBookNotifTitle(a.title),
+        body: l10n.apptToBookNotifBody,
+      ),
+      overdueText: (a) => (
+        title: l10n.apptOverdueNotifTitle(a.title),
+        body: l10n.apptOverdueNotifBody,
+      ),
+    );
+    appointments.refreshAndReschedule();
   }
 
   @override

@@ -4591,6 +4591,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} left'**
   String medDashLowShort(int count);
+
+  /// No description provided for @appointmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My appointments'**
+  String get appointmentsTitle;
+
+  /// No description provided for @appointmentsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep track of the appointments you have and the ones you still need to book.'**
+  String get appointmentsDescription;
+
+  /// No description provided for @appointmentsAddCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add appointment'**
+  String get appointmentsAddCta;
+
+  /// No description provided for @appointmentsSectionToBook.
+  ///
+  /// In en, this message translates to:
+  /// **'To book'**
+  String get appointmentsSectionToBook;
+
+  /// No description provided for @appointmentsSectionScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get appointmentsSectionScheduled;
+
+  /// No description provided for @appointmentsSectionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get appointmentsSectionHistory;
+
+  /// No description provided for @appointmentsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No appointments yet'**
+  String get appointmentsEmptyTitle;
+
+  /// No description provided for @appointmentsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the appointments you need to book or have already scheduled.'**
+  String get appointmentsEmptyBody;
+
+  /// No description provided for @appointmentsOverdueChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get appointmentsOverdueChip;
+
+  /// No description provided for @appointmentDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Book before {date}'**
+  String appointmentDueOn(String date);
+
+  /// No description provided for @appointmentNoDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No date'**
+  String get appointmentNoDate;
+
+  /// No description provided for @appointmentScheduledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} at {time}'**
+  String appointmentScheduledOn(String date, String time);
+
+  /// No description provided for @appointmentStatusAttended.
+  ///
+  /// In en, this message translates to:
+  /// **'Attended'**
+  String get appointmentStatusAttended;
+
+  /// No description provided for @appointmentStatusMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get appointmentStatusMissed;
+
+  /// No description provided for @appointmentStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get appointmentStatusCancelled;
+
+  /// No description provided for @appointmentActionBook.
+  ///
+  /// In en, this message translates to:
+  /// **'I booked it'**
+  String get appointmentActionBook;
+
+  /// No description provided for @appointmentActionPostpone.
+  ///
+  /// In en, this message translates to:
+  /// **'Postpone'**
+  String get appointmentActionPostpone;
+
+  /// No description provided for @appointmentActionAttended.
+  ///
+  /// In en, this message translates to:
+  /// **'I attended'**
+  String get appointmentActionAttended;
+
+  /// No description provided for @appointmentActionMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'I missed it'**
+  String get appointmentActionMissed;
+
+  /// No description provided for @appointmentActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get appointmentActionDelete;
+
+  /// No description provided for @appointmentDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this appointment?'**
+  String get appointmentDeleteTitle;
+
+  /// No description provided for @appointmentAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New appointment'**
+  String get appointmentAddTitle;
+
+  /// No description provided for @appointmentModeToBook.
+  ///
+  /// In en, this message translates to:
+  /// **'I need to book it'**
+  String get appointmentModeToBook;
+
+  /// No description provided for @appointmentModeScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'I have a date'**
+  String get appointmentModeScheduled;
+
+  /// No description provided for @appointmentFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get appointmentFieldTitle;
+
+  /// No description provided for @appointmentFieldTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Endocrinology check-up'**
+  String get appointmentFieldTitleHint;
+
+  /// No description provided for @appointmentFieldSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get appointmentFieldSpecialty;
+
+  /// No description provided for @appointmentFieldSpecialtyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Endocrinology'**
+  String get appointmentFieldSpecialtyHint;
+
+  /// No description provided for @appointmentFieldDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get appointmentFieldDate;
+
+  /// No description provided for @appointmentFieldTargetDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Target date to book'**
+  String get appointmentFieldTargetDate;
+
+  /// No description provided for @appointmentFieldProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor or place'**
+  String get appointmentFieldProvider;
+
+  /// No description provided for @appointmentFieldNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get appointmentFieldNotes;
+
+  /// No description provided for @appointmentPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick date'**
+  String get appointmentPickDate;
+
+  /// No description provided for @appointmentPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick time'**
+  String get appointmentPickTime;
+
+  /// No description provided for @appointmentTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a title for the appointment'**
+  String get appointmentTitleRequired;
+
+  /// No description provided for @appointmentDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get appointmentDateRequired;
+
+  /// No description provided for @appointmentSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get appointmentSave;
+
+  /// No description provided for @apptDashAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add appointment'**
+  String get apptDashAdd;
+
+  /// No description provided for @apptDashNextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Next appointment'**
+  String get apptDashNextTitle;
+
+  /// No description provided for @apptDashToBookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To book'**
+  String get apptDashToBookTitle;
+
+  /// No description provided for @apptDashOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get apptDashOverdue;
+
+  /// No description provided for @apptDashAllClear.
+  ///
+  /// In en, this message translates to:
+  /// **'All up to date'**
+  String get apptDashAllClear;
+
+  /// No description provided for @apptScheduledNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment: {title}'**
+  String apptScheduledNotifTitle(String title);
+
+  /// No description provided for @apptScheduledNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have an upcoming appointment.'**
+  String get apptScheduledNotifBody;
+
+  /// No description provided for @apptToBookNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to book: {title}'**
+  String apptToBookNotifTitle(String title);
+
+  /// No description provided for @apptToBookNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to book this appointment.'**
+  String get apptToBookNotifBody;
+
+  /// No description provided for @apptOverdueNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending appointment: {title}'**
+  String apptOverdueNotifTitle(String title);
+
+  /// No description provided for @apptOverdueNotifBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have an overdue appointment.'**
+  String get apptOverdueNotifBody;
 }
 
 class _AppLocalizationsDelegate

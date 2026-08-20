@@ -42,6 +42,7 @@ import '../../features/medications/presentation/screens/medication_adherence_scr
 import '../../features/medications/presentation/screens/medication_detail_screen.dart';
 import '../../features/medications/presentation/screens/medication_wizard_screen.dart';
 import '../../features/medications/presentation/screens/refill_inventory_screen.dart';
+import '../../features/appointments/presentation/screens/appointments_screen.dart';
 import '../../features/history/data/models/anthropometric_record.dart';
 import '../../features/history/data/models/vital_sign_record.dart';
 import '../../features/history/data/models/lipid_record.dart';
@@ -256,6 +257,13 @@ class AppRouter {
               state.extra as String? ??
               '',
         ),
+      ),
+      // Inventario de citas médicas. Una sola pantalla (sin destino en la barra
+      // inferior): abre desde la fila «Mis citas» de Perfil y desde el deep-link
+      // de sus notificaciones.
+      GoRoute(
+        path: '/profile/appointments',
+        builder: (context, state) => const AppointmentsScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) {
