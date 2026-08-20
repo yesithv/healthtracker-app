@@ -82,6 +82,13 @@ const _legitimateCircles = <String, ({int count, String reason})>{
         'calendario) y el punto de estado que va debajo. Ninguno encierra un '
         'icono.',
   ),
+  'lib/features/dashboard/presentation/widgets/appointments_card.dart': (
+    count: 1,
+    reason:
+        'El punto de semáforo de la tarjeta de Citas: un PUNTO de estado '
+        '(ámbar/rojo) junto al título, como el punto de estado del week_strip. '
+        'No encierra ningún icono.',
+  ),
   'lib/features/medications/presentation/widgets/medication_dose_tile.dart': (
     count: 2,
     reason:

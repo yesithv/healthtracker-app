@@ -2693,4 +2693,60 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get apptOverdueNotifBody => 'Hai una visita scaduta.';
+
+  @override
+  String get appointmentFieldLocation => 'Luogo';
+
+  @override
+  String get appointmentFieldLocationHint => 'es. indirizzo della clinica';
+
+  @override
+  String get appointmentFieldRecurring => 'Controllo periodico';
+
+  @override
+  String get appointmentRecurringHint => 'Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.';
+
+  @override
+  String get appointmentFrequencyLabel => 'Ogni quanto';
+
+  @override
+  String appointmentEveryNMonths(int count) {
+    return 'Ogni $count mesi';
+  }
+
+  @override
+  String get appointmentEditTitle => 'Modifica appuntamento';
+
+  @override
+  String get appointmentActionEdit => 'Modifica';
+
+  @override
+  String get appointmentNextSpawned => 'Abbiamo annotato il prossimo controllo da prenotare.';
+
+  @override
+  String get appointmentComplianceRedTitle => 'Richiede attenzione';
+
+  @override
+  String get appointmentComplianceAmberTitle => 'In arrivo';
+
+  @override
+  String get appointmentComplianceGreenTitle => 'Tutto in regola';
+
+  @override
+  String get appointmentComplianceGreenBody => 'Nessun appuntamento in sospeso o scaduto.';
+
+  @override
+  String appointmentNextActionOverdue(String title) {
+    return '$title · scaduto';
+  }
+
+  @override
+  String appointmentNextActionUpcoming(String title, String date) {
+    return '$title · $date';
+  }
+
+  @override
+  String appointmentRecurringEvery(int count) {
+    return 'Ogni $count m';
+  }
 }

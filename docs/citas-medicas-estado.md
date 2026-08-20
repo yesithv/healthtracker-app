@@ -104,17 +104,43 @@
   Perfil → «Mis citas»; añadir una cita por sacar y una agendada; confirmar
   «Ya la saqué» / «Ya asistí»; cerrar sesión vacía la tabla.
 
-## Pendiente (2ª iteración — el dominio ya está listo, falta solo UI)
+## 2ª iteración — COMPLETADA (cierre para producción)
 
-1. **Recurrencia en el alta.** Toggle «control periódico (cada N meses)» en la
-   hoja de alta que fije `isRecurring` + `intervalMonths`, y reflejo visual de
-   que, al confirmar asistencia, se generó automáticamente la siguiente «por
-   sacar». Cubre el caso «endocrino cada 6 meses» del usuario. El dominio
-   (`nextRecurringOccurrence`, ya usado por el controlador) no necesita cambios.
-2. **Semáforo de cumplimiento.** Tarjetita verde/ámbar/rojo + «próxima acción»
-   arriba del inventario y, opcionalmente, como chip en el cuadrado del
-   Dashboard. La lógica ya existe en `AppointmentComplianceService`
-   (`semaphore`, `nextAction`, `overdueCount`).
+Lo que estaba diferido «por ser solo UI» ya está expuesto, más el pulido de
+producción acordado. El dominio no necesitó cambios (todo estaba construido y
+testeado); este cierre es UI + demo + tests.
+
+1. **Recurrencia en el alta.** ✅ Toggle «control periódico» + selector de cada N
+   meses (1/3/6/12) en la hoja de alta
+   (`appointment_add_sheet.dart`), que fija `isRecurring` + `intervalMonths`. Al
+   confirmar asistencia de una recurrente, la pantalla avisa con un SnackBar de
+   que se anotó la siguiente «por sacar» (reflejo visual de la recurrencia). El
+   dominio (`nextRecurringOccurrence`) no cambió.
+2. **Semáforo de cumplimiento.** ✅ Tarjetita verde/ámbar/rojo + «próxima acción»
+   arriba del inventario (`_ComplianceBanner` en `appointments_screen.dart`) y,
+   en el cuadrado del Dashboard, borde teñido por el semáforo + punto de estado
+   (`appointments_card.dart`). Alimentado por `AppointmentComplianceService`
+   (`semaphore`, `nextAction`, `overdueCount`), sin lógica nueva.
+3. **Editar cita existente.** ✅ La hoja de alta acepta `existing` y entra en modo
+   edición (precarga + `controller.save`); acción «Editar» en las tarjetas
+   abiertas del inventario.
+4. **Campo «lugar».** ✅ Expuesto en el alta y mostrado en la tarjeta del
+   inventario (el modelo ya persistía `location`).
+5. **Tarjeta del Dashboard mejorada.** ✅ Fila más alta (`dashboard_summary_row.dart`,
+   `aspectRatio` 0.82 en ambos cuadros) y contenido que se extiende (se quitó el
+   `Spacer` que dejaba media casilla en blanco); borde reforzado (1.5 px, teñido
+   por semáforo).
+6. **Datos demo.** ✅ Nuevo `lib/core/demo/demo_appointments_seed.dart`
+   (`seedDemoAppointmentsIfEmpty`, idempotente) enganchado en `demo_actions.dart`
+   (siembra al entrar + `AppointmentRepository.refresh()` en el reload). Siembra
+   un juego con todos los estados: agendada próxima, por sacar recurrente, por
+   sacar vencida, por sacar puntual e historial (asistí/no asistí).
+7. **Tests nuevos.** ✅ Ampliado `appointments_controller_test.dart` (recurrencia
+   por sacar + `save`/edición); tres widget tests nuevos
+   (`appointment_add_sheet_test.dart`, `appointments_screen_test.dart`,
+   `appointments_card_test.dart`) y `test/core/demo/demo_appointments_seed_test.dart`.
+8. **Localización.** ✅ Claves nuevas en los 5 `app_*.arb` + generados
+   (recurrencia, lugar, edición, semáforo/próxima acción).
 
 ### Ideas más adelante (Fase 3 del análisis)
 - Recurrencia también por semanas/días (hoy solo meses).

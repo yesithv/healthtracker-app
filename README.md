@@ -24,8 +24,10 @@ de la Fase 0 por sus piezas definitivas.
 
 | Área | Estado |
 |---|---|
-| Persistencia local (SQLite, 4 tablas, migraciones v1→v3) | ✅ Estable |
+| Persistencia local (SQLite, migraciones aditivas hasta v5) | ✅ Estable |
 | Captura y edición de los 4 tipos de registro | ✅ Estable |
+| Módulo de Medicamentos (inventario, tomas, avisos, adherencia) | ✅ Estable |
+| Módulo de Citas médicas (inventario, recurrencia, semáforo, avisos) | ✅ Estable |
 | Historiales con gráficas y exportación PDF/CSV | ✅ Estable |
 | Clasificación clínica con rangos del servidor + respaldo offline | ✅ Estable |
 | Sincronización de subida (app → API) y de bajada (API → app) | ✅ Funcionando |
@@ -336,6 +338,7 @@ en el arranque.
 | Idioma | es · en · pt · it · de |
 | Unidades | Métrico / imperial |
 | Recordatorios | Avisos diarios por hora, con notificaciones locales y zona horaria del dispositivo |
+| Mis citas | Inventario de citas (agendadas y por sacar), controles periódicos (cada N meses), semáforo de cumplimiento y avisos |
 | Privacidad y seguridad | Biometría, gestión de datos, cierre de sesión |
 | Copia de seguridad | Exportar/importar todo en JSON (formato v1.0; versiones desconocidas se rechazan) |
 | Ayuda y soporte | FAQ, glosario de términos clínicos, legal y contacto |
