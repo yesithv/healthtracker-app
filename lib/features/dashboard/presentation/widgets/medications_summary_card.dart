@@ -35,16 +35,13 @@ class MedicationsSummaryCard extends StatelessWidget {
     final meds = controller.activeMedications;
 
     return Container(
-      decoration: BoxDecoration(
-        color: surfaces.card,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        // Filete sólido y claramente visible, para que se note el marco de la
-        // minicard como en las tarjetas principales (conserva el tinte de marca).
-        border: Border.all(
-          color: surfaces.brand.withValues(alpha: 0.7),
-          width: 1.5,
-        ),
-        boxShadow: surfaces.glow(surfaces.brand, alpha: 0.10),
+      // Mismo board que las tarjetas principales del inicio (DashboardCard):
+      // relleno, filete neutro y la elevación estándar del tema. Así la minicard
+      // «tiene su espacio» y se lee igual que las cuatro de arriba, en lugar de
+      // flotar sobre el lienzo.
+      decoration: surfaces.cardDecoration(
+        borderColor: surfaces.divider,
+        borderWidth: 1.5,
       ),
       child: Material(
         color: Colors.transparent,
