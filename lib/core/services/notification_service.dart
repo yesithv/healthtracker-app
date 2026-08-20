@@ -28,6 +28,11 @@ class NotificationService {
   /// por separado desde los ajustes del sistema.
   static const String medicationChannelId = 'medication_reminders_channel';
 
+  /// Canal Android de los avisos de citas médicas (recordatorios de una cita
+  /// agendada y de "sacar" una cita pendiente), separado del de medicamentos para
+  /// que el usuario pueda gestionarlos aparte desde los ajustes del sistema.
+  static const String appointmentChannelId = 'appointment_reminders_channel';
+
   /// Se invoca cuando el usuario toca una notificación de medicamentos, con su
   /// `payload`. Lo fija la app (que tiene acceso al router) para hacer el
   /// deep-link a la hoja de la toma. Ver `_onDidReceiveNotificationResponse`.
@@ -184,31 +189,38 @@ class NotificationService {
   /// igual las pautas diarias, por días de la semana y "cada N días" —esta
   /// última no la puede repetir el plugin de forma nativa—. No programa nada en
   /// el pasado.
+  ///
+  /// [channelId]/[channelName]/[channelDescription] permiten a otros
+  /// planificadores (p. ej. el de citas) usar su propio canal Android; por
+  /// defecto se usa el canal de medicamentos para no cambiar su comportamiento.
   Future<void> scheduleOneTimeNotification({
     required int id,
     required String title,
     required String body,
     required DateTime dateTime,
     String? payload,
+    String channelId = medicationChannelId,
+    String channelName = 'Recordatorios de medicamentos',
+    String channelDescription =
+        'Avisos de tomas de medicamentos y de recompra de inventario',
   }) async {
     if (kIsWeb) return;
 
     final scheduledDate = tz.TZDateTime.from(dateTime, tz.local);
     if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) return;
 
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      medicationChannelId,
-      'Recordatorios de medicamentos',
-      channelDescription:
-          'Avisos de tomas de medicamentos y de recompra de inventario',
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
       importance: Importance.max,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
     );
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails();
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );

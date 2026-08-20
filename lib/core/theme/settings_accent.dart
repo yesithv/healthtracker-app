@@ -13,9 +13,9 @@ import 'tokens/tone.dart';
 ///
 /// Sale de la paleta de CONTENIDO (más `surfaces.brand` y `clinical.neutral`)
 /// porque es el único juego de acentos que el tema ya garantiza mutuamente
-/// distinguible en matiz y legible en cualquier tema. Son 8 matices para 11
-/// filas, así que tres se reutilizan, siempre en filas NO ADYACENTES: la lista
-/// se ve variada y ninguna pareja de vecinas comparte color.
+/// distinguible en matiz y legible en cualquier tema. Son 8 matices para 12
+/// filas, así que algunos se reutilizan, siempre en filas NO ADYACENTES: la
+/// lista se ve variada y ninguna pareja de vecinas comparte color.
 ///
 /// Vive aquí, en un solo sitio, para que la fila del menú ([_MenuTile] en
 /// `profile_screen.dart`) y el encabezado de la pantalla de detalle
@@ -27,6 +27,7 @@ enum SettingsSection {
   device,
   healthGoals,
   medications,
+  appointments,
   appTheme,
   language,
   measurementUnits,
@@ -49,6 +50,9 @@ extension SettingsSectionAccent on SettingsSection {
     // Medicamentos entra entre Metas (corazón) y Tema (emocional); toma el
     // matiz de «deporte» para no repetir el color de ninguna fila vecina.
     SettingsSection.medications => theme.content.sports,
+    // Citas entra entre Medicamentos (deporte) y Tema (emocional); toma el matiz
+    // de «corazón» para no repetir el color de ninguna fila vecina.
+    SettingsSection.appointments => theme.content.heart,
     SettingsSection.appTheme => theme.content.emotional,
     SettingsSection.language => theme.content.nutrition,
     SettingsSection.measurementUnits => theme.content.sports,

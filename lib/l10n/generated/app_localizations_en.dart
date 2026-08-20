@@ -2536,4 +2536,158 @@ class AppLocalizationsEn extends AppLocalizations {
   String medDashLowShort(int count) {
     return '$count left';
   }
+
+  @override
+  String get appointmentsTitle => 'My appointments';
+
+  @override
+  String get appointmentsDescription => 'Keep track of the appointments you have and the ones you still need to book.';
+
+  @override
+  String get appointmentsAddCta => 'Add appointment';
+
+  @override
+  String get appointmentsSectionToBook => 'To book';
+
+  @override
+  String get appointmentsSectionScheduled => 'Scheduled';
+
+  @override
+  String get appointmentsSectionHistory => 'History';
+
+  @override
+  String get appointmentsEmptyTitle => 'No appointments yet';
+
+  @override
+  String get appointmentsEmptyBody => 'Add the appointments you need to book or have already scheduled.';
+
+  @override
+  String get appointmentsOverdueChip => 'Overdue';
+
+  @override
+  String appointmentDueOn(String date) {
+    return 'Book before $date';
+  }
+
+  @override
+  String get appointmentNoDate => 'No date';
+
+  @override
+  String appointmentScheduledOn(String date, String time) {
+    return '$date at $time';
+  }
+
+  @override
+  String get appointmentStatusAttended => 'Attended';
+
+  @override
+  String get appointmentStatusMissed => 'Missed';
+
+  @override
+  String get appointmentStatusCancelled => 'Cancelled';
+
+  @override
+  String get appointmentActionBook => 'I booked it';
+
+  @override
+  String get appointmentActionPostpone => 'Postpone';
+
+  @override
+  String get appointmentActionAttended => 'I attended';
+
+  @override
+  String get appointmentActionMissed => 'I missed it';
+
+  @override
+  String get appointmentActionDelete => 'Delete';
+
+  @override
+  String get appointmentDeleteTitle => 'Delete this appointment?';
+
+  @override
+  String get appointmentAddTitle => 'New appointment';
+
+  @override
+  String get appointmentModeToBook => 'I need to book it';
+
+  @override
+  String get appointmentModeScheduled => 'I have a date';
+
+  @override
+  String get appointmentFieldTitle => 'Title';
+
+  @override
+  String get appointmentFieldTitleHint => 'e.g. Endocrinology check-up';
+
+  @override
+  String get appointmentFieldSpecialty => 'Specialty';
+
+  @override
+  String get appointmentFieldSpecialtyHint => 'e.g. Endocrinology';
+
+  @override
+  String get appointmentFieldDate => 'Date';
+
+  @override
+  String get appointmentFieldTargetDate => 'Target date to book';
+
+  @override
+  String get appointmentFieldProvider => 'Doctor or place';
+
+  @override
+  String get appointmentFieldNotes => 'Notes';
+
+  @override
+  String get appointmentPickDate => 'Pick date';
+
+  @override
+  String get appointmentPickTime => 'Pick time';
+
+  @override
+  String get appointmentTitleRequired => 'Enter a title for the appointment';
+
+  @override
+  String get appointmentDateRequired => 'Pick a date';
+
+  @override
+  String get appointmentSave => 'Save';
+
+  @override
+  String get apptDashAdd => 'Add appointment';
+
+  @override
+  String get apptDashNextTitle => 'Next appointment';
+
+  @override
+  String get apptDashToBookTitle => 'To book';
+
+  @override
+  String get apptDashOverdue => 'Overdue';
+
+  @override
+  String get apptDashAllClear => 'All up to date';
+
+  @override
+  String apptScheduledNotifTitle(String title) {
+    return 'Appointment: $title';
+  }
+
+  @override
+  String get apptScheduledNotifBody => 'You have an upcoming appointment.';
+
+  @override
+  String apptToBookNotifTitle(String title) {
+    return 'Time to book: $title';
+  }
+
+  @override
+  String get apptToBookNotifBody => 'Time to book this appointment.';
+
+  @override
+  String apptOverdueNotifTitle(String title) {
+    return 'Pending appointment: $title';
+  }
+
+  @override
+  String get apptOverdueNotifBody => 'You have an overdue appointment.';
 }

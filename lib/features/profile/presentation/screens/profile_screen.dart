@@ -26,8 +26,8 @@ class ProfileScreen extends StatelessWidget {
 
   /// ACENTOS DE ORIENTACIÓN de las filas de ajustes.
   ///
-  /// Son once filas seguidas: el cuadradito de color es lo que permite volver a
-  /// encontrar «Idioma» sin leer las once. No es semántica —un ajuste no está
+  /// Son doce filas seguidas: el cuadradito de color es lo que permite volver a
+  /// encontrar «Idioma» sin leer las doce. No es semántica —un ajuste no está
   /// «óptimo» ni pertenece a una familia de indicador— así que no puede salir de
   /// la paleta clínica ni de la de métricas.
   ///
@@ -561,6 +561,12 @@ class ProfileScreen extends StatelessWidget {
                   title: l10n.medicationsTitle,
                   tone: SettingsSection.medications.tone(theme),
                   onTap: () => context.push('/profile/medications'),
+                ),
+                _MenuTile(
+                  icon: Icons.event_available_outlined,
+                  title: l10n.appointmentsTitle,
+                  tone: SettingsSection.appointments.tone(theme),
+                  onTap: () => context.push('/profile/appointments'),
                 ),
                 // Selector de tema. Reutiliza la pantalla 0 en modo ajuste.
                 _MenuTile(
