@@ -42,6 +42,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get measurementUnits => 'Unità di Misura';
 
   @override
+  String get noArticlesFound => 'Nessun articolo trovato';
+
+  @override
+  String get noArticlesFoundDesc => 'Prova un\'altra categoria di salute';
+
+  @override
   String get notifications => 'Notifiche';
 
   @override
@@ -379,49 +385,49 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String historyTrendOf(String metric) {
-    return '$metric TREND';
+    return 'TENDENZA DI $metric';
   }
 
   @override
   String historyMetricNeedsData(String measure) {
-    return 'Log $measure to see this indicator.';
+    return 'Registra $measure per vedere questo indicatore.';
   }
 
   @override
-  String get whtrName => 'Waist-to-height';
+  String get whtrName => 'Vita-altezza';
 
   @override
   String get whtrShort => 'WHtR';
 
   @override
-  String get whtrLow => 'LOW';
+  String get whtrLow => 'BASSO';
 
   @override
-  String get whtrNormal => 'NORMAL';
+  String get whtrNormal => 'NORMALE';
 
   @override
-  String get whtrIncreased => 'INCREASED';
+  String get whtrIncreased => 'AUMENTATO';
 
   @override
-  String get whtrHigh => 'HIGH';
+  String get whtrHigh => 'ALTO';
 
   @override
-  String get whrName => 'Waist-to-hip';
+  String get whrName => 'Vita-fianchi';
 
   @override
   String get whrShort => 'WHR';
 
   @override
-  String get whrNormal => 'NORMAL';
+  String get whrNormal => 'NORMALE';
 
   @override
-  String get whrIncreased => 'INCREASED';
+  String get whrIncreased => 'AUMENTATO';
 
   @override
-  String get measureWaist => 'your waist';
+  String get measureWaist => 'la vita';
 
   @override
-  String get measureWaistAndHip => 'waist and hip';
+  String get measureWaistAndHip => 'vita e fianchi';
 
   @override
   String get unitCm => 'cm';

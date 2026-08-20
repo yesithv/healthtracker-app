@@ -170,6 +170,18 @@ abstract class AppLocalizations {
   /// **'Measurement Units'**
   String get measurementUnits;
 
+  /// No description provided for @noArticlesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No articles found'**
+  String get noArticlesFound;
+
+  /// No description provided for @noArticlesFoundDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another health category'**
+  String get noArticlesFoundDesc;
+
   /// No description provided for @notifications.
   ///
   /// In en, this message translates to:

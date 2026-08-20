@@ -42,6 +42,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get measurementUnits => 'Unidades de Medida';
 
   @override
+  String get noArticlesFound => 'No se encontraron artículos';
+
+  @override
+  String get noArticlesFoundDesc => 'Intenta con otra categoría de salud';
+
+  @override
   String get notifications => 'Notificaciones';
 
   @override

@@ -148,6 +148,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         articles.isEmpty &&
         routines.isEmpty &&
         challenges.isEmpty;
+    final hasActiveFilter = _query.isNotEmpty || _selectedCategory != 'all';
 
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -320,17 +321,40 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Dos vacíos distintos: cuando hay una búsqueda o un filtro
+                  // activo el usuario descartó contenido a propósito y hay que
+                  // decírselo («no hay resultados, prueba otra categoría»);
+                  // cuando no, es que el feed no trae nada todavía. El icono
+                  // de lupa tachada sólo pega con el primero.
                   Icon(
-                    Icons.search_off_rounded,
+                    hasActiveFilter
+                        ? Icons.search_off_rounded
+                        : Icons.inbox_rounded,
                     size: 56,
                     color: surfaces.inkMuted,
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    l10n.discoverEmpty,
-                    textAlign: TextAlign.center,
-                    style: theme.type.body.copyWith(fontSize: 15),
-                  ),
+                  if (hasActiveFilter) ...[
+                    Text(
+                      l10n.noArticlesFound,
+                      textAlign: TextAlign.center,
+                      style: theme.type.cardTitle,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.noArticlesFoundDesc,
+                      textAlign: TextAlign.center,
+                      style: theme.type.body.copyWith(
+                        fontSize: 15,
+                        color: surfaces.inkMuted,
+                      ),
+                    ),
+                  ] else
+                    Text(
+                      l10n.discoverEmpty,
+                      textAlign: TextAlign.center,
+                      style: theme.type.body.copyWith(fontSize: 15),
+                    ),
                 ],
               ),
             ),
