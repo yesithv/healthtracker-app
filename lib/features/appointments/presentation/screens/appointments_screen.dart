@@ -8,6 +8,7 @@ import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dar
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 import 'package:myvitals_healthtracker_app/features/appointments/data/models/appointment.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_compliance_service.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_status_service.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/presentation/controllers/appointments_controller.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/presentation/widgets/appointment_add_sheet.dart';
@@ -58,6 +59,13 @@ class AppointmentsScreen extends StatelessWidget {
                   accent: accent,
                 ),
                 const SizedBox(height: 28),
+                if (!isEmpty) ...[
+                  _ComplianceBanner(
+                    level: controller.semaphore(),
+                    next: controller.nextAction(),
+                  ),
+                  const SizedBox(height: 24),
+                ],
                 if (isEmpty)
                   _EmptyAll(l10n: l10n)
                 else ...[
@@ -91,14 +99,98 @@ class AppointmentsScreen extends StatelessWidget {
   }
 }
 
-/// Abre la hoja de alta de una cita nueva.
-Future<void> _openAddSheet(BuildContext context) {
+/// Abre la hoja de alta ([existing] == null) o de edición de una cita.
+Future<void> _openAddSheet(BuildContext context, {Appointment? existing}) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const AppointmentAddSheet(),
+    builder: (_) => AppointmentAddSheet(existing: existing),
   );
+}
+
+/// Tarjetita del índice de cumplimiento (semáforo): color según [level] y una
+/// línea de «próxima acción» derivada de [next]. Discreta —una tarjeta, no un
+/// dashboard—, arriba del inventario. La lógica ya vive en
+/// [AppointmentComplianceService]; aquí sólo se pinta.
+class _ComplianceBanner extends StatelessWidget {
+  const _ComplianceBanner({required this.level, required this.next});
+
+  final ComplianceLevel level;
+  final Appointment? next;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final l10n = AppLocalizations.of(context)!;
+    final material = MaterialLocalizations.of(context);
+
+    final (tone, icon, title) = switch (level) {
+      ComplianceLevel.red => (
+          theme.clinical.alert,
+          Icons.warning_amber_rounded,
+          l10n.appointmentComplianceRedTitle,
+        ),
+      ComplianceLevel.amber => (
+          theme.clinical.caution,
+          Icons.schedule_outlined,
+          l10n.appointmentComplianceAmberTitle,
+        ),
+      ComplianceLevel.green => (
+          theme.clinical.optimal,
+          Icons.check_circle_outline,
+          l10n.appointmentComplianceGreenTitle,
+        ),
+    };
+
+    String subtitle;
+    if (level == ComplianceLevel.green || next == null) {
+      subtitle = l10n.appointmentComplianceGreenBody;
+    } else if (AppointmentStatusService.isOverdue(next!)) {
+      subtitle = l10n.appointmentNextActionOverdue(next!.title);
+    } else {
+      final date = next!.status == AppointmentStatus.scheduled
+          ? next!.scheduledAt
+          : next!.dueToBookOn;
+      final dateText = date == null ? '—' : material.formatMediumDate(date);
+      subtitle = l10n.appointmentNextActionUpcoming(next!.title, dateText);
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: tone.surface,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+        border: Border.all(color: tone.accent.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 22, color: tone.accent),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.type.cardTitle
+                      .copyWith(fontSize: 15, color: tone.accent),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: theme.type.meta.copyWith(color: surfaces.inkSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -229,6 +321,17 @@ class _AppointmentCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _DateLine(appointment: a, l10n: l10n),
+            if (a.location != null && a.location!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              _MetaLine(icon: Icons.place_outlined, text: a.location!),
+            ],
+            if (a.isRecurring && (a.intervalMonths ?? 0) > 0) ...[
+              const SizedBox(height: 4),
+              _MetaLine(
+                icon: Icons.event_repeat_outlined,
+                text: l10n.appointmentEveryNMonths(a.intervalMonths!),
+              ),
+            ],
             const SizedBox(height: 12),
             _Actions(appointment: a),
           ],
@@ -296,6 +399,33 @@ class _DateLine extends StatelessWidget {
   }
 }
 
+/// Línea secundaria (icono + texto tenue) para datos informativos de la cita,
+/// como el lugar o la periodicidad. Mismo estilo que [_DateLine].
+class _MetaLine extends StatelessWidget {
+  const _MetaLine({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    return Row(
+      children: [
+        Icon(icon, size: 15, color: surfaces.inkMuted),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: theme.type.meta.copyWith(color: surfaces.inkSecondary),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Acciones por estado: por sacar → «Ya la saqué» / «Posponer»; agendada → «Ya
 /// asistí» / «No asistí»; cerradas → sin acciones (solo eliminar).
 class _Actions extends StatelessWidget {
@@ -320,14 +450,23 @@ class _Actions extends StatelessWidget {
           label: l10n.appointmentActionPostpone,
           onTap: () => _postpone(context, controller, a),
         ));
+        buttons.add(_SecondaryAction(
+          label: l10n.appointmentActionEdit,
+          onTap: () => _openAddSheet(context, existing: a),
+        ));
       case AppointmentStatus.scheduled:
         buttons.add(_PrimaryAction(
           label: l10n.appointmentActionAttended,
-          onTap: () => controller.markAttended(a),
+          onTap: () => _confirmAttendance(context, controller, a, attended: true),
         ));
         buttons.add(_SecondaryAction(
           label: l10n.appointmentActionMissed,
-          onTap: () => controller.markMissed(a),
+          onTap: () =>
+              _confirmAttendance(context, controller, a, attended: false),
+        ));
+        buttons.add(_SecondaryAction(
+          label: l10n.appointmentActionEdit,
+          onTap: () => _openAddSheet(context, existing: a),
         ));
       case AppointmentStatus.attended:
       case AppointmentStatus.missed:
@@ -339,6 +478,29 @@ class _Actions extends StatelessWidget {
     ));
 
     return Wrap(spacing: 8, runSpacing: 8, children: buttons);
+  }
+
+  /// Confirma asistencia/inasistencia y, si la cita era un control periódico,
+  /// avisa de que ya se anotó la siguiente «por sacar» (reflejo visual de la
+  /// recurrencia automática).
+  Future<void> _confirmAttendance(
+    BuildContext context,
+    AppointmentsController controller,
+    Appointment a, {
+    required bool attended,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    if (attended) {
+      await controller.markAttended(a);
+    } else {
+      await controller.markMissed(a);
+    }
+    if (a.isRecurring && (a.intervalMonths ?? 0) > 0) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.appointmentNextSpawned)),
+      );
+    }
   }
 
   Future<void> _book(

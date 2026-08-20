@@ -162,4 +162,61 @@ void main() {
 
     expect(c.overdueCount(now: DateTime(2026, 8, 17, 10)), 1);
   });
+
+  test('addToBook recurrente persiste isRecurring e intervalMonths', () async {
+    final c = buildController();
+    final appt = await c.addToBook(
+      title: 'Control endocrino',
+      dueToBookOn: DateTime(2026, 9, 1),
+      isRecurring: true,
+      intervalMonths: 6,
+      leadDays: 7,
+    );
+
+    final stored = c.toBook.single;
+    expect(stored.id, appt.id);
+    expect(stored.isRecurring, isTrue);
+    expect(stored.intervalMonths, 6);
+    expect(stored.leadDays, 7);
+  });
+
+  test('save edita una cita existente y la mantiene en su sección', () async {
+    final c = buildController();
+    final appt = await c.addToBook(
+      title: 'Neuropsicología',
+      dueToBookOn: DateTime(2026, 9, 1),
+    );
+
+    await c.save(appt.copyWith(
+      title: 'Neuropsicología (adultos)',
+      specialty: 'Neuropsicología',
+      location: 'Sede norte',
+    ));
+
+    final edited = c.toBook.single;
+    expect(edited.id, appt.id);
+    expect(edited.title, 'Neuropsicología (adultos)');
+    expect(edited.specialty, 'Neuropsicología');
+    expect(edited.location, 'Sede norte');
+  });
+
+  test('save puede convertir una por sacar en agendada limpiando la objetivo',
+      () async {
+    final c = buildController();
+    final appt = await c.addToBook(
+      title: 'Endocrino',
+      dueToBookOn: DateTime(2026, 9, 1),
+    );
+
+    await c.save(appt.copyWith(
+      status: AppointmentStatus.scheduled,
+      scheduledAt: DateTime(2026, 9, 5, 8, 30),
+      clearDueToBookOn: true,
+    ));
+
+    expect(c.toBook, isEmpty);
+    final scheduled = c.scheduled.single;
+    expect(scheduled.scheduledAt, DateTime(2026, 9, 5, 8, 30));
+    expect(scheduled.dueToBookOn, isNull);
+  });
 }

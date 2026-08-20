@@ -3,16 +3,23 @@ import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+import 'package:myvitals_healthtracker_app/features/appointments/data/models/appointment.dart';
 import 'package:myvitals_healthtracker_app/features/appointments/presentation/controllers/appointments_controller.dart';
 
-/// Hoja de alta de una cita, en dos modos con un solo formulario:
+/// Hoja de alta/edición de una cita, en dos modos con un solo formulario:
 /// - **Ya tengo fecha** (agendada): fecha + hora concretas.
 /// - **Debo sacarla** (por sacar / recall): fecha objetivo para agendarla.
 ///
-/// El resto de campos (especialidad, médico/lugar, notas) son opcionales. Al
-/// guardar delega en [AppointmentsController], que persiste y reprograma avisos.
+/// Si se pasa [existing], la hoja abre en **modo edición**: precarga los campos y
+/// al guardar actualiza esa cita (en vez de crear una nueva). El resto de campos
+/// (especialidad, médico/lugar, notas) son opcionales. Un toggle **«control
+/// periódico»** fija la recurrencia (cada N meses): al confirmar asistencia, el
+/// controlador genera automáticamente la siguiente «por sacar».
 class AppointmentAddSheet extends StatefulWidget {
-  const AppointmentAddSheet({super.key});
+  const AppointmentAddSheet({super.key, this.existing});
+
+  /// Cita a editar; null para crear una nueva.
+  final Appointment? existing;
 
   @override
   State<AppointmentAddSheet> createState() => _AppointmentAddSheetState();
@@ -20,23 +27,56 @@ class AppointmentAddSheet extends StatefulWidget {
 
 class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
   /// true = «Ya tengo fecha» (agendada); false = «Debo sacarla» (por sacar).
-  bool _scheduledMode = false;
+  late bool _scheduledMode;
 
-  final _titleController = TextEditingController();
-  final _specialtyController = TextEditingController();
-  final _providerController = TextEditingController();
-  final _notesController = TextEditingController();
+  late final TextEditingController _titleController;
+  late final TextEditingController _specialtyController;
+  late final TextEditingController _providerController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _notesController;
 
   DateTime? _date;
   TimeOfDay? _time;
 
+  bool _isRecurring = false;
+
+  /// Opciones de periodicidad ofrecidas (en meses).
+  static const List<int> _intervalOptions = [1, 3, 6, 12];
+  int _intervalMonths = 3;
+
   bool _titleTouched = false;
+
+  bool get _isEditing => widget.existing != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.existing;
+    _scheduledMode = e?.status == AppointmentStatus.scheduled;
+    _titleController = TextEditingController(text: e?.title ?? '');
+    _specialtyController = TextEditingController(text: e?.specialty ?? '');
+    _providerController = TextEditingController(text: e?.provider ?? '');
+    _locationController = TextEditingController(text: e?.location ?? '');
+    _notesController = TextEditingController(text: e?.notes ?? '');
+    _isRecurring = e?.isRecurring ?? false;
+    _intervalMonths = e?.intervalMonths ?? 3;
+    if (e != null) {
+      final date = e.scheduledAt ?? e.dueToBookOn;
+      if (date != null) {
+        _date = DateTime(date.year, date.month, date.day);
+        if (e.scheduledAt != null) {
+          _time = TimeOfDay.fromDateTime(e.scheduledAt!);
+        }
+      }
+    }
+  }
 
   @override
   void dispose() {
     _titleController.dispose();
     _specialtyController.dispose();
     _providerController.dispose();
+    _locationController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -70,35 +110,95 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
     final controller = context.read<AppointmentsController>();
     final specialty = _specialtyController.text.trim();
     final provider = _providerController.text.trim();
+    final location = _locationController.text.trim();
     final notes = _notesController.text.trim();
+    final intervalMonths = _isRecurring ? _intervalMonths : null;
 
-    if (_scheduledMode) {
-      final time = _time ?? const TimeOfDay(hour: 9, minute: 0);
-      final at = DateTime(
-        _date!.year,
-        _date!.month,
-        _date!.day,
-        time.hour,
-        time.minute,
+    String? orNull(String s) => s.isEmpty ? null : s;
+
+    if (_isEditing) {
+      // En edición se pasan los textos tal cual (incluida la cadena vacía) para
+      // que vaciar un campo lo limpie: `copyWith` sólo ignora `null`, no `''`.
+      await _saveEdit(
+        controller,
+        title: title,
+        specialty: specialty,
+        provider: provider,
+        location: location,
+        notes: notes,
+        intervalMonths: intervalMonths,
       );
+    } else if (_scheduledMode) {
       await controller.addScheduled(
         title: title,
-        scheduledAt: at,
-        specialty: specialty.isEmpty ? null : specialty,
-        provider: provider.isEmpty ? null : provider,
-        notes: notes.isEmpty ? null : notes,
+        scheduledAt: _scheduledDateTime(),
+        specialty: orNull(specialty),
+        provider: orNull(provider),
+        location: orNull(location),
+        notes: orNull(notes),
+        isRecurring: _isRecurring,
+        intervalMonths: intervalMonths,
       );
     } else {
       await controller.addToBook(
         title: title,
         dueToBookOn: DateTime(_date!.year, _date!.month, _date!.day),
-        specialty: specialty.isEmpty ? null : specialty,
-        provider: provider.isEmpty ? null : provider,
-        notes: notes.isEmpty ? null : notes,
+        specialty: orNull(specialty),
+        provider: orNull(provider),
+        location: orNull(location),
+        notes: orNull(notes),
+        isRecurring: _isRecurring,
+        intervalMonths: intervalMonths,
       );
     }
 
     if (mounted) Navigator.of(context).pop();
+  }
+
+  /// Fecha/hora combinada para una cita agendada (hora por defecto 9:00).
+  DateTime _scheduledDateTime() {
+    final time = _time ?? const TimeOfDay(hour: 9, minute: 0);
+    return DateTime(
+      _date!.year,
+      _date!.month,
+      _date!.day,
+      time.hour,
+      time.minute,
+    );
+  }
+
+  /// Guarda la edición sobre la cita existente, respetando el modo elegido
+  /// (agendada / por sacar) y limpiando la fecha del otro modo.
+  Future<void> _saveEdit(
+    AppointmentsController controller, {
+    required String title,
+    required String specialty,
+    required String provider,
+    required String location,
+    required String notes,
+    int? intervalMonths,
+  }) async {
+    final base = widget.existing!.copyWith(
+      title: title,
+      specialty: specialty,
+      provider: provider,
+      location: location,
+      notes: notes,
+      isRecurring: _isRecurring,
+      intervalMonths: intervalMonths,
+    );
+    final updated = _scheduledMode
+        ? base.copyWith(
+            status: AppointmentStatus.scheduled,
+            scheduledAt: _scheduledDateTime(),
+            clearDueToBookOn: true,
+          )
+        : base.copyWith(
+            status: AppointmentStatus.toBook,
+            dueToBookOn: DateTime(_date!.year, _date!.month, _date!.day),
+            clearScheduledAt: true,
+          );
+    await controller.save(updated);
   }
 
   @override
@@ -141,7 +241,7 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
                 ),
               ),
               Text(
-                l10n.appointmentAddTitle,
+                _isEditing ? l10n.appointmentEditTitle : l10n.appointmentAddTitle,
                 style: theme.type.screenTitle.copyWith(fontSize: 20),
               ),
               const SizedBox(height: 16),
@@ -230,6 +330,18 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
               ),
 
               _Field(
+                label: l10n.appointmentFieldLocation,
+                child: TextField(
+                  controller: _locationController,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: _inputDecoration(
+                    context,
+                    hint: l10n.appointmentFieldLocationHint,
+                  ),
+                ),
+              ),
+
+              _Field(
                 label: l10n.appointmentFieldNotes,
                 child: TextField(
                   controller: _notesController,
@@ -237,6 +349,15 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
                   maxLines: 3,
                   decoration: _inputDecoration(context),
                 ),
+              ),
+
+              // Recurrencia: control periódico cada N meses.
+              _RecurrenceSection(
+                enabled: _isRecurring,
+                intervalMonths: _intervalMonths,
+                intervalOptions: _intervalOptions,
+                onToggle: (v) => setState(() => _isRecurring = v),
+                onIntervalChanged: (m) => setState(() => _intervalMonths = m),
               ),
 
               const SizedBox(height: 8),
@@ -283,6 +404,82 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
   }
 }
 
+/// Sección de recurrencia: toggle «control periódico» + selector de cada N meses
+/// + una línea que explica qué pasa al confirmar asistencia.
+class _RecurrenceSection extends StatelessWidget {
+  const _RecurrenceSection({
+    required this.enabled,
+    required this.intervalMonths,
+    required this.intervalOptions,
+    required this.onToggle,
+    required this.onIntervalChanged,
+  });
+
+  final bool enabled;
+  final int intervalMonths;
+  final List<int> intervalOptions;
+  final ValueChanged<bool> onToggle;
+  final ValueChanged<int> onIntervalChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.appointmentFieldRecurring,
+                  style: theme.type.fieldLabel.copyWith(color: surfaces.ink),
+                ),
+              ),
+              Switch(
+                value: enabled,
+                onChanged: onToggle,
+                activeThumbColor: surfaces.onBrand,
+                activeTrackColor: surfaces.brand,
+              ),
+            ],
+          ),
+          if (enabled) ...[
+            const SizedBox(height: 4),
+            Text(
+              l10n.appointmentFrequencyLabel,
+              style: theme.type.meta.copyWith(color: surfaces.inkSecondary),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final m in intervalOptions)
+                  _ModeChip(
+                    label: l10n.appointmentEveryNMonths(m),
+                    selected: m == intervalMonths,
+                    onTap: () => onIntervalChanged(m),
+                    expand: false,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.appointmentRecurringHint,
+              style: theme.type.meta.copyWith(color: surfaces.inkMuted),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 /// Selector de dos modos: «Debo sacarla» (por sacar) vs «Ya tengo fecha».
 class _ModeSelector extends StatelessWidget {
   const _ModeSelector({required this.scheduledMode, required this.onChanged});
@@ -320,16 +517,29 @@ class _ModeChip extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.expand = true,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
 
+  /// Cuando true, el texto se centra y ocupa el ancho del padre (para el selector
+  /// de modo dentro de un [Expanded]); cuando false, el chip se ajusta a su
+  /// contenido (para los chips de periodicidad dentro de un [Wrap]).
+  final bool expand;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
+    final text = Text(
+      label,
+      textAlign: TextAlign.center,
+      style: theme.type.button.copyWith(
+        color: selected ? surfaces.onBrand : surfaces.inkSecondary,
+      ),
+    );
     return Material(
       color: selected ? surfaces.brand : surfaces.inset,
       borderRadius: BorderRadius.circular(surfaces.radiusControl),
@@ -338,15 +548,7 @@ class _ModeChip extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          child: Center(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: theme.type.button.copyWith(
-                color: selected ? surfaces.onBrand : surfaces.inkSecondary,
-              ),
-            ),
-          ),
+          child: expand ? Center(child: text) : text,
         ),
       ),
     );

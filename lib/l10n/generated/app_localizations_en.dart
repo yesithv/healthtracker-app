@@ -2690,4 +2690,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get apptOverdueNotifBody => 'You have an overdue appointment.';
+
+  @override
+  String get appointmentFieldLocation => 'Location';
+
+  @override
+  String get appointmentFieldLocationHint => 'e.g. Clinic address';
+
+  @override
+  String get appointmentFieldRecurring => 'Periodic check-up';
+
+  @override
+  String get appointmentRecurringHint => 'When you confirm you attended, we\'ll remind you to book the next one automatically.';
+
+  @override
+  String get appointmentFrequencyLabel => 'How often';
+
+  @override
+  String appointmentEveryNMonths(int count) {
+    return 'Every $count months';
+  }
+
+  @override
+  String get appointmentEditTitle => 'Edit appointment';
+
+  @override
+  String get appointmentActionEdit => 'Edit';
+
+  @override
+  String get appointmentNextSpawned => 'We noted the next check-up to book.';
+
+  @override
+  String get appointmentComplianceRedTitle => 'Needs attention';
+
+  @override
+  String get appointmentComplianceAmberTitle => 'Coming up';
+
+  @override
+  String get appointmentComplianceGreenTitle => 'All up to date';
+
+  @override
+  String get appointmentComplianceGreenBody => 'No pending or overdue appointments.';
+
+  @override
+  String appointmentNextActionOverdue(String title) {
+    return '$title · overdue';
+  }
+
+  @override
+  String appointmentNextActionUpcoming(String title, String date) {
+    return '$title · $date';
+  }
+
+  @override
+  String appointmentRecurringEvery(int count) {
+    return 'Every $count mo';
+  }
 }

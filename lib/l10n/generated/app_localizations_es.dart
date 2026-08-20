@@ -2691,4 +2691,60 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get apptOverdueNotifBody => 'Tienes una cita vencida.';
+
+  @override
+  String get appointmentFieldLocation => 'Lugar';
+
+  @override
+  String get appointmentFieldLocationHint => 'p. ej. dirección de la clínica';
+
+  @override
+  String get appointmentFieldRecurring => 'Control periódico';
+
+  @override
+  String get appointmentRecurringHint => 'Cuando confirmes que asististe, te recordaremos sacar la siguiente automáticamente.';
+
+  @override
+  String get appointmentFrequencyLabel => 'Cada cuánto';
+
+  @override
+  String appointmentEveryNMonths(int count) {
+    return 'Cada $count meses';
+  }
+
+  @override
+  String get appointmentEditTitle => 'Editar cita';
+
+  @override
+  String get appointmentActionEdit => 'Editar';
+
+  @override
+  String get appointmentNextSpawned => 'Anotamos el siguiente control por sacar.';
+
+  @override
+  String get appointmentComplianceRedTitle => 'Requiere atención';
+
+  @override
+  String get appointmentComplianceAmberTitle => 'Próximamente';
+
+  @override
+  String get appointmentComplianceGreenTitle => 'Todo al día';
+
+  @override
+  String get appointmentComplianceGreenBody => 'No tienes citas pendientes ni vencidas.';
+
+  @override
+  String appointmentNextActionOverdue(String title) {
+    return '$title · vencida';
+  }
+
+  @override
+  String appointmentNextActionUpcoming(String title, String date) {
+    return '$title · $date';
+  }
+
+  @override
+  String appointmentRecurringEvery(int count) {
+    return 'Cada $count m';
+  }
 }

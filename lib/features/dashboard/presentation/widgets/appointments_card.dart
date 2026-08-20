@@ -35,13 +35,26 @@ class AppointmentsCard extends StatelessWidget {
 
     final hasAny = controller.all.isNotEmpty;
     final next = AppointmentComplianceService.nextAction(controller.all);
+    final level = AppointmentComplianceService.semaphore(controller.all);
+
+    // El semáforo tiñe y refuerza el borde para que «se note el cuadro»: verde
+    // se queda con el acento de marca (aspecto por defecto), ámbar y rojo pasan
+    // a sus tonos clínicos.
+    final Color borderColor = switch (level) {
+      ComplianceLevel.red => theme.clinical.alert.accent,
+      ComplianceLevel.amber => theme.clinical.caution.accent,
+      ComplianceLevel.green => surfaces.brand,
+    };
 
     return Container(
       decoration: BoxDecoration(
         color: surfaces.card,
         borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        border: Border.all(color: surfaces.brand.withValues(alpha: 0.5)),
-        boxShadow: surfaces.glow(surfaces.brand, alpha: 0.10),
+        border: Border.all(
+          color: borderColor.withValues(alpha: 0.7),
+          width: 1.5,
+        ),
+        boxShadow: surfaces.glow(borderColor, alpha: 0.12),
       ),
       child: Material(
         color: Colors.transparent,
@@ -66,15 +79,32 @@ class AppointmentsCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    // Punto de semáforo: hace visible «próximamente» (ámbar), no
+                    // sólo «vencida» (rojo), sin robar espacio.
+                    if (hasAny && level != ComplianceLevel.green)
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: borderColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                   ],
                 ),
-                const Spacer(),
-                if (!hasAny)
-                  _AddContent(label: l10n.apptDashAdd)
-                else if (next == null)
-                  _AllClear(l10n: l10n)
-                else
-                  _NextHero(appointment: next, l10n: l10n),
+                const SizedBox(height: 12),
+                // El contenido se expande para llenar el alto de la tarjeta (antes
+                // un `Spacer` dejaba media casilla en blanco).
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: !hasAny
+                        ? _AddContent(label: l10n.apptDashAdd)
+                        : next == null
+                            ? _AllClear(l10n: l10n)
+                            : _NextHero(appointment: next, l10n: l10n),
+                  ),
+                ),
               ],
             ),
           ),
@@ -107,6 +137,7 @@ class _NextHero extends StatelessWidget {
     final dateText = date == null ? '—' : material.formatMediumDate(date);
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: theme.type.meta),
