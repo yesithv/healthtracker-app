@@ -37,9 +37,10 @@ class AppointmentsCard extends StatelessWidget {
     final next = AppointmentComplianceService.nextAction(controller.all);
     final level = AppointmentComplianceService.semaphore(controller.all);
 
-    // El semáforo tiñe y refuerza el borde para que «se note el cuadro»: verde
-    // se queda con el acento de marca (aspecto por defecto), ámbar y rojo pasan
-    // a sus tonos clínicos.
+    // El semáforo se expresa como ACENTO FINO —el punto de color del encabezado
+    // y el chip «Vencida»—, no tiñendo todo el marco: el board es neutro e igual
+    // al de las tarjetas principales. Este color alimenta ese punto: verde
+    // conserva el acento de marca, ámbar y rojo pasan a sus tonos clínicos.
     final Color borderColor = switch (level) {
       ComplianceLevel.red => theme.clinical.alert.accent,
       ComplianceLevel.amber => theme.clinical.caution.accent,
@@ -47,14 +48,12 @@ class AppointmentsCard extends StatelessWidget {
     };
 
     return Container(
-      decoration: BoxDecoration(
-        color: surfaces.card,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        border: Border.all(
-          color: borderColor.withValues(alpha: 0.7),
-          width: 1.5,
-        ),
-        boxShadow: surfaces.glow(borderColor, alpha: 0.12),
+      // Mismo board que las tarjetas principales del inicio (DashboardCard):
+      // relleno, filete neutro y la elevación estándar del tema. El semáforo se
+      // mantiene como acento fino (punto del encabezado + chip «Vencida»).
+      decoration: surfaces.cardDecoration(
+        borderColor: surfaces.divider,
+        borderWidth: 1.5,
       ),
       child: Material(
         color: Colors.transparent,

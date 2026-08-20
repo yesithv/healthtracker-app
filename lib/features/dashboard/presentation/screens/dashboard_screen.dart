@@ -21,6 +21,9 @@ class DashboardScreen extends StatelessWidget {
           const MainAppBar(title: 'MY VITALS', subtitle: 'Health Tracker'),
           Expanded(
             child: ListView(
+              // Tope firme al final: sin rebote ni overscroll, el scroll se
+              // siente cerrado justo en las minicards (no «infinito»).
+              physics: const ClampingScrollPhysics(),
               // Menos margen lateral: las tarjetas ganan ancho y su contenido
               // llega un poco más cerca del borde de cada una.
               padding: const EdgeInsets.symmetric(
