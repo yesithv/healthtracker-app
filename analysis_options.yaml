@@ -1,1 +1,62 @@
+# Reglas de análisis estático. Se parte de `flutter_lints` (la base recomendada
+# por el equipo de Flutter) y se SUBE el listón con un conjunto exhaustivo que
+# atrapa bugs reales (futuros sin await, llamadas dinámicas), fuerza const/final
+# y moderniza el estilo. El CI corre `flutter analyze` y falla si algo salta, así
+# que estas reglas son contrato, no sugerencia.
+#
+# Quedan fuera a propósito las reglas de puro formateo (`require_trailing_commas`,
+# `lines_longer_than_80_chars`) y de documentación (`public_member_api_docs`):
+# las primeras las resuelve `dart format`, no aportan señal aquí, y la segunda
+# ahogaría el análisis en avisos sin valor.
 include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  # El código de `gen-l10n` es generado: no se edita a mano y no tiene sentido
+  # medirlo con estas reglas (su estilo lo fija la herramienta, no el proyecto).
+  exclude:
+    - lib/l10n/generated/**
+
+linter:
+  rules:
+    # — Correctitud / bugs —
+    - unawaited_futures
+    - avoid_dynamic_calls
+    - always_declare_return_types
+    - unnecessary_await_in_return
+    - null_check_on_nullable_type_parameter
+    - unnecessary_null_checks
+    - cast_nullable_to_non_nullable
+    - no_adjacent_strings_in_list
+    - use_build_context_synchronously
+
+    # — Rendimiento / const —
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_literals_to_create_immutables
+    - prefer_const_declarations
+    - use_string_buffers
+
+    # — Inmutabilidad —
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - prefer_final_fields
+
+    # — Modernización / limpieza —
+    - use_super_parameters
+    - unnecessary_parenthesis
+    - unnecessary_lambdas
+    - unnecessary_breaks
+    - avoid_redundant_argument_values
+    - avoid_unused_constructor_parameters
+    - unnecessary_library_directive
+    - combinators_ordering
+    - directives_ordering
+    - sort_pub_dependencies
+    - cascade_invocations
+    - prefer_single_quotes
+    - avoid_escaping_inner_quotes
+    - avoid_bool_literals_in_conditional_expressions
+    - prefer_if_elements_to_conditional_expressions
+
+    # — Diseño de API —
+    - avoid_positional_boolean_parameters
