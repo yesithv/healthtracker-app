@@ -303,8 +303,9 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
                         decoration: _inputDecoration(
                           _selectedDate == null
                               ? l10n.selectDate
-                              : DateFormat('dd / MM / yyyy')
-                                    .format(_selectedDate!),
+                              : DateFormat(
+                                  'dd / MM / yyyy',
+                                ).format(_selectedDate!),
                           Icons.calendar_today_outlined,
                           surfaces.brand,
                           hasError: _dateError,

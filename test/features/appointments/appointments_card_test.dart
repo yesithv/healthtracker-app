@@ -57,18 +57,20 @@ void main() {
     await AppointmentRepository.instance.clearAll();
   });
 
-  testWidgets('sin citas muestra el CTA para añadir la primera', (
-    tester,
-  ) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+  testWidgets(
+    'sin citas muestra el CTA para añadir la primera',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    expect(find.text('Citas'), findsOneWidget);
-    expect(find.text('Añadir cita'), findsOneWidget);
+      expect(find.text('Citas'), findsOneWidget);
+      expect(find.text('Añadir cita'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 
   testWidgets(
     'con una cita vencida por sacar muestra su título y el chip vencida',

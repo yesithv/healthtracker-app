@@ -14,10 +14,8 @@ enum MedicationNotificationKind { dose, inventory }
 /// localización de Flutter, así que la UI le pasa constructores de texto; hay
 /// defaults en español para poder programar avisos aunque la UI no exista aún.
 typedef NotificationText = ({String title, String body});
-typedef DoseTextBuilder = NotificationText Function(
-  Medication med,
-  ExpectedDose dose,
-);
+typedef DoseTextBuilder =
+    NotificationText Function(Medication med, ExpectedDose dose);
 typedef InventoryTextBuilder = NotificationText Function(Medication med);
 
 /// Una notificación concreta a programar: id reservado, cuándo, qué texto y un

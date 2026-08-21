@@ -262,8 +262,9 @@ void main() {
     });
 
     test('book limpia el silenciado al agendar', () {
-      final a = _toBook(due: DateTime(2026, 9, 1))
-          .copyWith(snoozedUntil: DateTime(2026, 9, 1));
+      final a = _toBook(
+        due: DateTime(2026, 9, 1),
+      ).copyWith(snoozedUntil: DateTime(2026, 9, 1));
       final booked = AppointmentStatusService.book(a, DateTime(2026, 9, 5, 8));
       expect(booked.snoozedUntil, isNull);
     });

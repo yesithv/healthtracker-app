@@ -156,12 +156,16 @@ void main() {
 
       test('la rampa de severidad va de menos a más riesgo', () {
         expect(theme.clinical.severityRamp, hasLength(4));
-        expect(theme.clinical.severityRamp, [
-          theme.clinical.info.accent,
-          theme.clinical.optimal.accent,
-          theme.clinical.caution.accent,
-          theme.clinical.alert.accent,
-        ], reason: 'La rampa debe seguir el orden clínico, no el estético');
+        expect(
+          theme.clinical.severityRamp,
+          [
+            theme.clinical.info.accent,
+            theme.clinical.optimal.accent,
+            theme.clinical.caution.accent,
+            theme.clinical.alert.accent,
+          ],
+          reason: 'La rampa debe seguir el orden clínico, no el estético',
+        );
       });
 
       // ── FAMILIAS DE INDICADOR ─────────────────────────────────────────────
@@ -404,23 +408,26 @@ void main() {
         );
       });
 
-      test('onSelection no se aleja de la marca: sigue siendo el mismo color', () {
-        final s = theme.surfaces;
-        // El par existe para resolver contraste, no para que un tema meta un
-        // color nuevo por la puerta de atrás: el realce tiene que seguir
-        // leyéndose como «la marca», no como otra cosa.
-        final d = SemanticContract.hueDistance(
-          SemanticContract.hueOf(s.onSelection),
-          SemanticContract.hueOf(s.brand),
-        );
-        expect(
-          d,
-          lessThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
-          reason:
-              '${spec.name}: onSelection está a ${d.toStringAsFixed(1)}° de la '
-              'marca; debería ser un paso del mismo color, no otro.',
-        );
-      });
+      test(
+        'onSelection no se aleja de la marca: sigue siendo el mismo color',
+        () {
+          final s = theme.surfaces;
+          // El par existe para resolver contraste, no para que un tema meta un
+          // color nuevo por la puerta de atrás: el realce tiene que seguir
+          // leyéndose como «la marca», no como otra cosa.
+          final d = SemanticContract.hueDistance(
+            SemanticContract.hueOf(s.onSelection),
+            SemanticContract.hueOf(s.brand),
+          );
+          expect(
+            d,
+            lessThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
+            reason:
+                '${spec.name}: onSelection está a ${d.toStringAsFixed(1)}° de la '
+                'marca; debería ser un paso del mismo color, no otro.',
+          );
+        },
+      );
 
       test('la tarjeta se separa del lienzo por color o por sombra', () {
         final s = theme.surfaces;

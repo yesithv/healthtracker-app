@@ -109,31 +109,36 @@ void main() {
       },
     );
 
-    test('composición corporal → grasa visceral usa VISCERAL_FAT_LEVEL y omite nulos', () {
-      final r = BodyCompositionRecord(
-        id: 'b1',
-        date: when,
-        bodyFatPercent: 22.4,
-        visceralFatLevel: 8,
-        deviceName: 'OMRON HBF-514C',
-        // resto nulo
-      );
+    test(
+      'composición corporal → grasa visceral usa VISCERAL_FAT_LEVEL y omite nulos',
+      () {
+        final r = BodyCompositionRecord(
+          id: 'b1',
+          date: when,
+          bodyFatPercent: 22.4,
+          visceralFatLevel: 8,
+          deviceName: 'OMRON HBF-514C',
+          // resto nulo
+        );
 
-      final items = MeasurementMapper.fromBodyComposition(r);
+        final items = MeasurementMapper.fromBodyComposition(r);
 
-      expect(items.map((i) => i.indicatorCode), [
-        'BODY_FAT',
-        'VISCERAL_FAT_LEVEL',
-      ]);
-      expect(
-        items.firstWhere((i) => i.indicatorCode == 'VISCERAL_FAT_LEVEL').value,
-        8,
-      );
-      expect(
-        items.every((i) => i.context['deviceName'] == 'OMRON HBF-514C'),
-        isTrue,
-      );
-    });
+        expect(items.map((i) => i.indicatorCode), [
+          'BODY_FAT',
+          'VISCERAL_FAT_LEVEL',
+        ]);
+        expect(
+          items
+              .firstWhere((i) => i.indicatorCode == 'VISCERAL_FAT_LEVEL')
+              .value,
+          8,
+        );
+        expect(
+          items.every((i) => i.context['deviceName'] == 'OMRON HBF-514C'),
+          isTrue,
+        );
+      },
+    );
 
     test(
       'toJson serializa measuredAt en UTC y omite note vacío / context vacío',

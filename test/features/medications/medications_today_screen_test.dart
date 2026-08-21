@@ -65,47 +65,49 @@ void main() {
     await MedicationLogRepository.instance.clearAll();
   });
 
-  testWidgets("renders today's pending dose and reflects registering it", (
-    tester,
-  ) async {
-    final controller = MedicationsController(scheduler: _NoopScheduler());
-    // Pauta diaria: hay una toma esperada hoy sea cual sea la fecha del reloj.
-    final med = Medication(
-      name: 'Vytorin',
-      doseQuantity: 2,
-      frequencyType: FrequencyType.daily,
-      startDate: DateTime(2020, 1, 1),
-    );
-    // Las escrituras a SQLite (ffi) son E/S real. En un test de widget el cuerpo
-    // corre bajo el reloj FALSO de `testWidgets`, que no avanza los
-    // temporizadores/E-S reales, así que un `await` directo sobre la base se
-    // colgaría. `tester.runAsync` ejecuta la E/S en la zona async real.
-    await tester.runAsync(() async {
-      await controller.addMedication(med, [
-        MedicationDose(medicationId: med.id, hour: 8, minute: 0),
-      ]);
-    });
+  testWidgets(
+    "renders today's pending dose and reflects registering it",
+    (tester) async {
+      final controller = MedicationsController(scheduler: _NoopScheduler());
+      // Pauta diaria: hay una toma esperada hoy sea cual sea la fecha del reloj.
+      final med = Medication(
+        name: 'Vytorin',
+        doseQuantity: 2,
+        frequencyType: FrequencyType.daily,
+        startDate: DateTime(2020, 1, 1),
+      );
+      // Las escrituras a SQLite (ffi) son E/S real. En un test de widget el cuerpo
+      // corre bajo el reloj FALSO de `testWidgets`, que no avanza los
+      // temporizadores/E-S reales, así que un `await` directo sobre la base se
+      // colgaría. `tester.runAsync` ejecuta la E/S en la zona async real.
+      await tester.runAsync(() async {
+        await controller.addMedication(med, [
+          MedicationDose(medicationId: med.id, hour: 8, minute: 0),
+        ]);
+      });
 
-    // Un `pump()` (no `pumpAndSettle`): la pantalla no tiene animaciones que
-    // asentar; solo hace falta un frame para pintar los datos ya sembrados.
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+      // Un `pump()` (no `pumpAndSettle`): la pantalla no tiene animaciones que
+      // asentar; solo hace falta un frame para pintar los datos ya sembrados.
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    // La toma aparece, pendiente.
-    expect(find.text('Vytorin'), findsOneWidget);
-    expect(_tile(tester).dose.state, DoseState.pending);
+      // La toma aparece, pendiente.
+      expect(find.text('Vytorin'), findsOneWidget);
+      expect(_tile(tester).dose.state, DoseState.pending);
 
-    // Registrarla como tomada por el controlador reconstruye la pantalla (de
-    // nuevo con `runAsync` por la escritura a la base).
-    final entry = controller.entriesForDay(DateTime.now()).first;
-    await tester.runAsync(() async {
-      await controller.logDose(entry, taken: true);
-    });
-    await tester.pump();
+      // Registrarla como tomada por el controlador reconstruye la pantalla (de
+      // nuevo con `runAsync` por la escritura a la base).
+      final entry = controller.entriesForDay(DateTime.now()).first;
+      await tester.runAsync(() async {
+        await controller.logDose(entry, taken: true);
+      });
+      await tester.pump();
 
-    expect(find.text('Vytorin'), findsOneWidget);
-    expect(_tile(tester).dose.state, DoseState.taken);
+      expect(find.text('Vytorin'), findsOneWidget);
+      expect(_tile(tester).dose.state, DoseState.taken);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 }

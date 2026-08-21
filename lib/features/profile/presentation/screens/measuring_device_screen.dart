@@ -37,8 +37,9 @@ class _MeasuringDeviceScreenState extends State<MeasuringDeviceScreen> {
     final provider = context.read<MeasuringDeviceProvider>();
     // El texto se resuelve ANTES del await: después, usar el context para
     // leerlo sería usarlo cruzando un hueco asíncrono.
-    final message = AppLocalizations.of(context)!
-        .deviceSelectedSaved(device.name);
+    final message = AppLocalizations.of(
+      context,
+    )!.deviceSelectedSaved(device.name);
     await provider.select(device);
     _confirm(message, provider.pendingSync);
   }

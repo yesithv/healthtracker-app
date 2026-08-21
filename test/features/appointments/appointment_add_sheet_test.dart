@@ -82,23 +82,27 @@ void main() {
     timeout: const Timeout(Duration(seconds: 60)),
   );
 
-  testWidgets('en modo edición precarga los campos de la cita', (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    final existing = Appointment(
-      title: 'Control endocrino',
-      specialty: 'Endocrinología',
-      status: AppointmentStatus.toBook,
-      dueToBookOn: DateTime(2026, 9, 1),
-    );
+  testWidgets(
+    'en modo edición precarga los campos de la cita',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      final existing = Appointment(
+        title: 'Control endocrino',
+        specialty: 'Endocrinología',
+        status: AppointmentStatus.toBook,
+        dueToBookOn: DateTime(2026, 9, 1),
+      );
 
-    await tester.pumpWidget(_host(controller, existing: existing));
-    await tester.pump();
+      await tester.pumpWidget(_host(controller, existing: existing));
+      await tester.pump();
 
-    // Título de edición y campos precargados.
-    expect(find.text('Editar cita'), findsOneWidget);
-    expect(find.text('Control endocrino'), findsOneWidget);
-    expect(find.text('Endocrinología'), findsOneWidget);
+      // Título de edición y campos precargados.
+      expect(find.text('Editar cita'), findsOneWidget);
+      expect(find.text('Control endocrino'), findsOneWidget);
+      expect(find.text('Endocrinología'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 }

@@ -83,8 +83,9 @@ Widget _host({
       home: Builder(
         builder: (context) => MediaQuery(
           // Escala de texto para provocar el peor caso de altura de contenido.
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: TextScaler.linear(textScale)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
           child: Scaffold(
             body: Center(
               child: SizedBox(

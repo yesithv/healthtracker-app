@@ -727,7 +727,8 @@ class _RecordAnthropometricScreenState
             Positioned(
               left: 0,
               right: 0,
-              top: -40, // Adjusted top position to make the tip touch the bar correctly
+              top:
+                  -40, // Adjusted top position to make the tip touch the bar correctly
               child: FractionalTranslation(
                 translation: Offset(percent - 0.5, 0),
                 child: Icon(

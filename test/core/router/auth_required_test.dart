@@ -53,12 +53,11 @@ void main() {
 
   group('sin rastro del modo local ·', () {
     /// Todos los .dart de `lib`, excluyendo lo generado por gen_l10n.
-    Iterable<File> sources() =>
-        Directory('lib')
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((f) => f.path.endsWith('.dart'))
-            .where((f) => !f.path.contains('l10n/generated'));
+    Iterable<File> sources() => Directory('lib')
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.dart'))
+        .where((f) => !f.path.contains('l10n/generated'));
 
     test('ninguna pantalla navega al asistente en modo sin cuenta', () {
       final offenders = <String>[];

@@ -332,8 +332,9 @@ class _RecordLipidScreenState extends State<RecordLipidScreen> {
                         Expanded(
                           child: _buildSelectorCard(
                             label: l10n.dateLabel,
-                            value: DateFormat('dd/MM/yyyy')
-                                .format(selectedDate),
+                            value: DateFormat(
+                              'dd/MM/yyyy',
+                            ).format(selectedDate),
                             icon: Icons.calendar_today_outlined,
                             onTap: () => _selectDate(context),
                           ),
