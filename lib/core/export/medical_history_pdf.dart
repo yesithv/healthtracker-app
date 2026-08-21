@@ -322,9 +322,9 @@ pw.Widget _patientHeader(
                 horizontal: 12,
                 vertical: 6,
               ),
-              decoration: pw.BoxDecoration(
+              decoration: const pw.BoxDecoration(
                 color: _brand,
-                borderRadius: const pw.BorderRadius.only(
+                borderRadius: pw.BorderRadius.only(
                   topLeft: pw.Radius.circular(7),
                   topRight: pw.Radius.circular(7),
                 ),
