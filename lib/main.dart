@@ -336,38 +336,38 @@ class _NotificationsLifecycleState extends State<_NotificationsLifecycle>
   void _syncNotifications() {
     final l10n = AppLocalizations.of(context);
     if (l10n == null) return;
-    final controller = context.read<MedicationsController>();
-    controller.setNotificationTextBuilders(
-      doseText: (med, dose) => (
-        title: l10n.medicationDoseNotifTitle(med.name),
-        body: l10n.medicationDoseNotifBody,
-      ),
-      inventoryText: (med) => (
-        title: l10n.medicationRefillNotifTitle(med.name),
-        body: l10n.medicationRefillNotifBody,
-      ),
-    );
-    // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
-    // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
-    controller.refreshAndReschedule();
+    context.read<MedicationsController>()
+      ..setNotificationTextBuilders(
+        doseText: (med, dose) => (
+          title: l10n.medicationDoseNotifTitle(med.name),
+          body: l10n.medicationDoseNotifBody,
+        ),
+        inventoryText: (med) => (
+          title: l10n.medicationRefillNotifTitle(med.name),
+          body: l10n.medicationRefillNotifBody,
+        ),
+      )
+      // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
+      // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
+      ..refreshAndReschedule();
 
     // Mismo ciclo para el inventario de citas: textos localizados + reprograma.
-    final appointments = context.read<AppointmentsController>();
-    appointments.setNotificationTextBuilders(
-      scheduledText: (a) => (
-        title: l10n.apptScheduledNotifTitle(a.title),
-        body: l10n.apptScheduledNotifBody,
-      ),
-      toBookText: (a) => (
-        title: l10n.apptToBookNotifTitle(a.title),
-        body: l10n.apptToBookNotifBody,
-      ),
-      overdueText: (a) => (
-        title: l10n.apptOverdueNotifTitle(a.title),
-        body: l10n.apptOverdueNotifBody,
-      ),
-    );
-    appointments.refreshAndReschedule();
+    context.read<AppointmentsController>()
+      ..setNotificationTextBuilders(
+        scheduledText: (a) => (
+          title: l10n.apptScheduledNotifTitle(a.title),
+          body: l10n.apptScheduledNotifBody,
+        ),
+        toBookText: (a) => (
+          title: l10n.apptToBookNotifTitle(a.title),
+          body: l10n.apptToBookNotifBody,
+        ),
+        overdueText: (a) => (
+          title: l10n.apptOverdueNotifTitle(a.title),
+          body: l10n.apptOverdueNotifBody,
+        ),
+      )
+      ..refreshAndReschedule();
   }
 
   @override

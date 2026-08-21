@@ -178,7 +178,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                         width: 20, height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                     : Text(l10n.identifyBringHistory,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

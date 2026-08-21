@@ -159,7 +159,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
           _buildChart(l10n, specs[metric]!, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-lipid', extra: r),
-      onDelete: (id) => LipidRepository.instance.delete(id),
+      onDelete: LipidRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.bloodtype,
@@ -309,8 +309,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
       [
         l10n.historyColDate,
         l10n.exportColTotalCholShort,
-        "LDL",
-        "HDL",
+        'LDL',
+        'HDL',
         l10n.exportColTrigsShort,
       ],
       ...records.map((r) {
@@ -395,13 +395,13 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.exportColTotalCholesterol,
-        "LDL",
-        "HDL",
-        "VLDL",
+        'LDL',
+        'HDL',
+        'VLDL',
         l10n.exportColTriglycerides,
         l10n.exportColLabName,
         l10n.exportColComment,
@@ -419,7 +419,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

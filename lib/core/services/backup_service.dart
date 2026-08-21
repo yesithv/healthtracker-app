@@ -18,12 +18,12 @@ import 'package:myvitals_healthtracker_app/features/medications/data/models/medi
 import 'package:myvitals_healthtracker_app/features/medications/data/models/medication_log.dart';
 
 class BackupService {
-  static const String _version = "1.0";
-  static const String _appName = "MyVitals";
+  static const String _version = '1.0';
+  static const String _appName = 'MyVitals';
 
   /// Backup format versions this build knows how to import. Reject anything
   /// else so a newer/unknown format isn't restored with wrong assumptions.
-  static const List<String> _supportedVersions = ["1.0"];
+  static const List<String> _supportedVersions = ['1.0'];
 
   /// Generates the backup JSON and shares/downloads it. Returns a [ShareOutcome]
   /// so the UI can tell a real share from a cancel (which must not read as
@@ -72,7 +72,7 @@ class BackupService {
         'measuring_device_chosen',
       ];
 
-      for (var key in preferenceKeys) {
+      for (final key in preferenceKeys) {
         prefsMap[key] = prefs.get(key);
       }
 
@@ -84,30 +84,30 @@ class BackupService {
       // Build JSON structure
       final now = DateTime.now();
       final backupData = {
-        "version": _version,
-        "exported_at": now.toIso8601String(),
-        "app": _appName,
-        "preferences": prefsMap,
-        "records": {
-          "anthropometric": anthropometric.map((e) => e.toMap()).toList(),
-          "vital_signs": vitalSigns.map((e) => e.toMap()).toList(),
-          "lipid": lipids.map((e) => e.toMap()).toList(),
-          "body_composition": bodyCompositions.map((e) => e.toMap()).toList(),
-          "medications": medications.map((e) => e.toMap()).toList(),
-          "medication_doses": medicationDoses.map((e) => e.toMap()).toList(),
-          "medication_logs": medicationLogs.map((e) => e.toMap()).toList(),
+        'version': _version,
+        'exported_at': now.toIso8601String(),
+        'app': _appName,
+        'preferences': prefsMap,
+        'records': {
+          'anthropometric': anthropometric.map((e) => e.toMap()).toList(),
+          'vital_signs': vitalSigns.map((e) => e.toMap()).toList(),
+          'lipid': lipids.map((e) => e.toMap()).toList(),
+          'body_composition': bodyCompositions.map((e) => e.toMap()).toList(),
+          'medications': medications.map((e) => e.toMap()).toList(),
+          'medication_doses': medicationDoses.map((e) => e.toMap()).toList(),
+          'medication_logs': medicationLogs.map((e) => e.toMap()).toList(),
         },
       };
 
       final jsonString = jsonEncode(backupData);
 
       // Formatting the filename
-      final dateStr = DateFormat("ddMMMMyyyy", "en").format(now);
-      final timeStr = DateFormat("hh-mm-a").format(now).toUpperCase();
+      final dateStr = DateFormat('ddMMMMyyyy', 'en').format(now);
+      final timeStr = DateFormat('hh-mm-a').format(now).toUpperCase();
       final sanitizedName = userName.isNotEmpty
           ? userName.replaceAll(RegExp(r'\s+'), '')
-          : "User";
-      final fileName = "myvitals-$sanitizedName-$dateStr-$timeStr.json";
+          : 'User';
+      final fileName = 'myvitals-$sanitizedName-$dateStr-$timeStr.json';
 
       final ShareResult result;
       if (kIsWeb) {
@@ -131,7 +131,7 @@ class BackupService {
 
       return shareOutcomeOf(result);
     } catch (e) {
-      debugPrint("Error exporting backup: $e");
+      debugPrint('Error exporting backup: $e');
       return ShareOutcome.error;
     }
   }
@@ -172,7 +172,7 @@ class BackupService {
         final prefsMap = backupData['preferences'] as Map<String, dynamic>;
         final prefs = await SharedPreferences.getInstance();
 
-        for (var entry in prefsMap.entries) {
+        for (final entry in prefsMap.entries) {
           final key = entry.key;
           final value = entry.value;
 
@@ -202,7 +202,7 @@ class BackupService {
         final records = backupData['records'] as Map<String, dynamic>;
 
         if (records.containsKey('anthropometric')) {
-          for (var item in records['anthropometric']) {
+          for (final item in records['anthropometric']) {
             await AnthropometricRepository.instance.insert(
               AnthropometricRecord.fromMap(item),
             );
@@ -210,7 +210,7 @@ class BackupService {
         }
 
         if (records.containsKey('vital_signs')) {
-          for (var item in records['vital_signs']) {
+          for (final item in records['vital_signs']) {
             await VitalSignsRepository.instance.insert(
               VitalSignRecord.fromMap(item),
             );
@@ -218,13 +218,13 @@ class BackupService {
         }
 
         if (records.containsKey('lipid')) {
-          for (var item in records['lipid']) {
+          for (final item in records['lipid']) {
             await LipidRepository.instance.insert(LipidRecord.fromMap(item));
           }
         }
 
         if (records.containsKey('body_composition')) {
-          for (var item in records['body_composition']) {
+          for (final item in records['body_composition']) {
             await BodyCompositionRepository.instance.insert(
               BodyCompositionRecord.fromMap(item),
             );
@@ -234,13 +234,13 @@ class BackupService {
         // Módulo de medicamentos. `containsKey` protege la compatibilidad con
         // backups antiguos (formato 1.0) creados antes de esta feature.
         if (records.containsKey('medications')) {
-          for (var item in records['medications']) {
+          for (final item in records['medications']) {
             await MedicationRepository.instance.insert(Medication.fromMap(item));
           }
         }
 
         if (records.containsKey('medication_doses')) {
-          for (var item in records['medication_doses']) {
+          for (final item in records['medication_doses']) {
             await MedicationDoseRepository.instance.insert(
               MedicationDose.fromMap(item),
             );
@@ -248,7 +248,7 @@ class BackupService {
         }
 
         if (records.containsKey('medication_logs')) {
-          for (var item in records['medication_logs']) {
+          for (final item in records['medication_logs']) {
             await MedicationLogRepository.instance.insert(
               MedicationLog.fromMap(item),
             );
@@ -258,7 +258,7 @@ class BackupService {
 
       return true;
     } catch (e) {
-      debugPrint("Error importing backup: $e");
+      debugPrint('Error importing backup: \$e');
       return false;
     }
   }

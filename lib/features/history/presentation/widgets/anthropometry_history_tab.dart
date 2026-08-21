@@ -164,7 +164,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
       ),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-anthropometric', extra: r),
-      onDelete: (id) => AnthropometricRepository.instance.delete(id),
+      onDelete: AnthropometricRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.straighten,
@@ -184,7 +184,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     if (ascending.length >= 2) {
       final last = ascending.last;
       final prev = ascending[ascending.length - 2];
-      final diff = (prev.weight - last.weight);
+      final diff = prev.weight - last.weight;
       if (diff > 0) {
         subtitle = l10n.historyWeightLoss(diff.toStringAsFixed(1));
       }
@@ -371,7 +371,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     // llevan bandas clínicas). Sin zonas del servidor, se cae al fallback
     // OMS/Ashwell que trae la métrica en su `ref`.
     final serverZones = spec.indicatorCode == null
-        ? RangeAnnotations(horizontalRangeAnnotations: const [])
+        ? const RangeAnnotations(horizontalRangeAnnotations: [])
         : bandRangeAnnotations(
             spec.indicatorCode!,
             palette: clinical,
@@ -402,7 +402,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
         ],
       );
     } else {
-      rangeAnnotations = RangeAnnotations(horizontalRangeAnnotations: const []);
+      rangeAnnotations = const RangeAnnotations(horizontalRangeAnnotations: []);
     }
 
     final ExtraLinesData extraLines = useOfflineLines
@@ -605,7 +605,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.historyColWeight,
@@ -626,7 +626,7 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

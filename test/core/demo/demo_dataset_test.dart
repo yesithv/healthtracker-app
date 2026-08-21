@@ -31,14 +31,12 @@ void main() {
       // un tramo de siete días seguidos de automedición al principio.
       expect(data.vitalSigns.length, inInclusiveRange(31, 46));
 
-      final families = {
+      <String, List<DateTime>>{
         'antropometría': data.anthropometric.map((r) => r.date).toList(),
         'signos vitales': data.vitalSigns.map((r) => r.date).toList(),
         'lípidos': data.lipids.map((r) => r.date).toList(),
         'composición': data.bodyComposition.map((r) => r.date).toList(),
-      };
-
-      families.forEach((family, dates) {
+      }.forEach((family, dates) {
         expect(dates.first.isBefore(dates.last), isTrue, reason: family);
         // Cada familia tiene su cadencia (mensual, bimensual, trimestral) y se
         // cuenta hacia atrás desde hoy, así que su registro más antiguo cae cerca

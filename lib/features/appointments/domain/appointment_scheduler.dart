@@ -128,7 +128,6 @@ class AppointmentScheduler {
               ));
             }
           }
-          break;
 
         case AppointmentStatus.toBook:
           {
@@ -148,7 +147,6 @@ class AppointmentScheduler {
               payload: 'appointment|${a.id}|toBook',
             ));
           }
-          break;
 
         case AppointmentStatus.attended:
         case AppointmentStatus.missed:

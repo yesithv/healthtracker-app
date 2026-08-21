@@ -82,7 +82,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           _buildChartContainer(l10n, metric, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-vital-signs', extra: r),
-      onDelete: (id) => VitalSignsRepository.instance.delete(id),
+      onDelete: VitalSignsRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.favorite_border,
@@ -395,7 +395,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         l10n.exportColStatus,
       ],
       ...records.map((r) {
-        String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
+        final String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
         return [
           DateFormat('dd MMM yyyy').format(r.date),
           '${r.systolic}/${r.diastolic}',
@@ -473,7 +473,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.exportColSystolic,
@@ -485,7 +485,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         l10n.exportColComment,
       ],
       ...records.map((r) {
-        String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
+        final String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
         return [
           DateFormat('dd/MM/yyyy HH:mm').format(r.date),
           r.systolic,
@@ -498,7 +498,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

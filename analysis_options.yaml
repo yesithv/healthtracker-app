@@ -8,6 +8,12 @@
 # `lines_longer_than_80_chars`) y de documentación (`public_member_api_docs`):
 # las primeras las resuelve `dart format`, no aportan señal aquí, y la segunda
 # ahogaría el análisis en avisos sin valor.
+#
+# También se dejan fuera `directives_ordering` y `avoid_redundant_argument_values`:
+# son correcciones mecánicas que `dart fix --apply` resuelve en un comando, no
+# tienen valor de correctitud, y mantenerlas a mano (eran ~450 avisos, el 79% del
+# total) sólo añadiría ruido y riesgo. Si en el futuro se adopta un paso de
+# `dart fix` en CI, se pueden reactivar.
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
@@ -46,11 +52,9 @@ linter:
     - unnecessary_parenthesis
     - unnecessary_lambdas
     - unnecessary_breaks
-    - avoid_redundant_argument_values
     - avoid_unused_constructor_parameters
     - unnecessary_library_directive
     - combinators_ordering
-    - directives_ordering
     - sort_pub_dependencies
     - cascade_invocations
     - prefer_single_quotes

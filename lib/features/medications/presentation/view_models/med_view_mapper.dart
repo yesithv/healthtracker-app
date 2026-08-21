@@ -42,7 +42,7 @@ MedColor medColorFromKey(String? key, {String? seed}) {
     case 'amber':
       return MedColor.amber;
   }
-  final values = MedColor.values;
+  const values = MedColor.values;
   final s = seed ?? key ?? '';
   if (s.isEmpty) return MedColor.brand;
   final hash = s.codeUnits.fold<int>(0, (a, b) => a + b);

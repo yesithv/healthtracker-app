@@ -97,11 +97,12 @@ class AppointmentsCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                !hasAny
-                    ? _AddContent(label: l10n.apptDashAdd)
-                    : next == null
-                        ? _AllClear(l10n: l10n)
-                        : _NextHero(appointment: next, l10n: l10n),
+                if (!hasAny)
+                  _AddContent(label: l10n.apptDashAdd)
+                else if (next == null)
+                  _AllClear(l10n: l10n)
+                else
+                  _NextHero(appointment: next, l10n: l10n),
               ],
             ),
           ),

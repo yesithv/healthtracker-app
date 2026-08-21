@@ -200,7 +200,7 @@ class MedicationsController extends ChangeNotifier {
   /// Pausa o reanuda un medicamento sin tocar su pauta ni sus horas. Un
   /// medicamento pausado (`isActive == false`) no genera tomas esperadas ni
   /// avisos —lo respeta el dominio—, pero conserva su historial. Reprograma.
-  Future<void> setActive(Medication medication, bool active) async {
+  Future<void> setActive(Medication medication, {required bool active}) async {
     if (medication.isActive == active) return;
     await _meds.update(medication.copyWith(isActive: active));
     await reschedule();

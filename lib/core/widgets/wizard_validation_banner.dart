@@ -187,7 +187,7 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.only(top: 4),
                                   child: Icon(
                                     Icons.circle,
                                     size: 5,

@@ -15,7 +15,7 @@ String type(
   String next, {
   String previous = '',
 }) {
-  var value = TextEditingValue(
+  final value = TextEditingValue(
     text: previous,
     selection: TextSelection.collapsed(offset: previous.length),
   );

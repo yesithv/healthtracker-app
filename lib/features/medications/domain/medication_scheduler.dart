@@ -171,7 +171,7 @@ class MedicationScheduler {
     final prefs = await SharedPreferences.getInstance();
     final previous = prefs
             .getStringList(_ledgerKey)
-            ?.map((s) => int.tryParse(s))
+            ?.map(int.tryParse)
             .whereType<int>()
             .toList() ??
         const <int>[];
@@ -214,7 +214,7 @@ class MedicationScheduler {
     final prefs = await SharedPreferences.getInstance();
     final previous = prefs
             .getStringList(_ledgerKey)
-            ?.map((s) => int.tryParse(s))
+            ?.map(int.tryParse)
             .whereType<int>()
             .toList() ??
         const <int>[];

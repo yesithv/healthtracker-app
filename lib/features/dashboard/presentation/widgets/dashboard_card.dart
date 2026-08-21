@@ -198,7 +198,7 @@ class HeroMetric extends StatelessWidget {
                     const SizedBox(width: 6),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
-                      child: valueTrailing!,
+                      child: valueTrailing,
                     ),
                   ],
                 ],

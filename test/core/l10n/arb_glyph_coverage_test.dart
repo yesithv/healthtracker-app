@@ -110,9 +110,10 @@ void main() {
 
       for (final arb in arbs) {
         final locale = _basename(arb.path);
-        final decoded =
-            jsonDecode(arb.readAsStringSync()) as Map<String, dynamic>;
-        decoded.forEach((key, value) {
+        (jsonDecode(arb.readAsStringSync()) as Map<String, dynamic>).forEach((
+          key,
+          value,
+        ) {
           // Las claves `@algo` son metadatos del propio ARB (descripciones para
           // quien traduce), no llegan a pantalla.
           if (key.startsWith('@')) return;

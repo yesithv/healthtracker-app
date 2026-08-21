@@ -84,7 +84,7 @@ class ContactScreen extends StatelessWidget {
                           size: 24,
                         ),
                       ),
-                      SizedBox(width: 14),
+                      const SizedBox(width: 14),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -96,7 +96,7 @@ class ContactScreen extends StatelessWidget {
                               color: surfaces.ink,
                             ),
                           ),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           Text(
                             'v1.1.0  •  © 2026 My Vitals Health Inc.',
                             style: TextStyle(

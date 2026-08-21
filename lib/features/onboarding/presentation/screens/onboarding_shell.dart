@@ -84,7 +84,6 @@ class _OnboardingShellState extends State<OnboardingShell> {
     switch (_currentPage) {
       case 0: // Personal Info — name, dob, gender required
         errors = _personalInfoKey.currentState?.validate(context) ?? [];
-        break;
       // Step 1 (Measurement Units): always has a default → no validation needed
       // Step 2 (Avatar): fully optional → no validation
       default:

@@ -54,12 +54,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
 
     if (picked != null) {
-      _updateReminder(index, reminder.copyWith(time: picked, isEnabled: true));
+      await _updateReminder(index, reminder.copyWith(time: picked, isEnabled: true));
     }
   }
 
   Future<void> _toggleReminder(Reminder reminder, int index, bool value) async {
-    _updateReminder(index, reminder.copyWith(isEnabled: value));
+    await _updateReminder(index, reminder.copyWith(isEnabled: value));
   }
 
   Future<void> _updateReminder(int index, Reminder updatedReminder) async {
@@ -80,8 +80,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
     // Actualizar notificación local
     final notifId = index + 100; // Unique ID per reminder
     if (updatedReminder.isEnabled) {
-      String title = l10n.reminderTitle;
-      String body = _getTranslatedReminder(
+      final String title = l10n.reminderTitle;
+      final String body = _getTranslatedReminder(
         updatedReminder.translationKey,
         l10n,
       );

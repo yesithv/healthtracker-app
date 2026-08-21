@@ -38,8 +38,7 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
   }
 
   void _saveGoals() {
-    final goals = Provider.of<HealthGoalsProvider>(context, listen: false);
-    goals.updateHealthGoals(
+    Provider.of<HealthGoalsProvider>(context, listen: false).updateHealthGoals(
       enabled: _goalsEnabled,
       weight: _targetWeight,
       bodyFat: _targetBodyFat,

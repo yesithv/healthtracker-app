@@ -58,7 +58,7 @@ void main() {
   });
 
   group('con el alta pendiente ·', () {
-    setUp(() => PendingAccountStore.instance.markPending());
+    setUp(PendingAccountStore.instance.markPending);
 
     test('sin conexión: sigue pendiente y NO crea sesión', () async {
       final draft = draftWithEmail('lucia@correo.com');

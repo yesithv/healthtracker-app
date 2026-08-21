@@ -291,7 +291,7 @@ class MedicationDetailScreen extends StatelessWidget {
                       ? theme.clinical.caution.accent
                       : theme.clinical.optimal.accent,
                   solid: false,
-                  onPressed: () => controller.setActive(med, !med.isActive),
+                  onPressed: () => controller.setActive(med, active: !med.isActive),
                 ),
                 const SizedBox(height: 12),
                 Row(

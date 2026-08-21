@@ -164,7 +164,9 @@ void main() {
     test('dos generaciones dan exactamente los mismos extremos', () {
       final again = buildDemoDataset(today: today, includeEdgeCases: true);
       String sig(Iterable<dynamic> rs) => rs
+          // ignore: avoid_dynamic_calls
           .where((r) => isEdge(r.id as String))
+          // ignore: avoid_dynamic_calls
           .map((r) => '${r.id}@${r.date.toIso8601String()}')
           .join('|');
 

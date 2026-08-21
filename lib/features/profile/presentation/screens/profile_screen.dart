@@ -150,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
                     final base64 = await pickerService.pickImageAsBase64(
                       ImageSource.gallery,
                     );
-                    if (base64 != null) prefs.setProfileImage(base64);
+                    if (base64 != null) await prefs.setProfileImage(base64);
                   },
                 ),
                 _buildSourceOption(
@@ -163,7 +163,7 @@ class ProfileScreen extends StatelessWidget {
                     final base64 = await pickerService.pickImageAsBase64(
                       ImageSource.camera,
                     );
-                    if (base64 != null) prefs.setProfileImage(base64);
+                    if (base64 != null) await prefs.setProfileImage(base64);
                   },
                 ),
                 if (prefs.profileImageBase64 != null)
@@ -774,8 +774,8 @@ class _BadgeItem extends StatelessWidget {
                     : surfaces.glow(color, alpha: 0.2, blur: 10),
               ),
               child: isLocked
-                  ? ColorFiltered(
-                      colorFilter: const ColorFilter.matrix([
+                  ? const ColorFiltered(
+                      colorFilter: ColorFilter.matrix([
                         0.2126,
                         0.7152,
                         0.0722,

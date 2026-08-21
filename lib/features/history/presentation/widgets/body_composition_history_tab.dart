@@ -190,7 +190,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
           _buildChart(l10n, specs[metric]!, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-body-composition', extra: r),
-      onDelete: (id) => BodyCompositionRepository.instance.delete(id),
+      onDelete: BodyCompositionRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.accessibility_new,
@@ -234,7 +234,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     final double span = (maxV - minV).abs();
     final double pad = span == 0 ? (maxV.abs() * 0.1 + 1) : span * 0.2;
     double minDisplay = minV - pad;
-    double maxDisplay = maxV + pad;
+    final double maxDisplay = maxV + pad;
     // Los indicadores de composición no toman valores negativos.
     if (minV >= 0 && minDisplay < 0) minDisplay = 0;
     final double leftInterval = math.max(
@@ -365,8 +365,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       ...records.map((r) {
         return [
           DateFormat('dd MMM yyyy').format(r.date),
-          r.bodyFatPercent != null ? '${_num(r.bodyFatPercent)}%' : '-',
-          r.muscleMassKg != null ? '${_num(r.muscleMassKg)}kg' : '-',
+          if (r.bodyFatPercent != null) '${_num(r.bodyFatPercent)}%' else '-',
+          if (r.muscleMassKg != null) '${_num(r.muscleMassKg)}kg' else '-',
           r.visceralFatLevel?.toString() ?? '-',
         ];
       }),
@@ -442,7 +442,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         '${l10n.exportColBodyFat} %',
@@ -468,7 +468,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

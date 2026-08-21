@@ -156,8 +156,8 @@ class _SplashScreenState extends State<SplashScreen>
             // --- TEXT SECTION ---
             FadeTransition(
               opacity: _fadeAnimation,
-              child: Column(
-                children: const [
+              child: const Column(
+                children: [
                   Text(
                     'MY VITALS',
                     style: TextStyle(
@@ -209,8 +209,8 @@ class EcgPainter extends CustomPainter {
     final double width = size.width;
 
     for (double x = 0; x <= width; x++) {
-      double relativeX = (x / width + (1 - progress)) % 1.0;
-      double y = midY + _getEcgHeight(relativeX * 10) * 40;
+      final double relativeX = (x / width + (1 - progress)) % 1.0;
+      final double y = midY + _getEcgHeight(relativeX * 10) * 40;
 
       if (x == 0) {
         path.moveTo(x, y);
