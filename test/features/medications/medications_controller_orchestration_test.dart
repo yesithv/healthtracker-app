@@ -93,7 +93,7 @@ void main() {
     final day = DateTime(2026, 8, 17);
     expect(controller.entriesForDay(day), hasLength(1));
 
-    await controller.setActive(controller.medicationById(med.id)!, false);
+    await controller.setActive(controller.medicationById(med.id)!, active: false);
     expect(controller.medicationById(med.id)!.isActive, isFalse);
     // Pausado: sin tomas esperadas, pero el medicamento sigue existiendo.
     expect(controller.entriesForDay(day), isEmpty);

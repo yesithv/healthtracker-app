@@ -54,9 +54,8 @@ class MedicalHistoryPatient {
 const PdfColor _ink = PdfColors.blueGrey900;
 const PdfColor _muted = PdfColors.blueGrey500;
 const PdfColor _hairline = PdfColors.blueGrey100;
-// `PdfColor.fromInt` es factory (no const), así que este token es `final`, no
-// `const`. Solo se usa en `TextStyle` no-const, de modo que no rompe nada.
-final PdfColor _brand = PdfColor.fromInt(0xFF1E5A8A);
+// Token de marca del PDF. `PdfColor.fromInt` es const en esta versión de `pdf`.
+const PdfColor _brand = PdfColor.fromInt(0xFF1E5A8A);
 
 PdfColor _statusColor(ClinicalStatus s) => switch (s) {
   ClinicalStatus.info => PdfColors.blue600,
@@ -587,7 +586,7 @@ pw.Widget _executiveSummary(
       _sectionTitle(l10n.mhxSummaryTitle),
       pw.SizedBox(height: 8),
       pw.Table(
-        border: pw.TableBorder(
+        border: const pw.TableBorder(
           horizontalInside: pw.BorderSide(color: _hairline),
           bottom: pw.BorderSide(color: _hairline),
         ),
@@ -646,9 +645,10 @@ pw.TableRow _summaryDataRow(_SummaryRow r) {
       c(r.value),
       c(r.date, color: _muted),
       c(r.reference, color: _muted),
-      r.statusLabel == null
-          ? c('-', color: _muted)
-          : c(r.statusLabel!, color: _statusColor(r.status!), bold: true),
+      if (r.statusLabel == null)
+        c('-', color: _muted)
+      else
+        c(r.statusLabel!, color: _statusColor(r.status!), bold: true),
     ],
   );
 }
@@ -984,7 +984,7 @@ pw.Widget _recordsTable({
   );
 
   return pw.Table(
-    border: pw.TableBorder(horizontalInside: pw.BorderSide(color: _hairline)),
+    border: const pw.TableBorder(horizontalInside: pw.BorderSide(color: _hairline)),
     columnWidths: const {
       0: pw.FlexColumnWidth(1.4),
       1: pw.FlexColumnWidth(2.2),

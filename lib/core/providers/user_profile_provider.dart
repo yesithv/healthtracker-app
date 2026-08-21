@@ -140,7 +140,7 @@ class UserProfileProvider extends ChangeNotifier {
     return File('${dir.path}/$_imageFileName');
   }
 
-  Future<void> setBiometricEnabled(bool enabled) async {
+  Future<void> setBiometricEnabled({required bool enabled}) async {
     _isBiometricEnabled = enabled;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();

@@ -14,6 +14,12 @@
 # tienen valor de correctitud, y mantenerlas a mano (eran ~450 avisos, el 79% del
 # total) sólo añadiría ruido y riesgo. Si en el futuro se adopta un paso de
 # `dart fix` en CI, se pueden reactivar.
+#
+# Y `cascade_invocations`: en el código de dibujo del avatar de demostración
+# (`demo_seeder`, una secuencia de `canvas.drawX` con comentarios y `Paint`/`Path`
+# locales por medio) forzar la cascada empeora la lectura y arriesga romper la
+# ilustración, con valor puramente estético. Donde la cascada sí aportaba
+# (main.dart, ajustes) ya se aplicó a mano.
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
@@ -56,7 +62,6 @@ linter:
     - unnecessary_library_directive
     - combinators_ordering
     - sort_pub_dependencies
-    - cascade_invocations
     - prefer_single_quotes
     - avoid_escaping_inner_quotes
     - avoid_bool_literals_in_conditional_expressions

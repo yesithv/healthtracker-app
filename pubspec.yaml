@@ -7,40 +7,40 @@ environment:
   sdk: ^3.11.3
 
 dependencies:
+  cross_file: ^0.3.5+2
+  csv: ^8.0.0
+  file_picker: ^8.1.7
+  fl_chart: ^1.2.0
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^21.0.0
   flutter_localizations:
     sdk: flutter
-  intl: any
+  flutter_timezone: ^5.0.2
   go_router: ^17.1.0
   google_fonts: ^8.0.2
-  provider: ^6.1.2
-  shared_preferences: ^2.5.2
+  http: ^1.2.2
   image_picker: ^1.2.1
-  fl_chart: ^1.2.0
-  screenshot: ^3.0.0
+  intl: any
+  local_auth: ^3.0.1
+  path: ^1.9.1
+  path_provider: ^2.1.5
   pdf: ^3.12.0
   printing: ^5.14.3
-  csv: ^8.0.0
+  provider: ^6.1.2
+  screenshot: ^3.0.0
   share_plus: ^12.0.2
-  cross_file: ^0.3.5+2
+  shared_preferences: ^2.5.2
   sqflite: ^2.4.2
-  path: ^1.9.1
   sqflite_common_ffi_web: ^1.1.1
-  local_auth: ^3.0.1
-  url_launcher: ^6.3.2
-  file_picker: ^8.1.7
-  flutter_local_notifications: ^21.0.0
   timezone: ^0.11.0
-  flutter_timezone: ^5.0.2
+  url_launcher: ^6.3.2
   uuid: ^4.5.3
-  path_provider: ^2.1.5
-  http: ^1.2.2
 
 dev_dependencies:
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
   # Base SQLite sobre FFI para las pruebas de integración de datos (repos y
   # controlador). Ya venía transitiva vía sqflite_common_ffi_web; se declara
   # explícita porque los tests la importan directamente.

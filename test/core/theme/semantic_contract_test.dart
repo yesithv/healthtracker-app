@@ -481,8 +481,8 @@ void main() {
         // Jerarquía mínima: si el número no manda, la tarjeta no se lee de un
         // vistazo, que es el único trabajo que tiene.
         expect(
-          theme.type.numeral.fontSize!,
-          greaterThan(theme.type.body.fontSize),
+          theme.type.numeral.fontSize,
+          greaterThan(theme.type.body.fontSize!),
           reason: '${spec.name}: numeral no destaca sobre body',
         );
       });

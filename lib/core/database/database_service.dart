@@ -30,7 +30,7 @@ class DatabaseService {
   /// Elige a qué archivo apunta la PRÓXIMA apertura. Lo gobierna `DemoSession`
   /// al entrar y al salir de la demo; cambiarlo con una conexión ya abierta no
   /// hace nada por sí solo, hay que pasar después por [reopen].
-  static void useDemoDatabase(bool value) {
+  static void useDemoDatabase({required bool value}) {
     _useDemo = value;
   }
 
@@ -49,7 +49,7 @@ class DatabaseService {
   Future<Database> _initDB(String filePath) async {
     if (kIsWeb) {
       databaseFactory = databaseFactoryFfiWeb;
-      return await databaseFactory.openDatabase(
+      return databaseFactory.openDatabase(
         filePath,
         options: OpenDatabaseOptions(
           version: _dbVersion,
@@ -62,7 +62,7 @@ class DatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
+    return openDatabase(
       path,
       version: _dbVersion,
       onCreate: _createDB,
@@ -351,6 +351,6 @@ CREATE TABLE medication_logs (
 
   Future<void> close() async {
     final db = await instance.database;
-    db.close();
+    await db.close();
   }
 }
