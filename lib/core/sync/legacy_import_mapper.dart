@@ -57,8 +57,9 @@ class LegacyImportMapper {
       // ── Antropometría ────────────────────────────────────────────────
       final weight = m['WEIGHT']?.toDouble();
       final heightAtPoint = m['HEIGHT']?.toDouble();
-      if (heightAtPoint != null && heightAtPoint > 0)
+      if (heightAtPoint != null && heightAtPoint > 0) {
         lastHeight = heightAtPoint;
+      }
       final height = heightAtPoint ?? lastHeight;
       if (weight != null && height != null && height > 0) {
         final bmi =
