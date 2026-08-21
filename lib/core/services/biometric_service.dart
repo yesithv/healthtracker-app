@@ -1,4 +1,5 @@
 import 'package:local_auth/local_auth.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 class BiometricService {
   final LocalAuthentication _auth = LocalAuthentication();
@@ -10,7 +11,8 @@ class BiometricService {
       final bool canAuthenticate =
           canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
       return canAuthenticate;
-    } on LocalAuthException catch (_) {
+    } on LocalAuthException catch (e) {
+      debugLogError('Biometric.isAvailable', e);
       return false;
     }
   }
@@ -23,7 +25,8 @@ class BiometricService {
         persistAcrossBackgrounding: true,
         biometricOnly: false,
       );
-    } on LocalAuthException catch (_) {
+    } on LocalAuthException catch (e) {
+      debugLogError('Biometric.authenticate', e);
       return false;
     }
   }

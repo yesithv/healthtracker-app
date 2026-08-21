@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -248,7 +249,8 @@ class UserProfileProvider extends ChangeNotifier {
       try {
         await file.writeAsBytes(base64Decode(legacy), flush: true);
         _profileImageBase64 = legacy;
-      } catch (_) {
+      } catch (e) {
+        debugLogError('UserProfile.migrateImage', e);
         _profileImageBase64 = null;
       }
       await prefs.remove(_imageKey);

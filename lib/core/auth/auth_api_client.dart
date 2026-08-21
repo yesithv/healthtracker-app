@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
@@ -209,7 +210,8 @@ class AuthApiClient {
       final map = jsonDecode(resp.body) as Map<String, dynamic>;
       final detail = map['detail'] ?? map['title'];
       if (detail is String && detail.isNotEmpty) return detail;
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Auth.parseProblemDetail', e);
       // cuerpo no-JSON; se usa el fallback
     }
     if (resp.statusCode == 401) return 'Credenciales inválidas.';

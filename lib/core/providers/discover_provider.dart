@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -57,7 +58,8 @@ class DiscoverProvider extends ChangeNotifier {
       final loaded = await _repository.load(lang);
       _feed = loaded;
       _loadedLang = lang;
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.load', e);
       // Keep whatever we had; the seed asset makes total failure unlikely.
     } finally {
       _isLoading = false;
@@ -78,7 +80,8 @@ class DiscoverProvider extends ChangeNotifier {
       final fresh = await _repository.refresh(lang);
       _feed = fresh;
       _loadedLang = lang;
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.refresh', e);
       // Stale content stays on screen; nothing to do.
     } finally {
       _isRefreshing = false;

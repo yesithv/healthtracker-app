@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -39,7 +40,8 @@ List<int> _decodeOffsets(Object? value) {
     if (decoded is List) {
       return decoded.whereType<num>().map((e) => e.toInt()).toList();
     }
-  } catch (_) {
+  } catch (e) {
+    debugLogError('Appointment.parseReminderOffsets', e);
     // JSON corrupto: se ignora y se devuelve vacío.
   }
   return const [];

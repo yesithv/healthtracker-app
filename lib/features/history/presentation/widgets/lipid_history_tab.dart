@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
@@ -384,7 +385,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
         l10n,
         ok ? ShareOutcome.success : ShareOutcome.silent,
       );
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Export.lipid', e);
       showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
     }
   }

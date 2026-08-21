@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
@@ -111,7 +112,8 @@ class MeasuringDeviceProvider extends ChangeNotifier {
           await _persist();
         }
       }
-    } catch (_) {
+    } catch (e) {
+      debugLogError('MeasuringDevice.refresh', e);
       // best-effort: sin red seguimos con lo local.
     }
 
@@ -147,7 +149,8 @@ class MeasuringDeviceProvider extends ChangeNotifier {
       _pendingSync = false;
       await _persist();
       notifyListeners();
-    } catch (_) {
+    } catch (e) {
+      debugLogError('MeasuringDevice.setCode', e);
       // queda pendiente; se reintenta en el próximo refresh().
     }
   }

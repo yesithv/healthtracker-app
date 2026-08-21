@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -245,7 +246,8 @@ class ProfileScreen extends StatelessWidget {
     // 1) Best-effort: subir lo pendiente antes de borrar (si hay red).
     try {
       await sync.syncNow().timeout(const Duration(seconds: 8));
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Profile.syncBeforeReset', e);
       // Sin red o timeout: se continúa; los no sincronizados se perderán.
     }
 

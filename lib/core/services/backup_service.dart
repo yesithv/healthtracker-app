@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -271,7 +272,9 @@ class BackupService {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/profile_photo.jpg');
       if (await file.exists()) return base64Encode(await file.readAsBytes());
-    } catch (_) {}
+    } catch (e) {
+      debugLogError('Backup.readProfileImage', e);
+    }
     return null;
   }
 
@@ -290,6 +293,8 @@ class BackupService {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/profile_photo.jpg');
       await file.writeAsBytes(base64Decode(base64), flush: true);
-    } catch (_) {}
+    } catch (e) {
+      debugLogError('Backup.writeProfileImage', e);
+    }
   }
 }

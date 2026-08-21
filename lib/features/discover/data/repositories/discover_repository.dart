@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
@@ -97,7 +98,8 @@ class DiscoverRepository {
           !DiscoverFeed.fromJson(decoded).isEmpty) {
         return resp.body;
       }
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.fetchRemote', e);
       // Network/parse failure → fall back to the bundled seed.
     }
     return null;
@@ -106,7 +108,8 @@ class DiscoverRepository {
   Future<String> _readAsset(String lang) async {
     try {
       return await rootBundle.loadString('assets/data/discover_$lang.json');
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.readAsset', e);
       return rootBundle.loadString('assets/data/discover_$_fallbackLang.json');
     }
   }
@@ -117,7 +120,8 @@ class DiscoverRepository {
       final raw = prefs.getString(_prefsKey(lang));
       if (raw == null || raw.isEmpty) return null;
       return DiscoverFeed.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.readPersisted', e);
       return null;
     }
   }
@@ -126,7 +130,8 @@ class DiscoverRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefsKey(lang), raw);
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Discover.persist', e);
       // Persisting is a best-effort optimisation; ignore failures.
     }
   }

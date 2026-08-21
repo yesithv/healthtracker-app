@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -29,7 +30,8 @@ class LabsApiClient {
       }
       final list = jsonDecode(resp.body) as List<dynamic>;
       return list.map((e) => Lab.fromJson(e as Map<String, dynamic>)).toList();
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Labs.fetch', e);
       // Sin red / error: la app usa el fallback "Otro" (texto libre).
       return const [];
     }

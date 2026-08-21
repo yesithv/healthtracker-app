@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
@@ -280,7 +281,9 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
           width: 140,
           height: 140,
         );
-      } catch (_) {}
+      } catch (e) {
+        debugLogError('Onboarding.decodeAvatar', e);
+      }
     }
     return Container(
       color: surfaces.divider,
