@@ -71,23 +71,17 @@ class AppointmentsScreen extends StatelessWidget {
                 else ...[
                   if (toBook.isNotEmpty) ...[
                     _SectionLabel(text: l10n.appointmentsSectionToBook),
-                    ...toBook.map(
-                      (a) => _AppointmentCard(appointment: a),
-                    ),
+                    ...toBook.map((a) => _AppointmentCard(appointment: a)),
                     const SizedBox(height: 20),
                   ],
                   if (scheduled.isNotEmpty) ...[
                     _SectionLabel(text: l10n.appointmentsSectionScheduled),
-                    ...scheduled.map(
-                      (a) => _AppointmentCard(appointment: a),
-                    ),
+                    ...scheduled.map((a) => _AppointmentCard(appointment: a)),
                     const SizedBox(height: 20),
                   ],
                   if (history.isNotEmpty) ...[
                     _SectionLabel(text: l10n.appointmentsSectionHistory),
-                    ...history.map(
-                      (a) => _AppointmentCard(appointment: a),
-                    ),
+                    ...history.map((a) => _AppointmentCard(appointment: a)),
                   ],
                 ],
               ],
@@ -128,20 +122,20 @@ class _ComplianceBanner extends StatelessWidget {
 
     final (tone, icon, title) = switch (level) {
       ComplianceLevel.red => (
-          theme.clinical.alert,
-          Icons.warning_amber_rounded,
-          l10n.appointmentComplianceRedTitle,
-        ),
+        theme.clinical.alert,
+        Icons.warning_amber_rounded,
+        l10n.appointmentComplianceRedTitle,
+      ),
       ComplianceLevel.amber => (
-          theme.clinical.caution,
-          Icons.schedule_outlined,
-          l10n.appointmentComplianceAmberTitle,
-        ),
+        theme.clinical.caution,
+        Icons.schedule_outlined,
+        l10n.appointmentComplianceAmberTitle,
+      ),
       ComplianceLevel.green => (
-          theme.clinical.optimal,
-          Icons.check_circle_outline,
-          l10n.appointmentComplianceGreenTitle,
-        ),
+        theme.clinical.optimal,
+        Icons.check_circle_outline,
+        l10n.appointmentComplianceGreenTitle,
+      ),
     };
 
     String subtitle;
@@ -176,8 +170,10 @@ class _ComplianceBanner extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: theme.type.cardTitle
-                      .copyWith(fontSize: 15, color: tone.accent),
+                  style: theme.type.cardTitle.copyWith(
+                    fontSize: 15,
+                    color: tone.accent,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -234,8 +230,11 @@ class _EmptyAll extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(Icons.event_available_outlined,
-              size: 40, color: surfaces.inkMuted),
+          Icon(
+            Icons.event_available_outlined,
+            size: 40,
+            color: surfaces.inkMuted,
+          ),
           const SizedBox(height: 12),
           Text(
             l10n.appointmentsEmptyTitle,
@@ -304,8 +303,9 @@ class _AppointmentCard extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           a.specialty!,
-                          style: theme.type.meta
-                              .copyWith(color: surfaces.inkSecondary),
+                          style: theme.type.meta.copyWith(
+                            color: surfaces.inkSecondary,
+                          ),
                         ),
                       ],
                     ],
@@ -442,40 +442,53 @@ class _Actions extends StatelessWidget {
     final buttons = <Widget>[];
     switch (a.status) {
       case AppointmentStatus.toBook:
-        buttons.add(_PrimaryAction(
-          label: l10n.appointmentActionBook,
-          onTap: () => _book(context, controller, a),
-        ));
-        buttons.add(_SecondaryAction(
-          label: l10n.appointmentActionPostpone,
-          onTap: () => _postpone(context, controller, a),
-        ));
-        buttons.add(_SecondaryAction(
-          label: l10n.appointmentActionEdit,
-          onTap: () => _openAddSheet(context, existing: a),
-        ));
+        buttons.add(
+          _PrimaryAction(
+            label: l10n.appointmentActionBook,
+            onTap: () => _book(context, controller, a),
+          ),
+        );
+        buttons.add(
+          _SecondaryAction(
+            label: l10n.appointmentActionPostpone,
+            onTap: () => _postpone(context, controller, a),
+          ),
+        );
+        buttons.add(
+          _SecondaryAction(
+            label: l10n.appointmentActionEdit,
+            onTap: () => _openAddSheet(context, existing: a),
+          ),
+        );
       case AppointmentStatus.scheduled:
-        buttons.add(_PrimaryAction(
-          label: l10n.appointmentActionAttended,
-          onTap: () => _confirmAttendance(context, controller, a, attended: true),
-        ));
-        buttons.add(_SecondaryAction(
-          label: l10n.appointmentActionMissed,
-          onTap: () =>
-              _confirmAttendance(context, controller, a, attended: false),
-        ));
-        buttons.add(_SecondaryAction(
-          label: l10n.appointmentActionEdit,
-          onTap: () => _openAddSheet(context, existing: a),
-        ));
+        buttons.add(
+          _PrimaryAction(
+            label: l10n.appointmentActionAttended,
+            onTap: () =>
+                _confirmAttendance(context, controller, a, attended: true),
+          ),
+        );
+        buttons.add(
+          _SecondaryAction(
+            label: l10n.appointmentActionMissed,
+            onTap: () =>
+                _confirmAttendance(context, controller, a, attended: false),
+          ),
+        );
+        buttons.add(
+          _SecondaryAction(
+            label: l10n.appointmentActionEdit,
+            onTap: () => _openAddSheet(context, existing: a),
+          ),
+        );
       case AppointmentStatus.attended:
       case AppointmentStatus.missed:
       case AppointmentStatus.cancelled:
         break;
     }
-    buttons.add(_DeleteAction(
-      onTap: () => _confirmDelete(context, controller, a),
-    ));
+    buttons.add(
+      _DeleteAction(onTap: () => _confirmDelete(context, controller, a)),
+    );
 
     return Wrap(spacing: 8, runSpacing: 8, children: buttons);
   }
@@ -658,10 +671,7 @@ class _Chip extends StatelessWidget {
         color: surface,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        text,
-        style: theme.type.badge.copyWith(color: color),
-      ),
+      child: Text(text, style: theme.type.badge.copyWith(color: color)),
     );
   }
 }

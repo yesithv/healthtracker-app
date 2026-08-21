@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
@@ -26,6 +28,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -265,10 +268,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
             children: [
               Container(width: 12, height: 2, color: family.accent),
               const SizedBox(width: 4),
-              Text(
-                spec.title,
-                style: _theme.type.meta.copyWith(fontSize: 10),
-              ),
+              Text(spec.title, style: _theme.type.meta.copyWith(fontSize: 10)),
             ],
           ),
           Row(

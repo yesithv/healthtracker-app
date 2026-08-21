@@ -44,9 +44,11 @@ class AppointmentRepository extends RecordRepository<Appointment> {
 
   /// Citas cerradas (asistí / no asistí / anuladas): el historial.
   List<Appointment> get history => items
-      .where((a) =>
-          a.status == AppointmentStatus.attended ||
-          a.status == AppointmentStatus.missed ||
-          a.status == AppointmentStatus.cancelled)
+      .where(
+        (a) =>
+            a.status == AppointmentStatus.attended ||
+            a.status == AppointmentStatus.missed ||
+            a.status == AppointmentStatus.cancelled,
+      )
       .toList();
 }

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2607,7 +2608,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentsTitle => 'Le mie visite';
 
   @override
-  String get appointmentsDescription => 'Tieni traccia delle visite che hai e di quelle che devi ancora prenotare.';
+  String get appointmentsDescription =>
+      'Tieni traccia delle visite che hai e di quelle che devi ancora prenotare.';
 
   @override
   String get appointmentsAddCta => 'Aggiungi visita';
@@ -2625,7 +2627,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Ancora nessuna visita';
 
   @override
-  String get appointmentsEmptyBody => 'Aggiungi le visite da prenotare o quelle che hai già in agenda.';
+  String get appointmentsEmptyBody =>
+      'Aggiungi le visite da prenotare o quelle che hai già in agenda.';
 
   @override
   String get appointmentsOverdueChip => 'Scaduta';
@@ -2767,7 +2770,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentFieldRecurring => 'Controllo periodico';
 
   @override
-  String get appointmentRecurringHint => 'Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.';
+  String get appointmentRecurringHint =>
+      'Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.';
 
   @override
   String get appointmentFrequencyLabel => 'Ogni quanto';
@@ -2784,7 +2788,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentActionEdit => 'Modifica';
 
   @override
-  String get appointmentNextSpawned => 'Abbiamo annotato il prossimo controllo da prenotare.';
+  String get appointmentNextSpawned =>
+      'Abbiamo annotato il prossimo controllo da prenotare.';
 
   @override
   String get appointmentComplianceRedTitle => 'Richiede attenzione';
@@ -2796,7 +2801,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Tutto in regola';
 
   @override
-  String get appointmentComplianceGreenBody => 'Nessun appuntamento in sospeso o scaduto.';
+  String get appointmentComplianceGreenBody =>
+      'Nessun appuntamento in sospeso o scaduto.';
 
   @override
   String appointmentNextActionOverdue(String title) {

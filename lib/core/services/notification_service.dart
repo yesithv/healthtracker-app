@@ -58,15 +58,16 @@ class NotificationService {
     // Configuración para iOS
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        );
 
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-    );
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsDarwin,
+        );
 
     await flutterLocalNotificationsPlugin.initialize(
       settings: initializationSettings,
@@ -90,8 +91,8 @@ class NotificationService {
   /// consulta al arrancar y hace el deep-link ella misma. Ver `main.dart`.
   Future<String?> launchPayload() async {
     if (kIsWeb) return null;
-    final details =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    final details = await flutterLocalNotificationsPlugin
+        .getNotificationAppLaunchDetails();
     if (details?.didNotificationLaunchApp != true) return null;
     final payload = details!.notificationResponse?.payload;
     return (payload != null && payload.isNotEmpty) ? payload : null;
@@ -105,7 +106,8 @@ class NotificationService {
     // Request Android 13+ permissions
     final androidImplementation = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (androidImplementation != null) {
       granted = await androidImplementation.requestNotificationsPermission();
       // Also request exact alarms permission
@@ -115,7 +117,8 @@ class NotificationService {
     // Request iOS permissions
     final iosImplementation = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>();
+          IOSFlutterLocalNotificationsPlugin
+        >();
     if (iosImplementation != null) {
       granted = await iosImplementation.requestPermissions(
         alert: true,
@@ -152,13 +155,13 @@ class NotificationService {
 
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'daily_reminders_channel',
-      'Recordatorios Diarios',
-      channelDescription: 'Notificaciones sobre chequeos de salud diarios',
-      importance: Importance.max,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-    );
+          'daily_reminders_channel',
+          'Recordatorios Diarios',
+          channelDescription: 'Notificaciones sobre chequeos de salud diarios',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        );
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails();
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
@@ -211,13 +214,13 @@ class NotificationService {
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      channelId,
-      channelName,
-      channelDescription: channelDescription,
-      importance: Importance.max,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-    );
+          channelId,
+          channelName,
+          channelDescription: channelDescription,
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        );
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails();
     final NotificationDetails platformChannelSpecifics = NotificationDetails(

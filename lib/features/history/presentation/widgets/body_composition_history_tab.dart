@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
@@ -27,6 +29,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -169,14 +172,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
           value: CompMetric.metabolicAge,
           label: l10n.exportColMetabolicAge,
         ),
-        MetricChip(
-          value: CompMetric.bodyWater,
-          label: l10n.exportColBodyWater,
-        ),
-        MetricChip(
-          value: CompMetric.boneMass,
-          label: l10n.exportColBoneMass,
-        ),
+        MetricChip(value: CompMetric.bodyWater, label: l10n.exportColBodyWater),
+        MetricChip(value: CompMetric.boneMass, label: l10n.exportColBoneMass),
         MetricChip(value: CompMetric.bmr, label: l10n.dashboardCompositionBmr),
       ],
       // Mensaje superior: encabeza el indicador con el color de su FAMILIA; no
@@ -309,10 +306,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
             children: [
               Container(width: 12, height: 2, color: family.accent),
               const SizedBox(width: 4),
-              Text(
-                spec.title,
-                style: _theme.type.meta.copyWith(fontSize: 10),
-              ),
+              Text(spec.title, style: _theme.type.meta.copyWith(fontSize: 10)),
             ],
           ),
           // Solo cuando el servidor aporta zonas: su clave de leyenda, igual que

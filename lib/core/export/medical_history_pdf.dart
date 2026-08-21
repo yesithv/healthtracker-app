@@ -597,10 +597,7 @@ pw.Widget _executiveSummary(
           3: pw.FlexColumnWidth(1.6),
           4: pw.FlexColumnWidth(1.8),
         },
-        children: [
-          _summaryHeaderRow(l10n),
-          ...rows.map(_summaryDataRow),
-        ],
+        children: [_summaryHeaderRow(l10n), ...rows.map(_summaryDataRow)],
       ),
     ],
   );
@@ -720,7 +717,8 @@ pw.Widget? _vitalsSection(
     chart: chart,
     stats: stats,
     table: table,
-    coding: '${l10n.mhxColReference}: ${_Ref.bp} mmHg · '
+    coding:
+        '${l10n.mhxColReference}: ${_Ref.bp} mmHg · '
         'LOINC ${_Loinc.bpPanel}, ${_Loinc.heartRate} · UCUM mm[Hg], /min',
   );
 }
@@ -755,7 +753,11 @@ pw.Widget? _anthropometrySection(
         '${_fmt1(wStats.min)}-${_fmt1(wStats.max)} kg',
       ),
     if (bmiStats != null)
-      _statBlock(l10n.mhxBmi, _fmt1(bmiStats.latest), caption: l10n.mhxStatsLatest),
+      _statBlock(
+        l10n.mhxBmi,
+        _fmt1(bmiStats.latest),
+        caption: l10n.mhxStatsLatest,
+      ),
   ];
 
   final table = _recordsTable(
@@ -826,7 +828,8 @@ pw.Widget? _lipidsSection(
     chart: chart,
     stats: const [],
     table: table,
-    coding: '${l10n.mhxColReference}: ${_Ref.totalCholesterol} · '
+    coding:
+        '${l10n.mhxColReference}: ${_Ref.totalCholesterol} · '
         'LDL ${_Ref.ldl} · HDL ${_Ref.hdl} · Trig ${_Ref.triglycerides} mg/dL · '
         'LOINC ${_Loinc.lipidPanel}',
   );
@@ -984,7 +987,9 @@ pw.Widget _recordsTable({
   );
 
   return pw.Table(
-    border: const pw.TableBorder(horizontalInside: pw.BorderSide(color: _hairline)),
+    border: const pw.TableBorder(
+      horizontalInside: pw.BorderSide(color: _hairline),
+    ),
     columnWidths: const {
       0: pw.FlexColumnWidth(1.4),
       1: pw.FlexColumnWidth(2.2),

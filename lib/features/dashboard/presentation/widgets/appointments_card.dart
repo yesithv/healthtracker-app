@@ -77,8 +77,9 @@ class AppointmentsCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         l10n.medDashApptsTitle,
-                        style: theme.type.sectionLabel
-                            .copyWith(color: surfaces.brand),
+                        style: theme.type.sectionLabel.copyWith(
+                          color: surfaces.brand,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -129,8 +130,9 @@ class _NextHero extends StatelessWidget {
     final overdue = AppointmentStatusService.isOverdue(a);
 
     final isScheduled = a.status == AppointmentStatus.scheduled;
-    final label =
-        isScheduled ? l10n.apptDashNextTitle : l10n.apptDashToBookTitle;
+    final label = isScheduled
+        ? l10n.apptDashNextTitle
+        : l10n.apptDashToBookTitle;
     final date = isScheduled ? a.scheduledAt : a.dueToBookOn;
     final dateText = date == null ? '—' : material.formatMediumDate(date);
 
@@ -183,8 +185,10 @@ class _AllClear extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.apptDashAllClear,
-            style:
-                theme.type.cardTitle.copyWith(fontSize: 15, color: surfaces.ink),
+            style: theme.type.cardTitle.copyWith(
+              fontSize: 15,
+              color: surfaces.ink,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -211,8 +215,10 @@ class _AddContent extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style:
-                theme.type.cardTitle.copyWith(fontSize: 15, color: surfaces.brand),
+            style: theme.type.cardTitle.copyWith(
+              fontSize: 15,
+              color: surfaces.brand,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

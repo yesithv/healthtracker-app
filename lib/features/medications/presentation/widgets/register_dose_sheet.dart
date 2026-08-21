@@ -81,7 +81,12 @@ class _RegisterDoseSheet extends StatelessWidget {
               decoration: surfaces.cardDecoration(),
               child: Column(
                 children: [
-                  MedIcon(icon: vm.icon, color: vm.color, size: 64, iconSize: 30),
+                  MedIcon(
+                    icon: vm.icon,
+                    color: vm.color,
+                    size: 64,
+                    iconSize: 30,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     vm.medName,
@@ -217,8 +222,13 @@ class MedSheetButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) =>
-      _SheetButton(label: label, solid: solid, color: color, icon: icon, onTap: onTap);
+  Widget build(BuildContext context) => _SheetButton(
+    label: label,
+    solid: solid,
+    color: color,
+    icon: icon,
+    onTap: onTap,
+  );
 }
 
 /// Barra superior con grabber, reutilizable.

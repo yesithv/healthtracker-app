@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/bmi_status_badge.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import 'metric_delta.dart';
 import 'metric_sparkline.dart';
 
@@ -100,7 +101,9 @@ class CompositionIndicatorCard extends StatelessWidget {
                         children: [
                           Text(
                             bmi.toStringAsFixed(1),
-                            style: theme.type.numeral.copyWith(color: knobColor),
+                            style: theme.type.numeral.copyWith(
+                              color: knobColor,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Padding(

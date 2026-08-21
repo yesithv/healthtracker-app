@@ -51,13 +51,13 @@ MedColor medColorFromKey(String? key, {String? seed}) {
 
 /// Nombre localizado de la forma farmacéutica.
 String formName(MedicationForm form, AppLocalizations l) => switch (form) {
-      MedicationForm.capsule => l.medFormNameCapsule,
-      MedicationForm.tablet => l.medFormNameTablet,
-      MedicationForm.liquid => l.medFormNameLiquid,
-      MedicationForm.injection => l.medFormNameInjection,
-      MedicationForm.drops => l.medFormNameDrops,
-      MedicationForm.other => l.medFormNameOther,
-    };
+  MedicationForm.capsule => l.medFormNameCapsule,
+  MedicationForm.tablet => l.medFormNameTablet,
+  MedicationForm.liquid => l.medFormNameLiquid,
+  MedicationForm.injection => l.medFormNameInjection,
+  MedicationForm.drops => l.medFormNameDrops,
+  MedicationForm.other => l.medFormNameOther,
+};
 
 /// Palabra de unidad (pluralizada) para la forma: "cápsula"/"cápsulas".
 String unitWord(MedicationForm form, int count, AppLocalizations l) =>
@@ -116,9 +116,10 @@ String doseSummaryLabel(
   if (doses.isEmpty) return '';
   final qty = doses.first.quantity ?? m.doseQuantity;
   final amount = doseAmountLabel(qty, m.form, l);
-  final times = (doses.map((d) => timeLabelHM(d.hour, d.minute)).toList()
-        ..sort())
-      .join(', ');
+  final times =
+      (doses.map((d) => timeLabelHM(d.hour, d.minute)).toList()..sort()).join(
+        ', ',
+      );
   return '$amount · $times';
 }
 
@@ -138,12 +139,12 @@ String monthLabel(DateTime month, String locale) {
 
 /// Estado de pintado (verde/ámbar/pendiente/sin dato) desde el estado de un día.
 DoseState? doseStateFromDayStatus(MedDayStatus s) => switch (s) {
-      MedDayStatus.allTaken => DoseState.taken,
-      MedDayStatus.partial => DoseState.skipped,
-      MedDayStatus.missed => DoseState.skipped,
-      MedDayStatus.upcoming => DoseState.pending,
-      MedDayStatus.noDoses => null,
-    };
+  MedDayStatus.allTaken => DoseState.taken,
+  MedDayStatus.partial => DoseState.skipped,
+  MedDayStatus.missed => DoseState.skipped,
+  MedDayStatus.upcoming => DoseState.pending,
+  MedDayStatus.noDoses => null,
+};
 
 /// VM de una toma del día a partir de la entrada del controlador.
 DoseVm doseVm(MedicationDayEntry e, AppLocalizations l) {
@@ -151,8 +152,8 @@ DoseVm doseVm(MedicationDayEntry e, AppLocalizations l) {
   final state = e.isTaken
       ? DoseState.taken
       : e.isSkipped
-          ? DoseState.skipped
-          : DoseState.pending;
+      ? DoseState.skipped
+      : DoseState.pending;
   return DoseVm(
     medId: med.id,
     doseId: e.dose.id,
@@ -179,7 +180,8 @@ MedVm medVm(
   required String locale,
 }) {
   final stockValue = m.stockQuantity ?? 0;
-  final low = m.stockTrackingEnabled &&
+  final low =
+      m.stockTrackingEnabled &&
       m.refillThreshold != null &&
       stockValue <= m.refillThreshold!;
   return MedVm(
@@ -231,16 +233,16 @@ MedVm medVmForMedication(
 
 /// VM de un día de la tira semanal.
 WeekDayVm weekDayVm(MedAdherenceDay d, String locale) => WeekDayVm(
-      weekday: DateFormat.E(locale).format(d.date).toUpperCase(),
-      number: d.number,
-      state: doseStateFromDayStatus(d.status) ?? DoseState.pending,
-      isToday: d.isToday,
-    );
+  weekday: DateFormat.E(locale).format(d.date).toUpperCase(),
+  number: d.number,
+  state: doseStateFromDayStatus(d.status) ?? DoseState.pending,
+  isToday: d.isToday,
+);
 
 /// VM de un día del calendario de adherencia.
 AdherenceDayVm adherenceDayVm(MedAdherenceDay d) => AdherenceDayVm(
-      number: d.number,
-      state: doseStateFromDayStatus(d.status),
-      isToday: d.isToday,
-      outOfMonth: d.outOfMonth,
-    );
+  number: d.number,
+  state: doseStateFromDayStatus(d.status),
+  isToday: d.isToday,
+  outOfMonth: d.outOfMonth,
+);

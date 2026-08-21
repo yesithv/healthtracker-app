@@ -58,7 +58,9 @@ class LowInventoryBanner extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: theme.type.meta.copyWith(color: caution.accent.withValues(alpha: 0.85)),
+                  style: theme.type.meta.copyWith(
+                    color: caution.accent.withValues(alpha: 0.85),
+                  ),
                 ),
               ],
             ),
@@ -71,7 +73,10 @@ class LowInventoryBanner extends StatelessWidget {
               onTap: onAction,
               borderRadius: BorderRadius.circular(surfaces.radiusControl),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 child: Text(
                   actionLabel,
                   style: theme.type.button.copyWith(

@@ -11,8 +11,7 @@ class Country {
   const Country(this.iso, this.name, this.dialCode);
 
   /// Bandera emoji derivada del ISO (regional indicator symbols): sin assets.
-  String get flag =>
-      String.fromCharCodes(iso.codeUnits.map((c) => c + 127397));
+  String get flag => String.fromCharCodes(iso.codeUnits.map((c) => c + 127397));
 }
 
 /// Catálogo local de países. Vive embebido (la app es local-first y esto cambia

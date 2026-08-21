@@ -25,19 +25,25 @@ Medication _med({
 MedicationDose _dose(String medId, int hour) =>
     MedicationDose(medicationId: medId, hour: hour, minute: 0);
 
-MedicationLog _log(String medId, DateTime scheduledAt, MedicationLogStatus status) =>
-    MedicationLog(medicationId: medId, scheduledAt: scheduledAt, status: status);
+MedicationLog _log(
+  String medId,
+  DateTime scheduledAt,
+  MedicationLogStatus status,
+) => MedicationLog(
+  medicationId: medId,
+  scheduledAt: scheduledAt,
+  status: status,
+);
 
 MedicationAdherenceService _service({
   required List<Medication> meds,
   required Map<String, List<MedicationDose>> doses,
   required List<MedicationLog> logs,
-}) =>
-    MedicationAdherenceService(
-      medications: meds,
-      dosesByMedication: doses,
-      logs: logs,
-    );
+}) => MedicationAdherenceService(
+  medications: meds,
+  dosesByMedication: doses,
+  logs: logs,
+);
 
 void main() {
   // Un medicamento diario con una toma a las 08:00.
@@ -58,7 +64,9 @@ void main() {
       final sched = DateTime(2026, 8, 10, 8, 0);
       final svc = _service(
         meds: [m],
-        doses: {'a': [_dose('a', 8)]},
+        doses: {
+          'a': [_dose('a', 8)],
+        },
         logs: [_log('a', sched, MedicationLogStatus.taken)],
       );
       expect(
@@ -69,7 +77,13 @@ void main() {
 
     test('missed on a past day with nothing taken', () {
       final m = med('a');
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: []);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: [],
+      );
       expect(
         svc.statusForDay(DateTime(2026, 8, 10), today: DateTime(2026, 8, 15)),
         MedDayStatus.missed,
@@ -81,7 +95,9 @@ void main() {
       final s8 = DateTime(2026, 8, 10, 8, 0);
       final svc = _service(
         meds: [m],
-        doses: {'a': [_dose('a', 8), _dose('a', 20)]},
+        doses: {
+          'a': [_dose('a', 8), _dose('a', 20)],
+        },
         logs: [_log('a', s8, MedicationLogStatus.taken)],
       );
       expect(
@@ -92,7 +108,13 @@ void main() {
 
     test('upcoming for today when not yet fully taken', () {
       final m = med('a');
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: []);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: [],
+      );
       expect(
         svc.statusForDay(DateTime(2026, 8, 15), today: DateTime(2026, 8, 15)),
         MedDayStatus.upcoming,
@@ -110,7 +132,13 @@ void main() {
         _log('a', DateTime(2026, 8, 3, 8), MedicationLogStatus.skipped),
         _log('a', DateTime(2026, 8, 4, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       expect(
         svc.monthlyAdherence(DateTime(2026, 8, 1), today: DateTime(2026, 8, 4)),
         75,
@@ -133,7 +161,13 @@ void main() {
         _log('a', DateTime(2026, 8, 1, 8), MedicationLogStatus.taken),
         _log('a', DateTime(2026, 8, 2, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       expect(
         svc.monthlyAdherence(DateTime(2026, 8, 1), today: DateTime(2026, 8, 2)),
         100,
@@ -148,7 +182,13 @@ void main() {
         for (final day in [13, 14, 15])
           _log('a', DateTime(2026, 8, day, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       expect(svc.currentStreak(today: DateTime(2026, 8, 15)), 3);
     });
 
@@ -159,7 +199,13 @@ void main() {
         // 14 ago: no tomado → rompe.
         _log('a', DateTime(2026, 8, 13, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       expect(svc.currentStreak(today: DateTime(2026, 8, 15)), 1);
     });
 
@@ -170,7 +216,13 @@ void main() {
         _log('a', DateTime(2026, 8, 14, 8), MedicationLogStatus.taken),
         _log('a', DateTime(2026, 8, 13, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       expect(svc.currentStreak(today: DateTime(2026, 8, 15)), 2);
     });
 
@@ -188,7 +240,13 @@ void main() {
         _log('a', DateTime(2026, 8, 19, 8), MedicationLogStatus.taken),
         _log('a', DateTime(2026, 8, 24, 8), MedicationLogStatus.taken),
       ];
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: logs);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: logs,
+      );
       // Desde el 24 (lunes) hacia atrás: 24, 19, 17 → 3.
       expect(svc.currentStreak(today: DateTime(2026, 8, 24)), 3);
     });
@@ -202,8 +260,17 @@ void main() {
   group('monthGrid / weekStates', () {
     test('monthGrid covers whole weeks Mon..Sun and flags out-of-month', () {
       final m = med('a');
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: []);
-      final grid = svc.monthGrid(DateTime(2026, 8, 1), today: DateTime(2026, 8, 15));
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: [],
+      );
+      final grid = svc.monthGrid(
+        DateTime(2026, 8, 1),
+        today: DateTime(2026, 8, 15),
+      );
       // Agosto 2026: día 1 = sábado; la rejilla empieza el lunes previo (27 jul).
       expect(grid.length % 7, 0);
       expect(grid.first.outOfMonth, isTrue);
@@ -213,7 +280,13 @@ void main() {
 
     test('weekStates returns the last N days ending today', () {
       final m = med('a');
-      final svc = _service(meds: [m], doses: {'a': [_dose('a', 8)]}, logs: []);
+      final svc = _service(
+        meds: [m],
+        doses: {
+          'a': [_dose('a', 8)],
+        },
+        logs: [],
+      );
       final week = svc.weekStates(anchor: DateTime(2026, 8, 15), length: 7);
       expect(week.length, 7);
       expect(week.first.date, DateTime(2026, 8, 9));

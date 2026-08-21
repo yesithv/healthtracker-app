@@ -33,8 +33,9 @@ class CategoryChips extends StatelessWidget {
         itemBuilder: (context, index) {
           final key = categoryKeys[index];
           final isSelected = key == selectedKey;
-          final accent =
-              key == 'all' ? DiscoverPalette.brandOf(context) : DiscoverPalette.of(context, key).accent;
+          final accent = key == 'all'
+              ? DiscoverPalette.brandOf(context)
+              : DiscoverPalette.of(context, key).accent;
 
           return Material(
             color: isSelected ? accent : surfaces.card,
@@ -62,8 +63,9 @@ class CategoryChips extends StatelessWidget {
                       labelFor(key),
                       style: theme.type.button.copyWith(
                         color: isSelected ? surfaces.onBrand : surfaces.ink,
-                        fontWeight:
-                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         fontSize: 13.5,
                       ),
                     ),

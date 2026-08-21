@@ -78,7 +78,10 @@ class _NotificationsPermissionSheet extends StatelessWidget {
                   Icon(Icons.info_outline, size: 18, color: caution.accent),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(l10n.medNotifWebWarning, style: theme.type.meta),
+                    child: Text(
+                      l10n.medNotifWebWarning,
+                      style: theme.type.meta,
+                    ),
                   ),
                 ],
               ),

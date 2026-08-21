@@ -54,7 +54,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
 
     if (picked != null) {
-      await _updateReminder(index, reminder.copyWith(time: picked, isEnabled: true));
+      await _updateReminder(
+        index,
+        reminder.copyWith(time: picked, isEnabled: true),
+      );
     }
   }
 

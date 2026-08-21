@@ -30,28 +30,37 @@ void main() {
       DateTime(2026, 8, 20, 9, 0), // 1 h antes
     });
     expect(plan.every((p) => p.payload == 'appointment|a1|scheduled'), isTrue);
-    expect(plan.every((p) => p.id >= AppointmentScheduler.scheduledIdBase), isTrue);
+    expect(
+      plan.every((p) => p.id >= AppointmentScheduler.scheduledIdBase),
+      isTrue,
+    );
   });
 
-  test('cita por sacar: aviso a las 9:00 de la fecha objetivo menos leadDays', () {
-    final appt = Appointment(
-      id: 'b1',
-      title: 'Endocrino',
-      status: AppointmentStatus.toBook,
-      dueToBookOn: DateTime(2026, 9, 1),
-      leadDays: 3,
-    );
+  test(
+    'cita por sacar: aviso a las 9:00 de la fecha objetivo menos leadDays',
+    () {
+      final appt = Appointment(
+        id: 'b1',
+        title: 'Endocrino',
+        status: AppointmentStatus.toBook,
+        dueToBookOn: DateTime(2026, 9, 1),
+        leadDays: 3,
+      );
 
-    final plan = AppointmentScheduler.buildPlan(
-      appointments: [appt],
-      from: from,
-    );
+      final plan = AppointmentScheduler.buildPlan(
+        appointments: [appt],
+        from: from,
+      );
 
-    expect(plan.length, 1);
-    expect(plan.single.kind, AppointmentNotificationKind.toBook);
-    expect(plan.single.scheduledAt, DateTime(2026, 8, 29, 9)); // 01-sep - 3 días
-    expect(plan.single.id >= AppointmentScheduler.toBookIdBase, isTrue);
-  });
+      expect(plan.length, 1);
+      expect(plan.single.kind, AppointmentNotificationKind.toBook);
+      expect(
+        plan.single.scheduledAt,
+        DateTime(2026, 8, 29, 9),
+      ); // 01-sep - 3 días
+      expect(plan.single.id >= AppointmentScheduler.toBookIdBase, isTrue);
+    },
+  );
 
   test('cita vencida: un solo re-empuje al inicio de la ventana', () {
     final appt = Appointment(
@@ -105,17 +114,22 @@ void main() {
     expect(plan, isEmpty);
   });
 
-  test('por sacar sin leadDays: aviso a las 9:00 de la propia fecha objetivo',
-      () {
-    final appt = Appointment(
-      id: 'f1',
-      title: 'Laboratorio',
-      status: AppointmentStatus.toBook,
-      dueToBookOn: DateTime(2026, 9, 1),
-    );
-    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
-    expect(plan.single.scheduledAt, DateTime(2026, 9, 1, 9));
-  });
+  test(
+    'por sacar sin leadDays: aviso a las 9:00 de la propia fecha objetivo',
+    () {
+      final appt = Appointment(
+        id: 'f1',
+        title: 'Laboratorio',
+        status: AppointmentStatus.toBook,
+        dueToBookOn: DateTime(2026, 9, 1),
+      );
+      final plan = AppointmentScheduler.buildPlan(
+        appointments: [appt],
+        from: from,
+      );
+      expect(plan.single.scheduledAt, DateTime(2026, 9, 1, 9));
+    },
+  );
 
   test('por sacar fuera del horizonte no genera aviso', () {
     final appt = Appointment(
@@ -138,9 +152,15 @@ void main() {
       scheduledAt: DateTime(2026, 8, 17, 12), // hoy, aún futura (from 08:00)
       reminderOffsets: const [1440, 60], // 24 h antes queda antes de `from`.
     );
-    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
+    final plan = AppointmentScheduler.buildPlan(
+      appointments: [appt],
+      from: from,
+    );
     expect(plan.length, 1);
-    expect(plan.single.scheduledAt, DateTime(2026, 8, 17, 11)); // solo 1 h antes
+    expect(
+      plan.single.scheduledAt,
+      DateTime(2026, 8, 17, 11),
+    ); // solo 1 h antes
   });
 
   test('agendada en el pasado sin confirmar genera re-empuje de vencida', () {
@@ -151,7 +171,10 @@ void main() {
       scheduledAt: DateTime(2026, 8, 10, 9), // antes de `from`
       reminderOffsets: const [1440, 60],
     );
-    final plan = AppointmentScheduler.buildPlan(appointments: [appt], from: from);
+    final plan = AppointmentScheduler.buildPlan(
+      appointments: [appt],
+      from: from,
+    );
     expect(plan.single.kind, AppointmentNotificationKind.overdue);
     expect(plan.single.payload, 'appointment|i1|overdue');
   });

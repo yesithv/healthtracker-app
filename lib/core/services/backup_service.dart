@@ -1,6 +1,9 @@
 import 'dart:convert';
+
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -236,7 +239,9 @@ class BackupService {
         // backups antiguos (formato 1.0) creados antes de esta feature.
         if (records.containsKey('medications')) {
           for (final item in records['medications']) {
-            await MedicationRepository.instance.insert(Medication.fromMap(item));
+            await MedicationRepository.instance.insert(
+              Medication.fromMap(item),
+            );
           }
         }
 

@@ -57,7 +57,9 @@ void main() {
     await AppointmentRepository.instance.clearAll();
   });
 
-  testWidgets('sin citas muestra el CTA para añadir la primera', (tester) async {
+  testWidgets('sin citas muestra el CTA para añadir la primera', (
+    tester,
+  ) async {
     final controller = AppointmentsController(scheduler: _NoopScheduler());
     await tester.pumpWidget(_host(controller));
     await tester.pump();
@@ -68,22 +70,25 @@ void main() {
     controller.dispose();
   }, timeout: const Timeout(Duration(seconds: 60)));
 
-  testWidgets('con una cita vencida por sacar muestra su título y el chip vencida',
-      (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    await tester.runAsync(() async {
-      await controller.addToBook(
-        title: 'Perfil lipídico',
-        dueToBookOn: DateTime.now().subtract(const Duration(days: 10)),
-      );
-    });
+  testWidgets(
+    'con una cita vencida por sacar muestra su título y el chip vencida',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      await tester.runAsync(() async {
+        await controller.addToBook(
+          title: 'Perfil lipídico',
+          dueToBookOn: DateTime.now().subtract(const Duration(days: 10)),
+        );
+      });
 
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    expect(find.text('Perfil lipídico'), findsOneWidget);
-    expect(find.text('Vencida'), findsOneWidget);
+      expect(find.text('Perfil lipídico'), findsOneWidget);
+      expect(find.text('Vencida'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 }

@@ -3,22 +3,22 @@ import 'package:myvitals_healthtracker_app/features/appointments/data/models/app
 import 'package:myvitals_healthtracker_app/features/appointments/domain/appointment_compliance_service.dart';
 
 Appointment _toBook(String title, DateTime due) => Appointment(
-      title: title,
-      status: AppointmentStatus.toBook,
-      dueToBookOn: due,
-    );
+  title: title,
+  status: AppointmentStatus.toBook,
+  dueToBookOn: due,
+);
 
 Appointment _scheduled(String title, DateTime at) => Appointment(
-      title: title,
-      status: AppointmentStatus.scheduled,
-      scheduledAt: at,
-    );
+  title: title,
+  status: AppointmentStatus.scheduled,
+  scheduledAt: at,
+);
 
 Appointment _closed(String title, AppointmentStatus status) => Appointment(
-      title: title,
-      status: status,
-      scheduledAt: DateTime(2026, 7, 1),
-    );
+  title: title,
+  status: status,
+  scheduledAt: DateTime(2026, 7, 1),
+);
 
 void main() {
   final now = DateTime(2026, 8, 17, 10);
@@ -43,7 +43,11 @@ void main() {
         _toBook('lejana', DateTime(2026, 10, 1)),
       ];
       expect(
-        AppointmentComplianceService.dueSoonCount(list, now: now, withinDays: 7),
+        AppointmentComplianceService.dueSoonCount(
+          list,
+          now: now,
+          withinDays: 7,
+        ),
         2,
       );
     });
@@ -52,25 +56,33 @@ void main() {
   group('semaphore', () {
     test('rojo si hay algo vencido', () {
       final list = [_toBook('a', DateTime(2026, 8, 10))];
-      expect(AppointmentComplianceService.semaphore(list, now: now),
-          ComplianceLevel.red);
+      expect(
+        AppointmentComplianceService.semaphore(list, now: now),
+        ComplianceLevel.red,
+      );
     });
 
     test('ámbar si hay algo inminente pero nada vencido', () {
       final list = [_toBook('a', DateTime(2026, 8, 20))];
-      expect(AppointmentComplianceService.semaphore(list, now: now),
-          ComplianceLevel.amber);
+      expect(
+        AppointmentComplianceService.semaphore(list, now: now),
+        ComplianceLevel.amber,
+      );
     });
 
     test('verde si no hay nada pendiente pronto', () {
       final list = [_toBook('a', DateTime(2026, 12, 1))];
-      expect(AppointmentComplianceService.semaphore(list, now: now),
-          ComplianceLevel.green);
+      expect(
+        AppointmentComplianceService.semaphore(list, now: now),
+        ComplianceLevel.green,
+      );
     });
 
     test('verde con inventario vacío', () {
-      expect(AppointmentComplianceService.semaphore(const [], now: now),
-          ComplianceLevel.green);
+      expect(
+        AppointmentComplianceService.semaphore(const [], now: now),
+        ComplianceLevel.green,
+      );
     });
   });
 
@@ -102,7 +114,10 @@ void main() {
         _closed('3', AppointmentStatus.missed),
         _toBook('abierta', DateTime(2026, 9, 1)), // no cuenta
       ];
-      expect(AppointmentComplianceService.attendanceRate(list), closeTo(2 / 3, 1e-9));
+      expect(
+        AppointmentComplianceService.attendanceRate(list),
+        closeTo(2 / 3, 1e-9),
+      );
     });
 
     test('null si no hay citas cerradas', () {
@@ -113,10 +128,14 @@ void main() {
     test('acota con since por la fecha agendada', () {
       final list = [
         _closed('vieja', AppointmentStatus.attended), // scheduledAt 2026-07-01
-        _scheduled('reciente-asistida', DateTime(2026, 8, 1))
-            .copyWith(status: AppointmentStatus.attended),
-        _scheduled('reciente-perdida', DateTime(2026, 8, 5))
-            .copyWith(status: AppointmentStatus.missed),
+        _scheduled(
+          'reciente-asistida',
+          DateTime(2026, 8, 1),
+        ).copyWith(status: AppointmentStatus.attended),
+        _scheduled(
+          'reciente-perdida',
+          DateTime(2026, 8, 5),
+        ).copyWith(status: AppointmentStatus.missed),
       ];
       // Con since = 15-jul solo cuentan las dos de agosto: 1 de 2 = 0.5.
       expect(
@@ -131,9 +150,15 @@ void main() {
 
   group('escenarios de ventana y próxima acción', () {
     test('dueSoonCount incluye el límite exacto de la ventana', () {
-      final list = [_toBook('borde', DateTime(2026, 8, 24, 10))]; // now + 7 días
+      final list = [
+        _toBook('borde', DateTime(2026, 8, 24, 10)),
+      ]; // now + 7 días
       expect(
-        AppointmentComplianceService.dueSoonCount(list, now: now, withinDays: 7),
+        AppointmentComplianceService.dueSoonCount(
+          list,
+          now: now,
+          withinDays: 7,
+        ),
         1,
       );
     });

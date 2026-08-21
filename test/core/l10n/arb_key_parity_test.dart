@@ -61,10 +61,7 @@ Set<String> _simplePlaceholders(String value) {
   if (value.contains(', plural,') || value.contains(', select,')) {
     return const {};
   }
-  return RegExp(r'\{(\w+)\}')
-      .allMatches(value)
-      .map((m) => m.group(1)!)
-      .toSet();
+  return RegExp(r'\{(\w+)\}').allMatches(value).map((m) => m.group(1)!).toSet();
 }
 
 void main() {
@@ -120,8 +117,8 @@ void main() {
           if (!arb.containsKey(key)) continue; // ya lo cubre el test anterior
           final expected = _simplePlaceholders(template[key] as String);
           final actual = _simplePlaceholders(arb[key] as String);
-          final same = expected.length == actual.length &&
-              expected.containsAll(actual);
+          final same =
+              expected.length == actual.length && expected.containsAll(actual);
           if (!same) {
             offenders.add('$key: esperados $expected, encontrados $actual');
           }

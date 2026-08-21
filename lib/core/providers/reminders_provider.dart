@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/reminder.dart';
 
 /// Owns the user's reminder list. Extracted from the former God-object

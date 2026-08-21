@@ -38,8 +38,9 @@ class LabRangesStore {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString(_prefsKey);
       if (raw == null || raw.isEmpty) return;
-      (jsonDecode(raw) as Map<String, dynamic>)
-          .forEach((lab, bands) => _apply(lab, bands as List<dynamic>));
+      (jsonDecode(raw) as Map<String, dynamic>).forEach(
+        (lab, bands) => _apply(lab, bands as List<dynamic>),
+      );
     } catch (e) {
       debugPrint('LabRanges: caché ilegible, se ignora ($e).');
     }

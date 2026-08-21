@@ -17,13 +17,19 @@ void main() {
     test('cada categoría conocida tiene su icono', () {
       expect(DiscoverPalette.chipIcon('heart'), Icons.favorite_rounded);
       expect(DiscoverPalette.chipIcon('nutrition'), Icons.restaurant_rounded);
-      expect(DiscoverPalette.chipIcon('emotional'), Icons.self_improvement_rounded);
+      expect(
+        DiscoverPalette.chipIcon('emotional'),
+        Icons.self_improvement_rounded,
+      );
       expect(DiscoverPalette.chipIcon('sports'), Icons.directions_run_rounded);
       expect(DiscoverPalette.chipIcon('sleep'), Icons.nightlight_round);
     });
 
     test('una categoría desconocida cae al icono de respaldo, no a null', () {
-      expect(DiscoverPalette.chipIcon('categoria-nueva'), Icons.auto_stories_rounded);
+      expect(
+        DiscoverPalette.chipIcon('categoria-nueva'),
+        Icons.auto_stories_rounded,
+      );
       expect(DiscoverPalette.chipIcon(''), Icons.auto_stories_rounded);
     });
   });

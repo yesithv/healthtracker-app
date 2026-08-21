@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../../../../core/widgets/secondary_app_bar.dart';
 
 class ContactScreen extends StatelessWidget {

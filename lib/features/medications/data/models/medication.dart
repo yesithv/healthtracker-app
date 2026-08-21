@@ -11,14 +11,14 @@ enum MedicationForm { capsule, tablet, liquid, injection, drops, other }
 enum FrequencyType { daily, daysOfWeek, intervalDays }
 
 MedicationForm _formFromName(String? name) => MedicationForm.values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => MedicationForm.other,
-    );
+  (e) => e.name == name,
+  orElse: () => MedicationForm.other,
+);
 
 FrequencyType _freqFromName(String? name) => FrequencyType.values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => FrequencyType.daily,
-    );
+  (e) => e.name == name,
+  orElse: () => FrequencyType.daily,
+);
 
 DateTime? _parseDate(Object? value) =>
     value == null ? null : DateTime.parse(value as String);
@@ -117,9 +117,9 @@ class Medication {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.isSynced = false,
-  })  : id = id ?? const Uuid().v4(),
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   Medication copyWith({
     String? name,
@@ -169,8 +169,9 @@ class Medication {
       notes: notes ?? this.notes,
       frequencyType: frequencyType ?? this.frequencyType,
       daysOfWeek: clearDaysOfWeek ? null : (daysOfWeek ?? this.daysOfWeek),
-      intervalDays:
-          clearIntervalDays ? null : (intervalDays ?? this.intervalDays),
+      intervalDays: clearIntervalDays
+          ? null
+          : (intervalDays ?? this.intervalDays),
       anchorDate: clearAnchorDate ? null : (anchorDate ?? this.anchorDate),
       startDate: startDate ?? this.startDate,
       endDate: clearEndDate ? null : (endDate ?? this.endDate),
@@ -181,8 +182,9 @@ class Medication {
       refillLeadDays: refillLeadDays ?? this.refillLeadDays,
       packSize: packSize ?? this.packSize,
       refillAlertEnabled: refillAlertEnabled ?? this.refillAlertEnabled,
-      refillSnoozedUntil:
-          clearRefillSnooze ? null : (refillSnoozedUntil ?? this.refillSnoozedUntil),
+      refillSnoozedUntil: clearRefillSnooze
+          ? null
+          : (refillSnoozedUntil ?? this.refillSnoozedUntil),
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
       isSynced: isSynced ?? this.isSynced,

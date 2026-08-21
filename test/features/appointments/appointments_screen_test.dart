@@ -53,47 +53,54 @@ void main() {
     await AppointmentRepository.instance.clearAll();
   });
 
-  testWidgets('una cita por sacar vencida enciende el semáforo rojo y la acción '
-      'de editar', (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    await tester.runAsync(() async {
-      await controller.addToBook(
-        title: 'Perfil lipídico',
-        dueToBookOn: DateTime.now().subtract(const Duration(days: 10)),
-      );
-    });
+  testWidgets(
+    'una cita por sacar vencida enciende el semáforo rojo y la acción '
+    'de editar',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      await tester.runAsync(() async {
+        await controller.addToBook(
+          title: 'Perfil lipídico',
+          dueToBookOn: DateTime.now().subtract(const Duration(days: 10)),
+        );
+      });
 
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    // Semáforo en rojo (hay una vencida).
-    expect(find.text('Requiere atención'), findsOneWidget);
-    // Chip de vencida en la tarjeta.
-    expect(find.text('Vencida'), findsOneWidget);
-    // La acción de editar está disponible sobre la cita abierta.
-    expect(find.text('Editar'), findsOneWidget);
+      // Semáforo en rojo (hay una vencida).
+      expect(find.text('Requiere atención'), findsOneWidget);
+      // Chip de vencida en la tarjeta.
+      expect(find.text('Vencida'), findsOneWidget);
+      // La acción de editar está disponible sobre la cita abierta.
+      expect(find.text('Editar'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 
-  testWidgets('sin nada abierto pero con historial, el semáforo está en verde',
-      (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    await tester.runAsync(() async {
-      final appt = await controller.addScheduled(
-        title: 'Cardiología',
-        scheduledAt: DateTime.now().subtract(const Duration(days: 30)),
-      );
-      await controller.markAttended(appt);
-    });
+  testWidgets(
+    'sin nada abierto pero con historial, el semáforo está en verde',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      await tester.runAsync(() async {
+        final appt = await controller.addScheduled(
+          title: 'Cardiología',
+          scheduledAt: DateTime.now().subtract(const Duration(days: 30)),
+        );
+        await controller.markAttended(appt);
+      });
 
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    expect(find.text('Todo al día'), findsOneWidget);
-    // Con historial, no debería aparecer el estado vacío ni el rojo.
-    expect(find.text('Requiere atención'), findsNothing);
+      expect(find.text('Todo al día'), findsOneWidget);
+      // Con historial, no debería aparecer el estado vacío ni el rojo.
+      expect(find.text('Requiere atención'), findsNothing);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 }

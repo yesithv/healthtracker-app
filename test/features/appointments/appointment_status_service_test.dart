@@ -12,10 +12,10 @@ Appointment _toBook({DateTime? due, bool recurring = false, int? months}) =>
     );
 
 Appointment _scheduled({DateTime? at}) => Appointment(
-      title: 'Cardiología',
-      status: AppointmentStatus.scheduled,
-      scheduledAt: at,
-    );
+  title: 'Cardiología',
+  status: AppointmentStatus.scheduled,
+  scheduledAt: at,
+);
 
 void main() {
   group('addMonths', () {
@@ -98,8 +98,10 @@ void main() {
 
     test('no cambia una cita que no está por sacar', () {
       final s = _scheduled(at: DateTime(2026, 9, 5));
-      expect(identical(AppointmentStatusService.book(s, DateTime(2026, 9, 6)), s),
-          isTrue);
+      expect(
+        identical(AppointmentStatusService.book(s, DateTime(2026, 9, 6)), s),
+        isTrue,
+      );
     });
   });
 
@@ -165,19 +167,22 @@ void main() {
       );
     });
 
-    test('sin completedOn, la base es la fecha agendada de la cita cerrada', () {
-      final recurring = Appointment(
-        title: 'Endocrino',
-        status: AppointmentStatus.scheduled,
-        scheduledAt: DateTime(2026, 5, 10, 9),
-        isRecurring: true,
-        intervalMonths: 6,
-      );
-      final next = AppointmentStatusService.nextRecurringOccurrence(
-        AppointmentStatusService.markAttended(recurring),
-      );
-      expect(next!.dueToBookOn, DateTime(2026, 11, 10));
-    });
+    test(
+      'sin completedOn, la base es la fecha agendada de la cita cerrada',
+      () {
+        final recurring = Appointment(
+          title: 'Endocrino',
+          status: AppointmentStatus.scheduled,
+          scheduledAt: DateTime(2026, 5, 10, 9),
+          isRecurring: true,
+          intervalMonths: 6,
+        );
+        final next = AppointmentStatusService.nextRecurringOccurrence(
+          AppointmentStatusService.markAttended(recurring),
+        );
+        expect(next!.dueToBookOn, DateTime(2026, 11, 10));
+      },
+    );
   });
 
   group('isOverdue · bordes', () {
@@ -257,9 +262,8 @@ void main() {
     });
 
     test('book limpia el silenciado al agendar', () {
-      final a = _toBook(due: DateTime(2026, 9, 1)).copyWith(
-        snoozedUntil: DateTime(2026, 9, 1),
-      );
+      final a = _toBook(due: DateTime(2026, 9, 1))
+          .copyWith(snoozedUntil: DateTime(2026, 9, 1));
       final booked = AppointmentStatusService.book(a, DateTime(2026, 9, 5, 8));
       expect(booked.snoozedUntil, isNull);
     });

@@ -45,25 +45,24 @@ Future<void> seedDemoAppointmentsIfEmpty() async {
     List<int>? reminderOffsets,
     required DateTime createdAt,
     required DateTime updatedAt,
-  }) =>
-      Appointment(
-        id: id,
-        title: title,
-        specialty: specialty,
-        provider: provider,
-        location: location,
-        notes: notes,
-        status: status,
-        scheduledAt: scheduledAt,
-        dueToBookOn: dueToBookOn,
-        isRecurring: isRecurring,
-        intervalMonths: intervalMonths,
-        leadDays: leadDays,
-        seriesId: seriesId,
-        reminderOffsets: reminderOffsets,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+  }) => Appointment(
+    id: id,
+    title: title,
+    specialty: specialty,
+    provider: provider,
+    location: location,
+    notes: notes,
+    status: status,
+    scheduledAt: scheduledAt,
+    dueToBookOn: dueToBookOn,
+    isRecurring: isRecurring,
+    intervalMonths: intervalMonths,
+    leadDays: leadDays,
+    seriesId: seriesId,
+    reminderOffsets: reminderOffsets,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 
   // Enlaza la serie recurrente del endocrino: la ocurrencia asistida del
   // historial y la próxima «por sacar» comparten `series_id`.

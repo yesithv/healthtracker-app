@@ -26,18 +26,24 @@ void main() {
       expect(out.last, equals(730), reason: 'el valor más reciente cuenta');
     });
 
-    test('muestrea de forma monótona (sin desordenar ni repetir saltos raros)', () {
-      final items = List.generate(500, (i) => i);
-      final out = downsample(items, maxPoints: 10);
-      for (var i = 1; i < out.length; i++) {
-        expect(out[i], greaterThan(out[i - 1]));
-      }
-    });
+    test(
+      'muestrea de forma monótona (sin desordenar ni repetir saltos raros)',
+      () {
+        final items = List.generate(500, (i) => i);
+        final out = downsample(items, maxPoints: 10);
+        for (var i = 1; i < out.length; i++) {
+          expect(out[i], greaterThan(out[i - 1]));
+        }
+      },
+    );
 
     test('no falla con listas al límite del tope', () {
       final items = List.generate(24, (i) => i);
       expect(downsample(items, maxPoints: 24), equals(items));
-      expect(downsample(List.generate(25, (i) => i), maxPoints: 24), hasLength(24));
+      expect(
+        downsample(List.generate(25, (i) => i), maxPoints: 24),
+        hasLength(24),
+      );
     });
   });
 

@@ -48,10 +48,10 @@ class MedicationsController extends ChangeNotifier {
     MedicationDoseRepository? doses,
     MedicationLogRepository? logs,
     MedicationScheduler? scheduler,
-  })  : _meds = medications ?? MedicationRepository.instance,
-        _doses = doses ?? MedicationDoseRepository.instance,
-        _logs = logs ?? MedicationLogRepository.instance,
-        _scheduler = scheduler ?? MedicationScheduler() {
+  }) : _meds = medications ?? MedicationRepository.instance,
+       _doses = doses ?? MedicationDoseRepository.instance,
+       _logs = logs ?? MedicationLogRepository.instance,
+       _scheduler = scheduler ?? MedicationScheduler() {
     // Los repositorios ya notifican en cada escritura, pero el controlador no se
     // enteraba: se suscribe a los tres y reemite, para que las pantallas hagan
     // un único `watch<MedicationsController>()` y se reconstruyan tras cualquier
@@ -131,8 +131,8 @@ class MedicationsController extends ChangeNotifier {
 
   /// Mapa medicamento→horas de toma, para los servicios de dominio.
   Map<String, List<MedicationDose>> dosesByMedication() => {
-        for (final m in _meds.items) m.id: _doses.forMedication(m.id),
-      };
+    for (final m in _meds.items) m.id: _doses.forMedication(m.id),
+  };
 
   /// Servicio de adherencia sobre el estado actual. Por defecto abarca los
   /// medicamentos activos; pasa [only] para restringirlo a uno (vista detalle).
@@ -156,13 +156,15 @@ class MedicationsController extends ChangeNotifier {
         target,
       );
       for (final e in expected) {
-        entries.add(MedicationDayEntry(
-          medication: med,
-          dose: e.dose!,
-          scheduledAt: e.scheduledAt,
-          quantity: e.quantity,
-          log: _logs.findByScheduled(med.id, e.scheduledAt),
-        ));
+        entries.add(
+          MedicationDayEntry(
+            medication: med,
+            dose: e.dose!,
+            scheduledAt: e.scheduledAt,
+            quantity: e.quantity,
+            log: _logs.findByScheduled(med.id, e.scheduledAt),
+          ),
+        );
       }
     }
     entries.sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
@@ -216,10 +218,7 @@ class MedicationsController extends ChangeNotifier {
 
   /// Registra una toma como tomada u omitida, ajustando el inventario según la
   /// transición (ver [inventoryEffectOf]) y reprogramando los avisos.
-  Future<void> logDose(
-    MedicationDayEntry entry, {
-    required bool taken,
-  }) async {
+  Future<void> logDose(MedicationDayEntry entry, {required bool taken}) async {
     await _applyDoseLog(entry, taken: taken);
     await reschedule();
   }
@@ -247,8 +246,9 @@ class MedicationsController extends ChangeNotifier {
     MedicationDayEntry entry, {
     required bool taken,
   }) async {
-    final newStatus =
-        taken ? MedicationLogStatus.taken : MedicationLogStatus.skipped;
+    final newStatus = taken
+        ? MedicationLogStatus.taken
+        : MedicationLogStatus.skipped;
     final effect = inventoryEffectOf(
       previous: entry.log?.status,
       next: newStatus,
@@ -263,20 +263,24 @@ class MedicationsController extends ChangeNotifier {
 
     // Registro (nuevo o actualizado).
     if (entry.log != null) {
-      await _logs.update(entry.log!.copyWith(
-        status: newStatus,
-        takenAt: taken ? DateTime.now() : null,
-        quantity: entry.quantity,
-      ));
+      await _logs.update(
+        entry.log!.copyWith(
+          status: newStatus,
+          takenAt: taken ? DateTime.now() : null,
+          quantity: entry.quantity,
+        ),
+      );
     } else {
-      await _logs.insert(MedicationLog(
-        medicationId: entry.medication.id,
-        doseId: entry.dose.id,
-        scheduledAt: entry.scheduledAt,
-        status: newStatus,
-        takenAt: taken ? DateTime.now() : null,
-        quantity: entry.quantity,
-      ));
+      await _logs.insert(
+        MedicationLog(
+          medicationId: entry.medication.id,
+          doseId: entry.dose.id,
+          scheduledAt: entry.scheduledAt,
+          status: newStatus,
+          takenAt: taken ? DateTime.now() : null,
+          quantity: entry.quantity,
+        ),
+      );
     }
 
     // Inventario. Se lee el medicamento ACTUAL del repositorio (no la copia

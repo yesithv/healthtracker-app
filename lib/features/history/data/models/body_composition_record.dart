@@ -36,9 +36,9 @@ class BodyCompositionRecord {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.isSynced = false,
-  })  : id = id ?? const Uuid().v4(),
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {

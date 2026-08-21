@@ -7,8 +7,8 @@ class Lab {
   const Lab({required this.code, required this.name, this.city});
 
   factory Lab.fromJson(Map<String, dynamic> json) => Lab(
-        code: json['code'] as String,
-        name: json['name'] as String,
-        city: json['city'] as String?,
-      );
+    code: json['code'] as String,
+    name: json['name'] as String,
+    city: json['city'] as String?,
+  );
 }

@@ -12,6 +12,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:myvitals_healthtracker_app/features/profile/presentation/screens/measurement_units_screen.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import 'onboarding_avatar_page.dart';
 
 /// Cómo terminó el intento de crear la cuenta al cerrar el asistente.

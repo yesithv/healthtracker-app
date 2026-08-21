@@ -45,7 +45,7 @@ class PlannedNotification {
 /// persistido para cancelar sin dejar huérfanas.
 class AppointmentScheduler {
   AppointmentScheduler({NotificationService? notificationService})
-      : _notif = notificationService ?? NotificationService();
+    : _notif = notificationService ?? NotificationService();
 
   final NotificationService _notif;
 
@@ -96,14 +96,16 @@ class AppointmentScheduler {
         final when = from.add(const Duration(minutes: 1));
         if (!_isSnoozed(a, when)) {
           final text = (overdueText ?? _defaultOverdueText)(a);
-          plan.add(PlannedNotification(
-            id: overdueId++,
-            kind: AppointmentNotificationKind.overdue,
-            title: text.title,
-            body: text.body,
-            scheduledAt: when,
-            payload: 'appointment|${a.id}|overdue',
-          ));
+          plan.add(
+            PlannedNotification(
+              id: overdueId++,
+              kind: AppointmentNotificationKind.overdue,
+              title: text.title,
+              body: text.body,
+              scheduledAt: when,
+              payload: 'appointment|${a.id}|overdue',
+            ),
+          );
         }
         continue; // ya vencida: no tiene sentido un aviso "antes de".
       }
@@ -118,14 +120,16 @@ class AppointmentScheduler {
               if (when.isBefore(from) || when.isAfter(to)) continue;
               if (_isSnoozed(a, when)) continue;
               final text = (scheduledText ?? _defaultScheduledText)(a);
-              plan.add(PlannedNotification(
-                id: scheduledId++,
-                kind: AppointmentNotificationKind.scheduled,
-                title: text.title,
-                body: text.body,
-                scheduledAt: when,
-                payload: 'appointment|${a.id}|scheduled',
-              ));
+              plan.add(
+                PlannedNotification(
+                  id: scheduledId++,
+                  kind: AppointmentNotificationKind.scheduled,
+                  title: text.title,
+                  body: text.body,
+                  scheduledAt: when,
+                  payload: 'appointment|${a.id}|scheduled',
+                ),
+              );
             }
           }
 
@@ -138,14 +142,16 @@ class AppointmentScheduler {
             if (when.isBefore(from) || when.isAfter(to)) break;
             if (_isSnoozed(a, when)) break;
             final text = (toBookText ?? _defaultToBookText)(a);
-            plan.add(PlannedNotification(
-              id: toBookId++,
-              kind: AppointmentNotificationKind.toBook,
-              title: text.title,
-              body: text.body,
-              scheduledAt: when,
-              payload: 'appointment|${a.id}|toBook',
-            ));
+            plan.add(
+              PlannedNotification(
+                id: toBookId++,
+                kind: AppointmentNotificationKind.toBook,
+                title: text.title,
+                body: text.body,
+                scheduledAt: when,
+                payload: 'appointment|${a.id}|toBook',
+              ),
+            );
           }
 
         case AppointmentStatus.attended:

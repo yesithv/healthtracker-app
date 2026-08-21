@@ -55,13 +55,13 @@ class MedicationAdherenceService {
     required List<Medication> medications,
     required Map<String, List<MedicationDose>> dosesByMedication,
     required List<MedicationLog> logs,
-  })  : _meds = medications,
-        _doses = dosesByMedication,
-        _takenIndex = {
-          for (final log in logs)
-            if (log.status == MedicationLogStatus.taken)
-              '${log.medicationId}|${log.scheduledAt.toIso8601String()}': true,
-        };
+  }) : _meds = medications,
+       _doses = dosesByMedication,
+       _takenIndex = {
+         for (final log in logs)
+           if (log.status == MedicationLogStatus.taken)
+             '${log.medicationId}|${log.scheduledAt.toIso8601String()}': true,
+       };
 
   final List<Medication> _meds;
   final Map<String, List<MedicationDose>> _doses;
@@ -180,11 +180,13 @@ class MedicationAdherenceService {
     final days = <MedAdherenceDay>[];
     for (var i = 0; i < length; i++) {
       final day = start.add(Duration(days: i));
-      days.add(MedAdherenceDay(
-        date: day,
-        status: statusForDay(day, today: now),
-        isToday: _sameDay(day, now),
-      ));
+      days.add(
+        MedAdherenceDay(
+          date: day,
+          status: statusForDay(day, today: now),
+          isToday: _sameDay(day, now),
+        ),
+      );
     }
     return days;
   }
@@ -207,12 +209,14 @@ class MedicationAdherenceService {
     final cells = <MedAdherenceDay>[];
     var day = gridStart;
     while (!day.isAfter(gridEnd)) {
-      cells.add(MedAdherenceDay(
-        date: day,
-        status: statusForDay(day, today: now),
-        isToday: _sameDay(day, now),
-        outOfMonth: day.month != month.month,
-      ));
+      cells.add(
+        MedAdherenceDay(
+          date: day,
+          status: statusForDay(day, today: now),
+          isToday: _sameDay(day, now),
+          outOfMonth: day.month != month.month,
+        ),
+      );
       day = day.add(const Duration(days: 1));
     }
     return cells;

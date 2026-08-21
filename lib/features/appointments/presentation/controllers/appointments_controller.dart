@@ -17,8 +17,8 @@ class AppointmentsController extends ChangeNotifier {
   AppointmentsController({
     AppointmentRepository? repository,
     AppointmentScheduler? scheduler,
-  })  : _repo = repository ?? AppointmentRepository.instance,
-        _scheduler = scheduler ?? AppointmentScheduler() {
+  }) : _repo = repository ?? AppointmentRepository.instance,
+       _scheduler = scheduler ?? AppointmentScheduler() {
     _repo.addListener(_onRepoChanged);
   }
 
@@ -210,9 +210,9 @@ class AppointmentsController extends ChangeNotifier {
   }
 
   Future<void> _reschedule() => _scheduler.rescheduleAll(
-        appointments: _repo.items,
-        scheduledText: _scheduledText,
-        toBookText: _toBookText,
-        overdueText: _overdueText,
-      );
+    appointments: _repo.items,
+    scheduledText: _scheduledText,
+    toBookText: _toBookText,
+    overdueText: _overdueText,
+  );
 }

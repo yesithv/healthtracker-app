@@ -65,8 +65,9 @@ void main() {
     await MedicationLogRepository.instance.clearAll();
   });
 
-  testWidgets("renders today's pending dose and reflects registering it",
-      (tester) async {
+  testWidgets("renders today's pending dose and reflects registering it", (
+    tester,
+  ) async {
     final controller = MedicationsController(scheduler: _NoopScheduler());
     // Pauta diaria: hay una toma esperada hoy sea cual sea la fecha del reloj.
     final med = Medication(

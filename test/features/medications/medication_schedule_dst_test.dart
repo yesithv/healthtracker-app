@@ -37,8 +37,12 @@ void main() {
       final from = DateTime(2026, 3, 1);
       final to = DateTime(2026, 3, 31);
 
-      final expected =
-          MedicationScheduleService.expectedDosesBetween(med, doses, from, to);
+      final expected = MedicationScheduleService.expectedDosesBetween(
+        med,
+        doses,
+        from,
+        to,
+      );
 
       // 31 días × 1 toma, sin faltar ni sobrar por el día de 23 h.
       expect(expected.length, 31);
@@ -61,8 +65,12 @@ void main() {
       for (var day = 1; day <= 15; day++) {
         final date = DateTime(2026, 3, day, 12, 0);
         final isDue = MedicationScheduleService.isDueOn(med, date);
-        expect(isDue, (day - 1) % 2 == 0,
-            reason: 'día 2026-03-$day debería ${(day - 1) % 2 == 0 ? '' : 'NO '}tocar');
+        expect(
+          isDue,
+          (day - 1) % 2 == 0,
+          reason:
+              'día 2026-03-$day debería ${(day - 1) % 2 == 0 ? '' : 'NO '}tocar',
+        );
       }
     });
 

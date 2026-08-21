@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../theme/theme_context.dart';
 import '../widgets/demo_banner.dart';
 import '../widgets/register_modal.dart';

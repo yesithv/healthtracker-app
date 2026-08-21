@@ -48,11 +48,13 @@ class MedicationsTodayScreen extends StatelessWidget {
         .toList();
 
     final lowMeds = controller.activeMedications
-        .where((m) => MedicationInventoryService.shouldAlert(
-              m,
-              controller.dosesFor(m.id),
-              today: now,
-            ))
+        .where(
+          (m) => MedicationInventoryService.shouldAlert(
+            m,
+            controller.dosesFor(m.id),
+            today: now,
+          ),
+        )
         .toList();
 
     return Scaffold(
@@ -74,20 +76,29 @@ class MedicationsTodayScreen extends StatelessWidget {
                 WeekStrip(days: week),
                 const SizedBox(height: 20),
                 if (lowMeds.isNotEmpty) ...[
-                  Builder(builder: (context) {
-                    final med = lowMeds.first;
-                    final days = MedicationInventoryService.daysRemaining(
-                        med, controller.dosesFor(med.id));
-                    return LowInventoryBanner(
-                      title: l10n.medLowStockBannerTitle(
-                          med.name, (med.stockQuantity ?? 0).round()),
-                      subtitle: days != null ? l10n.medRunsOutInDays(days) : '',
-                      actionLabel: l10n.medicationRefill,
-                      onAction: () => context.push(
+                  Builder(
+                    builder: (context) {
+                      final med = lowMeds.first;
+                      final days = MedicationInventoryService.daysRemaining(
+                        med,
+                        controller.dosesFor(med.id),
+                      );
+                      return LowInventoryBanner(
+                        title: l10n.medLowStockBannerTitle(
+                          med.name,
+                          (med.stockQuantity ?? 0).round(),
+                        ),
+                        subtitle: days != null
+                            ? l10n.medRunsOutInDays(days)
+                            : '',
+                        actionLabel: l10n.medicationRefill,
+                        onAction: () => context.push(
                           '/profile/medications/refill',
-                          extra: med.id),
-                    );
-                  }),
+                          extra: med.id,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 24),
                 ],
                 _SectionHeader(

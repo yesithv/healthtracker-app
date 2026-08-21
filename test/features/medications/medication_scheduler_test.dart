@@ -51,8 +51,7 @@ void main() {
       );
       final doses = _doseNotifs(plan);
       expect(doses.length, 4);
-      expect(doses.map((p) => p.id).toList(),
-          [200000, 200001, 200002, 200003]);
+      expect(doses.map((p) => p.id).toList(), [200000, 200001, 200002, 200003]);
       expect(doses.first.payload, startsWith('dose|a|'));
     });
 

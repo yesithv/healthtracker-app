@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 
 import 'package:flutter/foundation.dart';
@@ -15,7 +16,7 @@ import '../../features/discover/data/repositories/discover_repository.dart';
 /// refresh the freshest source in the background and swap in the result.
 class DiscoverProvider extends ChangeNotifier {
   DiscoverProvider({DiscoverRepository? repository})
-      : _repository = repository ?? DiscoverRepository.instance;
+    : _repository = repository ?? DiscoverRepository.instance;
 
   final DiscoverRepository _repository;
 

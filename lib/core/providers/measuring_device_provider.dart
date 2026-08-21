@@ -42,7 +42,7 @@ class MeasuringDeviceProvider extends ChangeNotifier {
   String? _catalogError;
 
   MeasuringDeviceProvider({DeviceApiClient? client})
-      : _client = client ?? DeviceApiClient();
+    : _client = client ?? DeviceApiClient();
 
   List<MeasuringDevice> get catalog => _catalog;
   String? get selectedCode => _selectedCode;

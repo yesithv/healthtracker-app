@@ -94,14 +94,17 @@ void main() {
     expect(goals.targetVisceralFat, isNotNull);
   });
 
-  test('los recordatorios llegan con unos encendidos y otros apagados', () async {
-    final reminders = RemindersProvider();
-    await Future<void>.delayed(Duration.zero);
+  test(
+    'los recordatorios llegan con unos encendidos y otros apagados',
+    () async {
+      final reminders = RemindersProvider();
+      await Future<void>.delayed(Duration.zero);
 
-    expect(reminders.reminders, hasLength(4));
-    expect(reminders.reminders.where((r) => r.isEnabled), isNotEmpty);
-    expect(reminders.reminders.where((r) => !r.isEnabled), isNotEmpty);
-  });
+      expect(reminders.reminders, hasLength(4));
+      expect(reminders.reminders.where((r) => r.isEnabled), isNotEmpty);
+      expect(reminders.reminders.where((r) => !r.isEnabled), isNotEmpty);
+    },
+  );
 
   test('la siembra NO impone idioma, unidades ni tema', () {
     // La demo se entra desde la portada, y tiene que verse con el idioma y el

@@ -55,7 +55,8 @@ void main() {
     });
 
     test('daysOfWeek scales by active days / 7', () {
-      final mask = _bit(DateTime.monday) |
+      final mask =
+          _bit(DateTime.monday) |
           _bit(DateTime.wednesday) |
           _bit(DateTime.thursday);
       final med = _med(frequency: FrequencyType.daysOfWeek, daysOfWeek: mask);
@@ -147,10 +148,7 @@ void main() {
       );
       // 1 unit/day → 5 days remaining; lead 3 → not yet... make it 2/day.
       final twoPerDay = _doses(med.id, [2]); // 2/day → 2 days remaining ≤ 3
-      expect(
-        MedicationInventoryService.shouldAlert(med, twoPerDay),
-        isTrue,
-      );
+      expect(MedicationInventoryService.shouldAlert(med, twoPerDay), isTrue);
     });
 
     test('suppressed while snoozed', () {
@@ -199,7 +197,10 @@ void main() {
         refillThreshold: 3,
         refillLeadDays: 3,
       );
-      expect(MedicationInventoryService.shouldAlert(med, _doses(med.id, [1])), isFalse);
+      expect(
+        MedicationInventoryService.shouldAlert(med, _doses(med.id, [1])),
+        isFalse,
+      );
     });
   });
 
@@ -235,7 +236,10 @@ void main() {
 
     test('refill accepts an explicit amount', () {
       final med = _med(stockQuantity: 2, packSize: 30);
-      expect(MedicationInventoryService.refill(med, amount: 20).stockQuantity, 22);
+      expect(
+        MedicationInventoryService.refill(med, amount: 20).stockQuantity,
+        22,
+      );
     });
 
     test('snoozeAlert sets the snooze date', () {

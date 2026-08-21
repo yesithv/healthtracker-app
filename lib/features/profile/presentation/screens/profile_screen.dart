@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../../../core/providers/user_profile_provider.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/settings_accent.dart';
@@ -20,6 +22,7 @@ import '../../../../core/demo/demo_session.dart';
 import '../../../../core/database/record_repositories.dart';
 import '../../../../core/providers/health_goals_provider.dart';
 import '../../data/profile_achievements.dart';
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 part 'profile_screen.parts.dart';

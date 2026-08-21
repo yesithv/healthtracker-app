@@ -12,9 +12,9 @@ class _FieldLabel extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(text, style: Theme.of(context).type.sectionLabel),
-      );
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(text, style: Theme.of(context).type.sectionLabel),
+  );
 }
 
 class _TextField extends StatelessWidget {
@@ -39,8 +39,10 @@ class _TextField extends StatelessWidget {
         hintText: hint,
         filled: true,
         fillColor: surfaces.inset,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(surfaces.radiusControl),
           borderSide: BorderSide.none,
@@ -80,8 +82,11 @@ class _DateField extends StatelessWidget {
 }
 
 class _ChipWrap extends StatelessWidget {
-  const _ChipWrap(
-      {required this.options, required this.selected, required this.onSelect});
+  const _ChipWrap({
+    required this.options,
+    required this.selected,
+    required this.onSelect,
+  });
   final List<String> options;
   final int selected;
   final ValueChanged<int> onSelect;
@@ -94,17 +99,21 @@ class _ChipWrap extends StatelessWidget {
       children: [
         for (var i = 0; i < options.length; i++)
           _Chip(
-              label: options[i],
-              selected: selected == i,
-              onTap: () => onSelect(i)),
+            label: options[i],
+            selected: selected == i,
+            onTap: () => onSelect(i),
+          ),
       ],
     );
   }
 }
 
 class _Chip extends StatelessWidget {
-  const _Chip(
-      {required this.label, required this.selected, required this.onTap});
+  const _Chip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -135,8 +144,11 @@ class _Chip extends StatelessWidget {
 }
 
 class _Swatch extends StatelessWidget {
-  const _Swatch(
-      {required this.color, required this.selected, required this.onTap});
+  const _Swatch({
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
   final MedColor color;
   final bool selected;
   final VoidCallback onTap;
@@ -161,8 +173,11 @@ class _Swatch extends StatelessWidget {
 }
 
 class _ShapeButton extends StatelessWidget {
-  const _ShapeButton(
-      {required this.label, required this.selected, required this.onTap});
+  const _ShapeButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -183,7 +198,8 @@ class _ShapeButton extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(surfaces.radiusControl),
             border: Border.all(
-                color: selected ? surfaces.brand : surfaces.divider),
+              color: selected ? surfaces.brand : surfaces.divider,
+            ),
           ),
           child: Text(
             label,
@@ -199,8 +215,11 @@ class _ShapeButton extends StatelessWidget {
 }
 
 class _Segmented extends StatelessWidget {
-  const _Segmented(
-      {required this.options, required this.selected, required this.onSelect});
+  const _Segmented({
+    required this.options,
+    required this.selected,
+    required this.onSelect,
+  });
   final List<String> options;
   final int selected;
   final ValueChanged<int> onSelect;
@@ -226,16 +245,18 @@ class _Segmented extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: selected == i ? surfaces.brand : Colors.transparent,
-                    borderRadius:
-                        BorderRadius.circular(surfaces.radiusControl - 2),
+                    borderRadius: BorderRadius.circular(
+                      surfaces.radiusControl - 2,
+                    ),
                   ),
                   child: Text(
                     options[i],
                     textAlign: TextAlign.center,
                     style: theme.type.button.copyWith(
                       fontSize: 13,
-                      color:
-                          selected == i ? surfaces.onBrand : surfaces.inkSecondary,
+                      color: selected == i
+                          ? surfaces.onBrand
+                          : surfaces.inkSecondary,
                     ),
                   ),
                 ),
@@ -248,8 +269,11 @@ class _Segmented extends StatelessWidget {
 }
 
 class _DayCircle extends StatelessWidget {
-  const _DayCircle(
-      {required this.label, required this.selected, required this.onTap});
+  const _DayCircle({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -310,8 +334,10 @@ class _TimeRow extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: onEdit,
-              child: Text(label,
-                  style: theme.type.numeral.copyWith(fontSize: 22)),
+              child: Text(
+                label,
+                style: theme.type.numeral.copyWith(fontSize: 22),
+              ),
             ),
           ),
           if (onRemove != null)
@@ -390,8 +416,10 @@ class _StepperRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(label,
-                style: theme.type.cardTitle.copyWith(fontSize: 16)),
+            child: Text(
+              label,
+              style: theme.type.cardTitle.copyWith(fontSize: 16),
+            ),
           ),
           _MiniStepper(value: value, onMinus: onMinus, onPlus: onPlus),
         ],
@@ -401,8 +429,11 @@ class _StepperRow extends StatelessWidget {
 }
 
 class _MiniStepper extends StatelessWidget {
-  const _MiniStepper(
-      {required this.value, required this.onMinus, required this.onPlus});
+  const _MiniStepper({
+    required this.value,
+    required this.onMinus,
+    required this.onPlus,
+  });
   final int value;
   final VoidCallback onMinus;
   final VoidCallback onPlus;
@@ -412,23 +443,26 @@ class _MiniStepper extends StatelessWidget {
     final theme = Theme.of(context);
     final surfaces = theme.surfaces;
     Widget btn(IconData icon, VoidCallback onTap) => Material(
-          color: surfaces.inset,
-          borderRadius: BorderRadius.circular(surfaces.radiusControl),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(surfaces.radiusControl),
-            child: Padding(
-                padding: const EdgeInsets.all(7),
-                child: Icon(icon, size: 18, color: surfaces.brand)),
-          ),
-        );
+      color: surfaces.inset,
+      borderRadius: BorderRadius.circular(surfaces.radiusControl),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(surfaces.radiusControl),
+        child: Padding(
+          padding: const EdgeInsets.all(7),
+          child: Icon(icon, size: 18, color: surfaces.brand),
+        ),
+      ),
+    );
     return Row(
       children: [
         btn(Icons.remove, onMinus),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text('$value',
-              style: theme.type.numeral.copyWith(fontSize: 22)),
+          child: Text(
+            '$value',
+            style: theme.type.numeral.copyWith(fontSize: 22),
+          ),
         ),
         btn(Icons.add, onPlus),
       ],
@@ -456,8 +490,10 @@ class _PrimaryButton extends StatelessWidget {
           width: double.infinity,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 17),
-          child: Text(label,
-              style: theme.type.button.copyWith(color: surfaces.onBrand)),
+          child: Text(
+            label,
+            style: theme.type.button.copyWith(color: surfaces.onBrand),
+          ),
         ),
       ),
     );

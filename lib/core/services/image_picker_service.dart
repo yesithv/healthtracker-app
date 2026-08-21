@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerService {
@@ -13,7 +14,8 @@ class ImagePickerService {
         source: source,
         maxWidth: 512, // Profile avatar – optimized for retina at display size
         maxHeight: 512,
-        imageQuality: 75, // ~60-100KB vs ~5MB original – good quality/size balance
+        imageQuality:
+            75, // ~60-100KB vs ~5MB original – good quality/size balance
       );
 
       if (image == null) return null;

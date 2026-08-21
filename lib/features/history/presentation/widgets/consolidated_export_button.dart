@@ -123,7 +123,9 @@ class ConsolidatedExportButton extends StatelessWidget {
         SnackBar(
           content: Text(
             l10n.mhxNoData,
-            style: theme.type.body.copyWith(color: theme.clinical.info.onAccent),
+            style: theme.type.body.copyWith(
+              color: theme.clinical.info.onAccent,
+            ),
           ),
           backgroundColor: theme.clinical.info.accent,
         ),
@@ -204,7 +206,9 @@ class _PeriodSheet extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.mhxChoosePeriod,
-                  style: theme.type.sectionLabel.copyWith(color: surfaces.brand),
+                  style: theme.type.sectionLabel.copyWith(
+                    color: surfaces.brand,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

@@ -94,7 +94,11 @@ class _LoginScreenState extends State<LoginScreen> {
               const Text(
                 'Bienvenido de vuelta',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                ),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -129,9 +133,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                    const Icon(
+                      Icons.error_outline,
+                      color: Color(0xFFEF4444),
+                      size: 18,
+                    ),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C)))),
+                    Expanded(
+                      child: Text(
+                        _error!,
+                        style: const TextStyle(color: Color(0xFFB91C1C)),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -144,9 +157,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _busy ? null : _continue,
                 child: _busy
                     ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Siguiente', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Siguiente',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ],
           ),

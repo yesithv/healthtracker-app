@@ -17,9 +17,9 @@ class MeasurementDownloadService {
     MeasurementReadClient? client,
     AnthropometricRepository? anthropometric,
     BodyCompositionRepository? body,
-  })  : _client = client ?? MeasurementReadClient(),
-        _anthropometric = anthropometric ?? AnthropometricRepository.instance,
-        _body = body ?? BodyCompositionRepository.instance;
+  }) : _client = client ?? MeasurementReadClient(),
+       _anthropometric = anthropometric ?? AnthropometricRepository.instance,
+       _body = body ?? BodyCompositionRepository.instance;
 
   /// Baja e importa el historial. Devuelve cuántos registros locales NUEVOS se
   /// crearon. Lanza [SyncException] si la API no responde (el llamador decide si
@@ -41,8 +41,9 @@ class MeasurementDownloadService {
       }
     }
 
-    final existingBody =
-        (await _body.getAll()).map((r) => r.date.toIso8601String()).toSet();
+    final existingBody = (await _body.getAll())
+        .map((r) => r.date.toIso8601String())
+        .toSet();
     for (final r in batch.bodyComposition) {
       if (existingBody.add(r.date.toIso8601String())) {
         await _body.insert(r);

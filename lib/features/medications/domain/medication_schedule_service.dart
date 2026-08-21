@@ -82,7 +82,8 @@ class MedicationScheduleService {
   ) {
     if (!isDueOn(med, date)) return const [];
 
-    final sorted = [...doses]..sort((a, b) {
+    final sorted = [...doses]
+      ..sort((a, b) {
         final byHour = a.hour.compareTo(b.hour);
         return byHour != 0 ? byHour : a.minute.compareTo(b.minute);
       });
@@ -138,10 +139,14 @@ class MedicationScheduleService {
     int lookaheadDays = 60,
   }) {
     final horizon = from.add(Duration(days: lookaheadDays));
-    final candidates = expectedDosesBetween(med, doses, from, horizon)
-        .where((e) => !e.scheduledAt.isBefore(from))
-        .toList()
-      ..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
+    final candidates =
+        expectedDosesBetween(
+            med,
+            doses,
+            from,
+            horizon,
+          ).where((e) => !e.scheduledAt.isBefore(from)).toList()
+          ..sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
     return candidates.isEmpty ? null : candidates.first;
   }
 

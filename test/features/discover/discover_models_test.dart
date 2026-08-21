@@ -32,8 +32,14 @@ void main() {
   group('ChallengeStatus.fromJson ·', () {
     test('mapea los tres estados, sin importar mayúsculas', () {
       expect(ChallengeStatus.fromJson('activo'), ChallengeStatus.activo);
-      expect(ChallengeStatus.fromJson('FINALIZADO'), ChallengeStatus.finalizado);
-      expect(ChallengeStatus.fromJson('Programado'), ChallengeStatus.programado);
+      expect(
+        ChallengeStatus.fromJson('FINALIZADO'),
+        ChallengeStatus.finalizado,
+      );
+      expect(
+        ChallengeStatus.fromJson('Programado'),
+        ChallengeStatus.programado,
+      );
     });
 
     test('null o desconocido cae a programado', () {
@@ -71,37 +77,47 @@ void main() {
     });
 
     test('convierte números en coma a entero (durationMin/exercises)', () {
-      final r = Routine.fromJson({'id': 'r3', 'durationMin': 12.9, 'exercises': 3.0});
+      final r = Routine.fromJson({
+        'id': 'r3',
+        'durationMin': 12.9,
+        'exercises': 3.0,
+      });
       expect(r.durationMin, 12);
       expect(r.exercises, 3);
     });
   });
 
   group('Challenge.fromJson ·', () {
-    test('lee todos los campos y por defecto deja participantes/duración en 0', () {
-      final full = Challenge.fromJson({
-        'id': 'c1',
-        'title': 'Reto de pasos',
-        'goal': '10 000 pasos/día',
-        'participants': 128,
-        'status': 'activo',
-        'durationDays': 30,
-      });
-      expect(full.participants, 128);
-      expect(full.status, ChallengeStatus.activo);
-      expect(full.durationDays, 30);
+    test(
+      'lee todos los campos y por defecto deja participantes/duración en 0',
+      () {
+        final full = Challenge.fromJson({
+          'id': 'c1',
+          'title': 'Reto de pasos',
+          'goal': '10 000 pasos/día',
+          'participants': 128,
+          'status': 'activo',
+          'durationDays': 30,
+        });
+        expect(full.participants, 128);
+        expect(full.status, ChallengeStatus.activo);
+        expect(full.durationDays, 30);
 
-      final bare = Challenge.fromJson({'id': 'c2'});
-      expect(bare.goal, '');
-      expect(bare.participants, 0);
-      expect(bare.status, ChallengeStatus.programado);
-      expect(bare.durationDays, 0);
-    });
+        final bare = Challenge.fromJson({'id': 'c2'});
+        expect(bare.goal, '');
+        expect(bare.participants, 0);
+        expect(bare.status, ChallengeStatus.programado);
+        expect(bare.durationDays, 0);
+      },
+    );
   });
 
   group('DailyTip.fromJson ·', () {
     test('acepta la forma nueva (text) y la heredada (subtitle)', () {
-      expect(DailyTip.fromJson({'id': 't1', 'text': 'Bebe agua'}).text, 'Bebe agua');
+      expect(
+        DailyTip.fromJson({'id': 't1', 'text': 'Bebe agua'}).text,
+        'Bebe agua',
+      );
       expect(
         DailyTip.fromJson({'id': 't2', 'subtitle': 'Camina 10 min'}).text,
         'Camina 10 min',
@@ -116,7 +132,10 @@ void main() {
 
   group('Article.fromJson ·', () {
     test('prefiere category y cae a categoryId heredado y luego a general', () {
-      expect(Article.fromJson({'id': 'a1', 'category': 'heart'}).category, 'heart');
+      expect(
+        Article.fromJson({'id': 'a1', 'category': 'heart'}).category,
+        'heart',
+      );
       expect(
         Article.fromJson({'id': 'a2', 'categoryId': 'sleep'}).category,
         'sleep',
@@ -182,17 +201,20 @@ void main() {
       expect(feed.articles.single.id, 'a1');
     });
 
-    test('featuredArticles y standardArticles reparten por el flag featured', () {
-      final feed = DiscoverFeed.fromJson({
-        'articles': [
-          {'id': 'a1', 'featured': true},
-          {'id': 'a2', 'featured': false},
-          {'id': 'a3', 'featured': true},
-        ],
-      });
-      expect(feed.featuredArticles.map((a) => a.id), ['a1', 'a3']);
-      expect(feed.standardArticles.map((a) => a.id), ['a2']);
-    });
+    test(
+      'featuredArticles y standardArticles reparten por el flag featured',
+      () {
+        final feed = DiscoverFeed.fromJson({
+          'articles': [
+            {'id': 'a1', 'featured': true},
+            {'id': 'a2', 'featured': false},
+            {'id': 'a3', 'featured': true},
+          ],
+        });
+        expect(feed.featuredArticles.map((a) => a.id), ['a1', 'a3']);
+        expect(feed.standardArticles.map((a) => a.id), ['a2']);
+      },
+    );
 
     test('isEmpty es true solo cuando no hay nada', () {
       expect(DiscoverFeed.empty.isEmpty, isTrue);

@@ -4,6 +4,7 @@ import '../../../../core/theme/theme_catalog.dart';
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/widgets/status_chip.dart';
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 /// Ficha de un tema con su resumen visual: paleta, tipografía y componentes.

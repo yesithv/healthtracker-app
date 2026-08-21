@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
@@ -77,12 +78,16 @@ class LipidProfileCard extends StatelessWidget {
 
     // Estado clínico de un campo (cada uno tiene su propio clasificador).
     ClinicalStatus statusOf(_LipidField f, double v) => switch (f) {
-      _LipidField.total =>
-        LipidStatus.totalCholesterol(v, labCode: latest.labCode).status,
+      _LipidField.total => LipidStatus.totalCholesterol(
+        v,
+        labCode: latest.labCode,
+      ).status,
       _LipidField.ldl => LipidStatus.ldl(v, labCode: latest.labCode).status,
       _LipidField.hdl => LipidStatus.hdl(v, labCode: latest.labCode).status,
-      _LipidField.trig =>
-        LipidStatus.triglycerides(v, labCode: latest.labCode).status,
+      _LipidField.trig => LipidStatus.triglycerides(
+        v,
+        labCode: latest.labCode,
+      ).status,
     };
 
     // Serie cronológica de un campo (nulos fuera).
@@ -116,14 +121,19 @@ class LipidProfileCard extends StatelessWidget {
       icon: Icons.bloodtype,
       title: l10n.lipidProfile,
       measuredAt: latest.date,
-      statusChip: StatusChip(status: overall.status, label: overall.label(l10n)),
+      statusChip: StatusChip(
+        status: overall.status,
+        label: overall.label(l10n),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HeroMetric(
             value: heroValue.toStringAsFixed(0),
             unit: 'mg/dL',
-            valueColor: theme.clinical.tone(statusOf(heroField, heroValue)).accent,
+            valueColor: theme.clinical
+                .tone(statusOf(heroField, heroValue))
+                .accent,
             label: labelOf(heroField),
             status: statusOf(heroField, heroValue),
             current: heroValue,

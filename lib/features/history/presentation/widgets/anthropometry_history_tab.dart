@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
@@ -30,6 +32,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -196,7 +199,11 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
   /// Descriptor de la métrica [m] resuelto con el idioma y el sexo del perfil (este
   /// último solo mueve el corte del ICC). Concentra en un sitio todo lo variable
   /// entre métricas para que `_buildChartContainer` sea genérico.
-  _MetricSpec _metricSpec(AnthroMetric m, AppLocalizations l10n, String gender) {
+  _MetricSpec _metricSpec(
+    AnthroMetric m,
+    AppLocalizations l10n,
+    String gender,
+  ) {
     switch (m) {
       case AnthroMetric.bmi:
         return _MetricSpec(
@@ -384,8 +391,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
     final useOfflineBand = !hasServerZones && ref != null && ref.hasBand;
     final useOfflineLines =
         !hasServerZones && ref != null && ref.lines.isNotEmpty;
-    final refColor =
-        ref == null ? family.accent : clinical.tone(ref.bandStatus).accent;
+    final refColor = ref == null
+        ? family.accent
+        : clinical.tone(ref.bandStatus).accent;
 
     final RangeAnnotations rangeAnnotations;
     if (hasServerZones) {
@@ -563,7 +571,9 @@ class _AnthropometryHistoryTabState extends State<AnthropometryHistoryTab> {
                 fontWeight: pw.FontWeight.bold,
                 color: PdfColors.white,
               ),
-              headerDecoration: const pw.BoxDecoration(color: PdfColors.blue800),
+              headerDecoration: const pw.BoxDecoration(
+                color: PdfColors.blue800,
+              ),
               rowDecoration: const pw.BoxDecoration(
                 border: pw.Border(
                   bottom: pw.BorderSide(color: PdfColors.grey200),

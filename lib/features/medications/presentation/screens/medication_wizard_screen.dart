@@ -78,8 +78,8 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
     _strengthCtrl.text = m.strengthValue == null
         ? ''
         : (m.strengthValue! % 1 == 0
-            ? m.strengthValue!.toInt().toString()
-            : m.strengthValue!.toString());
+              ? m.strengthValue!.toInt().toString()
+              : m.strengthValue!.toString());
     _notesCtrl.text = m.notes ?? '';
     _form = m.form;
     _colorKey = _colorKeys.contains(m.color) ? m.color! : 'brand';
@@ -147,8 +147,9 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
     final controller = context.read<MedicationsController>();
     final router = GoRouter.of(context);
 
-    final strength =
-        double.tryParse(_strengthCtrl.text.trim().replaceAll(',', '.'));
+    final strength = double.tryParse(
+      _strengthCtrl.text.trim().replaceAll(',', '.'),
+    );
     final med = Medication(
       id: _existing?.id,
       name: _nameCtrl.text.trim(),
@@ -233,8 +234,9 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
                     child: Text(
                       _step == 1 ? l10n.cancel : '‹ ${l10n.medBack}',
                       style: theme.type.button.copyWith(
-                        color:
-                            _step == 1 ? surfaces.inkSecondary : surfaces.brand,
+                        color: _step == 1
+                            ? surfaces.inkSecondary
+                            : surfaces.brand,
                       ),
                     ),
                   ),
@@ -256,8 +258,10 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(_title(l10n),
-                    style: theme.type.screenTitle.copyWith(fontSize: 30)),
+                child: Text(
+                  _title(l10n),
+                  style: theme.type.screenTitle.copyWith(fontSize: 30),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -283,20 +287,20 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
   }
 
   String _title(AppLocalizations l10n) => switch (_step) {
-        1 => l10n.medStepIdentity,
-        2 => l10n.medStepDose,
-        3 => l10n.medStepFrequency,
-        4 => l10n.medStepDates,
-        _ => l10n.medStepInventory,
-      };
+    1 => l10n.medStepIdentity,
+    2 => l10n.medStepDose,
+    3 => l10n.medStepFrequency,
+    4 => l10n.medStepDates,
+    _ => l10n.medStepInventory,
+  };
 
   Widget _stepBody(AppLocalizations l10n) => switch (_step) {
-        1 => _identityStep(l10n),
-        2 => _doseStep(l10n),
-        3 => _frequencyStep(l10n),
-        4 => _datesStep(l10n),
-        _ => _inventoryStep(l10n),
-      };
+    1 => _identityStep(l10n),
+    2 => _doseStep(l10n),
+    3 => _frequencyStep(l10n),
+    4 => _datesStep(l10n),
+    _ => _inventoryStep(l10n),
+  };
 
   // ── Paso 1 · Identidad
   Widget _identityStep(AppLocalizations l10n) {
@@ -355,8 +359,7 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
                       for (final u in _units_)
                         DropdownMenuItem(value: u, child: Text(u)),
                     ],
-                    onChanged: (v) =>
-                        setState(() => _strengthUnit = v ?? 'mg'),
+                    onChanged: (v) => setState(() => _strengthUnit = v ?? 'mg'),
                   ),
                 ),
               ),
@@ -430,8 +433,10 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
               ),
               _MiniStepper(
                 value: _doseQty,
-                onMinus: () => setState(() => _doseQty = (_doseQty - 1).clamp(1, 20)),
-                onPlus: () => setState(() => _doseQty = (_doseQty + 1).clamp(1, 20)),
+                onMinus: () =>
+                    setState(() => _doseQty = (_doseQty - 1).clamp(1, 20)),
+                onPlus: () =>
+                    setState(() => _doseQty = (_doseQty + 1).clamp(1, 20)),
               ),
             ],
           ),
@@ -488,15 +493,19 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(l10n.medIntervalLabel,
-                      style: theme.type.cardTitle.copyWith(fontSize: 16)),
+                  child: Text(
+                    l10n.medIntervalLabel,
+                    style: theme.type.cardTitle.copyWith(fontSize: 16),
+                  ),
                 ),
                 _MiniStepper(
                   value: _intervalN,
-                  onMinus: () =>
-                      setState(() => _intervalN = (_intervalN - 1).clamp(1, 60)),
-                  onPlus: () =>
-                      setState(() => _intervalN = (_intervalN + 1).clamp(1, 60)),
+                  onMinus: () => setState(
+                    () => _intervalN = (_intervalN - 1).clamp(1, 60),
+                  ),
+                  onPlus: () => setState(
+                    () => _intervalN = (_intervalN + 1).clamp(1, 60),
+                  ),
                 ),
               ],
             ),
@@ -509,9 +518,13 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
             const Spacer(),
             GestureDetector(
               onTap: _addTime,
-              child: Text('+ ${l10n.medAddTime}',
-                  style: theme.type.button
-                      .copyWith(fontSize: 14, color: surfaces.brand)),
+              child: Text(
+                '+ ${l10n.medAddTime}',
+                style: theme.type.button.copyWith(
+                  fontSize: 14,
+                  color: surfaces.brand,
+                ),
+              ),
             ),
           ],
         ),
@@ -535,8 +548,10 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
   }
 
   Future<void> _editTime(int i) async {
-    final picked =
-        await showTimePicker(context: context, initialTime: _times[i]);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _times[i],
+    );
     if (picked != null) setState(() => _times[i] = picked);
   }
 
@@ -579,11 +594,11 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
   }
 
   Future<DateTime?> _pickDate(DateTime initial) => showDatePicker(
-        context: context,
-        initialDate: initial,
-        firstDate: DateTime(2020),
-        lastDate: DateTime(2100),
-      );
+    context: context,
+    initialDate: initial,
+    firstDate: DateTime(2020),
+    lastDate: DateTime(2100),
+  );
 
   // ── Paso 5 · Inventario
   Widget _inventoryStep(AppLocalizations l10n) {
@@ -643,8 +658,10 @@ class _MedicationWizardScreenState extends State<MedicationWizardScreen> {
         ] else
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Text(l10n.medTrackInventorySub,
-                style: theme.type.meta.copyWith(color: surfaces.inkMuted)),
+            child: Text(
+              l10n.medTrackInventorySub,
+              style: theme.type.meta.copyWith(color: surfaces.inkMuted),
+            ),
           ),
       ],
     );

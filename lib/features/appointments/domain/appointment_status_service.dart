@@ -15,7 +15,11 @@ class AppointmentStatusService {
     final totalMonth = date.month - 1 + months;
     final year = date.year + (totalMonth ~/ 12);
     final month = totalMonth % 12 + 1;
-    final lastDay = DateTime(year, month + 1, 0).day; // día 0 del mes siguiente.
+    final lastDay = DateTime(
+      year,
+      month + 1,
+      0,
+    ).day; // día 0 del mes siguiente.
     final day = date.day < lastDay ? date.day : lastDay;
     return DateTime(year, month, day, date.hour, date.minute);
   }

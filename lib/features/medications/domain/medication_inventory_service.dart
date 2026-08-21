@@ -25,8 +25,9 @@ class MedicationInventoryService {
         return perIntakeDay;
 
       case FrequencyType.daysOfWeek:
-        final activeDays =
-            MedicationScheduleService.activeWeekdayCount(med.daysOfWeek);
+        final activeDays = MedicationScheduleService.activeWeekdayCount(
+          med.daysOfWeek,
+        );
         if (activeDays == 0) return 0;
         return perIntakeDay * activeDays / 7.0;
 
@@ -91,12 +92,14 @@ class MedicationInventoryService {
 
     final stock = med.stockQuantity;
 
-    final thresholdHit = med.refillThreshold != null &&
+    final thresholdHit =
+        med.refillThreshold != null &&
         stock != null &&
         stock <= med.refillThreshold!;
 
     final remaining = daysRemaining(med, doses);
-    final leadHit = med.refillLeadDays != null &&
+    final leadHit =
+        med.refillLeadDays != null &&
         remaining != null &&
         remaining <= med.refillLeadDays!;
 

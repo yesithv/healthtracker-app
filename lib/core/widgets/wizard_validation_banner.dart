@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../theme/theme_context.dart';
+
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 

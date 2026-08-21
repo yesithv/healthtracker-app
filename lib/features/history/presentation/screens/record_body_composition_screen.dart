@@ -14,7 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
+
 import 'dart:math' as math;
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
@@ -423,9 +425,8 @@ class _RecordBodyCompositionScreenState
                         Expanded(
                           child: _buildSelectorCard(
                             label: l10n.dateLabel,
-                            value: DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(selectedDate),
+                            value: DateFormat('dd/MM/yyyy')
+                                .format(selectedDate),
                             icon: Icons.calendar_today_outlined,
                             onTap: () => _selectDate(context),
                           ),
@@ -651,7 +652,6 @@ class _RecordBodyCompositionScreenState
       ),
     );
   }
-
 
   // ── Date/Time selectors ───────────────────────────────────────────────────
   Widget _buildSelectorCard({

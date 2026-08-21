@@ -57,7 +57,10 @@ void main() {
     await controller.addMedication(med, [dose]);
 
     // Aparece entre los activos.
-    expect(controller.activeMedications.map((m) => m.name), contains('Vytorin'));
+    expect(
+      controller.activeMedications.map((m) => m.name),
+      contains('Vytorin'),
+    );
 
     // Tiene una toma esperada ese día.
     final entries = controller.entriesForDay(day);
@@ -89,10 +92,9 @@ void main() {
       doseQuantity: 1,
       startDate: DateTime(2026, 1, 1),
     );
-    await controller.addMedication(
-      med,
-      [MedicationDose(medicationId: med.id, hour: 8, minute: 0)],
-    );
+    await controller.addMedication(med, [
+      MedicationDose(medicationId: med.id, hour: 8, minute: 0),
+    ]);
     expect(controller.medications, isNotEmpty);
 
     await controller.deleteMedication(med.id);

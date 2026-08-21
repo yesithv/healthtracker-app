@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2607,7 +2608,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentsTitle => 'As minhas consultas';
 
   @override
-  String get appointmentsDescription => 'Acompanha as consultas que tens e as que ainda precisas de marcar.';
+  String get appointmentsDescription =>
+      'Acompanha as consultas que tens e as que ainda precisas de marcar.';
 
   @override
   String get appointmentsAddCta => 'Adicionar consulta';
@@ -2625,7 +2627,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Ainda não tens consultas';
 
   @override
-  String get appointmentsEmptyBody => 'Adiciona as consultas que precisas de marcar ou as que já tens agendadas.';
+  String get appointmentsEmptyBody =>
+      'Adiciona as consultas que precisas de marcar ou as que já tens agendadas.';
 
   @override
   String get appointmentsOverdueChip => 'Vencida';
@@ -2767,7 +2770,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentFieldRecurring => 'Controle periódico';
 
   @override
-  String get appointmentRecurringHint => 'Quando confirmar que compareceu, vamos lembrá-lo de marcar a próxima automaticamente.';
+  String get appointmentRecurringHint =>
+      'Quando confirmar que compareceu, vamos lembrá-lo de marcar a próxima automaticamente.';
 
   @override
   String get appointmentFrequencyLabel => 'Com que frequência';
@@ -2784,7 +2788,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentActionEdit => 'Editar';
 
   @override
-  String get appointmentNextSpawned => 'Anotamos o próximo controle para marcar.';
+  String get appointmentNextSpawned =>
+      'Anotamos o próximo controle para marcar.';
 
   @override
   String get appointmentComplianceRedTitle => 'Requer atenção';
@@ -2796,7 +2801,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Tudo em dia';
 
   @override
-  String get appointmentComplianceGreenBody => 'Nenhuma consulta pendente ou atrasada.';
+  String get appointmentComplianceGreenBody =>
+      'Nenhuma consulta pendente ou atrasada.';
 
   @override
   String appointmentNextActionOverdue(String title) {

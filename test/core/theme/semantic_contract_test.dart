@@ -156,16 +156,12 @@ void main() {
 
       test('la rampa de severidad va de menos a más riesgo', () {
         expect(theme.clinical.severityRamp, hasLength(4));
-        expect(
-          theme.clinical.severityRamp,
-          [
-            theme.clinical.info.accent,
-            theme.clinical.optimal.accent,
-            theme.clinical.caution.accent,
-            theme.clinical.alert.accent,
-          ],
-          reason: 'La rampa debe seguir el orden clínico, no el estético',
-        );
+        expect(theme.clinical.severityRamp, [
+          theme.clinical.info.accent,
+          theme.clinical.optimal.accent,
+          theme.clinical.caution.accent,
+          theme.clinical.alert.accent,
+        ], reason: 'La rampa debe seguir el orden clínico, no el estético');
       });
 
       // ── FAMILIAS DE INDICADOR ─────────────────────────────────────────────
@@ -408,8 +404,7 @@ void main() {
         );
       });
 
-      test('onSelection no se aleja de la marca: sigue siendo el mismo color',
-          () {
+      test('onSelection no se aleja de la marca: sigue siendo el mismo color', () {
         final s = theme.surfaces;
         // El par existe para resolver contraste, no para que un tema meta un
         // color nuevo por la puerta de atrás: el realce tiene que seguir

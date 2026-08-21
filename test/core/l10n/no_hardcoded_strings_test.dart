@@ -25,9 +25,27 @@ void main() {
     bool looksSpanish(String s) {
       if (RegExp(r'[áéíóúñÁÉÍÓÚÑ¿¡]').hasMatch(s)) return true;
       const words = [
-        ' de ', ' la ', ' el ', ' los ', ' las ', ' un ', ' una ', ' que ',
-        ' para ', ' con ', ' tu ', ' tus ', ' se ', ' del ', ' por ', ' en ',
-        ' y ', ' o ', ' no ', ' si ', ' al ',
+        ' de ',
+        ' la ',
+        ' el ',
+        ' los ',
+        ' las ',
+        ' un ',
+        ' una ',
+        ' que ',
+        ' para ',
+        ' con ',
+        ' tu ',
+        ' tus ',
+        ' se ',
+        ' del ',
+        ' por ',
+        ' en ',
+        ' y ',
+        ' o ',
+        ' no ',
+        ' si ',
+        ' al ',
       ];
       final padded = ' ${s.toLowerCase()} ';
       return words.any(padded.contains);
@@ -73,7 +91,8 @@ void main() {
 
   group('la hoja «Registrar indicadores» ·', () {
     test('las cuatro tarjetas llevan a su pantalla', () {
-      final src = File('lib/core/widgets/register_modal.dart').readAsStringSync();
+      final src = File('lib/core/widgets/register_modal.dart')
+          .readAsStringSync();
 
       // Durante un tiempo solo navegaba «Antropometría»; las otras tres cerraban
       // la hoja y no iban a ninguna parte. Las cuatro rutas existían y las

@@ -91,16 +91,28 @@ class _StateMark extends StatelessWidget {
         );
       case DoseState.taken:
         final tone = theme.clinical.tone(ClinicalStatus.optimal);
-        return _FilledMark(color: tone.accent, on: tone.onAccent, icon: Icons.check);
+        return _FilledMark(
+          color: tone.accent,
+          on: tone.onAccent,
+          icon: Icons.check,
+        );
       case DoseState.skipped:
         final tone = theme.clinical.tone(ClinicalStatus.alert);
-        return _FilledMark(color: tone.surface, on: tone.accent, icon: Icons.close);
+        return _FilledMark(
+          color: tone.surface,
+          on: tone.accent,
+          icon: Icons.close,
+        );
     }
   }
 }
 
 class _FilledMark extends StatelessWidget {
-  const _FilledMark({required this.color, required this.on, required this.icon});
+  const _FilledMark({
+    required this.color,
+    required this.on,
+    required this.icon,
+  });
 
   final Color color;
   final Color on;

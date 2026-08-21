@@ -121,7 +121,9 @@ class _RegisterMultipleSheetState extends State<_RegisterMultipleSheet> {
                 vm: doseVm(widget.entries[i], l10n),
                 checked: _selected.contains(i),
                 onTap: () => setState(() {
-                  _selected.contains(i) ? _selected.remove(i) : _selected.add(i);
+                  _selected.contains(i)
+                      ? _selected.remove(i)
+                      : _selected.add(i);
                 }),
               ),
             const SizedBox(height: 12),
@@ -155,7 +157,11 @@ class _RegisterMultipleSheetState extends State<_RegisterMultipleSheet> {
 }
 
 class _MultiRow extends StatelessWidget {
-  const _MultiRow({required this.vm, required this.checked, required this.onTap});
+  const _MultiRow({
+    required this.vm,
+    required this.checked,
+    required this.onTap,
+  });
 
   final DoseVm vm;
   final bool checked;

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../../../../core/widgets/secondary_app_bar.dart';
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class FaqScreen extends StatefulWidget {
@@ -120,11 +122,7 @@ class _FaqScreenState extends State<FaqScreen> {
                 // FAQ items
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: filtered
-                        .map(_buildFaqTile)
-                        .toList(),
-                  ),
+                  child: Column(children: filtered.map(_buildFaqTile).toList()),
                 ),
                 const SizedBox(height: 32),
               ],

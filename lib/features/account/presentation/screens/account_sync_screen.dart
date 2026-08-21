@@ -134,10 +134,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                 accent: SettingsSection.accountSync.tone(Theme.of(context)),
               ),
               const SizedBox(height: 32),
-              if (session.isAuthenticated)
-                _loggedIn(session)
-              else
-                _loggedOut(),
+              if (session.isAuthenticated) _loggedIn(session) else _loggedOut(),
             ],
           ),
         ),

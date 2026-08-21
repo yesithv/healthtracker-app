@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import 'core/theme/theme_catalog.dart';
 import 'core/router/app_router.dart';
 import 'core/providers/user_profile_provider.dart';
@@ -15,6 +17,7 @@ import 'core/providers/ui_preferences_provider.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_units_provider.dart';
 import 'core/providers/discover_provider.dart';
+
 import 'package:myvitals_healthtracker_app/features/discover/data/repositories/discover_repository.dart';
 import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
@@ -382,9 +385,9 @@ class _AppScrollBehavior extends MaterialScrollBehavior {
 
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-        PointerDeviceKind.stylus,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+  };
 }

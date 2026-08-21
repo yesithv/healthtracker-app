@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2604,7 +2605,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentsTitle => 'My appointments';
 
   @override
-  String get appointmentsDescription => 'Keep track of the appointments you have and the ones you still need to book.';
+  String get appointmentsDescription =>
+      'Keep track of the appointments you have and the ones you still need to book.';
 
   @override
   String get appointmentsAddCta => 'Add appointment';
@@ -2622,7 +2624,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentsEmptyTitle => 'No appointments yet';
 
   @override
-  String get appointmentsEmptyBody => 'Add the appointments you need to book or have already scheduled.';
+  String get appointmentsEmptyBody =>
+      'Add the appointments you need to book or have already scheduled.';
 
   @override
   String get appointmentsOverdueChip => 'Overdue';
@@ -2764,7 +2767,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentFieldRecurring => 'Periodic check-up';
 
   @override
-  String get appointmentRecurringHint => 'When you confirm you attended, we\'ll remind you to book the next one automatically.';
+  String get appointmentRecurringHint =>
+      'When you confirm you attended, we\'ll remind you to book the next one automatically.';
 
   @override
   String get appointmentFrequencyLabel => 'How often';
@@ -2793,7 +2797,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'All up to date';
 
   @override
-  String get appointmentComplianceGreenBody => 'No pending or overdue appointments.';
+  String get appointmentComplianceGreenBody =>
+      'No pending or overdue appointments.';
 
   @override
   String appointmentNextActionOverdue(String title) {

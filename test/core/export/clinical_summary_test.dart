@@ -20,7 +20,12 @@ void main() {
       vital(DateTime(2024, 1, 1), 120, 80, 70), // >1 año
       vital(DateTime(2026, 3, 1), 118, 78, 66), // dentro de 1 año y 6 meses
       vital(DateTime(2026, 7, 1), 116, 76, 64), // dentro de todo
-      vital(DateTime(2025, 10, 1), 122, 82, 72), // dentro de 1 año, fuera 6 meses
+      vital(
+        DateTime(2025, 10, 1),
+        122,
+        82,
+        72,
+      ), // dentro de 1 año, fuera 6 meses
     ];
 
     test('«todo» no filtra y ordena ascendente por fecha', () {

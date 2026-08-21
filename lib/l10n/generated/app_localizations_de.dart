@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2611,7 +2612,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appointmentsTitle => 'Meine Termine';
 
   @override
-  String get appointmentsDescription => 'Behalte die Termine im Blick, die du hast, und die, die du noch vereinbaren musst.';
+  String get appointmentsDescription =>
+      'Behalte die Termine im Blick, die du hast, und die, die du noch vereinbaren musst.';
 
   @override
   String get appointmentsAddCta => 'Termin hinzufügen';
@@ -2629,7 +2631,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Noch keine Termine';
 
   @override
-  String get appointmentsEmptyBody => 'Füge die Termine hinzu, die du vereinbaren musst oder schon hast.';
+  String get appointmentsEmptyBody =>
+      'Füge die Termine hinzu, die du vereinbaren musst oder schon hast.';
 
   @override
   String get appointmentsOverdueChip => 'Überfällig';
@@ -2751,7 +2754,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get apptToBookNotifBody => 'Es ist Zeit, diesen Termin zu vereinbaren.';
+  String get apptToBookNotifBody =>
+      'Es ist Zeit, diesen Termin zu vereinbaren.';
 
   @override
   String apptOverdueNotifTitle(String title) {
@@ -2771,7 +2775,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appointmentFieldRecurring => 'Regelmäßige Kontrolle';
 
   @override
-  String get appointmentRecurringHint => 'Wenn du bestätigst, dass du da warst, erinnern wir dich automatisch an den nächsten Termin.';
+  String get appointmentRecurringHint =>
+      'Wenn du bestätigst, dass du da warst, erinnern wir dich automatisch an den nächsten Termin.';
 
   @override
   String get appointmentFrequencyLabel => 'Wie oft';
@@ -2788,7 +2793,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appointmentActionEdit => 'Bearbeiten';
 
   @override
-  String get appointmentNextSpawned => 'Wir haben die nächste Kontrolle zum Buchen vorgemerkt.';
+  String get appointmentNextSpawned =>
+      'Wir haben die nächste Kontrolle zum Buchen vorgemerkt.';
 
   @override
   String get appointmentComplianceRedTitle => 'Braucht Aufmerksamkeit';
@@ -2800,7 +2806,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Alles aktuell';
 
   @override
-  String get appointmentComplianceGreenBody => 'Keine ausstehenden oder überfälligen Termine.';
+  String get appointmentComplianceGreenBody =>
+      'Keine ausstehenden oder überfälligen Termine.';
 
   @override
   String appointmentNextActionOverdue(String title) {

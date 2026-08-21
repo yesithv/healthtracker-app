@@ -3,6 +3,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../../../core/widgets/settings_page_header.dart';
 import '../../../../core/theme/settings_accent.dart';

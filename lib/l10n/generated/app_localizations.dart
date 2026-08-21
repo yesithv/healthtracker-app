@@ -4954,76 +4954,91 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location'**
   String get appointmentFieldLocation;
+
   /// No description provided for @appointmentFieldLocationHint.
   ///
   /// In en, this message translates to:
   /// **'e.g. Clinic address'**
   String get appointmentFieldLocationHint;
+
   /// No description provided for @appointmentFieldRecurring.
   ///
   /// In en, this message translates to:
   /// **'Periodic check-up'**
   String get appointmentFieldRecurring;
+
   /// No description provided for @appointmentRecurringHint.
   ///
   /// In en, this message translates to:
   /// **'When you confirm you attended, we\'ll remind you to book the next one automatically.'**
   String get appointmentRecurringHint;
+
   /// No description provided for @appointmentFrequencyLabel.
   ///
   /// In en, this message translates to:
   /// **'How often'**
   String get appointmentFrequencyLabel;
+
   /// No description provided for @appointmentEveryNMonths.
   ///
   /// In en, this message translates to:
   /// **'Every $count months'**
   String appointmentEveryNMonths(int count);
+
   /// No description provided for @appointmentEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Edit appointment'**
   String get appointmentEditTitle;
+
   /// No description provided for @appointmentActionEdit.
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get appointmentActionEdit;
+
   /// No description provided for @appointmentNextSpawned.
   ///
   /// In en, this message translates to:
   /// **'We noted the next check-up to book.'**
   String get appointmentNextSpawned;
+
   /// No description provided for @appointmentComplianceRedTitle.
   ///
   /// In en, this message translates to:
   /// **'Needs attention'**
   String get appointmentComplianceRedTitle;
+
   /// No description provided for @appointmentComplianceAmberTitle.
   ///
   /// In en, this message translates to:
   /// **'Coming up'**
   String get appointmentComplianceAmberTitle;
+
   /// No description provided for @appointmentComplianceGreenTitle.
   ///
   /// In en, this message translates to:
   /// **'All up to date'**
   String get appointmentComplianceGreenTitle;
+
   /// No description provided for @appointmentComplianceGreenBody.
   ///
   /// In en, this message translates to:
   /// **'No pending or overdue appointments.'**
   String get appointmentComplianceGreenBody;
+
   /// No description provided for @appointmentNextActionOverdue.
   ///
   /// In en, this message translates to:
   /// **'$title · overdue'**
   String appointmentNextActionOverdue(String title);
+
   /// No description provided for @appointmentNextActionUpcoming.
   ///
   /// In en, this message translates to:
   /// **'$title · $date'**
   String appointmentNextActionUpcoming(String title, String date);
+
   /// No description provided for @appointmentRecurringEvery.
   ///
   /// In en, this message translates to:

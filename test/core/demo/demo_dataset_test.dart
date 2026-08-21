@@ -63,8 +63,12 @@ void main() {
         data.anthropometric.map((r) => r.weight),
       );
       expect(
-        again.vitalSigns.map((r) => '${r.systolic}/${r.diastolic}·${r.heartRate}'),
-        data.vitalSigns.map((r) => '${r.systolic}/${r.diastolic}·${r.heartRate}'),
+        again.vitalSigns.map(
+          (r) => '${r.systolic}/${r.diastolic}·${r.heartRate}',
+        ),
+        data.vitalSigns.map(
+          (r) => '${r.systolic}/${r.diastolic}·${r.heartRate}',
+        ),
       );
       expect(again.lipids.map((r) => r.ldl), data.lipids.map((r) => r.ldl));
     });
@@ -108,13 +112,12 @@ void main() {
     test('las fechas no quedan cuadriculadas al mismo día del mes', () {
       // El jitter existe justo para esto: si todas las tomas cayeran el mismo
       // día del mes, la demo se leería como lo que es —un generador—.
-      final daysOfMonth = data.anthropometric
-          .map((r) => r.date.day)
-          .toSet();
+      final daysOfMonth = data.anthropometric.map((r) => r.date.day).toSet();
       expect(
         daysOfMonth.length,
         greaterThan(3),
-        reason: 'los pesajes deben repartirse por el mes, no clavarse en un día',
+        reason:
+            'los pesajes deben repartirse por el mes, no clavarse en un día',
       );
     });
   });
