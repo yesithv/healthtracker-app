@@ -36,11 +36,7 @@ void main() {
   );
 
   /// Cliente que responde siempre lo mismo, sin tocar la red.
-  AuthApiClient clientThat({
-    int? status,
-    String body = '{}',
-    Object? throws,
-  }) {
+  AuthApiClient clientThat({int? status, String body = '{}', Object? throws}) {
     return AuthApiClient(
       httpClient: MockClient((_) async {
         if (throws != null) throw throws;
@@ -58,7 +54,7 @@ void main() {
   });
 
   group('con el alta pendiente ·', () {
-    setUp(() => PendingAccountStore.instance.markPending());
+    setUp(PendingAccountStore.instance.markPending);
 
     test('sin conexión: sigue pendiente y NO crea sesión', () async {
       final draft = draftWithEmail('lucia@correo.com');

@@ -38,12 +38,12 @@ class _FakeNotificationService extends NotificationService {
 const String _ledgerKey = 'medication_notif_ids';
 
 Medication _med(String id) => Medication(
-      id: id,
-      name: 'Med-$id',
-      doseQuantity: 1,
-      frequencyType: FrequencyType.daily,
-      startDate: DateTime(2026, 1, 1),
-    );
+  id: id,
+  name: 'Med-$id',
+  doseQuantity: 1,
+  frequencyType: FrequencyType.daily,
+  startDate: DateTime(2026, 1, 1),
+);
 
 MedicationDose _dose(String medId, int hour) =>
     MedicationDose(medicationId: medId, hour: hour, minute: 0);
@@ -74,36 +74,39 @@ void main() {
     expect(prefs.getStringList(_ledgerKey), ['200000', '200001']);
   });
 
-  test('a second run cancels the previous run by its persisted ledger', () async {
-    final notif = _FakeNotificationService();
-    final scheduler = MedicationScheduler(notificationService: notif);
+  test(
+    'a second run cancels the previous run by its persisted ledger',
+    () async {
+      final notif = _FakeNotificationService();
+      final scheduler = MedicationScheduler(notificationService: notif);
 
-    // Primera pasada: programa dos avisos y los guarda en el libro.
-    await scheduler.rescheduleAll(
-      medications: [_med('a')],
-      dosesByMedication: {
-        'a': [_dose('a', 8), _dose('a', 20)],
-      },
-      now: DateTime(2026, 8, 17, 0, 0),
-      horizonDays: 0,
-    );
-    final firstRunIds = List<int>.from(notif.scheduled);
-    notif.scheduled.clear();
+      // Primera pasada: programa dos avisos y los guarda en el libro.
+      await scheduler.rescheduleAll(
+        medications: [_med('a')],
+        dosesByMedication: {
+          'a': [_dose('a', 8), _dose('a', 20)],
+        },
+        now: DateTime(2026, 8, 17, 0, 0),
+        horizonDays: 0,
+      );
+      final firstRunIds = List<int>.from(notif.scheduled);
+      notif.scheduled.clear();
 
-    // Segunda pasada sin medicamentos: no programa nada nuevo y cancela los
-    // anteriores por el libro, dejándolo vacío (sin avisos huérfanos).
-    await scheduler.rescheduleAll(
-      medications: const [],
-      dosesByMedication: const {},
-      now: DateTime(2026, 8, 17, 0, 0),
-      horizonDays: 0,
-    );
+      // Segunda pasada sin medicamentos: no programa nada nuevo y cancela los
+      // anteriores por el libro, dejándolo vacío (sin avisos huérfanos).
+      await scheduler.rescheduleAll(
+        medications: const [],
+        dosesByMedication: const {},
+        now: DateTime(2026, 8, 17, 0, 0),
+        horizonDays: 0,
+      );
 
-    expect(notif.canceled, containsAll(firstRunIds));
-    expect(notif.scheduled, isEmpty);
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getStringList(_ledgerKey), isEmpty);
-  });
+      expect(notif.canceled, containsAll(firstRunIds));
+      expect(notif.scheduled, isEmpty);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getStringList(_ledgerKey), isEmpty);
+    },
+  );
 
   test('cancelAll cancels the ledger and clears it', () async {
     final notif = _FakeNotificationService();

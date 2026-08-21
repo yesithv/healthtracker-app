@@ -57,26 +57,31 @@ class LegacyImportMapper {
       // ── Antropometría ────────────────────────────────────────────────
       final weight = m['WEIGHT']?.toDouble();
       final heightAtPoint = m['HEIGHT']?.toDouble();
-      if (heightAtPoint != null && heightAtPoint > 0) lastHeight = heightAtPoint;
+      if (heightAtPoint != null && heightAtPoint > 0) {
+        lastHeight = heightAtPoint;
+      }
       final height = heightAtPoint ?? lastHeight;
       if (weight != null && height != null && height > 0) {
-        final bmi = m['BMI']?.toDouble() ??
+        final bmi =
+            m['BMI']?.toDouble() ??
             double.parse((weight / (height * height)).toStringAsFixed(1));
-        anthropometric.add(AnthropometricRecord(
-          date: entry.key,
-          weight: weight,
-          // El servidor entrega la talla en METROS; el modelo local es en cm
-          // (así la maneja la pantalla de captura).
-          height: double.parse((height * 100).toStringAsFixed(1)),
-          bmi: bmi,
-          waistCm: m['WAIST']?.toDouble(),
-          hipCm: m['HIP']?.toDouble(),
-          lowerAbdomenCm: m['LOWER_ABDOMEN']?.toDouble(),
-          armCm: m['ARM']?.toDouble(),
-          legCm: m['LEG']?.toDouble(),
-          chestBustCm: m['CHEST_BUST']?.toDouble(),
-          isSynced: true,
-        ));
+        anthropometric.add(
+          AnthropometricRecord(
+            date: entry.key,
+            weight: weight,
+            // El servidor entrega la talla en METROS; el modelo local es en cm
+            // (así la maneja la pantalla de captura).
+            height: double.parse((height * 100).toStringAsFixed(1)),
+            bmi: bmi,
+            waistCm: m['WAIST']?.toDouble(),
+            hipCm: m['HIP']?.toDouble(),
+            lowerAbdomenCm: m['LOWER_ABDOMEN']?.toDouble(),
+            armCm: m['ARM']?.toDouble(),
+            legCm: m['LEG']?.toDouble(),
+            chestBustCm: m['CHEST_BUST']?.toDouble(),
+            isSynced: true,
+          ),
+        );
       }
 
       // ── Composición corporal ─────────────────────────────────────────
@@ -91,15 +96,17 @@ class LegacyImportMapper {
           visceral != null ||
           kcal != null ||
           bodyAge != null) {
-        bodyComposition.add(BodyCompositionRecord(
-          date: entry.key,
-          bodyFatPercent: bodyFat,
-          musclePct: musclePct,
-          visceralFatLevel: visceral,
-          bmrKcal: kcal,
-          metabolicAge: bodyAge,
-          isSynced: true,
-        ));
+        bodyComposition.add(
+          BodyCompositionRecord(
+            date: entry.key,
+            bodyFatPercent: bodyFat,
+            musclePct: musclePct,
+            visceralFatLevel: visceral,
+            bmrKcal: kcal,
+            metabolicAge: bodyAge,
+            isSynced: true,
+          ),
+        );
       }
     }
 

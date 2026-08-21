@@ -14,9 +14,13 @@ import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
+
 import 'dart:math' as math;
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
+
+part 'record_body_composition_screen.parts.dart';
 
 class RecordBodyCompositionScreen extends StatefulWidget {
   final BodyCompositionRecord? recordToEdit;
@@ -389,7 +393,7 @@ class _RecordBodyCompositionScreenState
       backgroundColor: surfaces.canvas,
       body: Column(
         children: [
-          _buildAppBar(context, l10n),
+          _BodyCompositionAppBar(l10n),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -413,7 +417,7 @@ class _RecordBodyCompositionScreenState
                   ],
 
                   // ── Date & Time ────────────────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     icon: Icons.calendar_month_outlined,
                     title: l10n.dateTimeOfMeasurement,
                     child: Row(
@@ -443,7 +447,7 @@ class _RecordBodyCompositionScreenState
                   const SizedBox(height: 20),
 
                   // ── Body Fat % ─────────────────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     icon: Icons.pie_chart_outline,
                     title: l10n.compositionBodyFat,
                     badge: StatusChip(
@@ -470,7 +474,7 @@ class _RecordBodyCompositionScreenState
                   const SizedBox(height: 20),
 
                   // ── Muscle Mass ─────────────────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     icon: Icons.fitness_center,
                     title: l10n.compositionMuscleMass,
                     child: _buildSliderField(
@@ -493,7 +497,7 @@ class _RecordBodyCompositionScreenState
                   const SizedBox(height: 20),
 
                   // ── Visceral + Metabolic Age ────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     icon: Icons.monitor_heart_outlined,
                     title: l10n.compositionVisceralAndAge,
                     child: Row(
@@ -551,7 +555,7 @@ class _RecordBodyCompositionScreenState
                   const SizedBox(height: 20),
 
                   // ── Optional: water + bone ──────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     icon: Icons.water_drop_outlined,
                     title: l10n.compositionOptionalSection,
                     child: Column(
@@ -592,9 +596,9 @@ class _RecordBodyCompositionScreenState
                   const SizedBox(height: 20),
 
                   // ── Comment ─────────────────────────────────────────────
-                  _buildSectionCard(
+                  _SectionCard(
                     title: l10n.commentOptional,
-                    child: _buildCommentBox(l10n),
+                    child: _CommentBox(_commentController, l10n),
                   ),
                   const SizedBox(height: 32),
 
@@ -645,89 +649,6 @@ class _RecordBodyCompositionScreenState
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  // ── AppBar ────────────────────────────────────────────────────────────────
-  Widget _buildAppBar(BuildContext context, AppLocalizations l10n) {
-    final family = _family;
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: family.accent,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(_theme.surfaces.radiusCard + 4),
-          bottomRight: Radius.circular(_theme.surfaces.radiusCard + 4),
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Container(
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back, color: family.onAccent),
-                onPressed: () => context.pop(),
-              ),
-              Expanded(
-                child: Text(
-                  l10n.compositionTitle,
-                  textAlign: TextAlign.center,
-                  style: _theme.type.sectionLabel.copyWith(
-                    fontSize: 15,
-                    color: family.onAccent,
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.accessibility_new, color: family.onAccent),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── Section card ──────────────────────────────────────────────────────────
-  Widget _buildSectionCard({
-    IconData? icon,
-    required String title,
-    Widget? badge,
-    required Widget child,
-  }) {
-    final theme = _theme;
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: theme.surfaces.cardDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: _family.accent, size: 18),
-                const SizedBox(width: 8),
-              ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.type.sectionLabel.copyWith(
-                    color: theme.surfaces.ink,
-                  ),
-                ),
-              ),
-              ?badge,
-            ],
-          ),
-          const SizedBox(height: 16),
-          child,
         ],
       ),
     );
@@ -817,12 +738,12 @@ class _RecordBodyCompositionScreenState
             const Spacer(),
             Row(
               children: [
-                _buildAdjustButton(
+                _AdjustButton(
                   Icons.remove,
                   () => setState(() => onChanged(math.max(min, value - 0.1))),
                 ),
                 const SizedBox(width: 10),
-                _buildAdjustButton(
+                _AdjustButton(
                   Icons.add,
                   () => setState(() => onChanged(math.min(max, value + 0.1))),
                 ),
@@ -910,9 +831,9 @@ class _RecordBodyCompositionScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _buildSmallAdjustButton(Icons.remove, onDecrement),
+              _SmallAdjustButton(Icons.remove, onDecrement),
               const SizedBox(width: 8),
-              _buildSmallAdjustButton(Icons.add, onIncrement),
+              _SmallAdjustButton(Icons.add, onIncrement),
             ],
           ),
         ],
@@ -1070,13 +991,13 @@ class _RecordBodyCompositionScreenState
               ),
               Column(
                 children: [
-                  _buildBmrAdjustButton(Icons.add, () {
+                  _BmrAdjustButton(Icons.add, () {
                     final val = _displayBmr + 10;
                     setState(() => _userBmr = val);
                     _bmrController.text = val.toString();
                   }),
                   const SizedBox(height: 6),
-                  _buildBmrAdjustButton(Icons.remove, () {
+                  _BmrAdjustButton(Icons.remove, () {
                     final val = (_displayBmr - 10).clamp(500, 9999);
                     setState(() => _userBmr = val);
                     _bmrController.text = val.toString();
@@ -1091,78 +1012,6 @@ class _RecordBodyCompositionScreenState
             style: theme.type.meta.copyWith(color: onAccentFaint, fontSize: 10),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBmrAdjustButton(IconData icon, VoidCallback onTap) {
-    final onAccent = _family.onAccent;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: _theme.surfaces.iconRadius,
-      child: IconBadge(
-        icon,
-        color: onAccent,
-        background: onAccent.withValues(alpha: 0.15),
-        size: 32,
-        iconSize: 16,
-      ),
-    );
-  }
-
-  // ── Adjust buttons ────────────────────────────────────────────────────────
-  Widget _buildAdjustButton(IconData icon, VoidCallback onTap) {
-    final surfaces = _theme.surfaces;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: surfaces.iconRadius,
-      child: IconBadge(
-        icon,
-        color: _family.accent,
-        background: surfaces.inset,
-        size: 40,
-        border: Border.all(color: surfaces.divider),
-      ),
-    );
-  }
-
-  Widget _buildSmallAdjustButton(IconData icon, VoidCallback onTap) {
-    final family = _family;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: _theme.surfaces.iconRadius,
-      child: IconBadge(
-        icon,
-        color: family.accent,
-        background: family.surface,
-        size: 32,
-        iconSize: 16,
-      ),
-    );
-  }
-
-  // ── Comment box ───────────────────────────────────────────────────────────
-  Widget _buildCommentBox(AppLocalizations l10n) {
-    final theme = _theme;
-    final surfaces = theme.surfaces;
-    return Container(
-      decoration: BoxDecoration(
-        color: surfaces.inset,
-        borderRadius: BorderRadius.circular(surfaces.radiusCard),
-        border: Border.all(color: surfaces.divider),
-      ),
-      child: TextField(
-        controller: _commentController,
-        maxLines: 3,
-        // Texto libre, pero acotado: un pegado accidental no debe meter miles
-        // de caracteres en la base.
-        inputFormatters: InputRules.freeText(),
-        style: theme.type.body.copyWith(color: surfaces.ink),
-        decoration: InputDecoration(
-          hintText: l10n.commentHint,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.all(16),
-        ),
       ),
     );
   }

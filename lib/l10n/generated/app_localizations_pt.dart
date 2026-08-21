@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -40,6 +41,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get measurementUnits => 'Unidades de Medida';
+
+  @override
+  String get noArticlesFound => 'Nenhum artigo encontrado';
+
+  @override
+  String get noArticlesFoundDesc => 'Tente outra categoria de saúde';
 
   @override
   String get notifications => 'Notificações';
@@ -379,34 +386,34 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String historyTrendOf(String metric) {
-    return '$metric TREND';
+    return 'TENDÊNCIA DE $metric';
   }
 
   @override
   String historyMetricNeedsData(String measure) {
-    return 'Log $measure to see this indicator.';
+    return 'Registre $measure para ver este indicador.';
   }
 
   @override
-  String get whtrName => 'Waist-to-height';
+  String get whtrName => 'Cintura-altura';
 
   @override
   String get whtrShort => 'WHtR';
 
   @override
-  String get whtrLow => 'LOW';
+  String get whtrLow => 'BAIXO';
 
   @override
   String get whtrNormal => 'NORMAL';
 
   @override
-  String get whtrIncreased => 'INCREASED';
+  String get whtrIncreased => 'AUMENTADO';
 
   @override
-  String get whtrHigh => 'HIGH';
+  String get whtrHigh => 'ALTO';
 
   @override
-  String get whrName => 'Waist-to-hip';
+  String get whrName => 'Cintura-quadril';
 
   @override
   String get whrShort => 'WHR';
@@ -415,13 +422,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get whrNormal => 'NORMAL';
 
   @override
-  String get whrIncreased => 'INCREASED';
+  String get whrIncreased => 'AUMENTADO';
 
   @override
-  String get measureWaist => 'your waist';
+  String get measureWaist => 'a cintura';
 
   @override
-  String get measureWaistAndHip => 'waist and hip';
+  String get measureWaistAndHip => 'cintura e quadril';
 
   @override
   String get unitCm => 'cm';
@@ -2601,7 +2608,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentsTitle => 'As minhas consultas';
 
   @override
-  String get appointmentsDescription => 'Acompanha as consultas que tens e as que ainda precisas de marcar.';
+  String get appointmentsDescription =>
+      'Acompanha as consultas que tens e as que ainda precisas de marcar.';
 
   @override
   String get appointmentsAddCta => 'Adicionar consulta';
@@ -2619,7 +2627,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Ainda não tens consultas';
 
   @override
-  String get appointmentsEmptyBody => 'Adiciona as consultas que precisas de marcar ou as que já tens agendadas.';
+  String get appointmentsEmptyBody =>
+      'Adiciona as consultas que precisas de marcar ou as que já tens agendadas.';
 
   @override
   String get appointmentsOverdueChip => 'Vencida';
@@ -2761,7 +2770,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentFieldRecurring => 'Controle periódico';
 
   @override
-  String get appointmentRecurringHint => 'Quando confirmar que compareceu, vamos lembrá-lo de marcar a próxima automaticamente.';
+  String get appointmentRecurringHint =>
+      'Quando confirmar que compareceu, vamos lembrá-lo de marcar a próxima automaticamente.';
 
   @override
   String get appointmentFrequencyLabel => 'Com que frequência';
@@ -2778,7 +2788,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentActionEdit => 'Editar';
 
   @override
-  String get appointmentNextSpawned => 'Anotamos o próximo controle para marcar.';
+  String get appointmentNextSpawned =>
+      'Anotamos o próximo controle para marcar.';
 
   @override
   String get appointmentComplianceRedTitle => 'Requer atenção';
@@ -2790,7 +2801,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Tudo em dia';
 
   @override
-  String get appointmentComplianceGreenBody => 'Nenhuma consulta pendente ou atrasada.';
+  String get appointmentComplianceGreenBody =>
+      'Nenhuma consulta pendente ou atrasada.';
 
   @override
   String appointmentNextActionOverdue(String title) {

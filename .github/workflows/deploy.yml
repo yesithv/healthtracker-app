@@ -46,16 +46,27 @@ jobs:
         run: flutter pub get
 
       - name: Formato
-        # Sólo avisa: el formato no debe bloquear un despliegue.
-        run: dart format --output=none --set-exit-if-changed lib test || true
+        # BLOQUEANTE: el árbol se normalizó con `dart format` y a partir de aquí
+        # el estilo es contrato. Si un cambio llega sin formatear, `--set-exit-if
+        # -changed` devuelve !=0 y el build se detiene, con la lista de ficheros a
+        # formatear. Para arreglarlo en local: `dart format lib test`.
+        #
+        # Se excluye `lib/l10n/generated/` (igual que en el analyze): lo produce
+        # `gen-l10n` en el `pub get` de arriba, su estilo lo fija esa herramienta
+        # y no debe gatearse contra `dart format`.
+        run: >
+          dart format --output=none --set-exit-if-changed
+          $(find lib test -name '*.dart' -not -path 'lib/l10n/generated/*')
 
       - name: Análisis estático
         run: flutter analyze
 
       - name: Tests
-        # Incluye el contrato semántico de los temas: si un tema rompe la
-        # familia de matiz de un estado clínico o baja del contraste AA, el
-        # despliegue se detiene aquí.
+        # Frena el despliegue ante cualquier regresión cubierta por las pruebas,
+        # entre ellas los guardianes de invariantes: el contrato semántico de los
+        # temas (familias de matiz y contraste AA), la cobertura de glifos y la
+        # PARIDAD DE CLAVES l10n entre los cinco idiomas (`arb_key_parity_test`),
+        # que impide que a un idioma se le quede una clave sin traducir.
         run: flutter test
 
   build:

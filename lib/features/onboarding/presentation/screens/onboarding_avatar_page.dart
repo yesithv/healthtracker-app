@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:flutter/material.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
@@ -280,7 +282,9 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
           width: 140,
           height: 140,
         );
-      } catch (_) {}
+      } catch (e) {
+        debugLogError('Onboarding.decodeAvatar', e);
+      }
     }
     return Container(
       color: surfaces.divider,
@@ -302,58 +306,58 @@ class _OnboardingAvatarPageState extends State<OnboardingAvatarPage>
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: surfaces.inkMuted,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.profileImageTitle,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: surfaces.ink,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: IconBadge(
-                Icons.photo_library_outlined,
-                color: surfaces.brand,
-                background: surfaces.brand.withValues(alpha: 0.1),
-                iconSize: 24,
-              ),
-              title: Text(l10n.gallery),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(context, ImageSource.gallery);
-              },
-            ),
-            ListTile(
-              leading: IconBadge(
-                Icons.camera_alt_outlined,
-                color: theme.clinical.optimal.accent,
-                background: theme.clinical.optimal.accent.withValues(
-                  alpha: 0.1,
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: surfaces.inkMuted,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                iconSize: 24,
               ),
-              title: Text(l10n.camera),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage(context, ImageSource.camera);
-              },
-            ),
-          ],
-        ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.profileImageTitle,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: surfaces.ink,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: IconBadge(
+                  Icons.photo_library_outlined,
+                  color: surfaces.brand,
+                  background: surfaces.brand.withValues(alpha: 0.1),
+                  iconSize: 24,
+                ),
+                title: Text(l10n.gallery),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(context, ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: IconBadge(
+                  Icons.camera_alt_outlined,
+                  color: theme.clinical.optimal.accent,
+                  background: theme.clinical.optimal.accent.withValues(
+                    alpha: 0.1,
+                  ),
+                  iconSize: 24,
+                ),
+                title: Text(l10n.camera),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(context, ImageSource.camera);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -62,8 +62,11 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       );
 
       if (!mounted) return;
-      await completeLoginAndEnter(context, account,
-          identifier: widget.identifier);
+      await completeLoginAndEnter(
+        context,
+        account,
+        identifier: widget.identifier,
+      );
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
@@ -105,7 +108,11 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
               const Text(
                 'Encontramos tu historial',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -141,11 +148,21 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      width: 16, height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: _blue),
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: _blue,
+                      ),
                     ),
                     const SizedBox(width: 10),
-                    Text(_status!, style: const TextStyle(color: _blue, fontWeight: FontWeight.w600)),
+                    Text(
+                      _status!,
+                      style: const TextStyle(
+                        color: _blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -159,9 +176,18 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                      const Icon(
+                        Icons.error_outline,
+                        color: Color(0xFFEF4444),
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C)))),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: const TextStyle(color: Color(0xFFB91C1C)),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -175,10 +201,20 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                 onPressed: _busy ? null : _verify,
                 child: _busy
                     ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : Text(l10n.identifyBringHistory,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        l10n.identifyBringHistory,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ],
           ),
@@ -188,20 +224,26 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   }
 
   Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 8),
-        child: Text(text,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
-      );
+    padding: const EdgeInsets.only(left: 4, bottom: 8),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF64748B),
+      ),
+    ),
+  );
 
   InputDecoration _decoration(String hint, IconData icon) => InputDecoration(
-        hintText: hint,
-        prefixIcon: Icon(icon, color: _blue, size: 20),
-        filled: true,
-        fillColor: Colors.white,
-        counterText: '',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-      );
+    hintText: hint,
+    prefixIcon: Icon(icon, color: _blue, size: 20),
+    filled: true,
+    fillColor: Colors.white,
+    counterText: '',
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide.none,
+    ),
+  );
 }

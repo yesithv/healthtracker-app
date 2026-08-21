@@ -89,7 +89,7 @@ void main() {
           matching: find.byType(AnimatedContainer),
         ),
       );
-      return (container.decoration as BoxDecoration).color!;
+      return (container.decoration! as BoxDecoration).color!;
     }
 
     // El elegido va en el acento de la familia; el resto, en la superficie

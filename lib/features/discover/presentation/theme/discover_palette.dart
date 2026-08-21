@@ -28,10 +28,10 @@ class CategoryStyle {
 
   /// A two-stop gradient used on hero / featured surfaces.
   LinearGradient gradient() => LinearGradient(
-        colors: [accent, Color.lerp(accent, Colors.black, 0.22)!],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: [accent, Color.lerp(accent, Colors.black, 0.22)!],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
 
 /// Central mapping from taxonomy keys (shared with the backoffice) to styles.
@@ -63,7 +63,8 @@ class DiscoverPalette {
   }
 
   /// Acento de la sección cuando no cuelga de una categoría concreta.
-  static Color brandOf(BuildContext context) => Theme.of(context).surfaces.brand;
+  static Color brandOf(BuildContext context) =>
+      Theme.of(context).surfaces.brand;
 
   /// Icon shown on the category filter chips.
   static IconData chipIcon(String key) {

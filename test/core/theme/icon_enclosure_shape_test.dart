@@ -102,13 +102,13 @@ const _legitimateCircles = <String, ({int count, String reason})>{
         'La casilla redonda de «marcada» (convención de checkbox); el ✓ es su '
         'relleno cuando está activa, no un icono encerrado.',
   ),
-  'lib/features/medications/presentation/screens/medication_wizard_screen.dart':
-      (
-        count: 2,
-        reason:
-            'El selector de color (un punto de color) y el círculo de día de la '
-            'semana (un radio/toggle). Ninguno encierra un icono.',
-      ),
+  'lib/features/medications/presentation/screens/medication_wizard_screen.parts.dart': (
+    count: 2,
+    reason:
+        'El selector de color (un punto de color) y el círculo de día de la '
+        'semana (un radio/toggle). Ninguno encierra un icono. Las piezas del '
+        'asistente viven en el part file (ver medication_wizard_screen.dart).',
+  ),
 };
 
 void main() {

@@ -64,8 +64,9 @@ class MedicationsSummaryCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         l10n.medDashMedsTitle,
-                        style: theme.type.sectionLabel
-                            .copyWith(color: surfaces.brand),
+                        style: theme.type.sectionLabel.copyWith(
+                          color: surfaces.brand,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -110,8 +111,11 @@ class _Body extends StatelessWidget {
     // antigua tarjeta del dashboard).
     ExpectedDose? next;
     for (final m in controller.activeMedications) {
-      final candidate =
-          MedicationScheduleService.nextDose(m, controller.dosesFor(m.id), now);
+      final candidate = MedicationScheduleService.nextDose(
+        m,
+        controller.dosesFor(m.id),
+        now,
+      );
       if (candidate == null) continue;
       if (next == null || candidate.scheduledAt.isBefore(next.scheduledAt)) {
         next = candidate;
@@ -121,11 +125,13 @@ class _Body extends StatelessWidget {
     final streak = controller.adherence().currentStreak(today: now);
 
     final lowMeds = controller.activeMedications
-        .where((m) => MedicationInventoryService.shouldAlert(
-              m,
-              controller.dosesFor(m.id),
-              today: now,
-            ))
+        .where(
+          (m) => MedicationInventoryService.shouldAlert(
+            m,
+            controller.dosesFor(m.id),
+            today: now,
+          ),
+        )
         .toList();
 
     final hasPending = pending.isNotEmpty && next != null;
@@ -167,10 +173,7 @@ class _Body extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         hero,
-        if (chip != null) ...[
-          const SizedBox(height: 10),
-          chip,
-        ],
+        if (chip != null) ...[const SizedBox(height: 10), chip],
       ],
     );
   }
@@ -230,8 +233,10 @@ class _StreakHero extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.medDashAllDone,
-              style: theme.type.cardTitle
-                  .copyWith(fontSize: 15, color: surfaces.ink),
+              style: theme.type.cardTitle.copyWith(
+                fontSize: 15,
+                color: surfaces.ink,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -249,10 +254,7 @@ class _StreakHero extends StatelessWidget {
           children: [
             Icon(Icons.local_fire_department, size: 20, color: optimal.accent),
             const SizedBox(width: 4),
-            Text(
-              '$streak',
-              style: theme.type.numeral.copyWith(fontSize: 30),
-            ),
+            Text('$streak', style: theme.type.numeral.copyWith(fontSize: 30)),
           ],
         ),
         Text(l10n.medStreakDays, style: theme.type.meta),
@@ -278,8 +280,10 @@ class _AddContent extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: theme.type.cardTitle
-                .copyWith(fontSize: 15, color: surfaces.brand),
+            style: theme.type.cardTitle.copyWith(
+              fontSize: 15,
+              color: surfaces.brand,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

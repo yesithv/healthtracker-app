@@ -19,15 +19,24 @@ void main() {
 
     test('normal at and below 120/80 (and not low)', () {
       expect(BpCategory.of(120, 80), BpCategory.normal);
-      expect(BpCategory.of(90, 60), BpCategory.normal); // just above the low cutoff
+      expect(
+        BpCategory.of(90, 60),
+        BpCategory.normal,
+      ); // just above the low cutoff
       expect(BpCategory.of(100, 70), BpCategory.normal);
     });
 
     test('elevated up to 139/89', () {
       expect(BpCategory.of(130, 85), BpCategory.elevated);
       expect(BpCategory.of(139, 89), BpCategory.elevated);
-      expect(BpCategory.of(121, 80), BpCategory.elevated); // systolic over normal
-      expect(BpCategory.of(120, 81), BpCategory.elevated); // diastolic over normal
+      expect(
+        BpCategory.of(121, 80),
+        BpCategory.elevated,
+      ); // systolic over normal
+      expect(
+        BpCategory.of(120, 81),
+        BpCategory.elevated,
+      ); // diastolic over normal
     });
 
     test('high above 139/89', () {

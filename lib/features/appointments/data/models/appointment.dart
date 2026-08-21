@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'package:uuid/uuid.dart';
 
 /// Estado de una cita dentro de su ciclo de vida:
@@ -18,11 +20,8 @@ import 'package:uuid/uuid.dart';
 /// enum no corrompa datos existentes.
 enum AppointmentStatus { toBook, scheduled, attended, missed, cancelled }
 
-AppointmentStatus _statusFromName(String? name) =>
-    AppointmentStatus.values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => AppointmentStatus.toBook,
-    );
+AppointmentStatus _statusFromName(String? name) => AppointmentStatus.values
+    .firstWhere((e) => e.name == name, orElse: () => AppointmentStatus.toBook);
 
 DateTime? _parseDate(Object? value) =>
     value == null ? null : DateTime.parse(value as String);
@@ -39,7 +38,8 @@ List<int> _decodeOffsets(Object? value) {
     if (decoded is List) {
       return decoded.whereType<num>().map((e) => e.toInt()).toList();
     }
-  } catch (_) {
+  } catch (e) {
+    debugLogError('Appointment.parseReminderOffsets', e);
     // JSON corrupto: se ignora y se devuelve vacío.
   }
   return const [];
@@ -119,10 +119,10 @@ class Appointment {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.isSynced = false,
-  })  : id = id ?? const Uuid().v4(),
-        reminderOffsets = reminderOffsets ?? const [],
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       reminderOffsets = reminderOffsets ?? const [],
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   Appointment copyWith({
     String? title,
@@ -157,17 +157,16 @@ class Appointment {
       location: location ?? this.location,
       notes: notes ?? this.notes,
       status: status ?? this.status,
-      scheduledAt:
-          clearScheduledAt ? null : (scheduledAt ?? this.scheduledAt),
-      dueToBookOn:
-          clearDueToBookOn ? null : (dueToBookOn ?? this.dueToBookOn),
+      scheduledAt: clearScheduledAt ? null : (scheduledAt ?? this.scheduledAt),
+      dueToBookOn: clearDueToBookOn ? null : (dueToBookOn ?? this.dueToBookOn),
       isRecurring: isRecurring ?? this.isRecurring,
       intervalMonths: intervalMonths ?? this.intervalMonths,
       leadDays: leadDays ?? this.leadDays,
       seriesId: seriesId ?? this.seriesId,
       reminderOffsets: reminderOffsets ?? this.reminderOffsets,
-      snoozedUntil:
-          clearSnoozedUntil ? null : (snoozedUntil ?? this.snoozedUntil),
+      snoozedUntil: clearSnoozedUntil
+          ? null
+          : (snoozedUntil ?? this.snoozedUntil),
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
       isSynced: isSynced ?? this.isSynced,

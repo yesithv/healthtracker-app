@@ -3,7 +3,13 @@ import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.da
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 
 ServerBand _b(String code, double min, double max, {int order = 0}) =>
-    ServerBand(bandCode: code, bandLabel: code, minValue: min, maxValue: max, sortOrder: order);
+    ServerBand(
+      bandCode: code,
+      bandLabel: code,
+      minValue: min,
+      maxValue: max,
+      sortOrder: order,
+    );
 
 void main() {
   final store = ReferenceRangesStore.instance;
@@ -34,9 +40,12 @@ void main() {
       expect(store.classify('VISCERAL_FAT_LEVEL', 200)!.bandCode, 'VERY_HIGH');
     });
 
-    test('sin datos para el indicador devuelve null (fallback del llamador)', () {
-      expect(store.classify('BMI', 24), isNull);
-    });
+    test(
+      'sin datos para el indicador devuelve null (fallback del llamador)',
+      () {
+        expect(store.classify('BMI', 24), isNull);
+      },
+    );
   });
 
   group('Clasificadores: servidor primero, fábrica como fallback', () {

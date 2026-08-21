@@ -74,7 +74,7 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
       listen: false,
     );
 
-    bool? confirm = await showDialog<bool>(
+    final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.backupImportConfirmTitle),

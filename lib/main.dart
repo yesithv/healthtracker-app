@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import 'core/theme/theme_catalog.dart';
 import 'core/router/app_router.dart';
 import 'core/providers/user_profile_provider.dart';
@@ -15,6 +17,7 @@ import 'core/providers/ui_preferences_provider.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_units_provider.dart';
 import 'core/providers/discover_provider.dart';
+
 import 'package:myvitals_healthtracker_app/features/discover/data/repositories/discover_repository.dart';
 import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
@@ -336,38 +339,38 @@ class _NotificationsLifecycleState extends State<_NotificationsLifecycle>
   void _syncNotifications() {
     final l10n = AppLocalizations.of(context);
     if (l10n == null) return;
-    final controller = context.read<MedicationsController>();
-    controller.setNotificationTextBuilders(
-      doseText: (med, dose) => (
-        title: l10n.medicationDoseNotifTitle(med.name),
-        body: l10n.medicationDoseNotifBody,
-      ),
-      inventoryText: (med) => (
-        title: l10n.medicationRefillNotifTitle(med.name),
-        body: l10n.medicationRefillNotifBody,
-      ),
-    );
-    // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
-    // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
-    controller.refreshAndReschedule();
+    context.read<MedicationsController>()
+      ..setNotificationTextBuilders(
+        doseText: (med, dose) => (
+          title: l10n.medicationDoseNotifTitle(med.name),
+          body: l10n.medicationDoseNotifBody,
+        ),
+        inventoryText: (med) => (
+          title: l10n.medicationRefillNotifTitle(med.name),
+          body: l10n.medicationRefillNotifBody,
+        ),
+      )
+      // Asegura que los repositorios están cargados antes de reprogramar: hacerlo
+      // con la caché vacía cancelaría los avisos existentes sin volver a crearlos.
+      ..refreshAndReschedule();
 
     // Mismo ciclo para el inventario de citas: textos localizados + reprograma.
-    final appointments = context.read<AppointmentsController>();
-    appointments.setNotificationTextBuilders(
-      scheduledText: (a) => (
-        title: l10n.apptScheduledNotifTitle(a.title),
-        body: l10n.apptScheduledNotifBody,
-      ),
-      toBookText: (a) => (
-        title: l10n.apptToBookNotifTitle(a.title),
-        body: l10n.apptToBookNotifBody,
-      ),
-      overdueText: (a) => (
-        title: l10n.apptOverdueNotifTitle(a.title),
-        body: l10n.apptOverdueNotifBody,
-      ),
-    );
-    appointments.refreshAndReschedule();
+    context.read<AppointmentsController>()
+      ..setNotificationTextBuilders(
+        scheduledText: (a) => (
+          title: l10n.apptScheduledNotifTitle(a.title),
+          body: l10n.apptScheduledNotifBody,
+        ),
+        toBookText: (a) => (
+          title: l10n.apptToBookNotifTitle(a.title),
+          body: l10n.apptToBookNotifBody,
+        ),
+        overdueText: (a) => (
+          title: l10n.apptOverdueNotifTitle(a.title),
+          body: l10n.apptOverdueNotifBody,
+        ),
+      )
+      ..refreshAndReschedule();
   }
 
   @override
@@ -382,9 +385,9 @@ class _AppScrollBehavior extends MaterialScrollBehavior {
 
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-        PointerDeviceKind.stylus,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+  };
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/tokens/metric_palette.dart';
+
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
 class GlossaryTerm {

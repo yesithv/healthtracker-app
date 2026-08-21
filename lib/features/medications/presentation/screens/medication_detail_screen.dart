@@ -42,16 +42,18 @@ class MedicationDetailScreen extends StatelessWidget {
             onPressed: () => Navigator.pop(context, false),
             child: Text(
               l10n.cancel,
-              style: theme.type.button
-                  .copyWith(color: theme.surfaces.inkSecondary),
+              style: theme.type.button.copyWith(
+                color: theme.surfaces.inkSecondary,
+              ),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               l10n.medDelete,
-              style: theme.type.button
-                  .copyWith(color: theme.clinical.alert.accent),
+              style: theme.type.button.copyWith(
+                color: theme.clinical.alert.accent,
+              ),
             ),
           ),
         ],
@@ -90,8 +92,11 @@ class MedicationDetailScreen extends StatelessWidget {
     final ringColor = vm.lowStock
         ? theme.clinical.caution.accent
         : resolveMedTone(context, vm.color).accent;
-    final headerParts =
-        [vm.form, vm.strength, vm.reason].where((s) => s.isNotEmpty).join(' · ');
+    final headerParts = [
+      vm.form,
+      vm.strength,
+      vm.reason,
+    ].where((s) => s.isNotEmpty).join(' · ');
 
     // Últimos 8 días de estado para la tira de cuadros.
     final recent = controller
@@ -112,15 +117,22 @@ class MedicationDetailScreen extends StatelessWidget {
                 Row(
                   children: [
                     MedIcon(
-                        icon: vm.icon, color: vm.color, size: 60, iconSize: 30),
+                      icon: vm.icon,
+                      color: vm.color,
+                      size: 60,
+                      iconSize: 30,
+                    ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(vm.name,
-                              style:
-                                  theme.type.screenTitle.copyWith(fontSize: 28)),
+                          Text(
+                            vm.name,
+                            style: theme.type.screenTitle.copyWith(
+                              fontSize: 28,
+                            ),
+                          ),
                           if (headerParts.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Text(headerParts, style: theme.type.meta),
@@ -129,16 +141,20 @@ class MedicationDetailScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: theme.clinical.caution.surface,
                                 borderRadius: BorderRadius.circular(
-                                    surfaces.radiusControl),
+                                  surfaces.radiusControl,
+                                ),
                               ),
                               child: Text(
                                 l10n.medPausedBadge,
                                 style: theme.type.meta.copyWith(
-                                    color: theme.clinical.caution.accent),
+                                  color: theme.clinical.caution.accent,
+                                ),
                               ),
                             ),
                           ],
@@ -154,8 +170,10 @@ class MedicationDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(vm.schedule,
-                          style: theme.type.cardTitle.copyWith(fontSize: 18)),
+                      Text(
+                        vm.schedule,
+                        style: theme.type.cardTitle.copyWith(fontSize: 18),
+                      ),
                       if (vm.doseSummary.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(vm.doseSummary, style: theme.type.meta),
@@ -171,7 +189,9 @@ class MedicationDetailScreen extends StatelessWidget {
                     action: _CardAction(
                       label: l10n.medicationRefill,
                       onTap: () => context.push(
-                          '/profile/medications/refill', extra: med.id),
+                        '/profile/medications/refill',
+                        extra: med.id,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -190,18 +210,23 @@ class MedicationDetailScreen extends StatelessWidget {
                             children: [
                               Text(
                                 l10n.medRemainingUnits(vm.stock),
-                                style:
-                                    theme.type.cardTitle.copyWith(fontSize: 16),
+                                style: theme.type.cardTitle.copyWith(
+                                  fontSize: 16,
+                                ),
                               ),
                               if (vm.runOut.isNotEmpty) ...[
                                 const SizedBox(height: 4),
-                                Text(l10n.medRunsOutOn(vm.runOut),
-                                    style: theme.type.meta),
+                                Text(
+                                  l10n.medRunsOutOn(vm.runOut),
+                                  style: theme.type.meta,
+                                ),
                               ],
                               const SizedBox(height: 4),
                               Text(
                                 l10n.medPackAndThreshold(
-                                    vm.packSize, vm.refillThreshold),
+                                  vm.packSize,
+                                  vm.refillThreshold,
+                                ),
                                 style: theme.type.meta,
                               ),
                             ],
@@ -221,25 +246,33 @@ class MedicationDetailScreen extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text('${vm.adherencePct}%',
-                              style: theme.type.numeral.copyWith(fontSize: 34)),
+                          Text(
+                            '${vm.adherencePct}%',
+                            style: theme.type.numeral.copyWith(fontSize: 34),
+                          ),
                           const SizedBox(width: 6),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 6),
-                            child:
-                                Text(l10n.medThisMonth, style: theme.type.meta),
+                            child: Text(
+                              l10n.medThisMonth,
+                              style: theme.type.meta,
+                            ),
                           ),
                           const Spacer(),
-                          Text('${vm.streak}',
-                              style: theme.type.numeral.copyWith(
-                                fontSize: 34,
-                                color: theme.clinical.optimal.accent,
-                              )),
+                          Text(
+                            '${vm.streak}',
+                            style: theme.type.numeral.copyWith(
+                              fontSize: 34,
+                              color: theme.clinical.optimal.accent,
+                            ),
+                          ),
                           const SizedBox(width: 6),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 6),
-                            child:
-                                Text(l10n.medStreakDays, style: theme.type.meta),
+                            child: Text(
+                              l10n.medStreakDays,
+                              style: theme.type.meta,
+                            ),
                           ),
                         ],
                       ),
@@ -258,26 +291,36 @@ class MedicationDetailScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(l10n.medSectionInformation,
-                              style: theme.type.sectionLabel),
+                          Text(
+                            l10n.medSectionInformation,
+                            style: theme.type.sectionLabel,
+                          ),
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: surfaces.inset,
-                              borderRadius:
-                                  BorderRadius.circular(surfaces.radiusControl),
+                              borderRadius: BorderRadius.circular(
+                                surfaces.radiusControl,
+                              ),
                             ),
-                            child:
-                                Text(l10n.medInfoSoon, style: theme.type.meta),
+                            child: Text(
+                              l10n.medInfoSoon,
+                              style: theme.type.meta,
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text(l10n.medInfoSoonBody,
-                          style: theme.type.body
-                              .copyWith(color: surfaces.inkMuted)),
+                      Text(
+                        l10n.medInfoSoonBody,
+                        style: theme.type.body.copyWith(
+                          color: surfaces.inkMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -291,7 +334,8 @@ class MedicationDetailScreen extends StatelessWidget {
                       ? theme.clinical.caution.accent
                       : theme.clinical.optimal.accent,
                   solid: false,
-                  onPressed: () => controller.setActive(med, !med.isActive),
+                  onPressed: () =>
+                      controller.setActive(med, active: !med.isActive),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -302,7 +346,9 @@ class MedicationDetailScreen extends StatelessWidget {
                         color: surfaces.brand,
                         solid: false,
                         onPressed: () => context.push(
-                            '/profile/medications/add', extra: med.id),
+                          '/profile/medications/add',
+                          extra: med.id,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -379,8 +425,10 @@ class _CardAction extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           child: Text(
             label,
-            style:
-                theme.type.button.copyWith(fontSize: 14, color: surfaces.brand),
+            style: theme.type.button.copyWith(
+              fontSize: 14,
+              color: surfaces.brand,
+            ),
           ),
         ),
       ),

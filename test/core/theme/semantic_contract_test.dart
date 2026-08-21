@@ -18,7 +18,7 @@ import 'package:myvitals_healthtracker_app/core/theme/tokens/tone.dart';
 /// Se itera sobre `AppThemeCatalog.specs`, no sobre una lista escrita a mano, de
 /// modo que añadir un tema lo somete automáticamente a todas las reglas.
 void main() {
-  final catalog = AppThemeCatalog.specs;
+  const catalog = AppThemeCatalog.specs;
 
   test('el catálogo no está vacío y no repite identidades ni nombres', () {
     expect(catalog, isNotEmpty);
@@ -279,11 +279,10 @@ void main() {
       });
 
       test('el nivel de una rutina y el estado de un reto son legibles', () {
-        final tones = <String, Tone>{
+        <String, Tone>{
           for (final l in ContentLevelStep.values) '$l': theme.content.level(l),
           for (final s in ContentStatus.values) '$s': theme.content.status(s),
-        };
-        tones.forEach((name, tone) {
+        }.forEach((name, tone) {
           expect(
             SemanticContract.contrast(tone.accent, theme.surfaces.card),
             greaterThanOrEqualTo(SemanticContract.minTextContrast),
@@ -409,24 +408,26 @@ void main() {
         );
       });
 
-      test('onSelection no se aleja de la marca: sigue siendo el mismo color',
-          () {
-        final s = theme.surfaces;
-        // El par existe para resolver contraste, no para que un tema meta un
-        // color nuevo por la puerta de atrás: el realce tiene que seguir
-        // leyéndose como «la marca», no como otra cosa.
-        final d = SemanticContract.hueDistance(
-          SemanticContract.hueOf(s.onSelection),
-          SemanticContract.hueOf(s.brand),
-        );
-        expect(
-          d,
-          lessThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
-          reason:
-              '${spec.name}: onSelection está a ${d.toStringAsFixed(1)}° de la '
-              'marca; debería ser un paso del mismo color, no otro.',
-        );
-      });
+      test(
+        'onSelection no se aleja de la marca: sigue siendo el mismo color',
+        () {
+          final s = theme.surfaces;
+          // El par existe para resolver contraste, no para que un tema meta un
+          // color nuevo por la puerta de atrás: el realce tiene que seguir
+          // leyéndose como «la marca», no como otra cosa.
+          final d = SemanticContract.hueDistance(
+            SemanticContract.hueOf(s.onSelection),
+            SemanticContract.hueOf(s.brand),
+          );
+          expect(
+            d,
+            lessThanOrEqualTo(SemanticContract.minFamilyHueSeparation),
+            reason:
+                '${spec.name}: onSelection está a ${d.toStringAsFixed(1)}° de la '
+                'marca; debería ser un paso del mismo color, no otro.',
+          );
+        },
+      );
 
       test('la tarjeta se separa del lienzo por color o por sombra', () {
         final s = theme.surfaces;
@@ -445,7 +446,7 @@ void main() {
 
       test('todo rol tipográfico define familia y tamaño', () {
         final t = theme.type;
-        final roles = <String, TextStyle>{
+        <String, TextStyle>{
           'display': t.display,
           'displayMeta': t.displayMeta,
           'screenTitle': t.screenTitle,
@@ -459,8 +460,7 @@ void main() {
           'meta': t.meta,
           'badge': t.badge,
           'button': t.button,
-        };
-        roles.forEach((name, style) {
+        }.forEach((name, style) {
           expect(
             style.fontFamily,
             isNotNull,
@@ -483,7 +483,7 @@ void main() {
         // Jerarquía mínima: si el número no manda, la tarjeta no se lee de un
         // vistazo, que es el único trabajo que tiene.
         expect(
-          theme.type.numeral.fontSize!,
+          theme.type.numeral.fontSize,
           greaterThan(theme.type.body.fontSize!),
           reason: '${spec.name}: numeral no destaca sobre body',
         );

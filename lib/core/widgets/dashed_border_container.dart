@@ -37,24 +37,24 @@ class _DashedRectPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint()
+    final paint = Paint()
       ..color = color
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
-    var rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    var rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
 
-    var path = Path()..addRRect(rrect);
-    var dashedPath = Path();
+    final path = Path()..addRRect(rrect);
+    final dashedPath = Path();
 
-    double dashWidth = 6.0;
-    double dashSpace = 4.0;
+    const double dashWidth = 6.0;
+    const double dashSpace = 4.0;
 
-    for (var pathMetric in path.computeMetrics()) {
+    for (final pathMetric in path.computeMetrics()) {
       double distance = 0.0;
       while (distance < pathMetric.length) {
-        var extractPath = pathMetric.extractPath(
+        final extractPath = pathMetric.extractPath(
           distance,
           distance + dashWidth,
         );

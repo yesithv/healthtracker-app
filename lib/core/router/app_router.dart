@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+
 import '../demo/demo_session.dart';
 import '../shell/app_shell.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
@@ -75,10 +76,7 @@ class AppRouter {
         path: '/welcome',
         builder: (context, state) => const WelcomeScreen(),
       ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/verify',
         builder: (context, state) {
@@ -238,9 +236,8 @@ class AppRouter {
         // (`?med=`) en el deep-link desde una notificación (que no puede
         // transportar `extra` en memoria, sobre todo en arranque en frío).
         builder: (context, state) => MedicationDetailScreen(
-          medicationId: state.uri.queryParameters['med'] ??
-              state.extra as String? ??
-              '',
+          medicationId:
+              state.uri.queryParameters['med'] ?? state.extra as String? ?? '',
         ),
       ),
       GoRoute(
@@ -253,9 +250,8 @@ class AppRouter {
         // Igual que detalle: `extra` para la navegación interna y `?med=` para
         // el deep-link desde la alerta de recompra.
         builder: (context, state) => RefillInventoryScreen(
-          medicationId: state.uri.queryParameters['med'] ??
-              state.extra as String? ??
-              '',
+          medicationId:
+              state.uri.queryParameters['med'] ?? state.extra as String? ?? '',
         ),
       ),
       // Inventario de citas médicas. Una sola pantalla (sin destino en la barra

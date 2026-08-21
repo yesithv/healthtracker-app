@@ -42,8 +42,14 @@ void main() {
   group('isDueOn - daily', () {
     test('due every day within bounds', () {
       final med = _med(frequency: FrequencyType.daily);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 17)), isTrue);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 18)), isTrue);
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 17)),
+        isTrue,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 18)),
+        isTrue,
+      );
     });
 
     test('not due before startDate or after endDate', () {
@@ -52,22 +58,38 @@ void main() {
         startDate: DateTime(2026, 8, 10),
         endDate: DateTime(2026, 8, 20),
       );
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 9)), isFalse);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 10)), isTrue);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 20)), isTrue);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 21)), isFalse);
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 9)),
+        isFalse,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 10)),
+        isTrue,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 20)),
+        isTrue,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 21)),
+        isFalse,
+      );
     });
 
     test('never due when inactive', () {
       final med = _med(frequency: FrequencyType.daily, isActive: false);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 17)), isFalse);
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 8, 17)),
+        isFalse,
+      );
     });
   });
 
   group('isDueOn - daysOfWeek', () {
     test('due only on the masked weekdays', () {
       // Monday + Wednesday + Thursday.
-      final mask = _bit(DateTime.monday) |
+      final mask =
+          _bit(DateTime.monday) |
           _bit(DateTime.wednesday) |
           _bit(DateTime.thursday);
       final med = _med(frequency: FrequencyType.daysOfWeek, daysOfWeek: mask);
@@ -116,11 +138,17 @@ void main() {
       );
       expect(MedicationScheduleService.isDueOn(med, anchor), isTrue);
       expect(
-        MedicationScheduleService.isDueOn(med, anchor.add(const Duration(days: 8))),
+        MedicationScheduleService.isDueOn(
+          med,
+          anchor.add(const Duration(days: 8)),
+        ),
         isTrue,
       );
       expect(
-        MedicationScheduleService.isDueOn(med, anchor.add(const Duration(days: 16))),
+        MedicationScheduleService.isDueOn(
+          med,
+          anchor.add(const Duration(days: 16)),
+        ),
         isTrue,
       );
       for (final offset in [1, 2, 3, 4, 5, 6, 7]) {
@@ -154,43 +182,58 @@ void main() {
         intervalDays: 3,
         startDate: DateTime(2026, 5, 1),
       );
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 1)), isTrue);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 4)), isTrue);
-      expect(MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 2)), isFalse);
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 1)),
+        isTrue,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 4)),
+        isTrue,
+      );
+      expect(
+        MedicationScheduleService.isDueOn(med, DateTime(2026, 5, 2)),
+        isFalse,
+      );
     });
   });
 
   group('expectedDosesForDay', () {
-    test('one ExpectedDose per dose, sorted by time, with correct datetime', () {
-      final med = _med(frequency: FrequencyType.daily, doseQuantity: 2);
-      final doses = [
-        _dose(med.id, 20, 30), // later, listed first
-        _dose(med.id, 8, 0),
-      ];
-      final result = MedicationScheduleService.expectedDosesForDay(
-        med,
-        doses,
-        DateTime(2026, 8, 17),
-      );
-      expect(result.length, 2);
-      expect(result.first.scheduledAt, DateTime(2026, 8, 17, 8, 0));
-      expect(result.last.scheduledAt, DateTime(2026, 8, 17, 20, 30));
-    });
+    test(
+      'one ExpectedDose per dose, sorted by time, with correct datetime',
+      () {
+        final med = _med(frequency: FrequencyType.daily, doseQuantity: 2);
+        final doses = [
+          _dose(med.id, 20, 30), // later, listed first
+          _dose(med.id, 8, 0),
+        ];
+        final result = MedicationScheduleService.expectedDosesForDay(
+          med,
+          doses,
+          DateTime(2026, 8, 17),
+        );
+        expect(result.length, 2);
+        expect(result.first.scheduledAt, DateTime(2026, 8, 17, 8, 0));
+        expect(result.last.scheduledAt, DateTime(2026, 8, 17, 20, 30));
+      },
+    );
 
-    test('quantity falls back to medication doseQuantity when dose has none', () {
-      final med = _med(frequency: FrequencyType.daily, doseQuantity: 2);
-      final doses = [
-        _dose(med.id, 8, 0), // no quantity → 2
-        _dose(med.id, 20, 0, quantity: 1), // explicit → 1
-      ];
-      final result = MedicationScheduleService.expectedDosesForDay(
-        med,
-        doses,
-        DateTime(2026, 8, 17),
-      );
-      expect(result[0].quantity, 2);
-      expect(result[1].quantity, 1);
-    });
+    test(
+      'quantity falls back to medication doseQuantity when dose has none',
+      () {
+        final med = _med(frequency: FrequencyType.daily, doseQuantity: 2);
+        final doses = [
+          _dose(med.id, 8, 0), // no quantity → 2
+          _dose(med.id, 20, 0, quantity: 1), // explicit → 1
+        ];
+        final result = MedicationScheduleService.expectedDosesForDay(
+          med,
+          doses,
+          DateTime(2026, 8, 17),
+        );
+        expect(result[0].quantity, 2);
+        expect(result[1].quantity, 1);
+      },
+    );
 
     test('empty on a day that is not due, non-empty on a due day', () {
       final med = _med(
@@ -206,13 +249,15 @@ void main() {
       expect(sunday.weekday, DateTime.sunday);
 
       expect(
-        MedicationScheduleService.expectedDosesForDay(
-            med, [_dose(med.id, 8, 0)], monday),
+        MedicationScheduleService.expectedDosesForDay(med, [
+          _dose(med.id, 8, 0),
+        ], monday),
         isEmpty,
       );
       expect(
-        MedicationScheduleService.expectedDosesForDay(
-            med, [_dose(med.id, 8, 0)], sunday),
+        MedicationScheduleService.expectedDosesForDay(med, [
+          _dose(med.id, 8, 0),
+        ], sunday),
         hasLength(1),
       );
     });
@@ -249,7 +294,8 @@ void main() {
 
   group('activeWeekdayCount', () {
     test('counts set bits', () {
-      final mask = _bit(DateTime.monday) |
+      final mask =
+          _bit(DateTime.monday) |
           _bit(DateTime.wednesday) |
           _bit(DateTime.thursday);
       expect(MedicationScheduleService.activeWeekdayCount(mask), 3);

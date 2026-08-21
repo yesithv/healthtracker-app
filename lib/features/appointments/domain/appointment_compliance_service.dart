@@ -65,7 +65,10 @@ class AppointmentComplianceService {
   /// La "próxima acción": la cita abierta más urgente. Prioriza las vencidas y,
   /// entre iguales, la de fecha relevante más temprana. Null si no hay nada
   /// pendiente.
-  static Appointment? nextAction(List<Appointment> appointments, {DateTime? now}) {
+  static Appointment? nextAction(
+    List<Appointment> appointments, {
+    DateTime? now,
+  }) {
     final ref = now ?? DateTime.now();
     final open = appointments.where(_isOpen).toList();
     if (open.isEmpty) return null;

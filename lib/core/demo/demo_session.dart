@@ -56,7 +56,7 @@ class DemoSession extends ChangeNotifier {
   Future<void> bootstrap() async {
     final prefs = await SharedPreferences.getInstance();
     _active = prefs.getBool(_kActive) ?? false;
-    DatabaseService.useDemoDatabase(_active);
+    DatabaseService.useDemoDatabase(value: _active);
 
     // Arranque guionizado (`--dart-define=DEMO_MODE=true`) sobre una app que no
     // estaba en demo: se entra ahora, con las imposiciones de apariencia que
@@ -100,7 +100,7 @@ class DemoSession extends ChangeNotifier {
     await prefs.setBool(_kActive, true);
 
     // 3. La base de datos desechable, sembrada.
-    DatabaseService.useDemoDatabase(true);
+    DatabaseService.useDemoDatabase(value: true);
     await DatabaseService.instance.reopen();
     await DemoSeeder.seedRecords(language: languageCode ?? 'es');
     await _refreshRepositories();
@@ -132,7 +132,7 @@ class DemoSession extends ChangeNotifier {
 
     // 3. Volver al archivo de siempre y releer: los repositorios tienen en
     // memoria los registros de la demo y hay que sacárselos.
-    DatabaseService.useDemoDatabase(false);
+    DatabaseService.useDemoDatabase(value: false);
     await DatabaseService.instance.reopen();
     await _refreshRepositories();
 

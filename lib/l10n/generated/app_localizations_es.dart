@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -40,6 +41,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get measurementUnits => 'Unidades de Medida';
+
+  @override
+  String get noArticlesFound => 'No se encontraron artículos';
+
+  @override
+  String get noArticlesFoundDesc => 'Intenta con otra categoría de salud';
 
   @override
   String get notifications => 'Notificaciones';
@@ -2599,7 +2606,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appointmentsTitle => 'Mis citas';
 
   @override
-  String get appointmentsDescription => 'Lleva el control de las citas que tienes y de las que aún debes sacar.';
+  String get appointmentsDescription =>
+      'Lleva el control de las citas que tienes y de las que aún debes sacar.';
 
   @override
   String get appointmentsAddCta => 'Añadir cita';
@@ -2617,7 +2625,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Aún no tienes citas';
 
   @override
-  String get appointmentsEmptyBody => 'Añade las citas que debes sacar o las que ya tienes agendadas.';
+  String get appointmentsEmptyBody =>
+      'Añade las citas que debes sacar o las que ya tienes agendadas.';
 
   @override
   String get appointmentsOverdueChip => 'Vencida';
@@ -2759,7 +2768,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appointmentFieldRecurring => 'Control periódico';
 
   @override
-  String get appointmentRecurringHint => 'Cuando confirmes que asististe, te recordaremos sacar la siguiente automáticamente.';
+  String get appointmentRecurringHint =>
+      'Cuando confirmes que asististe, te recordaremos sacar la siguiente automáticamente.';
 
   @override
   String get appointmentFrequencyLabel => 'Cada cuánto';
@@ -2776,7 +2786,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appointmentActionEdit => 'Editar';
 
   @override
-  String get appointmentNextSpawned => 'Anotamos el siguiente control por sacar.';
+  String get appointmentNextSpawned =>
+      'Anotamos el siguiente control por sacar.';
 
   @override
   String get appointmentComplianceRedTitle => 'Requiere atención';
@@ -2788,7 +2799,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Todo al día';
 
   @override
-  String get appointmentComplianceGreenBody => 'No tienes citas pendientes ni vencidas.';
+  String get appointmentComplianceGreenBody =>
+      'No tienes citas pendientes ni vencidas.';
 
   @override
   String appointmentNextActionOverdue(String title) {

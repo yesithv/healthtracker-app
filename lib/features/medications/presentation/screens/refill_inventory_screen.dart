@@ -38,7 +38,9 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
     final controller = context.read<MedicationsController>();
     final router = GoRouter.of(context);
     await controller.snoozeRefill(
-        med, DateTime.now().add(const Duration(days: 1)));
+      med,
+      DateTime.now().add(const Duration(days: 1)),
+    );
     router.pop();
   }
 
@@ -69,7 +71,8 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
     final pack = (med.packSize ?? 0).round();
     _add ??= pack > 0 ? pack : 30;
 
-    final low = med.refillThreshold != null &&
+    final low =
+        med.refillThreshold != null &&
         (med.stockQuantity ?? 0) <= med.refillThreshold!;
     final ringColor = low ? caution.accent : surfaces.brand;
     final daysLeft = MedicationInventoryService.daysRemaining(med, doses);
@@ -87,8 +90,10 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               children: [
-                Text(l10n.medRefillTitle,
-                    style: theme.type.screenTitle.copyWith(fontSize: 26)),
+                Text(
+                  l10n.medRefillTitle,
+                  style: theme.type.screenTitle.copyWith(fontSize: 26),
+                ),
                 const SizedBox(height: 20),
 
                 Container(
@@ -116,8 +121,10 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
                         ),
                       if (buyBy != null) ...[
                         const SizedBox(height: 4),
-                        Text(l10n.medBuyBefore(shortDateLabel(buyBy, locale)),
-                            style: theme.type.meta),
+                        Text(
+                          l10n.medBuyBefore(shortDateLabel(buyBy, locale)),
+                          style: theme.type.meta,
+                        ),
                       ],
                     ],
                   ),
@@ -136,20 +143,28 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(l10n.medAddABox,
-                                    style: theme.type.cardTitle
-                                        .copyWith(fontSize: 16)),
+                                Text(
+                                  l10n.medAddABox,
+                                  style: theme.type.cardTitle.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
-                                Text(l10n.medAddABoxSub, style: theme.type.meta),
+                                Text(
+                                  l10n.medAddABoxSub,
+                                  style: theme.type.meta,
+                                ),
                               ],
                             ),
                           ),
                           _Stepper(
                             value: _add!,
-                            onMinus: () =>
-                                setState(() => _add = (_add! - 1).clamp(1, 999)),
-                            onPlus: () =>
-                                setState(() => _add = (_add! + 1).clamp(1, 999)),
+                            onMinus: () => setState(
+                              () => _add = (_add! - 1).clamp(1, 999),
+                            ),
+                            onPlus: () => setState(
+                              () => _add = (_add! + 1).clamp(1, 999),
+                            ),
                           ),
                         ],
                       ),
@@ -157,15 +172,20 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 12),
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: surfaces.selection,
-                          borderRadius:
-                              BorderRadius.circular(surfaces.radiusControl),
+                          borderRadius: BorderRadius.circular(
+                            surfaces.radiusControl,
+                          ),
                         ),
                         child: Text(
                           l10n.medWillRemain(projected, projectedDays ?? 0),
-                          style: theme.type.body.copyWith(color: surfaces.brand),
+                          style: theme.type.body.copyWith(
+                            color: surfaces.brand,
+                          ),
                         ),
                       ),
                     ],
@@ -204,7 +224,11 @@ class _RefillInventoryScreenState extends State<RefillInventoryScreen> {
 }
 
 class _Stepper extends StatelessWidget {
-  const _Stepper({required this.value, required this.onMinus, required this.onPlus});
+  const _Stepper({
+    required this.value,
+    required this.onMinus,
+    required this.onPlus,
+  });
 
   final int value;
   final VoidCallback onMinus;
@@ -219,7 +243,10 @@ class _Stepper extends StatelessWidget {
         _Btn(icon: Icons.remove, onTap: onMinus),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Text('$value', style: theme.type.numeral.copyWith(fontSize: 24)),
+          child: Text(
+            '$value',
+            style: theme.type.numeral.copyWith(fontSize: 24),
+          ),
         ),
         _Btn(icon: Icons.add, onTap: onPlus),
       ],

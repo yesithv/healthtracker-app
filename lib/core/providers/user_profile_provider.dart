@@ -1,6 +1,10 @@
 import 'dart:async';
+
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -140,7 +144,7 @@ class UserProfileProvider extends ChangeNotifier {
     return File('${dir.path}/$_imageFileName');
   }
 
-  Future<void> setBiometricEnabled(bool enabled) async {
+  Future<void> setBiometricEnabled({required bool enabled}) async {
     _isBiometricEnabled = enabled;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
@@ -208,7 +212,9 @@ class UserProfileProvider extends ChangeNotifier {
       await prefs.setString(_birthDateKey, birthDate.toIso8601String());
       changed = true;
     }
-    if (_userGender.trim().isEmpty && gender != null && gender.trim().isNotEmpty) {
+    if (_userGender.trim().isEmpty &&
+        gender != null &&
+        gender.trim().isNotEmpty) {
       _userGender = gender.trim();
       await prefs.setString(_genderKey, _userGender);
       changed = true;
@@ -248,7 +254,8 @@ class UserProfileProvider extends ChangeNotifier {
       try {
         await file.writeAsBytes(base64Decode(legacy), flush: true);
         _profileImageBase64 = legacy;
-      } catch (_) {
+      } catch (e) {
+        debugLogError('UserProfile.migrateImage', e);
         _profileImageBase64 = null;
       }
       await prefs.remove(_imageKey);
@@ -283,4 +290,3 @@ class UserProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-

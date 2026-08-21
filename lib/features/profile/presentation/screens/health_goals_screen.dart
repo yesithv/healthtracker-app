@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/providers/health_goals_provider.dart';
 import '../../../../core/theme/theme_context.dart';
@@ -10,6 +12,7 @@ import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/theme/tokens/tone.dart';
 import '../../../../core/widgets/secondary_app_bar.dart';
 import '../../../../core/widgets/settings_page_layout.dart';
+
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
 class HealthGoalsScreen extends StatefulWidget {
@@ -38,8 +41,7 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
   }
 
   void _saveGoals() {
-    final goals = Provider.of<HealthGoalsProvider>(context, listen: false);
-    goals.updateHealthGoals(
+    Provider.of<HealthGoalsProvider>(context, listen: false).updateHealthGoals(
       enabled: _goalsEnabled,
       weight: _targetWeight,
       bodyFat: _targetBodyFat,
@@ -189,7 +191,9 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
                           unit: '%',
                           min: 3,
                           max: 60,
-                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          tone: theme.metrics.tone(
+                            MetricFamily.bodyComposition,
+                          ),
                           onChanged: (v) =>
                               setState(() => _targetBodyFat = _round1(v)),
                         ),
@@ -205,7 +209,9 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
                           unit: 'kg',
                           min: 10,
                           max: 100,
-                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          tone: theme.metrics.tone(
+                            MetricFamily.bodyComposition,
+                          ),
                           onChanged: (v) =>
                               setState(() => _targetMuscleMass = _round1(v)),
                         ),
@@ -219,7 +225,9 @@ class _HealthGoalsScreenState extends State<HealthGoalsScreen> {
                         child: _buildIntPickerCard(
                           value: _targetVisceralFat,
                           unit: l10n.compositionLevel,
-                          tone: theme.metrics.tone(MetricFamily.bodyComposition),
+                          tone: theme.metrics.tone(
+                            MetricFamily.bodyComposition,
+                          ),
                           onDecrement: () => setState(() {
                             if (_targetVisceralFat > 1) _targetVisceralFat--;
                           }),

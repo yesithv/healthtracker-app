@@ -80,11 +80,13 @@ class _MedicationsMenuScreenState extends State<MedicationsMenuScreen> {
 
     // Medicamentos que deberían avisar de recompra hoy.
     final lowMeds = meds
-        .where((m) => MedicationInventoryService.shouldAlert(
-              m,
-              controller.dosesFor(m.id),
-              today: now,
-            ))
+        .where(
+          (m) => MedicationInventoryService.shouldAlert(
+            m,
+            controller.dosesFor(m.id),
+            today: now,
+          ),
+        )
         .toList();
 
     final adherence = controller.adherence();
@@ -127,16 +129,14 @@ class _MedicationsMenuScreenState extends State<MedicationsMenuScreen> {
                     title: l10n.medInventoryTitle,
                     subtitle: l10n.medMenuInventorySubtitle(lowMeds.length),
                     tone: theme.clinical.caution,
-                    onTap: () =>
-                        context.push('/profile/medications/inventory'),
+                    onTap: () => context.push('/profile/medications/inventory'),
                   ),
                   _MedMenuTile(
                     icon: Icons.insights,
                     title: l10n.medAdherenceTitle,
                     subtitle: l10n.medMenuAdherenceSubtitle(pct, streak),
                     tone: theme.clinical.optimal,
-                    onTap: () =>
-                        context.push('/profile/medications/adherence'),
+                    onTap: () => context.push('/profile/medications/adherence'),
                   ),
                   const SizedBox(height: 28),
 
@@ -144,8 +144,13 @@ class _MedicationsMenuScreenState extends State<MedicationsMenuScreen> {
                   const SizedBox(height: 12),
                   for (final m in meds)
                     MedicationListRow(
-                      med: medVmForMedication(controller, m, l10n, locale,
-                          today: now),
+                      med: medVmForMedication(
+                        controller,
+                        m,
+                        l10n,
+                        locale,
+                        today: now,
+                      ),
                       onTap: () => context.push(
                         '/profile/medications/detail',
                         extra: m.id,

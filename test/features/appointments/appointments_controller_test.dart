@@ -61,59 +61,66 @@ void main() {
     expect(c.scheduled, isEmpty);
   });
 
-  test('book pasa una cita por sacar a agendada y limpia la fecha objetivo',
-      () async {
-    final c = buildController();
-    final appt = await c.addToBook(
-      title: 'Endocrino',
-      dueToBookOn: DateTime(2026, 9, 1),
-    );
+  test(
+    'book pasa una cita por sacar a agendada y limpia la fecha objetivo',
+    () async {
+      final c = buildController();
+      final appt = await c.addToBook(
+        title: 'Endocrino',
+        dueToBookOn: DateTime(2026, 9, 1),
+      );
 
-    await c.book(appt, DateTime(2026, 9, 5, 8, 30));
+      await c.book(appt, DateTime(2026, 9, 5, 8, 30));
 
-    expect(c.toBook, isEmpty);
-    final booked = c.scheduled.single;
-    expect(booked.scheduledAt, DateTime(2026, 9, 5, 8, 30));
-    expect(booked.dueToBookOn, isNull);
-  });
+      expect(c.toBook, isEmpty);
+      final booked = c.scheduled.single;
+      expect(booked.scheduledAt, DateTime(2026, 9, 5, 8, 30));
+      expect(booked.dueToBookOn, isNull);
+    },
+  );
 
-  test('markAttended de una cita no recurrente la cierra sin generar otra',
-      () async {
-    final c = buildController();
-    final appt = await c.addScheduled(
-      title: 'Laboratorio',
-      scheduledAt: DateTime(2026, 8, 1, 9),
-    );
+  test(
+    'markAttended de una cita no recurrente la cierra sin generar otra',
+    () async {
+      final c = buildController();
+      final appt = await c.addScheduled(
+        title: 'Laboratorio',
+        scheduledAt: DateTime(2026, 8, 1, 9),
+      );
 
-    await c.markAttended(appt);
+      await c.markAttended(appt);
 
-    expect(c.scheduled, isEmpty);
-    expect(c.toBook, isEmpty);
-    expect(c.history.single.status, AppointmentStatus.attended);
-  });
+      expect(c.scheduled, isEmpty);
+      expect(c.toBook, isEmpty);
+      expect(c.history.single.status, AppointmentStatus.attended);
+    },
+  );
 
-  test('markAttended de una recurrente genera la siguiente por sacar', () async {
-    final c = buildController();
-    final appt = await c.addScheduled(
-      title: 'Endocrino',
-      scheduledAt: DateTime(2026, 8, 17, 9),
-      specialty: 'Endocrinología',
-      isRecurring: true,
-      intervalMonths: 3,
-    );
+  test(
+    'markAttended de una recurrente genera la siguiente por sacar',
+    () async {
+      final c = buildController();
+      final appt = await c.addScheduled(
+        title: 'Endocrino',
+        scheduledAt: DateTime(2026, 8, 17, 9),
+        specialty: 'Endocrinología',
+        isRecurring: true,
+        intervalMonths: 3,
+      );
 
-    await c.markAttended(appt);
+      await c.markAttended(appt);
 
-    // La ocurrencia cerrada queda en el historial…
-    expect(c.history.single.status, AppointmentStatus.attended);
-    // …y aparece la siguiente por sacar a +3 meses.
-    final next = c.toBook.single;
-    expect(next.dueToBookOn, DateTime(2026, 11, 17));
-    expect(next.isRecurring, isTrue);
-    expect(next.intervalMonths, 3);
-    expect(next.specialty, 'Endocrinología');
-    expect(next.seriesId, isNotNull);
-  });
+      // La ocurrencia cerrada queda en el historial…
+      expect(c.history.single.status, AppointmentStatus.attended);
+      // …y aparece la siguiente por sacar a +3 meses.
+      final next = c.toBook.single;
+      expect(next.dueToBookOn, DateTime(2026, 11, 17));
+      expect(next.isRecurring, isTrue);
+      expect(next.intervalMonths, 3);
+      expect(next.specialty, 'Endocrinología');
+      expect(next.seriesId, isNotNull);
+    },
+  );
 
   test('markMissed de una recurrente también genera la siguiente', () async {
     final c = buildController();
@@ -187,11 +194,13 @@ void main() {
       dueToBookOn: DateTime(2026, 9, 1),
     );
 
-    await c.save(appt.copyWith(
-      title: 'Neuropsicología (adultos)',
-      specialty: 'Neuropsicología',
-      location: 'Sede norte',
-    ));
+    await c.save(
+      appt.copyWith(
+        title: 'Neuropsicología (adultos)',
+        specialty: 'Neuropsicología',
+        location: 'Sede norte',
+      ),
+    );
 
     final edited = c.toBook.single;
     expect(edited.id, appt.id);
@@ -200,23 +209,27 @@ void main() {
     expect(edited.location, 'Sede norte');
   });
 
-  test('save puede convertir una por sacar en agendada limpiando la objetivo',
-      () async {
-    final c = buildController();
-    final appt = await c.addToBook(
-      title: 'Endocrino',
-      dueToBookOn: DateTime(2026, 9, 1),
-    );
+  test(
+    'save puede convertir una por sacar en agendada limpiando la objetivo',
+    () async {
+      final c = buildController();
+      final appt = await c.addToBook(
+        title: 'Endocrino',
+        dueToBookOn: DateTime(2026, 9, 1),
+      );
 
-    await c.save(appt.copyWith(
-      status: AppointmentStatus.scheduled,
-      scheduledAt: DateTime(2026, 9, 5, 8, 30),
-      clearDueToBookOn: true,
-    ));
+      await c.save(
+        appt.copyWith(
+          status: AppointmentStatus.scheduled,
+          scheduledAt: DateTime(2026, 9, 5, 8, 30),
+          clearDueToBookOn: true,
+        ),
+      );
 
-    expect(c.toBook, isEmpty);
-    final scheduled = c.scheduled.single;
-    expect(scheduled.scheduledAt, DateTime(2026, 9, 5, 8, 30));
-    expect(scheduled.dueToBookOn, isNull);
-  });
+      expect(c.toBook, isEmpty);
+      final scheduled = c.scheduled.single;
+      expect(scheduled.scheduledAt, DateTime(2026, 9, 5, 8, 30));
+      expect(scheduled.dueToBookOn, isNull);
+    },
+  );
 }

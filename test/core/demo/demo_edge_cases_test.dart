@@ -37,12 +37,17 @@ void main() {
       // desactualiza si mañana cambia la cadencia de la serie curada.
       expect(
         withEdges.anthropometric.where((r) => isEdge(r.id)),
-        hasLength(withEdges.anthropometric.length - clean.anthropometric.length),
+        hasLength(
+          withEdges.anthropometric.length - clean.anthropometric.length,
+        ),
       );
       expect(withEdges.anthropometric.where((r) => isEdge(r.id)), hasLength(3));
       expect(withEdges.vitalSigns.where((r) => isEdge(r.id)), hasLength(5));
       expect(withEdges.lipids.where((r) => isEdge(r.id)), hasLength(2));
-      expect(withEdges.bodyComposition.where((r) => isEdge(r.id)), hasLength(2));
+      expect(
+        withEdges.bodyComposition.where((r) => isEdge(r.id)),
+        hasLength(2),
+      );
     });
 
     test('los identificadores siguen siendo únicos', () {
@@ -75,10 +80,16 @@ void main() {
     }
 
     test('antropometría, vitales, lípidos y composición', () {
-      ascending(withEdges.anthropometric.map((r) => r.date).toList(), 'antropometría');
+      ascending(
+        withEdges.anthropometric.map((r) => r.date).toList(),
+        'antropometría',
+      );
       ascending(withEdges.vitalSigns.map((r) => r.date).toList(), 'vitales');
       ascending(withEdges.lipids.map((r) => r.date).toList(), 'lípidos');
-      ascending(withEdges.bodyComposition.map((r) => r.date).toList(), 'composición');
+      ascending(
+        withEdges.bodyComposition.map((r) => r.date).toList(),
+        'composición',
+      );
     });
   });
 
@@ -108,10 +119,7 @@ void main() {
           reason: 'la sistólica siempre va por encima de la diastólica',
         );
         expect(['reposo', 'ejercicio', 'post-op'], contains(r.activityState));
-        expect(
-          ['normal', 'mareo', 'dolor', 'fatiga'],
-          contains(r.symptom),
-        );
+        expect(['normal', 'mareo', 'dolor', 'fatiga'], contains(r.symptom));
       }
     });
 
@@ -147,10 +155,12 @@ void main() {
 
   group('el extremo de TIEMPO: dos tomas en el mismo instante ·', () {
     test('las tomas «gemelas» comparten fecha exacta y valores distintos', () {
-      final a = withEdges.vitalSigns
-          .firstWhere((r) => r.id == 'demo-edge-vitals-collision-a');
-      final b = withEdges.vitalSigns
-          .firstWhere((r) => r.id == 'demo-edge-vitals-collision-b');
+      final a = withEdges.vitalSigns.firstWhere(
+        (r) => r.id == 'demo-edge-vitals-collision-a',
+      );
+      final b = withEdges.vitalSigns.firstWhere(
+        (r) => r.id == 'demo-edge-vitals-collision-b',
+      );
       expect(
         a.date,
         b.date,
@@ -164,7 +174,9 @@ void main() {
     test('dos generaciones dan exactamente los mismos extremos', () {
       final again = buildDemoDataset(today: today, includeEdgeCases: true);
       String sig(Iterable<dynamic> rs) => rs
+          // ignore: avoid_dynamic_calls
           .where((r) => isEdge(r.id as String))
+          // ignore: avoid_dynamic_calls
           .map((r) => '${r.id}@${r.date.toIso8601String()}')
           .join('|');
 

@@ -74,8 +74,12 @@ class _InventoryRow extends StatelessWidget {
     final locale = l10n.localeName;
     final doses = controller.dosesFor(med.id);
 
-    final tone = resolveMedTone(context, medColorFromKey(med.color, seed: med.name));
-    final low = med.refillThreshold != null &&
+    final tone = resolveMedTone(
+      context,
+      medColorFromKey(med.color, seed: med.name),
+    );
+    final low =
+        med.refillThreshold != null &&
         (med.stockQuantity ?? 0) <= med.refillThreshold!;
     final ringColor = low ? theme.clinical.caution.accent : tone.accent;
 

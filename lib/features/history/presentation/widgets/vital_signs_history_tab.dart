@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
@@ -26,6 +29,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -68,7 +72,10 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           value: VitalMetric.bloodPressure,
           label: l10n.vitalMetricBpShort,
         ),
-        MetricChip(value: VitalMetric.heartRate, label: l10n.vitalMetricHrShort),
+        MetricChip(
+          value: VitalMetric.heartRate,
+          label: l10n.vitalMetricHrShort,
+        ),
       ],
       // Mensaje superior: encabeza el indicador con el color de su FAMILIA;
       // no afirma nada sobre la salud, solo dice de qué habla el panel.
@@ -82,7 +89,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
           _buildChartContainer(l10n, metric, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-vital-signs', extra: r),
-      onDelete: (id) => VitalSignsRepository.instance.delete(id),
+      onDelete: VitalSignsRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.favorite_border,
@@ -101,10 +108,12 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
   ) {
     if (records.isEmpty) return const SizedBox.shrink();
     return switch (metric) {
-      VitalMetric.bloodPressure =>
-        _buildBloodPressureChart(l10n, records, filterLabel),
-      VitalMetric.heartRate =>
-        _buildHeartRateChart(l10n, records, filterLabel),
+      VitalMetric.bloodPressure => _buildBloodPressureChart(
+        l10n,
+        records,
+        filterLabel,
+      ),
+      VitalMetric.heartRate => _buildHeartRateChart(l10n, records, filterLabel),
     };
   }
 
@@ -395,7 +404,10 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         l10n.exportColStatus,
       ],
       ...records.map((r) {
-        String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
+        final String status = BpCategory.of(
+          r.systolic,
+          r.diastolic,
+        ).label(l10n);
         return [
           DateFormat('dd MMM yyyy').format(r.date),
           '${r.systolic}/${r.diastolic}',
@@ -462,7 +474,8 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         l10n,
         ok ? ShareOutcome.success : ShareOutcome.silent,
       );
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Export.vitalSigns', e);
       showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
     }
   }
@@ -473,7 +486,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.exportColSystolic,
@@ -485,7 +498,10 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         l10n.exportColComment,
       ],
       ...records.map((r) {
-        String status = BpCategory.of(r.systolic, r.diastolic).label(l10n);
+        final String status = BpCategory.of(
+          r.systolic,
+          r.diastolic,
+        ).label(l10n);
         return [
           DateFormat('dd/MM/yyyy HH:mm').format(r.date),
           r.systolic,
@@ -498,7 +514,7 @@ class _VitalSignsHistoryTabState extends State<VitalSignsHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

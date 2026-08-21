@@ -121,8 +121,7 @@ List<T> _mergeByDate<T>(
   List<T> base,
   List<T> extra,
   DateTime Function(T) dateOf,
-) =>
-    [...base, ...extra]..sort((a, b) => dateOf(a).compareTo(dateOf(b)));
+) => [...base, ...extra]..sort((a, b) => dateOf(a).compareTo(dateOf(b)));
 
 // ── La cadencia de cada examen ─────────────────────────────────────────────
 
@@ -319,8 +318,24 @@ List<VitalSignRecord> _buildVitalSigns(
 
     // 134/86 con pulso 76 → 114/74 con pulso 64: de «elevada» a «normal».
     // El semáforo del panel cruza de ámbar a verde a lo largo de la serie.
-    var systolic = _series(134, 114, t, date, rnd, holidayEffect: 4, jitter: 4.5);
-    var diastolic = _series(86, 74, t, date, rnd, holidayEffect: 2.5, jitter: 3);
+    var systolic = _series(
+      134,
+      114,
+      t,
+      date,
+      rnd,
+      holidayEffect: 4,
+      jitter: 4.5,
+    );
+    var diastolic = _series(
+      86,
+      74,
+      t,
+      date,
+      rnd,
+      holidayEffect: 2.5,
+      jitter: 3,
+    );
     var heartRate = _series(76, 64, t, date, rnd, holidayEffect: 3, jitter: 5);
 
     // Reparto realista del contexto: casi siempre en reposo, y una de cada
@@ -914,7 +929,8 @@ class _DemoNotes {
   );
 
   factory _DemoNotes._english() => const _DemoNotes._(
-    monitoring: 'Doctor asked me to measure my blood pressure seven days in a row.',
+    monitoring:
+        'Doctor asked me to measure my blood pressure seven days in a row.',
     weight: [
       'Two weeks without missing a single gym session.',
       'Travel week, ate out almost every day.',

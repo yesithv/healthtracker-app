@@ -39,7 +39,8 @@ class MedicationDoseRepository extends RecordRepository<MedicationDose> {
   @override
   String get unsyncedOrderBy => 'created_at ASC';
   @override
-  MedicationDose fromMap(Map<String, dynamic> map) => MedicationDose.fromMap(map);
+  MedicationDose fromMap(Map<String, dynamic> map) =>
+      MedicationDose.fromMap(map);
   @override
   Map<String, dynamic> toMap(MedicationDose record) => record.toMap();
   @override
@@ -88,9 +89,9 @@ class MedicationLogRepository extends RecordRepository<MedicationLog> {
       '$medicationId|${scheduledAt.toIso8601String()}';
 
   Map<String, MedicationLog> get _scheduledIndex => _byScheduled ??= {
-        for (final log in items)
-          _scheduledKey(log.medicationId, log.scheduledAt): log,
-      };
+    for (final log in items)
+      _scheduledKey(log.medicationId, log.scheduledAt): log,
+  };
 
   @override
   Future<void> refresh() async {

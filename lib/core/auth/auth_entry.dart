@@ -45,12 +45,14 @@ Future<void> completeLoginAndEnter(
   );
 
   // Hidrata el perfil local con lo que el servidor ya sabe (solo campos vacíos).
-  final fullName = [account.firstName, account.lastName]
-      .where((s) => s != null && s.trim().isNotEmpty)
-      .join(' ');
+  final fullName = [
+    account.firstName,
+    account.lastName,
+  ].where((s) => s != null && s.trim().isNotEmpty).join(' ');
   await profile.hydrateIdentity(
     name: fullName,
-    email: account.email ??
+    email:
+        account.email ??
         (identifier != null && identifier.contains('@') ? identifier : null),
     birthDate: account.birthDate,
     gender: account.genderForApp,
@@ -60,7 +62,9 @@ Future<void> completeLoginAndEnter(
   // (la de la consulta). Solo si el usuario no eligió antes.
   if (account.migrated) {
     await localeUnits.ensureDefaults(
-        languageCode: 'es', unit: MeasurementUnit.metric);
+      languageCode: 'es',
+      unit: MeasurementUnit.metric,
+    );
     await profile.setDefaultDeviceIfUnset('Omron');
   }
 

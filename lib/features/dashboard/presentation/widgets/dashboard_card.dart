@@ -198,7 +198,7 @@ class HeroMetric extends StatelessWidget {
                     const SizedBox(width: 6),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
-                      child: valueTrailing!,
+                      child: valueTrailing,
                     ),
                   ],
                 ],
@@ -225,10 +225,7 @@ class HeroMetric extends StatelessWidget {
             ),
             if (spark.length >= 2) ...[
               const SizedBox(height: 6),
-              MetricSparkline(
-                values: spark,
-                color: sparkColor ?? valueColor,
-              ),
+              MetricSparkline(values: spark, color: sparkColor ?? valueColor),
             ],
           ],
         ),

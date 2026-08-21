@@ -25,7 +25,8 @@ class UIPreferencesProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _isAnthropoInfoDismissed = prefs.getBool(_infoAnthroDismissedKey) ?? false;
     _isVitalInfoDismissed = prefs.getBool(_infoVitalsDismissedKey) ?? false;
-    _isBodyCompInfoDismissed = prefs.getBool(_infoBodyCompDismissedKey) ?? false;
+    _isBodyCompInfoDismissed =
+        prefs.getBool(_infoBodyCompDismissedKey) ?? false;
     notifyListeners();
   }
 

@@ -14,10 +14,8 @@ enum MedicationNotificationKind { dose, inventory }
 /// localización de Flutter, así que la UI le pasa constructores de texto; hay
 /// defaults en español para poder programar avisos aunque la UI no exista aún.
 typedef NotificationText = ({String title, String body});
-typedef DoseTextBuilder = NotificationText Function(
-  Medication med,
-  ExpectedDose dose,
-);
+typedef DoseTextBuilder =
+    NotificationText Function(Medication med, ExpectedDose dose);
 typedef InventoryTextBuilder = NotificationText Function(Medication med);
 
 /// Una notificación concreta a programar: id reservado, cuándo, qué texto y un
@@ -49,7 +47,7 @@ class PlannedNotification {
 /// plan y lleva un libro de ids persistido para cancelar sin dejar huérfanas.
 class MedicationScheduler {
   MedicationScheduler({NotificationService? notificationService})
-      : _notif = notificationService ?? NotificationService();
+    : _notif = notificationService ?? NotificationService();
 
   final NotificationService _notif;
 
@@ -94,20 +92,26 @@ class MedicationScheduler {
     var doseId = doseIdBase;
     for (final med in active) {
       final doses = dosesByMedication[med.id] ?? const [];
-      final expected =
-          MedicationScheduleService.expectedDosesBetween(med, doses, from, to);
+      final expected = MedicationScheduleService.expectedDosesBetween(
+        med,
+        doses,
+        from,
+        to,
+      );
       for (final e in expected) {
         if (e.scheduledAt.isBefore(from)) continue;
         if (isAlreadyLogged?.call(med.id, e.scheduledAt) ?? false) continue;
         final text = (doseText ?? _defaultDoseText)(med, e);
-        plan.add(PlannedNotification(
-          id: doseId++,
-          kind: MedicationNotificationKind.dose,
-          title: text.title,
-          body: text.body,
-          scheduledAt: e.scheduledAt,
-          payload: 'dose|${med.id}|${e.scheduledAt.toIso8601String()}',
-        ));
+        plan.add(
+          PlannedNotification(
+            id: doseId++,
+            kind: MedicationNotificationKind.dose,
+            title: text.title,
+            body: text.body,
+            scheduledAt: e.scheduledAt,
+            payload: 'dose|${med.id}|${e.scheduledAt.toIso8601String()}',
+          ),
+        );
       }
     }
 
@@ -117,10 +121,16 @@ class MedicationScheduler {
       if (!med.stockTrackingEnabled || !med.refillAlertEnabled) continue;
       final doses = dosesByMedication[med.id] ?? const [];
 
-      final alertNow =
-          MedicationInventoryService.shouldAlert(med, doses, today: from);
-      final buyBy =
-          MedicationInventoryService.buyByDate(med, doses, today: from);
+      final alertNow = MedicationInventoryService.shouldAlert(
+        med,
+        doses,
+        today: from,
+      );
+      final buyBy = MedicationInventoryService.buyByDate(
+        med,
+        doses,
+        today: from,
+      );
 
       DateTime? when;
       if (alertNow) {
@@ -135,19 +145,25 @@ class MedicationScheduler {
       // Respetar un silenciado que aún no ha vencido.
       final snooze = med.refillSnoozedUntil;
       if (snooze != null && when.isBefore(snooze)) {
-        when =
-            DateTime(snooze.year, snooze.month, snooze.day, inventoryAlertHour);
+        when = DateTime(
+          snooze.year,
+          snooze.month,
+          snooze.day,
+          inventoryAlertHour,
+        );
       }
 
       final text = (inventoryText ?? _defaultInventoryText)(med);
-      plan.add(PlannedNotification(
-        id: invId++,
-        kind: MedicationNotificationKind.inventory,
-        title: text.title,
-        body: text.body,
-        scheduledAt: when,
-        payload: 'inventory|${med.id}',
-      ));
+      plan.add(
+        PlannedNotification(
+          id: invId++,
+          kind: MedicationNotificationKind.inventory,
+          title: text.title,
+          body: text.body,
+          scheduledAt: when,
+          payload: 'inventory|${med.id}',
+        ),
+      );
     }
 
     return plan;
@@ -169,9 +185,10 @@ class MedicationScheduler {
     if (kIsWeb) return;
 
     final prefs = await SharedPreferences.getInstance();
-    final previous = prefs
+    final previous =
+        prefs
             .getStringList(_ledgerKey)
-            ?.map((s) => int.tryParse(s))
+            ?.map(int.tryParse)
             .whereType<int>()
             .toList() ??
         const <int>[];
@@ -212,9 +229,10 @@ class MedicationScheduler {
   Future<void> cancelAll() async {
     if (kIsWeb) return;
     final prefs = await SharedPreferences.getInstance();
-    final previous = prefs
+    final previous =
+        prefs
             .getStringList(_ledgerKey)
-            ?.map((s) => int.tryParse(s))
+            ?.map(int.tryParse)
             .whereType<int>()
             .toList() ??
         const <int>[];

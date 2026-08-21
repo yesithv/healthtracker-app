@@ -3,11 +3,8 @@ import 'package:uuid/uuid.dart';
 /// Resultado de una toma programada.
 enum MedicationLogStatus { taken, skipped }
 
-MedicationLogStatus _statusFromName(String? name) =>
-    MedicationLogStatus.values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => MedicationLogStatus.taken,
-    );
+MedicationLogStatus _statusFromName(String? name) => MedicationLogStatus.values
+    .firstWhere((e) => e.name == name, orElse: () => MedicationLogStatus.taken);
 
 /// Un evento real de toma: el usuario marcó una dosis como tomada u omitida.
 ///
@@ -48,9 +45,9 @@ class MedicationLog {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.isSynced = false,
-  })  : id = id ?? const Uuid().v4(),
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   bool get isTaken => status == MedicationLogStatus.taken;
 

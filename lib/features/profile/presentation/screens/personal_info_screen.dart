@@ -83,8 +83,7 @@ class PersonalInfoScreenState extends State<PersonalInfoScreen>
   }
 
   void _saveCurrentState() {
-    final prefs = Provider.of<UserProfileProvider>(context, listen: false);
-    prefs.updatePersonalInfo(
+    Provider.of<UserProfileProvider>(context, listen: false).updatePersonalInfo(
       name: _nameController.text,
       dob: _selectedDate,
       email: _emailController.text,

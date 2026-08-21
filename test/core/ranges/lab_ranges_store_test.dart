@@ -3,8 +3,13 @@ import 'package:myvitals_healthtracker_app/core/ranges/lab_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 
-ServerBand _b(String code, double min, double max) =>
-    ServerBand(bandCode: code, bandLabel: code, minValue: min, maxValue: max, sortOrder: 0);
+ServerBand _b(String code, double min, double max) => ServerBand(
+  bandCode: code,
+  bandLabel: code,
+  minValue: min,
+  maxValue: max,
+  sortOrder: 0,
+);
 
 void main() {
   final store = LabRangesStore.instance;
@@ -36,7 +41,10 @@ void main() {
         },
       });
 
-      expect(LipidStatus.totalCholesterol(230, labCode: 'SURA'), LipidStatus.high);
+      expect(
+        LipidStatus.totalCholesterol(230, labCode: 'SURA'),
+        LipidStatus.high,
+      );
       // Sin lab, mismo valor: fallback ATP III → borderline.
       expect(LipidStatus.totalCholesterol(230), LipidStatus.borderline);
     });
@@ -52,13 +60,18 @@ void main() {
         },
       });
 
-      expect(LipidStatus.hdl(35, labCode: 'SURA'), LipidStatus.high); // bajo = riesgo
+      expect(
+        LipidStatus.hdl(35, labCode: 'SURA'),
+        LipidStatus.high,
+      ); // bajo = riesgo
       expect(LipidStatus.hdl(65, labCode: 'SURA'), LipidStatus.optimal);
     });
 
     test('lab sin datos cacheados cae al fallback', () {
-      expect(LipidStatus.triglycerides(160, labCode: 'HIGUERA_ESCALANTE'),
-          LipidStatus.borderline);
+      expect(
+        LipidStatus.triglycerides(160, labCode: 'HIGUERA_ESCALANTE'),
+        LipidStatus.borderline,
+      );
     });
   });
 }

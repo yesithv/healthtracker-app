@@ -28,10 +28,10 @@ Tone resolveMedTone(BuildContext context, MedColor color) {
   final theme = Theme.of(context);
   return switch (color) {
     MedColor.brand => Tone(
-        accent: theme.surfaces.brand,
-        surface: Color.lerp(theme.surfaces.card, theme.surfaces.brand, 0.14)!,
-        onAccent: theme.surfaces.onBrand,
-      ),
+      accent: theme.surfaces.brand,
+      surface: Color.lerp(theme.surfaces.card, theme.surfaces.brand, 0.14)!,
+      onAccent: theme.surfaces.onBrand,
+    ),
     MedColor.teal => theme.metrics.tone(MetricFamily.lipids),
     MedColor.violet => theme.metrics.tone(MetricFamily.bodyComposition),
     MedColor.green => theme.clinical.tone(ClinicalStatus.optimal),

@@ -106,10 +106,10 @@ class DiscoverSkeleton extends StatelessWidget {
           const SizedBox(height: 24),
           const SkeletonBox(width: 140, height: 20),
           const SizedBox(height: 14),
-          SizedBox(
+          const SizedBox(
             height: 150,
             child: Row(
-              children: const [
+              children: [
                 Expanded(child: SkeletonBox(height: 150, radius: 20)),
                 SizedBox(width: 14),
                 Expanded(child: SkeletonBox(height: 150, radius: 20)),

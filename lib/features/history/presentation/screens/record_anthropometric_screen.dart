@@ -11,7 +11,9 @@ import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/anthropometric_record.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import 'dart:math' as math;
+
 import 'package:myvitals_healthtracker_app/core/providers/ui_preferences_provider.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/dismissible_info_banner.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';

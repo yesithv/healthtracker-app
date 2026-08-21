@@ -1,6 +1,9 @@
 import 'dart:ui' as ui;
+
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../constants/measurement_unit.dart';
 
 /// Owns the app language and measurement-unit preference. Extracted from the
@@ -47,7 +50,8 @@ class LocaleUnitsProvider extends ChangeNotifier {
     if (unitName != null) {
       try {
         _unit = MeasurementUnit.values.byName(unitName);
-      } catch (_) {
+      } catch (e) {
+        debugLogError('LocaleUnits.readUnit', e);
         _unit = MeasurementUnit.metric;
       }
     }

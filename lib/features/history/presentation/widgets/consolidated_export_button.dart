@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
@@ -122,7 +123,9 @@ class ConsolidatedExportButton extends StatelessWidget {
         SnackBar(
           content: Text(
             l10n.mhxNoData,
-            style: theme.type.body.copyWith(color: theme.clinical.info.onAccent),
+            style: theme.type.body.copyWith(
+              color: theme.clinical.info.onAccent,
+            ),
           ),
           backgroundColor: theme.clinical.info.accent,
         ),
@@ -153,7 +156,8 @@ class ConsolidatedExportButton extends StatelessWidget {
         l10n,
         ok ? ShareOutcome.success : ShareOutcome.silent,
       );
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Export.consolidated', e);
       showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
     }
   }
@@ -202,7 +206,9 @@ class _PeriodSheet extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.mhxChoosePeriod,
-                  style: theme.type.sectionLabel.copyWith(color: surfaces.brand),
+                  style: theme.type.sectionLabel.copyWith(
+                    color: surfaces.brand,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

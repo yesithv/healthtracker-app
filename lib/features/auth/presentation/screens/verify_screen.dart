@@ -55,8 +55,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
       );
 
       if (!mounted) return;
-      await completeLoginAndEnter(context, account,
-          identifier: widget.identifier);
+      await completeLoginAndEnter(
+        context,
+        account,
+        identifier: widget.identifier,
+      );
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
@@ -93,7 +96,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
               const Text(
                 'Encontramos tu cuenta',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -125,9 +132,18 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 18),
+                      const Icon(
+                        Icons.error_outline,
+                        color: Color(0xFFEF4444),
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C)))),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: const TextStyle(color: Color(0xFFB91C1C)),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -141,9 +157,20 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 onPressed: _busy ? null : _verify,
                 child: _busy
                     ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Ingresar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Ingresar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ],
           ),
@@ -153,19 +180,25 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   Widget _label(String text) => Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 8),
-        child: Text(text,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
-      );
+    padding: const EdgeInsets.only(left: 4, bottom: 8),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF64748B),
+      ),
+    ),
+  );
 
   InputDecoration _decoration(String hint, IconData icon) => InputDecoration(
-        hintText: hint,
-        prefixIcon: Icon(icon, color: _blue, size: 20),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-      );
+    hintText: hint,
+    prefixIcon: Icon(icon, color: _blue, size: 20),
+    filled: true,
+    fillColor: Colors.white,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide.none,
+    ),
+  );
 }

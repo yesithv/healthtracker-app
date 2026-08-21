@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -40,6 +41,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get measurementUnits => 'Unità di Misura';
+
+  @override
+  String get noArticlesFound => 'Nessun articolo trovato';
+
+  @override
+  String get noArticlesFoundDesc => 'Prova un\'altra categoria di salute';
 
   @override
   String get notifications => 'Notifiche';
@@ -379,49 +386,49 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String historyTrendOf(String metric) {
-    return '$metric TREND';
+    return 'TENDENZA DI $metric';
   }
 
   @override
   String historyMetricNeedsData(String measure) {
-    return 'Log $measure to see this indicator.';
+    return 'Registra $measure per vedere questo indicatore.';
   }
 
   @override
-  String get whtrName => 'Waist-to-height';
+  String get whtrName => 'Vita-altezza';
 
   @override
   String get whtrShort => 'WHtR';
 
   @override
-  String get whtrLow => 'LOW';
+  String get whtrLow => 'BASSO';
 
   @override
-  String get whtrNormal => 'NORMAL';
+  String get whtrNormal => 'NORMALE';
 
   @override
-  String get whtrIncreased => 'INCREASED';
+  String get whtrIncreased => 'AUMENTATO';
 
   @override
-  String get whtrHigh => 'HIGH';
+  String get whtrHigh => 'ALTO';
 
   @override
-  String get whrName => 'Waist-to-hip';
+  String get whrName => 'Vita-fianchi';
 
   @override
   String get whrShort => 'WHR';
 
   @override
-  String get whrNormal => 'NORMAL';
+  String get whrNormal => 'NORMALE';
 
   @override
-  String get whrIncreased => 'INCREASED';
+  String get whrIncreased => 'AUMENTATO';
 
   @override
-  String get measureWaist => 'your waist';
+  String get measureWaist => 'la vita';
 
   @override
-  String get measureWaistAndHip => 'waist and hip';
+  String get measureWaistAndHip => 'vita e fianchi';
 
   @override
   String get unitCm => 'cm';
@@ -2601,7 +2608,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentsTitle => 'Le mie visite';
 
   @override
-  String get appointmentsDescription => 'Tieni traccia delle visite che hai e di quelle che devi ancora prenotare.';
+  String get appointmentsDescription =>
+      'Tieni traccia delle visite che hai e di quelle che devi ancora prenotare.';
 
   @override
   String get appointmentsAddCta => 'Aggiungi visita';
@@ -2619,7 +2627,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentsEmptyTitle => 'Ancora nessuna visita';
 
   @override
-  String get appointmentsEmptyBody => 'Aggiungi le visite da prenotare o quelle che hai già in agenda.';
+  String get appointmentsEmptyBody =>
+      'Aggiungi le visite da prenotare o quelle che hai già in agenda.';
 
   @override
   String get appointmentsOverdueChip => 'Scaduta';
@@ -2761,7 +2770,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentFieldRecurring => 'Controllo periodico';
 
   @override
-  String get appointmentRecurringHint => 'Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.';
+  String get appointmentRecurringHint =>
+      'Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.';
 
   @override
   String get appointmentFrequencyLabel => 'Ogni quanto';
@@ -2778,7 +2788,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentActionEdit => 'Modifica';
 
   @override
-  String get appointmentNextSpawned => 'Abbiamo annotato il prossimo controllo da prenotare.';
+  String get appointmentNextSpawned =>
+      'Abbiamo annotato il prossimo controllo da prenotare.';
 
   @override
   String get appointmentComplianceRedTitle => 'Richiede attenzione';
@@ -2790,7 +2801,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appointmentComplianceGreenTitle => 'Tutto in regola';
 
   @override
-  String get appointmentComplianceGreenBody => 'Nessun appuntamento in sospeso o scaduto.';
+  String get appointmentComplianceGreenBody =>
+      'Nessun appuntamento in sospeso o scaduto.';
 
   @override
   String appointmentNextActionOverdue(String title) {

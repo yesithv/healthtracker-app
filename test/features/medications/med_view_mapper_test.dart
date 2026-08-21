@@ -37,15 +37,14 @@ void main() {
       required FrequencyType freq,
       int? daysOfWeek,
       int? intervalDays,
-    }) =>
-        Medication(
-          name: 'X',
-          doseQuantity: 1,
-          frequencyType: freq,
-          daysOfWeek: daysOfWeek,
-          intervalDays: intervalDays,
-          anchorDate: DateTime(2026, 1, 1),
-        );
+    }) => Medication(
+      name: 'X',
+      doseQuantity: 1,
+      frequencyType: freq,
+      daysOfWeek: daysOfWeek,
+      intervalDays: intervalDays,
+      anchorDate: DateTime(2026, 1, 1),
+    );
 
     test('daily', () {
       final m = med(freq: FrequencyType.daily);

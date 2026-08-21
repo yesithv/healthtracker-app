@@ -31,14 +31,12 @@ void main() {
       // un tramo de siete días seguidos de automedición al principio.
       expect(data.vitalSigns.length, inInclusiveRange(31, 46));
 
-      final families = {
+      <String, List<DateTime>>{
         'antropometría': data.anthropometric.map((r) => r.date).toList(),
         'signos vitales': data.vitalSigns.map((r) => r.date).toList(),
         'lípidos': data.lipids.map((r) => r.date).toList(),
         'composición': data.bodyComposition.map((r) => r.date).toList(),
-      };
-
-      families.forEach((family, dates) {
+      }.forEach((family, dates) {
         expect(dates.first.isBefore(dates.last), isTrue, reason: family);
         // Cada familia tiene su cadencia (mensual, bimensual, trimestral) y se
         // cuenta hacia atrás desde hoy, así que su registro más antiguo cae cerca
@@ -65,8 +63,12 @@ void main() {
         data.anthropometric.map((r) => r.weight),
       );
       expect(
-        again.vitalSigns.map((r) => '${r.systolic}/${r.diastolic}·${r.heartRate}'),
-        data.vitalSigns.map((r) => '${r.systolic}/${r.diastolic}·${r.heartRate}'),
+        again.vitalSigns.map(
+          (r) => '${r.systolic}/${r.diastolic}·${r.heartRate}',
+        ),
+        data.vitalSigns.map(
+          (r) => '${r.systolic}/${r.diastolic}·${r.heartRate}',
+        ),
       );
       expect(again.lipids.map((r) => r.ldl), data.lipids.map((r) => r.ldl));
     });
@@ -110,13 +112,12 @@ void main() {
     test('las fechas no quedan cuadriculadas al mismo día del mes', () {
       // El jitter existe justo para esto: si todas las tomas cayeran el mismo
       // día del mes, la demo se leería como lo que es —un generador—.
-      final daysOfMonth = data.anthropometric
-          .map((r) => r.date.day)
-          .toSet();
+      final daysOfMonth = data.anthropometric.map((r) => r.date.day).toSet();
       expect(
         daysOfMonth.length,
         greaterThan(3),
-        reason: 'los pesajes deben repartirse por el mes, no clavarse en un día',
+        reason:
+            'los pesajes deben repartirse por el mes, no clavarse en un día',
       );
     });
   });

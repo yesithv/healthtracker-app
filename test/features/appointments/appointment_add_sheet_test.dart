@@ -52,50 +52,57 @@ void main() {
     await AppointmentRepository.instance.clearAll();
   });
 
-  testWidgets('el toggle de control periódico revela el selector de cada N meses',
-      (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    await tester.pumpWidget(_host(controller));
-    await tester.pump();
+  testWidgets(
+    'el toggle de control periódico revela el selector de cada N meses',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      await tester.pumpWidget(_host(controller));
+      await tester.pump();
 
-    // Antes de activar la recurrencia, el selector no está.
-    expect(find.text('Cada cuánto'), findsNothing);
-    expect(find.text('Cada 3 meses'), findsNothing);
+      // Antes de activar la recurrencia, el selector no está.
+      expect(find.text('Cada cuánto'), findsNothing);
+      expect(find.text('Cada 3 meses'), findsNothing);
 
-    // El formulario vive en un scroll: hay que traer el toggle a la vista antes
-    // de tocarlo (si no, el tap cae fuera de pantalla).
-    await tester.ensureVisible(find.byType(Switch));
-    await tester.pump();
+      // El formulario vive en un scroll: hay que traer el toggle a la vista antes
+      // de tocarlo (si no, el tap cae fuera de pantalla).
+      await tester.ensureVisible(find.byType(Switch));
+      await tester.pump();
 
-    // Activa el toggle de control periódico.
-    await tester.tap(find.byType(Switch));
-    await tester.pump();
+      // Activa el toggle de control periódico.
+      await tester.tap(find.byType(Switch));
+      await tester.pump();
 
-    // Aparecen el selector de periodicidad y sus opciones.
-    expect(find.text('Cada cuánto'), findsOneWidget);
-    expect(find.text('Cada 3 meses'), findsOneWidget);
-    expect(find.text('Cada 6 meses'), findsOneWidget);
+      // Aparecen el selector de periodicidad y sus opciones.
+      expect(find.text('Cada cuánto'), findsOneWidget);
+      expect(find.text('Cada 3 meses'), findsOneWidget);
+      expect(find.text('Cada 6 meses'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 
-  testWidgets('en modo edición precarga los campos de la cita', (tester) async {
-    final controller = AppointmentsController(scheduler: _NoopScheduler());
-    final existing = Appointment(
-      title: 'Control endocrino',
-      specialty: 'Endocrinología',
-      status: AppointmentStatus.toBook,
-      dueToBookOn: DateTime(2026, 9, 1),
-    );
+  testWidgets(
+    'en modo edición precarga los campos de la cita',
+    (tester) async {
+      final controller = AppointmentsController(scheduler: _NoopScheduler());
+      final existing = Appointment(
+        title: 'Control endocrino',
+        specialty: 'Endocrinología',
+        status: AppointmentStatus.toBook,
+        dueToBookOn: DateTime(2026, 9, 1),
+      );
 
-    await tester.pumpWidget(_host(controller, existing: existing));
-    await tester.pump();
+      await tester.pumpWidget(_host(controller, existing: existing));
+      await tester.pump();
 
-    // Título de edición y campos precargados.
-    expect(find.text('Editar cita'), findsOneWidget);
-    expect(find.text('Control endocrino'), findsOneWidget);
-    expect(find.text('Endocrinología'), findsOneWidget);
+      // Título de edición y campos precargados.
+      expect(find.text('Editar cita'), findsOneWidget);
+      expect(find.text('Control endocrino'), findsOneWidget);
+      expect(find.text('Endocrinología'), findsOneWidget);
 
-    controller.dispose();
-  }, timeout: const Timeout(Duration(seconds: 60)));
+      controller.dispose();
+    },
+    timeout: const Timeout(Duration(seconds: 60)),
+  );
 }

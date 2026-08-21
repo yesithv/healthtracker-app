@@ -28,7 +28,11 @@ void main() {
   group('los extremos afloran en las estadísticas del periodo ·', () {
     test('la tensión recoge la crisis al tope del clamp', () {
       final s = summary.systolicSeries.stats!;
-      expect(s.max, 172, reason: 'la crisis hipertensiva es el máximo de la serie');
+      expect(
+        s.max,
+        172,
+        reason: 'la crisis hipertensiva es el máximo de la serie',
+      );
       expect(s.min, lessThanOrEqualTo(100));
     });
 
@@ -88,8 +92,12 @@ void main() {
   group('withinPeriod con fechas colisionadas ·', () {
     test('conserva las dos tomas del mismo instante y las ordena', () {
       final collision = DateTime(2026, 5, 1, 9, 30);
-      VitalSignRecord v(int s) =>
-          VitalSignRecord(date: collision, systolic: s, diastolic: 80, heartRate: 70);
+      VitalSignRecord v(int s) => VitalSignRecord(
+        date: collision,
+        systolic: s,
+        diastolic: 80,
+        heartRate: 70,
+      );
 
       final out = withinPeriod(
         [v(168), v(110)],

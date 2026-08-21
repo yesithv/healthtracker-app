@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../theme/theme_context.dart';
+
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
@@ -187,7 +189,7 @@ class _WizardValidationBannerState extends State<WizardValidationBanner>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.only(top: 4),
                                   child: Icon(
                                     Icons.circle,
                                     size: 5,

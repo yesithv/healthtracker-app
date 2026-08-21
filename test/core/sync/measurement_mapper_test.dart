@@ -27,27 +27,37 @@ void main() {
       expect(items.first.value, 78.5);
     });
 
-    test('antropométrico convierte talla cm→m y emite perímetros presentes', () {
-      final r = AnthropometricRecord(
-        id: 'a2',
-        date: when,
-        weight: 78.5,
-        height: 175, // la captura guarda cm; el catálogo HEIGHT es en metros
-        bmi: 25.6,
-        waistCm: 92,
-        hipCm: 104.5,
-        armCm: 31,
-      );
+    test(
+      'antropométrico convierte talla cm→m y emite perímetros presentes',
+      () {
+        final r = AnthropometricRecord(
+          id: 'a2',
+          date: when,
+          weight: 78.5,
+          height: 175, // la captura guarda cm; el catálogo HEIGHT es en metros
+          bmi: 25.6,
+          waistCm: 92,
+          hipCm: 104.5,
+          armCm: 31,
+        );
 
-      final items = MeasurementMapper.fromAnthropometric(r);
+        final items = MeasurementMapper.fromAnthropometric(r);
 
-      expect(items.map((i) => i.indicatorCode),
-          ['WEIGHT', 'HEIGHT', 'BMI', 'WAIST', 'HIP', 'ARM']);
-      final height =
-          items.firstWhere((i) => i.indicatorCode == 'HEIGHT').value;
-      expect(height, 1.75);
-      expect(items.firstWhere((i) => i.indicatorCode == 'WAIST').value, 92);
-    });
+        expect(items.map((i) => i.indicatorCode), [
+          'WEIGHT',
+          'HEIGHT',
+          'BMI',
+          'WAIST',
+          'HIP',
+          'ARM',
+        ]);
+        final height = items
+            .firstWhere((i) => i.indicatorCode == 'HEIGHT')
+            .value;
+        expect(height, 1.75);
+        expect(items.firstWhere((i) => i.indicatorCode == 'WAIST').value, 92);
+      },
+    );
 
     test('signos vitales → 3 items con context de estado/síntoma', () {
       final r = VitalSignRecord(
@@ -62,60 +72,91 @@ void main() {
 
       final items = MeasurementMapper.fromVitalSign(r);
 
-      expect(items.map((i) => i.indicatorCode),
-          ['BP_SYSTOLIC', 'BP_DIASTOLIC', 'HEART_RATE']);
+      expect(items.map((i) => i.indicatorCode), [
+        'BP_SYSTOLIC',
+        'BP_DIASTOLIC',
+        'HEART_RATE',
+      ]);
       expect(items.first.value, 120);
-      expect(items.first.context, {'activityState': 'reposo', 'symptom': 'mareo'});
+      expect(items.first.context, {
+        'activityState': 'reposo',
+        'symptom': 'mareo',
+      });
     });
 
-    test('lípidos → solo emite los campos con valor, con labName en context', () {
-      final r = LipidRecord(
-        id: 'l1',
-        date: when,
-        totalCholesterol: 190,
-        hdl: 55,
-        // ldl, vldl, triglycerides nulos: no deben emitirse
-        labName: 'Lab Central',
-      );
+    test(
+      'lípidos → solo emite los campos con valor, con labName en context',
+      () {
+        final r = LipidRecord(
+          id: 'l1',
+          date: when,
+          totalCholesterol: 190,
+          hdl: 55,
+          // ldl, vldl, triglycerides nulos: no deben emitirse
+          labName: 'Lab Central',
+        );
 
-      final items = MeasurementMapper.fromLipid(r);
+        final items = MeasurementMapper.fromLipid(r);
 
-      expect(items.map((i) => i.indicatorCode),
-          ['CHOLESTEROL_TOTAL', 'CHOLESTEROL_HDL']);
-      expect(items.every((i) => i.context['labName'] == 'Lab Central'), isTrue);
-    });
+        expect(items.map((i) => i.indicatorCode), [
+          'CHOLESTEROL_TOTAL',
+          'CHOLESTEROL_HDL',
+        ]);
+        expect(
+          items.every((i) => i.context['labName'] == 'Lab Central'),
+          isTrue,
+        );
+      },
+    );
 
-    test('composición corporal → grasa visceral usa VISCERAL_FAT_LEVEL y omite nulos', () {
-      final r = BodyCompositionRecord(
-        id: 'b1',
-        date: when,
-        bodyFatPercent: 22.4,
-        visceralFatLevel: 8,
-        deviceName: 'OMRON HBF-514C',
-        // resto nulo
-      );
+    test(
+      'composición corporal → grasa visceral usa VISCERAL_FAT_LEVEL y omite nulos',
+      () {
+        final r = BodyCompositionRecord(
+          id: 'b1',
+          date: when,
+          bodyFatPercent: 22.4,
+          visceralFatLevel: 8,
+          deviceName: 'OMRON HBF-514C',
+          // resto nulo
+        );
 
-      final items = MeasurementMapper.fromBodyComposition(r);
+        final items = MeasurementMapper.fromBodyComposition(r);
 
-      expect(items.map((i) => i.indicatorCode), ['BODY_FAT', 'VISCERAL_FAT_LEVEL']);
-      expect(items.firstWhere((i) => i.indicatorCode == 'VISCERAL_FAT_LEVEL').value, 8);
-      expect(items.every((i) => i.context['deviceName'] == 'OMRON HBF-514C'), isTrue);
-    });
+        expect(items.map((i) => i.indicatorCode), [
+          'BODY_FAT',
+          'VISCERAL_FAT_LEVEL',
+        ]);
+        expect(
+          items
+              .firstWhere((i) => i.indicatorCode == 'VISCERAL_FAT_LEVEL')
+              .value,
+          8,
+        );
+        expect(
+          items.every((i) => i.context['deviceName'] == 'OMRON HBF-514C'),
+          isTrue,
+        );
+      },
+    );
 
-    test('toJson serializa measuredAt en UTC y omite note vacío / context vacío', () {
-      final item = IngestItem(
-        clientId: 'c1',
-        indicatorCode: 'WEIGHT',
-        measuredAt: DateTime.utc(2026, 7, 10, 8, 30),
-        value: 80,
-      );
+    test(
+      'toJson serializa measuredAt en UTC y omite note vacío / context vacío',
+      () {
+        final item = IngestItem(
+          clientId: 'c1',
+          indicatorCode: 'WEIGHT',
+          measuredAt: DateTime.utc(2026, 7, 10, 8, 30),
+          value: 80,
+        );
 
-      final json = item.toJson();
+        final json = item.toJson();
 
-      expect(json['measuredAt'], '2026-07-10T08:30:00.000Z');
-      expect(json.containsKey('note'), isFalse);
-      expect(json.containsKey('context'), isFalse);
-      expect(json['value'], 80);
-    });
+        expect(json['measuredAt'], '2026-07-10T08:30:00.000Z');
+        expect(json.containsKey('note'), isFalse);
+        expect(json.containsKey('context'), isFalse);
+        expect(json['value'], 80);
+      },
+    );
   });
 }

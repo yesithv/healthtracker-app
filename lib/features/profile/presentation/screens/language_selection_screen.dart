@@ -101,7 +101,7 @@ class LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                   flag: lang['flag']!,
                   isSelected: _tempSelectedCode == lang['code'],
                   onTap: () {
-                    setState(() => _tempSelectedCode = lang['code']!);
+                    setState(() => _tempSelectedCode = lang['code']);
                     prefs.setLocale(Locale(lang['code']!));
                   },
                 ),

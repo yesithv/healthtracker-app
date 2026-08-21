@@ -220,8 +220,9 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
     final dateLabel = _date == null
         ? l10n.appointmentPickDate
         : material.formatMediumDate(_date!);
-    final timeLabel =
-        _time == null ? l10n.appointmentPickTime : _time!.format(context);
+    final timeLabel = _time == null
+        ? l10n.appointmentPickTime
+        : _time!.format(context);
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -249,7 +250,9 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
                 ),
               ),
               Text(
-                _isEditing ? l10n.appointmentEditTitle : l10n.appointmentAddTitle,
+                _isEditing
+                    ? l10n.appointmentEditTitle
+                    : l10n.appointmentAddTitle,
                 style: theme.type.screenTitle.copyWith(fontSize: 20),
               ),
               const SizedBox(height: 16),
@@ -320,8 +323,9 @@ class _AppointmentAddSheetState extends State<AppointmentAddSheet> {
                   padding: const EdgeInsets.only(top: 4, bottom: 4),
                   child: Text(
                     l10n.appointmentDateRequired,
-                    style: theme.type.meta
-                        .copyWith(color: theme.clinical.alert.accent),
+                    style: theme.type.meta.copyWith(
+                      color: theme.clinical.alert.accent,
+                    ),
                   ),
                 ),
 
@@ -577,8 +581,9 @@ class _Field extends StatelessWidget {
         children: [
           Text(
             label,
-            style: theme.type.fieldLabel
-                .copyWith(color: theme.surfaces.inkSecondary),
+            style: theme.type.fieldLabel.copyWith(
+              color: theme.surfaces.inkSecondary,
+            ),
           ),
           const SizedBox(height: 6),
           child,
@@ -609,7 +614,8 @@ class _SpecialtyDropdown extends StatelessWidget {
 
     final options = appointmentSpecialties(l10n);
     // Preserva un valor guardado que no esté en el catálogo actual.
-    final extras = (value != null && value!.isNotEmpty && !options.contains(value))
+    final extras =
+        (value != null && value!.isNotEmpty && !options.contains(value))
         ? [value!]
         : const <String>[];
 

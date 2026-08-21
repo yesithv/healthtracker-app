@@ -49,22 +49,15 @@ class SettingsPageHeader extends StatelessWidget {
         IconBadge(
           icon,
           color: accentColor ?? surfaces.brand,
-          background: accentColor?.withValues(alpha: 0.12) ?? surfaces.selection,
+          background:
+              accentColor?.withValues(alpha: 0.12) ?? surfaces.selection,
           size: 80,
           iconSize: 32,
         ),
         const SizedBox(height: 24),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: theme.type.screenTitle,
-        ),
+        Text(title, textAlign: TextAlign.center, style: theme.type.screenTitle),
         const SizedBox(height: 12),
-        Text(
-          description,
-          textAlign: TextAlign.center,
-          style: theme.type.body,
-        ),
+        Text(description, textAlign: TextAlign.center, style: theme.type.body),
       ],
     );
   }

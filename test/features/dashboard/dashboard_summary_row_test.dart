@@ -83,8 +83,9 @@ Widget _host({
       home: Builder(
         builder: (context) => MediaQuery(
           // Escala de texto para provocar el peor caso de altura de contenido.
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: TextScaler.linear(textScale)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
           child: Scaffold(
             body: Center(
               child: SizedBox(
@@ -160,19 +161,23 @@ void main() {
           'sin overflow y alto gemelo finito · $themeId · ${width.toInt()}px · x$scale',
           (tester) async {
             final meds = MedicationsController(scheduler: _NoopMedScheduler());
-            final appts = AppointmentsController(scheduler: _NoopApptScheduler());
+            final appts = AppointmentsController(
+              scheduler: _NoopApptScheduler(),
+            );
             addTearDown(meds.dispose);
             addTearDown(appts.dispose);
 
             await seed(tester, meds, appts);
 
-            await tester.pumpWidget(_host(
-              meds: meds,
-              appts: appts,
-              themeId: themeId,
-              width: width,
-              textScale: scale,
-            ));
+            await tester.pumpWidget(
+              _host(
+                meds: meds,
+                appts: appts,
+                themeId: themeId,
+                width: width,
+                textScale: scale,
+              ),
+            );
             await tester.pump();
 
             // 1) Ningún RenderFlex desbordado ni otra excepción de layout.
@@ -184,16 +189,21 @@ void main() {
 
             // 2) Las dos tarjetas existen y comparten un alto finito, dirigido por
             //    el contenido (IntrinsicHeight): ni cero, ni desmesurado.
-            final medSize =
-                tester.getSize(find.byType(MedicationsSummaryCard));
+            final medSize = tester.getSize(find.byType(MedicationsSummaryCard));
             final apptSize = tester.getSize(find.byType(AppointmentsCard));
 
             expect(medSize.height, greaterThan(0));
             expect(medSize.height.isFinite, isTrue);
-            expect(medSize.height, lessThan(600),
-                reason: 'alto desmesurado sugiere extensión fantasma');
+            expect(
+              medSize.height,
+              lessThan(600),
+              reason: 'alto desmesurado sugiere extensión fantasma',
+            );
             // Gemelas: mismo alto exacto por IntrinsicHeight + stretch.
-            expect(apptSize.height, moreOrLessEquals(medSize.height, epsilon: 0.5));
+            expect(
+              apptSize.height,
+              moreOrLessEquals(medSize.height, epsilon: 0.5),
+            );
           },
         );
       }

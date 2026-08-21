@@ -134,7 +134,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                 accent: SettingsSection.accountSync.tone(Theme.of(context)),
               ),
               const SizedBox(height: 32),
-              session.isAuthenticated ? _loggedIn(session) : _loggedOut(),
+              if (session.isAuthenticated) _loggedIn(session) else _loggedOut(),
             ],
           ),
         ),
@@ -242,7 +242,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => PatientSession.instance.clear(),
+                  onPressed: PatientSession.instance.clear,
                   child: Text(l10n.accountSignOut),
                 ),
               ],
@@ -254,7 +254,7 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
           children: [
             Text(
               l10n.accountSyncSection,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(

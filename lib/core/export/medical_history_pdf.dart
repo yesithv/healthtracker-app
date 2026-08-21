@@ -54,9 +54,8 @@ class MedicalHistoryPatient {
 const PdfColor _ink = PdfColors.blueGrey900;
 const PdfColor _muted = PdfColors.blueGrey500;
 const PdfColor _hairline = PdfColors.blueGrey100;
-// `PdfColor.fromInt` es factory (no const), así que este token es `final`, no
-// `const`. Solo se usa en `TextStyle` no-const, de modo que no rompe nada.
-final PdfColor _brand = PdfColor.fromInt(0xFF1E5A8A);
+// Token de marca del PDF. `PdfColor.fromInt` es const en esta versión de `pdf`.
+const PdfColor _brand = PdfColor.fromInt(0xFF1E5A8A);
 
 PdfColor _statusColor(ClinicalStatus s) => switch (s) {
   ClinicalStatus.info => PdfColors.blue600,
@@ -323,9 +322,9 @@ pw.Widget _patientHeader(
                 horizontal: 12,
                 vertical: 6,
               ),
-              decoration: pw.BoxDecoration(
+              decoration: const pw.BoxDecoration(
                 color: _brand,
-                borderRadius: const pw.BorderRadius.only(
+                borderRadius: pw.BorderRadius.only(
                   topLeft: pw.Radius.circular(7),
                   topRight: pw.Radius.circular(7),
                 ),
@@ -587,7 +586,7 @@ pw.Widget _executiveSummary(
       _sectionTitle(l10n.mhxSummaryTitle),
       pw.SizedBox(height: 8),
       pw.Table(
-        border: pw.TableBorder(
+        border: const pw.TableBorder(
           horizontalInside: pw.BorderSide(color: _hairline),
           bottom: pw.BorderSide(color: _hairline),
         ),
@@ -598,10 +597,7 @@ pw.Widget _executiveSummary(
           3: pw.FlexColumnWidth(1.6),
           4: pw.FlexColumnWidth(1.8),
         },
-        children: [
-          _summaryHeaderRow(l10n),
-          ...rows.map(_summaryDataRow),
-        ],
+        children: [_summaryHeaderRow(l10n), ...rows.map(_summaryDataRow)],
       ),
     ],
   );
@@ -646,9 +642,10 @@ pw.TableRow _summaryDataRow(_SummaryRow r) {
       c(r.value),
       c(r.date, color: _muted),
       c(r.reference, color: _muted),
-      r.statusLabel == null
-          ? c('-', color: _muted)
-          : c(r.statusLabel!, color: _statusColor(r.status!), bold: true),
+      if (r.statusLabel == null)
+        c('-', color: _muted)
+      else
+        c(r.statusLabel!, color: _statusColor(r.status!), bold: true),
     ],
   );
 }
@@ -720,7 +717,8 @@ pw.Widget? _vitalsSection(
     chart: chart,
     stats: stats,
     table: table,
-    coding: '${l10n.mhxColReference}: ${_Ref.bp} mmHg · '
+    coding:
+        '${l10n.mhxColReference}: ${_Ref.bp} mmHg · '
         'LOINC ${_Loinc.bpPanel}, ${_Loinc.heartRate} · UCUM mm[Hg], /min',
   );
 }
@@ -755,7 +753,11 @@ pw.Widget? _anthropometrySection(
         '${_fmt1(wStats.min)}-${_fmt1(wStats.max)} kg',
       ),
     if (bmiStats != null)
-      _statBlock(l10n.mhxBmi, _fmt1(bmiStats.latest), caption: l10n.mhxStatsLatest),
+      _statBlock(
+        l10n.mhxBmi,
+        _fmt1(bmiStats.latest),
+        caption: l10n.mhxStatsLatest,
+      ),
   ];
 
   final table = _recordsTable(
@@ -826,7 +828,8 @@ pw.Widget? _lipidsSection(
     chart: chart,
     stats: const [],
     table: table,
-    coding: '${l10n.mhxColReference}: ${_Ref.totalCholesterol} · '
+    coding:
+        '${l10n.mhxColReference}: ${_Ref.totalCholesterol} · '
         'LDL ${_Ref.ldl} · HDL ${_Ref.hdl} · Trig ${_Ref.triglycerides} mg/dL · '
         'LOINC ${_Loinc.lipidPanel}',
   );
@@ -984,7 +987,9 @@ pw.Widget _recordsTable({
   );
 
   return pw.Table(
-    border: pw.TableBorder(horizontalInside: pw.BorderSide(color: _hairline)),
+    border: const pw.TableBorder(
+      horizontalInside: pw.BorderSide(color: _hairline),
+    ),
     columnWidths: const {
       0: pw.FlexColumnWidth(1.4),
       1: pw.FlexColumnWidth(2.2),

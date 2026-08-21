@@ -121,10 +121,14 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                                               l10n.unlockAppToContinue,
                                         );
                                     if (authenticated) {
-                                      prefs.setBiometricEnabled(true);
+                                      await prefs.setBiometricEnabled(
+                                        enabled: true,
+                                      );
                                     }
                                   } else {
-                                    prefs.setBiometricEnabled(false);
+                                    await prefs.setBiometricEnabled(
+                                      enabled: false,
+                                    );
                                   }
                                 }
                               : null,

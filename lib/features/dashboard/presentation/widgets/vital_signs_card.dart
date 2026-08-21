@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
+
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
@@ -76,7 +77,9 @@ class VitalSignsCard extends StatelessWidget {
     final hrTone = theme.clinical.tone(hrStatus);
 
     // Serie cronológica (los repositorios entregan más reciente primero).
-    final systolicSpark = [for (final r in list.reversed) r.systolic.toDouble()];
+    final systolicSpark = [
+      for (final r in list.reversed) r.systolic.toDouble(),
+    ];
 
     return DashboardCard(
       family: MetricFamily.vitals,

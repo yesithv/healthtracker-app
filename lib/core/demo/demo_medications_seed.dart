@@ -39,30 +39,33 @@ Future<void> seedDemoMedicationsIfEmpty() async {
     required double stock,
     required double pack,
     required double threshold,
-  }) =>
-      Medication(
-        id: id,
-        name: name,
-        form: form,
-        strengthValue: strengthValue,
-        strengthUnit: strengthUnit,
-        color: color,
-        shape: shape,
-        notes: notes,
-        doseQuantity: doseQuantity,
-        frequencyType: frequency,
-        daysOfWeek: daysOfWeek,
-        startDate: today.subtract(const Duration(days: 40)),
-        stockQuantity: stock,
-        stockTrackingEnabled: true,
-        refillThreshold: threshold,
-        refillLeadDays: 3,
-        packSize: pack,
-      );
+  }) => Medication(
+    id: id,
+    name: name,
+    form: form,
+    strengthValue: strengthValue,
+    strengthUnit: strengthUnit,
+    color: color,
+    shape: shape,
+    notes: notes,
+    doseQuantity: doseQuantity,
+    frequencyType: frequency,
+    daysOfWeek: daysOfWeek,
+    startDate: today.subtract(const Duration(days: 40)),
+    stockQuantity: stock,
+    stockTrackingEnabled: true,
+    refillThreshold: threshold,
+    refillLeadDays: 3,
+    packSize: pack,
+  );
 
   MedicationDose dose(String medId, int hour, int minute, {double? qty}) =>
       MedicationDose(
-          medicationId: medId, hour: hour, minute: minute, quantity: qty);
+        medicationId: medId,
+        hour: hour,
+        minute: minute,
+        quantity: qty,
+      );
 
   seeds.add((
     med(
@@ -145,17 +148,23 @@ Future<void> seedDemoMedicationsIfEmpty() async {
   final from = today.subtract(const Duration(days: 14));
   final to = today.subtract(const Duration(days: 1));
   for (final (m, doses) in seeds) {
-    final expected =
-        MedicationScheduleService.expectedDosesBetween(m, doses, from, to);
+    final expected = MedicationScheduleService.expectedDosesBetween(
+      m,
+      doses,
+      from,
+      to,
+    );
     for (final e in expected) {
-      await logsRepo.insert(MedicationLog(
-        medicationId: m.id,
-        doseId: e.dose?.id,
-        scheduledAt: e.scheduledAt,
-        status: MedicationLogStatus.taken,
-        takenAt: e.scheduledAt,
-        quantity: e.quantity,
-      ));
+      await logsRepo.insert(
+        MedicationLog(
+          medicationId: m.id,
+          doseId: e.dose?.id,
+          scheduledAt: e.scheduledAt,
+          status: MedicationLogStatus.taken,
+          takenAt: e.scheduledAt,
+          quantity: e.quantity,
+        ),
+      );
     }
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
@@ -25,6 +28,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -159,7 +163,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
           _buildChart(l10n, specs[metric]!, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-lipid', extra: r),
-      onDelete: (id) => LipidRepository.instance.delete(id),
+      onDelete: LipidRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.bloodtype,
@@ -264,10 +268,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
             children: [
               Container(width: 12, height: 2, color: family.accent),
               const SizedBox(width: 4),
-              Text(
-                spec.title,
-                style: _theme.type.meta.copyWith(fontSize: 10),
-              ),
+              Text(spec.title, style: _theme.type.meta.copyWith(fontSize: 10)),
             ],
           ),
           Row(
@@ -309,8 +310,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
       [
         l10n.historyColDate,
         l10n.exportColTotalCholShort,
-        "LDL",
-        "HDL",
+        'LDL',
+        'HDL',
         l10n.exportColTrigsShort,
       ],
       ...records.map((r) {
@@ -384,7 +385,8 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
         l10n,
         ok ? ShareOutcome.success : ShareOutcome.silent,
       );
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Export.lipid', e);
       showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
     }
   }
@@ -395,13 +397,13 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         l10n.exportColTotalCholesterol,
-        "LDL",
-        "HDL",
-        "VLDL",
+        'LDL',
+        'HDL',
+        'VLDL',
         l10n.exportColTriglycerides,
         l10n.exportColLabName,
         l10n.exportColComment,
@@ -419,7 +421,7 @@ class _LipidHistoryTabState extends State<LipidHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
+
 import 'dart:math' as math;
+
 import 'package:provider/provider.dart';
 import 'package:myvitals_healthtracker_app/core/database/record_repositories.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/chart_bands.dart';
@@ -26,6 +29,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:share_plus/share_plus.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -168,14 +172,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
           value: CompMetric.metabolicAge,
           label: l10n.exportColMetabolicAge,
         ),
-        MetricChip(
-          value: CompMetric.bodyWater,
-          label: l10n.exportColBodyWater,
-        ),
-        MetricChip(
-          value: CompMetric.boneMass,
-          label: l10n.exportColBoneMass,
-        ),
+        MetricChip(value: CompMetric.bodyWater, label: l10n.exportColBodyWater),
+        MetricChip(value: CompMetric.boneMass, label: l10n.exportColBoneMass),
         MetricChip(value: CompMetric.bmr, label: l10n.dashboardCompositionBmr),
       ],
       // Mensaje superior: encabeza el indicador con el color de su FAMILIA; no
@@ -190,7 +188,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
           _buildChart(l10n, specs[metric]!, ascending, filterLabel),
       itemBuilder: (r) => _buildHistoryItem(r, l10n),
       onEdit: (r) => context.push('/record-body-composition', extra: r),
-      onDelete: (id) => BodyCompositionRepository.instance.delete(id),
+      onDelete: BodyCompositionRepository.instance.delete,
       onExportPdf: (records) => _exportPdf(records, l10n),
       onExportCsv: (records) => _exportCsv(records, l10n),
       emptyIcon: Icons.accessibility_new,
@@ -234,7 +232,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
     final double span = (maxV - minV).abs();
     final double pad = span == 0 ? (maxV.abs() * 0.1 + 1) : span * 0.2;
     double minDisplay = minV - pad;
-    double maxDisplay = maxV + pad;
+    final double maxDisplay = maxV + pad;
     // Los indicadores de composición no toman valores negativos.
     if (minV >= 0 && minDisplay < 0) minDisplay = 0;
     final double leftInterval = math.max(
@@ -308,10 +306,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
             children: [
               Container(width: 12, height: 2, color: family.accent),
               const SizedBox(width: 4),
-              Text(
-                spec.title,
-                style: _theme.type.meta.copyWith(fontSize: 10),
-              ),
+              Text(spec.title, style: _theme.type.meta.copyWith(fontSize: 10)),
             ],
           ),
           // Solo cuando el servidor aporta zonas: su clave de leyenda, igual que
@@ -365,8 +360,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       ...records.map((r) {
         return [
           DateFormat('dd MMM yyyy').format(r.date),
-          r.bodyFatPercent != null ? '${_num(r.bodyFatPercent)}%' : '-',
-          r.muscleMassKg != null ? '${_num(r.muscleMassKg)}kg' : '-',
+          if (r.bodyFatPercent != null) '${_num(r.bodyFatPercent)}%' else '-',
+          if (r.muscleMassKg != null) '${_num(r.muscleMassKg)}kg' else '-',
           r.visceralFatLevel?.toString() ?? '-',
         ];
       }),
@@ -431,7 +426,8 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         l10n,
         ok ? ShareOutcome.success : ShareOutcome.silent,
       );
-    } catch (_) {
+    } catch (e) {
+      debugLogError('Export.bodyComposition', e);
       showShareFeedback(messenger, theme, l10n, ShareOutcome.error);
     }
   }
@@ -442,7 +438,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
   ) async {
     final messenger = ScaffoldMessenger.of(context);
     final theme = _theme;
-    List<List<dynamic>> rows = [
+    final List<List<dynamic>> rows = [
       [
         l10n.historyColDate,
         '${l10n.exportColBodyFat} %',
@@ -468,7 +464,7 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
         ];
       }),
     ];
-    String csvData = csv.encode(rows);
+    final String csvData = csv.encode(rows);
     final bytes = utf8.encode(csvData);
     final outcome = await runShare(
       () => SharePlus.instance.share(

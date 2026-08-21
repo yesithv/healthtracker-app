@@ -10,6 +10,8 @@
   "selectLanguage": "Select your preferred language",
   "personalInfo": "Personal Info",
   "measurementUnits": "Measurement Units",
+  "noArticlesFound": "No articles found",
+  "noArticlesFoundDesc": "Try another health category",
   "notifications": "Notifications",
   "privacySecurity": "Privacy & Security",
   "helpSupport": "Help & Support",
