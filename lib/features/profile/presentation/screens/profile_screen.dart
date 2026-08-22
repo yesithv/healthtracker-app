@@ -19,8 +19,6 @@ import '../../../../core/auth/local_data_reset.dart';
 import '../../../../core/sync/sync_service.dart';
 import '../../../../core/demo/demo_actions.dart';
 import '../../../../core/demo/demo_session.dart';
-import '../../../../core/database/record_repositories.dart';
-import '../../../../core/providers/health_goals_provider.dart';
 import '../../data/profile_achievements.dart';
 import '../../data/achievements_reader.dart';
 
