@@ -72,7 +72,7 @@ class DashboardTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (headerTrailing != null) headerTrailing!,
+                    ?headerTrailing,
                   ],
                 ),
                 const SizedBox(height: 12),
