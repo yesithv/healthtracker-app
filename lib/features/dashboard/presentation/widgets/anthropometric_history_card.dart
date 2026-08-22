@@ -6,11 +6,11 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
-import '../../../../core/widgets/action_button.dart';
-import '../../../../core/widgets/dashed_border_container.dart';
+import '../../../../core/widgets/bmi_status_badge.dart';
 import '../../../../core/providers/health_goals_provider.dart';
 import '../../../../core/database/record_repositories.dart';
 import 'composition_indicator_card.dart';
+import 'dashboard_card.dart';
 
 /// Dashboard card showing the latest BMI and progress toward the weight goal.
 /// Reads the cached, reactive list from [AnthropometricRepository].
@@ -31,47 +31,32 @@ class AnthropometricHistoryCard extends StatelessWidget {
     final family = theme.metrics.tone(MetricFamily.anthropometry);
 
     if (list.isEmpty) {
-      return DashedBorderContainer(
-        color: family.accent,
-        borderRadius: surfaces.radiusCard,
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: family.surface,
-              child: Icon(Icons.straighten, color: family.accent),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.anthropometricHistory, style: theme.type.cardTitle),
-            const SizedBox(height: 4),
-            Text(
-              l10n.anthroSubtitle,
-              textAlign: TextAlign.center,
-              style: theme.type.meta,
-            ),
-            const SizedBox(height: 20),
-            ActionButton(
-              text: l10n.recordFirstMeasure,
-              color: family.accent,
-              solid: false,
-              onPressed: () => context.push('/record-anthropometric'),
-            ),
-          ],
-        ),
+      return DashboardEmptyCard(
+        family: MetricFamily.anthropometry,
+        icon: Icons.straighten,
+        title: l10n.anthropometricHistory,
+        subtitle: l10n.anthroSubtitle,
+        actionText: l10n.recordFirstMeasure,
+        onAction: () => context.push('/record-anthropometric'),
       );
     }
 
     final latestRecord = list.first;
     final previousRecord = list.length > 1 ? list[1] : null;
 
-    Widget bmiCard = CompositionIndicatorCard(
-      bmi: latestRecord.bmi,
-      status: BmiCategory.of(latestRecord.bmi).label(l10n),
-      bmiPrevious: previousRecord?.bmi,
-      weight: latestRecord.weight,
-      bmiSpark: [for (final r in list.reversed) r.bmi],
-      seriesColor: family.accent,
-    );
+    // Contenido incrustado: la escala de IMC sin su marco/cabecera propios
+    // (el DashboardCard aporta marco, título e insignia de estado).
+    final children = <Widget>[
+      CompositionIndicatorCard(
+        embedded: true,
+        bmi: latestRecord.bmi,
+        status: BmiCategory.of(latestRecord.bmi).label(l10n),
+        bmiPrevious: previousRecord?.bmi,
+        weight: latestRecord.weight,
+        bmiSpark: [for (final r in list.reversed) r.bmi],
+        seriesColor: family.accent,
+      ),
+    ];
 
     if (goals.targetWeight != null) {
       final diff = (latestRecord.weight - goals.targetWeight!).abs();
@@ -83,40 +68,54 @@ class AnthropometricHistoryCard extends StatelessWidget {
           ? theme.clinical.optimal.accent
           : surfaces.brand;
 
-      bmiCard = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          bmiCard,
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Color.lerp(surfaces.card, goalColor, 0.10),
-              borderRadius: BorderRadius.circular(surfaces.radiusControl),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  isAchieved ? Icons.check_circle : Icons.track_changes,
-                  color: goalColor,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    isAchieved
-                        ? l10n.goalAchieved
-                        : l10n.goalRemainingWeight(diff.toStringAsFixed(1)),
-                    style: theme.type.button.copyWith(color: goalColor),
-                  ),
-                ),
-              ],
-            ),
+      children.addAll([
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Color.lerp(surfaces.card, goalColor, 0.10),
+            borderRadius: BorderRadius.circular(surfaces.radiusControl),
           ),
-        ],
-      );
+          child: Row(
+            children: [
+              Icon(
+                isAchieved ? Icons.check_circle : Icons.track_changes,
+                color: goalColor,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  isAchieved
+                      ? l10n.goalAchieved
+                      : l10n.goalRemainingWeight(diff.toStringAsFixed(1)),
+                  style: theme.type.button.copyWith(color: goalColor),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]);
     }
 
-    return bmiCard;
+    return DashboardCard(
+      family: MetricFamily.anthropometry,
+      icon: Icons.straighten,
+      title: l10n.anthropometricHistory,
+      measuredAt: latestRecord.date,
+      onTap: () => context.push('/history/anthropometry'),
+      statusChip: BmiStatusBadge(
+        bmi: latestRecord.bmi,
+        label: BmiCategory.of(latestRecord.bmi).label(l10n),
+      ),
+      footer: DashboardCardFooterLink(
+        family: MetricFamily.anthropometry,
+        label: l10n.dashboardViewHistory,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
   }
 }

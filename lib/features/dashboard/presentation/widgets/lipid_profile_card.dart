@@ -7,8 +7,6 @@ import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
-import '../../../../core/widgets/action_button.dart';
-import '../../../../core/widgets/dashed_border_container.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../core/database/record_repositories.dart';
 import '../../../history/data/models/lipid_record.dart';
@@ -32,35 +30,13 @@ class LipidProfileCard extends StatelessWidget {
     final family = theme.metrics.tone(MetricFamily.lipids);
 
     if (list.isEmpty) {
-      return DashedBorderContainer(
-        color: family.accent,
-        borderRadius: surfaces.radiusCard,
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: family.surface,
-              child: Icon(Icons.bloodtype, color: family.accent),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.lipidProfile, style: theme.type.cardTitle),
-            const SizedBox(height: 4),
-            Text(
-              l10n.lipidSubtitle,
-              textAlign: TextAlign.center,
-              style: theme.type.meta,
-            ),
-            const SizedBox(height: 12),
-            Text(l10n.noDataYet, style: theme.type.meta),
-            const SizedBox(height: 20),
-            ActionButton(
-              text: l10n.recordLabResults,
-              color: family.accent,
-              solid: false,
-              onPressed: () => context.push('/record-lipid'),
-            ),
-          ],
-        ),
+      return DashboardEmptyCard(
+        family: MetricFamily.lipids,
+        icon: Icons.bloodtype,
+        title: l10n.lipidProfile,
+        subtitle: l10n.lipidSubtitle,
+        actionText: l10n.recordLabResults,
+        onAction: () => context.push('/record-lipid'),
       );
     }
 
@@ -121,6 +97,11 @@ class LipidProfileCard extends StatelessWidget {
       icon: Icons.bloodtype,
       title: l10n.lipidProfile,
       measuredAt: latest.date,
+      onTap: () => context.push('/history/lipid'),
+      footer: DashboardCardFooterLink(
+        family: MetricFamily.lipids,
+        label: l10n.dashboardViewHistory,
+      ),
       statusChip: StatusChip(
         status: overall.status,
         label: overall.label(l10n),

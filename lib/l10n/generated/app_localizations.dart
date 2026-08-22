@@ -2438,6 +2438,12 @@ abstract class AppLocalizations {
   /// **'Last measured'**
   String get dashboardLastMeasured;
 
+  /// No description provided for @dashboardViewHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View history'**
+  String get dashboardViewHistory;
+
   /// No description provided for @dashboardCompositionLevel.
   ///
   /// In en, this message translates to:

@@ -7,8 +7,6 @@ import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
-import '../../../../core/widgets/action_button.dart';
-import '../../../../core/widgets/dashed_border_container.dart';
 import '../../../../core/providers/health_goals_provider.dart';
 import '../../../../core/database/record_repositories.dart';
 import '../../../history/data/models/body_composition_record.dart';
@@ -33,35 +31,13 @@ class BodyCompositionCard extends StatelessWidget {
     final family = theme.metrics.tone(MetricFamily.bodyComposition);
 
     if (list.isEmpty) {
-      return DashedBorderContainer(
-        color: family.accent,
-        borderRadius: surfaces.radiusCard,
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: family.surface,
-              child: Icon(Icons.accessibility_new, color: family.accent),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.bodyComposition, style: theme.type.cardTitle),
-            const SizedBox(height: 4),
-            Text(
-              l10n.compositionSubtitle,
-              textAlign: TextAlign.center,
-              style: theme.type.meta,
-            ),
-            const SizedBox(height: 12),
-            Text(l10n.noDataYet, style: theme.type.meta),
-            const SizedBox(height: 20),
-            ActionButton(
-              text: l10n.completeBodyProfile,
-              color: family.accent,
-              solid: false,
-              onPressed: () => context.push('/record-body-composition'),
-            ),
-          ],
-        ),
+      return DashboardEmptyCard(
+        family: MetricFamily.bodyComposition,
+        icon: Icons.accessibility_new,
+        title: l10n.bodyComposition,
+        subtitle: l10n.compositionSubtitle,
+        actionText: l10n.completeBodyProfile,
+        onAction: () => context.push('/record-body-composition'),
       );
     }
 
@@ -156,6 +132,11 @@ class BodyCompositionCard extends StatelessWidget {
       icon: Icons.accessibility_new,
       title: l10n.bodyComposition,
       measuredAt: latest.date,
+      onTap: () => context.push('/history/body-composition'),
+      footer: DashboardCardFooterLink(
+        family: MetricFamily.bodyComposition,
+        label: l10n.dashboardViewHistory,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
