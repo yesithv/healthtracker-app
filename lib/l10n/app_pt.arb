@@ -419,6 +419,7 @@
   "dashboardCompositionVisceral": "VISCERAL",
   "dashboardCompositionBmr": "TMB",
   "dashboardLastMeasured": "Última medição",
+  "dashboardViewHistory": "Ver histórico",
   "dashboardCompositionLevel": "Nv. {level}",
   "vitalsPdfTitle": "Histórico de Sinais Vitais",
   "vitalsShareCsvSubject": "Exportação CSV de Sinais Vitais",

@@ -419,6 +419,7 @@
   "dashboardCompositionVisceral": "VISZERAL",
   "dashboardCompositionBmr": "GU",
   "dashboardLastMeasured": "Zuletzt gemessen",
+  "dashboardViewHistory": "Verlauf ansehen",
   "dashboardCompositionLevel": "St. {level}",
   "vitalsPdfTitle": "Vitalzeichen-Verlauf",
   "vitalsShareCsvSubject": "Vitalzeichen-CSV",

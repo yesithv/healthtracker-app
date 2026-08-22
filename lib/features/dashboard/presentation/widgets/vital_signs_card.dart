@@ -7,8 +7,6 @@ import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
 import '../../../../core/utils/health_classifiers.dart';
-import '../../../../core/widgets/action_button.dart';
-import '../../../../core/widgets/dashed_border_container.dart';
 import '../../../../core/widgets/status_chip.dart';
 import '../../../../core/database/record_repositories.dart';
 import 'dashboard_card.dart';
@@ -27,40 +25,17 @@ class VitalSignsCard extends StatelessWidget {
     final list = repo.items;
 
     final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
     // Identidad de la familia «signos vitales»: rojo en cualquier tema.
     final family = theme.metrics.tone(MetricFamily.vitals);
 
     if (list.isEmpty) {
-      return DashedBorderContainer(
-        color: family.accent,
-        borderRadius: surfaces.radiusCard,
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: family.surface,
-              child: Icon(Icons.favorite, color: family.accent),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.vitalSigns, style: theme.type.cardTitle),
-            const SizedBox(height: 4),
-            Text(
-              l10n.vitalsSubtitle,
-              textAlign: TextAlign.center,
-              style: theme.type.meta,
-            ),
-            const SizedBox(height: 12),
-            Text(l10n.noDataYet, style: theme.type.meta),
-            const SizedBox(height: 20),
-            ActionButton(
-              text: l10n.recordVitalsAction,
-              color: family.accent,
-              solid: false,
-              onPressed: () => context.push('/record-vital-signs'),
-            ),
-          ],
-        ),
+      return DashboardEmptyCard(
+        family: MetricFamily.vitals,
+        icon: Icons.favorite,
+        title: l10n.vitalSigns,
+        subtitle: l10n.vitalsSubtitle,
+        actionText: l10n.recordVitalsAction,
+        onAction: () => context.push('/record-vital-signs'),
       );
     }
 
@@ -86,6 +61,11 @@ class VitalSignsCard extends StatelessWidget {
       icon: Icons.favorite,
       title: l10n.vitalSigns,
       measuredAt: latest.date,
+      onTap: () => context.push('/history/vital-signs'),
+      footer: DashboardCardFooterLink(
+        family: MetricFamily.vitals,
+        label: l10n.dashboardViewHistory,
+      ),
       statusChip: StatusChip(status: bpStatus, label: bpCat.label(l10n)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

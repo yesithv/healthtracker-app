@@ -33,6 +33,12 @@ class CompositionIndicatorCard extends StatelessWidget {
   final List<double> bmiSpark;
   final Color? seriesColor;
 
+  /// Modo incrustado: renderiza SOLO el contenido (cifra + escala + leyenda),
+  /// sin su propio marco/relleno ni la cabecera interna «IMC» + insignia, porque
+  /// el [DashboardCard] contenedor ya aporta el marco, el título y el chip de
+  /// estado. En modo normal (por defecto) sigue siendo una tarjeta autónoma.
+  final bool embedded;
+
   const CompositionIndicatorCard({
     super.key,
     required this.bmi,
@@ -42,6 +48,7 @@ class CompositionIndicatorCard extends StatelessWidget {
     this.weightUnit = 'kg',
     this.bmiSpark = const [],
     this.seriesColor,
+    this.embedded = false,
   });
 
   /// Extremos de la escala visible. Fuera de ellos el marcador se ancla al
@@ -59,36 +66,31 @@ class CompositionIndicatorCard extends StatelessWidget {
     final percent = ((bmi - _min) / (_max - _min)).clamp(0.0, 1.0);
     final knobColor = clinical.tone(BmiCategory.of(bmi).status).accent;
 
-    return Container(
-      // Antes un filete punteado; ahora un borde sólido y continuo, igual que el
-      // resto de tarjetas del inicio, para que se lea como el marco de la card.
-      decoration: surfaces.cardDecoration(
-        borderColor: surfaces.divider,
-        borderWidth: 1.5,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.historyBmiTrend.toUpperCase(),
-                    style: theme.type.sectionLabel.copyWith(
-                      color: surfaces.brand,
-                    ),
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // La cabecera interna (rótulo «IMC» + insignia) solo se pinta como
+        // tarjeta autónoma; incrustada, el DashboardCard ya aporta título y chip.
+        if (!embedded) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.historyBmiTrend.toUpperCase(),
+                  style: theme.type.sectionLabel.copyWith(
+                    color: surfaces.brand,
                   ),
                 ),
-                const SizedBox(width: 8),
-                BmiStatusBadge(bmi: bmi, label: status),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Row(
+              ),
+              const SizedBox(width: 8),
+              BmiStatusBadge(bmi: bmi, label: status),
+            ],
+          ),
+          const SizedBox(height: 14),
+        ],
+        Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
@@ -171,19 +173,29 @@ class CompositionIndicatorCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _label(context, l10n.bmiLow, clinical.info.accent),
-                _label(context, l10n.bmiNormal, clinical.optimal.accent),
-                _label(context, l10n.bmiOverweight, clinical.caution.accent),
-                _label(context, l10n.bmiObesity, clinical.alert.accent),
-              ],
-            ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _label(context, l10n.bmiLow, clinical.info.accent),
+            _label(context, l10n.bmiNormal, clinical.optimal.accent),
+            _label(context, l10n.bmiOverweight, clinical.caution.accent),
+            _label(context, l10n.bmiObesity, clinical.alert.accent),
           ],
         ),
+      ],
+    );
+
+    // Incrustada, devuelve solo el contenido; el marco lo pone el contenedor.
+    if (embedded) return content;
+
+    return Container(
+      // Borde sólido y continuo, igual que el resto de tarjetas del inicio.
+      decoration: surfaces.cardDecoration(
+        borderColor: surfaces.divider,
+        borderWidth: 1.5,
       ),
+      child: Padding(padding: const EdgeInsets.all(20.0), child: content),
     );
   }
 

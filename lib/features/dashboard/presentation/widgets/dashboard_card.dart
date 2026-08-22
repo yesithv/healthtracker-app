@@ -5,6 +5,8 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import '../../../../core/theme/theme_context.dart';
 import '../../../../core/theme/tokens/clinical_palette.dart';
 import '../../../../core/theme/tokens/metric_palette.dart';
+import '../../../../core/widgets/action_button.dart';
+import '../../../../core/widgets/dashed_border_container.dart';
 import 'metric_delta.dart';
 import 'metric_sparkline.dart';
 import 'status_ramp.dart';
@@ -24,6 +26,9 @@ class DashboardCard extends StatelessWidget {
     required this.child,
     this.measuredAt,
     this.statusChip,
+    this.subtitle,
+    this.footer,
+    this.onTap,
   });
 
   /// Familia del indicador: fija la identidad de color de la pastilla del icono.
@@ -34,8 +39,20 @@ class DashboardCard extends StatelessWidget {
   /// Fecha de la lectura mostrada. Se rotula como «Última medición · DD MMM YYYY».
   final DateTime? measuredAt;
 
+  /// Subtítulo opcional bajo el título (p. ej. una nota descriptiva). Convive con
+  /// la fecha «Última medición · …»: si ambos están, primero el subtítulo.
+  final String? subtitle;
+
   /// Insignia de estado a la derecha del título (opcional).
   final Widget? statusChip;
+
+  /// Pie opcional de la tarjeta, tras el [child] (p. ej. un enlace «Ver
+  /// historial ›» con [DashboardCardFooterLink]).
+  final Widget? footer;
+
+  /// Al tocar la tarjeta. Cuando es `null` el [InkWell] queda inerte —sin
+  /// ripple— y la tarjeta se comporta como el contenedor pasivo de siempre.
+  final VoidCallback? onTap;
 
   final Widget child;
 
@@ -43,25 +60,38 @@ class DashboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(20),
       // Filete sólido y visible para que se note el marco de la tarjeta.
       decoration: theme.surfaces.cardDecoration(
         borderColor: theme.surfaces.divider,
         borderWidth: 1.5,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DashboardCardHeader(
-            family: family,
-            icon: icon,
-            title: title,
-            measuredAt: measuredAt,
-            statusChip: statusChip,
+      // El relleno vive DENTRO del InkWell para que el ripple cubra la tarjeta
+      // entera y se recorte a su radio (mismo recipe que las minicards del pie).
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(theme.surfaces.radiusCard),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DashboardCardHeader(
+                  family: family,
+                  icon: icon,
+                  title: title,
+                  measuredAt: measuredAt,
+                  subtitle: subtitle,
+                  statusChip: statusChip,
+                ),
+                const SizedBox(height: 18),
+                child,
+                if (footer != null) ...[const SizedBox(height: 14), footer!],
+              ],
+            ),
           ),
-          const SizedBox(height: 18),
-          child,
-        ],
+        ),
       ),
     );
   }
@@ -75,6 +105,7 @@ class DashboardCardHeader extends StatelessWidget {
     required this.icon,
     required this.title,
     this.measuredAt,
+    this.subtitle,
     this.statusChip,
   });
 
@@ -82,6 +113,7 @@ class DashboardCardHeader extends StatelessWidget {
   final IconData icon;
   final String title;
   final DateTime? measuredAt;
+  final String? subtitle;
   final Widget? statusChip;
 
   @override
@@ -105,6 +137,15 @@ class DashboardCardHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(title, style: theme.type.cardTitle),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  subtitle!,
+                  style: theme.type.meta.copyWith(fontSize: 11),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
               if (measuredAt != null) ...[
                 const SizedBox(height: 2),
                 Text(
@@ -295,6 +336,97 @@ class MiniMetric extends StatelessWidget {
           textAlign: TextAlign.center,
           style: theme.type.meta.copyWith(fontSize: 9),
         ),
+      ],
+    );
+  }
+}
+
+/// Estado VACÍO común de las tarjetas de indicador: marco punteado con la
+/// pastilla de icono de la familia, título, subtítulo y un CTA para registrar la
+/// primera medición. Antes cada una de las cuatro tarjetas repetía este bloque a
+/// mano; aquí vive una sola vez.
+class DashboardEmptyCard extends StatelessWidget {
+  const DashboardEmptyCard({
+    super.key,
+    required this.family,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionText,
+    required this.onAction,
+  });
+
+  final MetricFamily family;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionText;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surfaces = theme.surfaces;
+    final tone = theme.metrics.tone(family);
+
+    return DashedBorderContainer(
+      color: tone.accent,
+      borderRadius: surfaces.radiusCard,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: tone.surface,
+            child: Icon(icon, color: tone.accent),
+          ),
+          const SizedBox(height: 16),
+          Text(title, style: theme.type.cardTitle),
+          const SizedBox(height: 4),
+          Text(subtitle, textAlign: TextAlign.center, style: theme.type.meta),
+          const SizedBox(height: 20),
+          ActionButton(
+            text: actionText,
+            color: tone.accent,
+            solid: false,
+            onPressed: onAction,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Pie de tarjeta con un enlace discreto «texto ›», teñido con el acento de la
+/// familia. Se usa como [DashboardCard.footer] en las tarjetas que navegan al
+/// historial de su módulo; el gesto lo maneja el [InkWell] de la tarjeta entera,
+/// así que este pie es sólo la señal visual.
+class DashboardCardFooterLink extends StatelessWidget {
+  const DashboardCardFooterLink({
+    super.key,
+    required this.family,
+    required this.label,
+  });
+
+  final MetricFamily family;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = theme.metrics.tone(family).accent;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: theme.type.meta.copyWith(
+            color: accent,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: 2),
+        Icon(Icons.chevron_right, size: 16, color: accent),
       ],
     );
   }

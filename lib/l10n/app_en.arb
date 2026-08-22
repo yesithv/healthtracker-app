@@ -469,6 +469,7 @@
   "dashboardCompositionVisceral": "VISCERAL",
   "dashboardCompositionBmr": "BMR",
   "dashboardLastMeasured": "Last measured",
+  "dashboardViewHistory": "View history",
   "dashboardCompositionLevel": "Lv. {level}",
   "@dashboardCompositionLevel": {
     "placeholders": {

@@ -3,12 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/theme_context.dart';
-import '../../../../core/theme/tokens/tone.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../appointments/data/models/appointment.dart';
 import '../../../appointments/domain/appointment_compliance_service.dart';
 import '../../../appointments/domain/appointment_status_service.dart';
 import '../../../appointments/presentation/controllers/appointments_controller.dart';
+import 'dashboard_tile.dart';
 
 /// Cuadrado de «Citas médicas» en el fondo del Dashboard. Igual que el de
 /// Medicamentos, muestra en la mitad del espacio lo más accionable ahora,
@@ -41,74 +41,33 @@ class AppointmentsCard extends StatelessWidget {
     // y el chip «Vencida»—, no tiñendo todo el marco: el board es neutro e igual
     // al de las tarjetas principales. Este color alimenta ese punto: verde
     // conserva el acento de marca, ámbar y rojo pasan a sus tonos clínicos.
-    final Color borderColor = switch (level) {
+    final Color dotColor = switch (level) {
       ComplianceLevel.red => theme.clinical.alert.accent,
       ComplianceLevel.amber => theme.clinical.caution.accent,
       ComplianceLevel.green => surfaces.brand,
     };
 
-    return Container(
-      // Mismo board que las tarjetas principales del inicio (DashboardCard):
-      // relleno, filete neutro y la elevación estándar del tema. El semáforo se
-      // mantiene como acento fino (punto del encabezado + chip «Vencida»).
-      decoration: surfaces.cardDecoration(
-        borderColor: surfaces.divider,
-        borderWidth: 1.5,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(surfaces.radiusCard),
-          onTap: () => context.push('/profile/appointments'),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            // El alto lo manda el contenido (mainAxisSize.min): la fila lo iguala
-            // con su gemela vía IntrinsicHeight, sin hijos flexibles —un `Expanded`
-            // hace inestable la medición intrínseca y dejaba el texto fuera del
-            // recuadro decorado—.
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.event_outlined, size: 18, color: surfaces.brand),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.medDashApptsTitle,
-                        style: theme.type.sectionLabel.copyWith(
-                          color: surfaces.brand,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    // Punto de semáforo: hace visible «próximamente» (ámbar), no
-                    // sólo «vencida» (rojo), sin robar espacio.
-                    if (hasAny && level != ComplianceLevel.green)
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: borderColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (!hasAny)
-                  _AddContent(label: l10n.apptDashAdd)
-                else if (next == null)
-                  _AllClear(l10n: l10n)
-                else
-                  _NextHero(appointment: next, l10n: l10n),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return DashboardTile(
+      icon: Icons.event_outlined,
+      title: l10n.medDashApptsTitle,
+      onTap: () => context.push('/profile/appointments'),
+      // Punto de semáforo: hace visible «próximamente» (ámbar), no sólo
+      // «vencida» (rojo), sin robar espacio.
+      headerTrailing: (hasAny && level != ComplianceLevel.green)
+          ? Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: dotColor,
+                shape: BoxShape.circle,
+              ),
+            )
+          : null,
+      child: !hasAny
+          ? DashboardTileAddContent(label: l10n.apptDashAdd)
+          : (next == null
+                ? _AllClear(l10n: l10n)
+                : _NextHero(appointment: next, l10n: l10n)),
     );
   }
 }
@@ -156,7 +115,7 @@ class _NextHero extends StatelessWidget {
         ),
         if (overdue) ...[
           const SizedBox(height: 10),
-          _Chip(
+          DashboardTileChip(
             icon: Icons.warning_amber_rounded,
             text: l10n.apptDashOverdue,
             tone: theme.clinical.alert,
@@ -194,73 +153,6 @@ class _AllClear extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// CTA compacto cuando aún no hay citas, para no dejar el cuadrado vacío.
-class _AddContent extends StatelessWidget {
-  const _AddContent({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
-    return Row(
-      children: [
-        Icon(Icons.add_circle_outline, size: 20, color: surfaces.brand),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            label,
-            style: theme.type.cardTitle.copyWith(
-              fontSize: 15,
-              color: surfaces.brand,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Chip pequeño con icono + texto, teñido con un [Tone].
-class _Chip extends StatelessWidget {
-  const _Chip({required this.icon, required this.text, required this.tone});
-
-  final IconData icon;
-  final String text;
-  final Tone tone;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surfaces = theme.surfaces;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: tone.surface,
-        borderRadius: BorderRadius.circular(surfaces.radiusControl),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: tone.accent),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(
-              text,
-              style: theme.type.meta.copyWith(color: tone.accent),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

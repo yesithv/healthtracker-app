@@ -1253,6 +1253,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardLastMeasured => 'Last measured';
 
   @override
+  String get dashboardViewHistory => 'View history';
+
+  @override
   String dashboardCompositionLevel(int level) {
     return 'Lv. $level';
   }
