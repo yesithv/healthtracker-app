@@ -1136,5 +1136,14 @@
   "appointmentNextActionUpcoming": "{title} · {date}",
   "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
   "appointmentRecurringEvery": "Cada {count} m",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } }
+  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } },
+  "accessCodeCallHint": "Llama a la clínica: verificarán tu identidad y te dictarán un código para traer tus datos asociados a\n{identifier}.",
+  "@accessCodeCallHint": { "placeholders": { "identifier": { "type": "String" } } },
+  "accessCodeAccountHint": "Llama a la clínica: verificarán tu identidad y te dictarán un código de seis dígitos. Caduca a los 15 minutos y solo sirve una vez.",
+  "accessCodeDocumentLabel": "Número de documento",
+  "accessCodeDocumentHint": "Tu documento",
+  "accessCodeLabel": "Código que te dictaron",
+  "accessCodeHelp": "Caduca a los 15 minutos y solo se puede usar una vez. Si fallas varias veces habrá que pedir uno nuevo.",
+  "accessCodeMissingDocument": "Ingresa tu número de documento.",
+  "accessCodeSixDigits": "El código son seis dígitos."
 }

@@ -76,17 +76,17 @@ class ReferenceRangesStore {
     // y no se emite ni una petición. Evita además llenar la consola de errores
     // de conexión mientras se graba la pantalla.
     if (DemoSession.instance.isActive) return;
-    if (ApiConfig.baseUrl.isEmpty) return;
-    final patientId =
-        PatientSession.instance.publicId ?? ApiConfig.patientPublicId;
-    if (patientId.isEmpty) return;
+    if (!ApiConfig.isConfigured) return;
+    // Sin sesión no hay a quién pedirle rangos: la API respondería 401.
+    final auth = PatientSession.instance.authHeaders;
+    if (auth.isEmpty) return;
 
     final client = httpClient ?? http.Client();
     try {
       final resp = await client
           .get(
             Uri.parse('${ApiConfig.baseUrl}/api/v1/me/reference-ranges'),
-            headers: {'X-Patient-Public-Id': patientId},
+            headers: auth,
           )
           .timeout(const Duration(seconds: 8));
       if (resp.statusCode >= 200 &&

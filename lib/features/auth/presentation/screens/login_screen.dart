@@ -7,8 +7,10 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 
 /// Paso 1 de "Iniciar sesión". El usuario que YA es paciente ingresa un solo dato
 /// (documento del paciente migrado, o email de la cuenta) y el backend decide el camino:
-///   - existe cuenta   → verificación por contraseña (`/verify`) → entra.
-///   - existe en legacy → verificación por OTP (`/verify-otp`) → trae su historial y entra.
+///   - existe cuenta o historial en el legacy → `/verify-otp`: entra con el código que la
+///     clínica le dicta por teléfono tras verificar su identidad. Es el mismo camino en los
+///     dos casos porque no hay contraseña que recordar: quien ya tenía cuenta y perdió la
+///     sesión pide otro código igual que quien entra por primera vez.
 ///   - no existe        → es alguien nuevo: se le envía al onboarding de registro.
 ///
 /// Los usuarios nuevos NO pasan por aquí: entran por "Comenzar" (onboarding directo). Este
@@ -48,11 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final result = await _auth.lookup(identifier);
       if (!mounted) return;
-      if (result.exists) {
-        // Cuenta activa → verificación por contraseña.
-        router.go('/verify', extra: identifier);
-      } else if (result.inLegacy) {
-        // Historial en el legacy → verificación por OTP + migración.
+      if (result.exists || result.inLegacy) {
+        // Ya es paciente (con cuenta o solo con historial): entra con el código.
         router.go('/verify-otp', extra: identifier);
       } else {
         // No es paciente todavía: lo tratamos como nuevo (registro).

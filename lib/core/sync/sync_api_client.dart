@@ -53,10 +53,8 @@ class SyncApiClient {
             uri,
             headers: {
               'Content-Type': 'application/json',
-              // Andamio de Fase 0: identifica al paciente hasta que haya JWT. La sesión
-              // (login/registro) manda; el dart-define queda como fallback de desarrollo.
-              'X-Patient-Public-Id':
-                  PatientSession.instance.publicId ?? ApiConfig.patientPublicId,
+              // El token de sesión que el servidor emitió al canjear el código.
+              ...PatientSession.instance.authHeaders,
             },
             body: body,
           )

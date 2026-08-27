@@ -58,13 +58,7 @@ class MeasurementReadClient {
     final http.Response resp;
     try {
       resp = await _http
-          .get(
-            uri,
-            headers: {
-              'X-Patient-Public-Id':
-                  PatientSession.instance.publicId ?? ApiConfig.patientPublicId,
-            },
-          )
+          .get(uri, headers: PatientSession.instance.authHeaders)
           .timeout(timeout);
     } catch (e) {
       throw SyncException('No se pudo conectar con la API: $e');

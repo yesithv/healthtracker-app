@@ -129,8 +129,12 @@ void main() {
 
       expect(r.outcome, PendingAccountOutcome.created);
       expect(PendingAccountStore.instance.isPending, isFalse);
-      expect(PatientSession.instance.isAuthenticated, isTrue);
       expect(PatientSession.instance.publicId, 'pub-123');
+      // El alta crea la cuenta, pero NO abre sesión: quien autentica es el código que la
+      // clínica dicta por teléfono, y el registro no lo emite. Hasta que exista un
+      // autorregistro con verificación propia, un paciente nuevo queda con su ficha
+      // creada y sin poder sincronizar.
+      expect(PatientSession.instance.isAuthenticated, isFalse);
     });
 
     test('sin correo: no se puede registrar y se avisa', () async {

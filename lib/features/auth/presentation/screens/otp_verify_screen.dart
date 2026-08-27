@@ -6,14 +6,17 @@ import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_entry.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
-/// Verificación por OTP para un paciente que existe en el LEGACY (el lookup marcó
-/// `inLegacy`). Valida la identidad con un código y, al confirmar, TRAE su historial
-/// (persona + atenciones + indicadores) y entra al dashboard con los datos ya visibles.
+/// Entrada del paciente con el código que le dictó la clínica.
 ///
-/// <b>Fase 0:</b> no hay OTP real todavía; el código es un placeholder y por dentro se
-/// recicla el `activate` (migración) + `login` con la clave dev para obtener la sesión.
-/// Este es el HUECO donde en Fase 1 entra el OTP de Firebase (SMS/email): mismo paso del
-/// flujo, distinto mecanismo — la UI no cambia.
+/// No hay SMS ni proveedor de identidad: quien verificó que esta persona es quien dice ser
+/// fue un agente, por teléfono, contrastando su documento y su correo. Este código es la
+/// prueba de que esa llamada ocurrió, y al canjearlo el servidor abre la sesión, TRAE su
+/// historial (persona + atenciones + indicadores) y la app entra al dashboard con los
+/// datos ya visibles.
+///
+/// El canje exige el documento además del código. Si el identificador con el que llegó
+/// aquí ya es un documento, se usa ese; si entró con su correo, se le pide, porque sin él
+/// el servidor tendría que buscar el código entre todos los pacientes a la vez.
 class OtpVerifyScreen extends StatefulWidget {
   /// Documento o email confirmado en el paso de identificación.
   final String identifier;
@@ -29,22 +32,44 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
 
   final _auth = AuthApiClient();
   final _codeController = TextEditingController();
+  late final TextEditingController _documentController;
+
+  /// ¿Con qué llegó aquí? Si es solo dígitos lo damos por su documento; si entró con el
+  /// correo hay que pedírselo, porque es lo que acota el canje a su cuenta.
+  bool get _identifierIsDocument =>
+      RegExp(r'^\d+$').hasMatch(widget.identifier.trim());
 
   bool _busy = false;
   String? _status;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _documentController = TextEditingController(
+      text: _identifierIsDocument ? widget.identifier.trim() : '',
+    );
+  }
+
+  @override
   void dispose() {
     _auth.close();
     _codeController.dispose();
+    _documentController.dispose();
     super.dispose();
   }
 
   Future<void> _verify() async {
     if (_busy) return;
-    if (_codeController.text.trim().isEmpty) {
-      setState(() => _error = 'Ingresa el código para continuar.');
+    final document = _documentController.text.trim();
+    final code = _codeController.text.trim();
+    final l10n = AppLocalizations.of(context)!;
+    if (document.isEmpty) {
+      setState(() => _error = l10n.accessCodeMissingDocument);
+      return;
+    }
+    if (code.length != 6) {
+      setState(() => _error = l10n.accessCodeSixDigits);
       return;
     }
     setState(() {
@@ -53,18 +78,20 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
     });
 
     try {
-      // El OTP (placeholder) solo valida identidad; luego migramos y entramos.
+      // El canje abre la sesión y de paso trae el historial del legacy, así que puede
+      // tardar: el aviso es para que no parezca que se ha quedado colgada.
       setState(() => _status = 'Trayendo tu historial…');
-      await _auth.activate(widget.identifier);
-      final account = await _auth.login(
-        identifier: widget.identifier,
-        password: '1234',
+      final session = await _auth.redeemAccessCode(
+        documentNumber: document,
+        code: code,
       );
 
       if (!mounted) return;
       await completeLoginAndEnter(
         context,
-        account,
+        session.account,
+        sessionToken: session.token,
+        sessionExpiresAt: session.expiresAt,
         identifier: widget.identifier,
       );
     } on AuthException catch (e) {
@@ -116,12 +143,25 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Verifica tu identidad para traer tus datos asociados a\n${widget.identifier}.',
+                l10n.accessCodeCallHint(widget.identifier),
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 28),
-              _label('Código de verificación'),
+              if (!_identifierIsDocument) ...[
+                _label(l10n.accessCodeDocumentLabel),
+                TextField(
+                  controller: _documentController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: _decoration(
+                    l10n.accessCodeDocumentHint,
+                    Icons.badge_outlined,
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              _label(l10n.accessCodeLabel),
               TextField(
                 controller: _codeController,
                 autofocus: true,
@@ -137,10 +177,9 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                 decoration: _decoration('••••••', Icons.password_outlined),
                 onSubmitted: (_) => _verify(),
               ),
-              const Text(
-                'Fase de pruebas: ingresa cualquier código (p. ej. 123456). '
-                'Aquí irá el OTP por SMS/email en producción.',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+              Text(
+                l10n.accessCodeHelp,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
               ),
               if (_status != null) ...[
                 const SizedBox(height: 16),

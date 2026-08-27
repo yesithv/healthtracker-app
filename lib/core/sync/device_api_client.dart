@@ -46,10 +46,10 @@ class DeviceApiClient {
     this.timeout = const Duration(seconds: 20),
   }) : _http = httpClient ?? http.Client();
 
-  Map<String, String> get _patientHeaders => {
-    'X-Patient-Public-Id':
-        PatientSession.instance.publicId ?? ApiConfig.patientPublicId,
-  };
+  /// Autenticación del paciente: el token opaco de la sesión. Vacío sin sesión, y
+  /// entonces la API responde 401, que es lo que debe pasar.
+  Map<String, String> get _patientHeaders =>
+      PatientSession.instance.authHeaders;
 
   /// Catálogo de dispositivos activos (recurso público).
   Future<List<MeasuringDevice>> fetchCatalog() async {

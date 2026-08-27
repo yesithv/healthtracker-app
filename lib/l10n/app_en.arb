@@ -1045,5 +1045,14 @@
   "appointmentNextActionUpcoming": "{title} · {date}",
   "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
   "appointmentRecurringEvery": "Every {count} mo",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } }
+  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } },
+  "accessCodeCallHint": "Call the clinic: they will verify your identity and read you a code to bring in the data linked to\n{identifier}.",
+  "@accessCodeCallHint": { "placeholders": { "identifier": { "type": "String" } } },
+  "accessCodeAccountHint": "Call the clinic: they will verify your identity and read you a six-digit code. It expires in 15 minutes and works only once.",
+  "accessCodeDocumentLabel": "ID number",
+  "accessCodeDocumentHint": "Your ID",
+  "accessCodeLabel": "The code they read you",
+  "accessCodeHelp": "It expires after 15 minutes and works only once. If you get it wrong several times you will have to ask for a new one.",
+  "accessCodeMissingDocument": "Enter your ID number.",
+  "accessCodeSixDigits": "The code is six digits."
 }

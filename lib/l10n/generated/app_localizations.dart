@@ -4118,6 +4118,24 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get medDelete;
 
+  /// No description provided for @medPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get medPause;
+
+  /// No description provided for @medResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get medResume;
+
+  /// No description provided for @medPausedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get medPausedBadge;
+
   /// No description provided for @medDeleteTitle.
   ///
   /// In en, this message translates to:
@@ -4472,6 +4490,12 @@ abstract class AppLocalizations {
   /// **'Add at least one time'**
   String get medErrorAddTime;
 
+  /// No description provided for @medErrorSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Please try again.'**
+  String get medErrorSaveFailed;
+
   /// No description provided for @medUnitsSuffix.
   ///
   /// In en, this message translates to:
@@ -4571,65 +4595,8 @@ abstract class AppLocalizations {
   /// No description provided for @medDashApptsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Medical appointments'**
+  /// **'Appointments'**
   String get medDashApptsTitle;
-
-  /// No description provided for @specialtyNone.
-  String get specialtyNone;
-
-  /// No description provided for @specialtyGeneralMedicine.
-  String get specialtyGeneralMedicine;
-
-  /// No description provided for @specialtyCardiology.
-  String get specialtyCardiology;
-
-  /// No description provided for @specialtyEndocrinology.
-  String get specialtyEndocrinology;
-
-  /// No description provided for @specialtyDermatology.
-  String get specialtyDermatology;
-
-  /// No description provided for @specialtyGynecology.
-  String get specialtyGynecology;
-
-  /// No description provided for @specialtyDentistry.
-  String get specialtyDentistry;
-
-  /// No description provided for @specialtyOphthalmology.
-  String get specialtyOphthalmology;
-
-  /// No description provided for @specialtyOtolaryngology.
-  String get specialtyOtolaryngology;
-
-  /// No description provided for @specialtyNeurology.
-  String get specialtyNeurology;
-
-  /// No description provided for @specialtyNeuropsychology.
-  String get specialtyNeuropsychology;
-
-  /// No description provided for @specialtyPsychiatry.
-  String get specialtyPsychiatry;
-
-  /// No description provided for @specialtyOrthopedics.
-  String get specialtyOrthopedics;
-
-  /// No description provided for @specialtyUrology.
-  String get specialtyUrology;
-
-  /// No description provided for @specialtyGastroenterology.
-  String get specialtyGastroenterology;
-
-  /// No description provided for @specialtyNutrition.
-  String get specialtyNutrition;
-
-  /// No description provided for @specialtyPediatrics.
-  String get specialtyPediatrics;
-
-  /// No description provided for @specialtyPhysiotherapy.
-  String get specialtyPhysiotherapy;
-
-  /// No description provided for @specialtyClinicalLaboratory.
-  String get specialtyClinicalLaboratory;
 
   /// No description provided for @medDashApptsSoon.
   ///
@@ -4835,6 +4802,120 @@ abstract class AppLocalizations {
   /// **'e.g. Endocrinology'**
   String get appointmentFieldSpecialtyHint;
 
+  /// No description provided for @specialtyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No specialty'**
+  String get specialtyNone;
+
+  /// No description provided for @specialtyGeneralMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'General medicine'**
+  String get specialtyGeneralMedicine;
+
+  /// No description provided for @specialtyCardiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardiology'**
+  String get specialtyCardiology;
+
+  /// No description provided for @specialtyEndocrinology.
+  ///
+  /// In en, this message translates to:
+  /// **'Endocrinology'**
+  String get specialtyEndocrinology;
+
+  /// No description provided for @specialtyDermatology.
+  ///
+  /// In en, this message translates to:
+  /// **'Dermatology'**
+  String get specialtyDermatology;
+
+  /// No description provided for @specialtyGynecology.
+  ///
+  /// In en, this message translates to:
+  /// **'Gynecology'**
+  String get specialtyGynecology;
+
+  /// No description provided for @specialtyDentistry.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentistry'**
+  String get specialtyDentistry;
+
+  /// No description provided for @specialtyOphthalmology.
+  ///
+  /// In en, this message translates to:
+  /// **'Ophthalmology'**
+  String get specialtyOphthalmology;
+
+  /// No description provided for @specialtyOtolaryngology.
+  ///
+  /// In en, this message translates to:
+  /// **'Otolaryngology (ENT)'**
+  String get specialtyOtolaryngology;
+
+  /// No description provided for @specialtyNeurology.
+  ///
+  /// In en, this message translates to:
+  /// **'Neurology'**
+  String get specialtyNeurology;
+
+  /// No description provided for @specialtyNeuropsychology.
+  ///
+  /// In en, this message translates to:
+  /// **'Neuropsychology'**
+  String get specialtyNeuropsychology;
+
+  /// No description provided for @specialtyPsychiatry.
+  ///
+  /// In en, this message translates to:
+  /// **'Psychiatry'**
+  String get specialtyPsychiatry;
+
+  /// No description provided for @specialtyOrthopedics.
+  ///
+  /// In en, this message translates to:
+  /// **'Orthopedics'**
+  String get specialtyOrthopedics;
+
+  /// No description provided for @specialtyUrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Urology'**
+  String get specialtyUrology;
+
+  /// No description provided for @specialtyGastroenterology.
+  ///
+  /// In en, this message translates to:
+  /// **'Gastroenterology'**
+  String get specialtyGastroenterology;
+
+  /// No description provided for @specialtyNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get specialtyNutrition;
+
+  /// No description provided for @specialtyPediatrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Pediatrics'**
+  String get specialtyPediatrics;
+
+  /// No description provided for @specialtyPhysiotherapy.
+  ///
+  /// In en, this message translates to:
+  /// **'Physiotherapy'**
+  String get specialtyPhysiotherapy;
+
+  /// No description provided for @specialtyClinicalLaboratory.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinical laboratory'**
+  String get specialtyClinicalLaboratory;
+
   /// No description provided for @appointmentFieldDate.
   ///
   /// In en, this message translates to:
@@ -4988,7 +5069,7 @@ abstract class AppLocalizations {
   /// No description provided for @appointmentEveryNMonths.
   ///
   /// In en, this message translates to:
-  /// **'Every $count months'**
+  /// **'Every {count} months'**
   String appointmentEveryNMonths(int count);
 
   /// No description provided for @appointmentEditTitle.
@@ -5036,20 +5117,68 @@ abstract class AppLocalizations {
   /// No description provided for @appointmentNextActionOverdue.
   ///
   /// In en, this message translates to:
-  /// **'$title · overdue'**
+  /// **'{title} · overdue'**
   String appointmentNextActionOverdue(String title);
 
   /// No description provided for @appointmentNextActionUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'$title · $date'**
+  /// **'{title} · {date}'**
   String appointmentNextActionUpcoming(String title, String date);
 
   /// No description provided for @appointmentRecurringEvery.
   ///
   /// In en, this message translates to:
-  /// **'Every $count mo'**
+  /// **'Every {count} mo'**
   String appointmentRecurringEvery(int count);
+
+  /// No description provided for @accessCodeCallHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic: they will verify your identity and read you a code to bring in the data linked to\n{identifier}.'**
+  String accessCodeCallHint(String identifier);
+
+  /// No description provided for @accessCodeAccountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic: they will verify your identity and read you a six-digit code. It expires in 15 minutes and works only once.'**
+  String get accessCodeAccountHint;
+
+  /// No description provided for @accessCodeDocumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get accessCodeDocumentLabel;
+
+  /// No description provided for @accessCodeDocumentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ID'**
+  String get accessCodeDocumentHint;
+
+  /// No description provided for @accessCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The code they read you'**
+  String get accessCodeLabel;
+
+  /// No description provided for @accessCodeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It expires after 15 minutes and works only once. If you get it wrong several times you will have to ask for a new one.'**
+  String get accessCodeHelp;
+
+  /// No description provided for @accessCodeMissingDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your ID number.'**
+  String get accessCodeMissingDocument;
+
+  /// No description provided for @accessCodeSixDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'The code is six digits.'**
+  String get accessCodeSixDigits;
 }
 
 class _AppLocalizationsDelegate

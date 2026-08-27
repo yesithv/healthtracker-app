@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2265,6 +2264,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medDelete => 'Delete';
 
   @override
+  String get medPause => 'Pause';
+
+  @override
+  String get medResume => 'Resume';
+
+  @override
+  String get medPausedBadge => 'Paused';
+
+  @override
   String get medDeleteTitle => 'Delete medication?';
 
   @override
@@ -2460,6 +2468,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medErrorAddTime => 'Add at least one time';
 
   @override
+  String get medErrorSaveFailed => 'Couldn\'t save. Please try again.';
+
+  @override
   String get medUnitsSuffix => 'units';
 
   @override
@@ -2522,63 +2533,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medDashApptsTitle => 'Appointments';
-
-  @override
-  String get specialtyNone => 'No specialty';
-
-  @override
-  String get specialtyGeneralMedicine => 'General medicine';
-
-  @override
-  String get specialtyCardiology => 'Cardiology';
-
-  @override
-  String get specialtyEndocrinology => 'Endocrinology';
-
-  @override
-  String get specialtyDermatology => 'Dermatology';
-
-  @override
-  String get specialtyGynecology => 'Gynecology';
-
-  @override
-  String get specialtyDentistry => 'Dentistry';
-
-  @override
-  String get specialtyOphthalmology => 'Ophthalmology';
-
-  @override
-  String get specialtyOtolaryngology => 'Otolaryngology (ENT)';
-
-  @override
-  String get specialtyNeurology => 'Neurology';
-
-  @override
-  String get specialtyNeuropsychology => 'Neuropsychology';
-
-  @override
-  String get specialtyPsychiatry => 'Psychiatry';
-
-  @override
-  String get specialtyOrthopedics => 'Orthopedics';
-
-  @override
-  String get specialtyUrology => 'Urology';
-
-  @override
-  String get specialtyGastroenterology => 'Gastroenterology';
-
-  @override
-  String get specialtyNutrition => 'Nutrition';
-
-  @override
-  String get specialtyPediatrics => 'Pediatrics';
-
-  @override
-  String get specialtyPhysiotherapy => 'Physiotherapy';
-
-  @override
-  String get specialtyClinicalLaboratory => 'Clinical laboratory';
 
   @override
   String get medDashApptsSoon => 'Coming soon';
@@ -2693,6 +2647,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appointmentFieldSpecialtyHint => 'e.g. Endocrinology';
+
+  @override
+  String get specialtyNone => 'No specialty';
+
+  @override
+  String get specialtyGeneralMedicine => 'General medicine';
+
+  @override
+  String get specialtyCardiology => 'Cardiology';
+
+  @override
+  String get specialtyEndocrinology => 'Endocrinology';
+
+  @override
+  String get specialtyDermatology => 'Dermatology';
+
+  @override
+  String get specialtyGynecology => 'Gynecology';
+
+  @override
+  String get specialtyDentistry => 'Dentistry';
+
+  @override
+  String get specialtyOphthalmology => 'Ophthalmology';
+
+  @override
+  String get specialtyOtolaryngology => 'Otolaryngology (ENT)';
+
+  @override
+  String get specialtyNeurology => 'Neurology';
+
+  @override
+  String get specialtyNeuropsychology => 'Neuropsychology';
+
+  @override
+  String get specialtyPsychiatry => 'Psychiatry';
+
+  @override
+  String get specialtyOrthopedics => 'Orthopedics';
+
+  @override
+  String get specialtyUrology => 'Urology';
+
+  @override
+  String get specialtyGastroenterology => 'Gastroenterology';
+
+  @override
+  String get specialtyNutrition => 'Nutrition';
+
+  @override
+  String get specialtyPediatrics => 'Pediatrics';
+
+  @override
+  String get specialtyPhysiotherapy => 'Physiotherapy';
+
+  @override
+  String get specialtyClinicalLaboratory => 'Clinical laboratory';
 
   @override
   String get appointmentFieldDate => 'Date';
@@ -2817,4 +2828,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String appointmentRecurringEvery(int count) {
     return 'Every $count mo';
   }
+
+  @override
+  String accessCodeCallHint(String identifier) {
+    return 'Call the clinic: they will verify your identity and read you a code to bring in the data linked to\n$identifier.';
+  }
+
+  @override
+  String get accessCodeAccountHint =>
+      'Call the clinic: they will verify your identity and read you a six-digit code. It expires in 15 minutes and works only once.';
+
+  @override
+  String get accessCodeDocumentLabel => 'ID number';
+
+  @override
+  String get accessCodeDocumentHint => 'Your ID';
+
+  @override
+  String get accessCodeLabel => 'The code they read you';
+
+  @override
+  String get accessCodeHelp =>
+      'It expires after 15 minutes and works only once. If you get it wrong several times you will have to ask for a new one.';
+
+  @override
+  String get accessCodeMissingDocument => 'Enter your ID number.';
+
+  @override
+  String get accessCodeSixDigits => 'The code is six digits.';
 }

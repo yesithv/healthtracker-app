@@ -59,6 +59,37 @@ class PatientAccount {
   }
 }
 
+/// Sesión recién abierta al canjear el código que el staff dictó por teléfono.
+///
+/// Trae la ficha ya resuelta ([account]) para que la app entre sabiendo a quién ha dejado
+/// entrar, sin una segunda vuelta contra el servidor.
+class RedeemedSession {
+  /// Token opaco de sesión. Se manda luego en `Authorization: Bearer`.
+  final String token;
+
+  /// Cuándo caduca en el servidor.
+  final DateTime? expiresAt;
+
+  final PatientAccount account;
+
+  const RedeemedSession({
+    required this.token,
+    required this.account,
+    this.expiresAt,
+  });
+
+  factory RedeemedSession.fromJson(Map<String, dynamic> json) =>
+      RedeemedSession(
+        token: json['sessionToken'] as String,
+        expiresAt: json['expiresAt'] == null
+            ? null
+            : DateTime.tryParse(json['expiresAt'] as String),
+        account: PatientAccount.fromJson(
+          json['account'] as Map<String, dynamic>,
+        ),
+      );
+}
+
 /// Resultado del lookup de identificación (solo booleanos; sin PII antes de verificar).
 class LookupResult {
   final bool exists;
@@ -170,15 +201,25 @@ class AuthApiClient {
     throw AuthException(_messageFrom(resp));
   }
 
-  /// Inicia sesión por documento (migrado) o email (APP) + contraseña.
-  Future<PatientAccount> login({
-    required String identifier,
-    required String password,
-  }) {
-    return _post('/api/v1/auth/login', {
-      'identifier': identifier,
-      'password': password,
-    });
+  /// Canjea el código de seis dígitos que un agente de la clínica le dictó al paciente
+  /// por teléfono, después de verificar su identidad en esa llamada.
+  ///
+  /// Exige el documento ADEMÁS del código, y no es un trámite: acota el intento a una sola
+  /// cuenta. Si bastara el código, probar seis dígitos al azar acertaría el de alguien.
+  ///
+  /// El servidor responde lo mismo para «no hay código», «caducó», «ya se usó» y «no es
+  /// ese documento», así que la app no puede —ni debe— decir cuál de los cuatro fue.
+  ///
+  /// Timeout largo: el canje trae de paso el historial del legacy.
+  Future<RedeemedSession> redeemAccessCode({
+    required String documentNumber,
+    required String code,
+  }) async {
+    final map = await _postRaw('/api/v1/auth/otp/redeem', {
+      'documentNumber': documentNumber,
+      'code': code,
+    }, timeoutOverride: const Duration(seconds: 90));
+    return RedeemedSession.fromJson(map);
   }
 
   Future<PatientAccount> _post(String path, Map<String, dynamic> body) async {

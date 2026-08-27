@@ -33,7 +33,6 @@ import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../features/auth/presentation/screens/verify_screen.dart';
 import '../../features/auth/presentation/screens/otp_verify_screen.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/medications/presentation/screens/medications_menu_screen.dart';
@@ -77,22 +76,12 @@ class AppRouter {
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: '/verify',
-        builder: (context, state) {
-          // El identificador llega del paso de login; sin él, volver a iniciar sesión.
-          final id = state.extra as String?;
-          return (id == null || id.isEmpty)
-              ? const LoginScreen()
-              : VerifyScreen(identifier: id);
-        },
-      ),
       // Alta de paciente nuevo. Ya no admite parámetro `mode`: el asistente
       // siempre crea la cuenta, porque el modo local se ha eliminado.
       GoRoute(
         path: '/verify-otp',
         builder: (context, state) {
-          // Verificación OTP del paciente legacy; sin identificador, volver a login.
+          // Entrada con el código que dicta la clínica; sin identificador, volver a login.
           final id = state.extra as String?;
           return (id == null || id.isEmpty)
               ? const LoginScreen()

@@ -10,17 +10,21 @@ import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 
-/// Aplica el resultado de un `login` exitoso y entra al dashboard. Compartido por la
-/// verificación con contraseña (`VerifyScreen`) y con OTP (`OtpVerifyScreen`):
-/// guarda la sesión, hidrata el perfil local con lo que el servidor sabe, aplica los
-/// defaults del paciente migrado (español, métrico, báscula Omron) y marca el onboarding
-/// como completo antes de navegar.
+/// Aplica una sesión recién abierta y entra al dashboard: guarda el token, hidrata el
+/// perfil local con lo que el servidor sabe, aplica los defaults del paciente migrado
+/// (español, métrico, báscula Omron) y marca el onboarding como completo antes de navegar.
+///
+/// [sessionToken] es lo único que autentica de aquí en adelante. Se pasa aparte de
+/// [account] porque son cosas distintas: la cuenta dice QUIÉN es, el token dice que puede
+/// pedir sus datos.
 ///
 /// Lee los providers y el router del [context] ANTES de cualquier await para no usar el
 /// BuildContext tras un gap asíncrono.
 Future<void> completeLoginAndEnter(
   BuildContext context,
   PatientAccount account, {
+  required String sessionToken,
+  DateTime? sessionExpiresAt,
   String? identifier,
 }) async {
   final profile = context.read<UserProfileProvider>();
@@ -39,6 +43,8 @@ Future<void> completeLoginAndEnter(
 
   await PatientSession.instance.save(
     publicId: account.publicId,
+    token: sessionToken,
+    expiresAt: sessionExpiresAt,
     firstName: account.firstName,
     lastName: account.lastName,
     source: account.source,

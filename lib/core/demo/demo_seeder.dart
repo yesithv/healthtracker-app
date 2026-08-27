@@ -111,6 +111,9 @@ class DemoSeeder {
       // Asistente de alta ya superado y sesión activa: la demo entra directa al
       // panel sin pasar por el registro.
       'onboarding_complete': true,
+      // Token de mentira: la demo no habla con ningún servidor (DemoSession corta la
+      // sincronización antes de salir a la red), pero sin él la app se vería sin sesión.
+      'session_token': 'demo-session-token',
       'session_patient_public_id': 'demo-0000-0000-0000-000000000001',
       'session_patient_first_name': 'Camila',
       'session_patient_last_name': 'Herrera',

@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2265,6 +2264,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get medDelete => 'Eliminar';
 
   @override
+  String get medPause => 'Pausar';
+
+  @override
+  String get medResume => 'Reanudar';
+
+  @override
+  String get medPausedBadge => 'En pausa';
+
+  @override
   String get medDeleteTitle => '¿Eliminar medicamento?';
 
   @override
@@ -2461,6 +2469,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get medErrorAddTime => 'Añade al menos una hora';
 
   @override
+  String get medErrorSaveFailed => 'No se pudo guardar. Inténtalo de nuevo.';
+
+  @override
   String get medUnitsSuffix => 'uds';
 
   @override
@@ -2523,63 +2534,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get medDashApptsTitle => 'Citas';
-
-  @override
-  String get specialtyNone => 'Sin especialidad';
-
-  @override
-  String get specialtyGeneralMedicine => 'Medicina general';
-
-  @override
-  String get specialtyCardiology => 'Cardiología';
-
-  @override
-  String get specialtyEndocrinology => 'Endocrinología';
-
-  @override
-  String get specialtyDermatology => 'Dermatología';
-
-  @override
-  String get specialtyGynecology => 'Ginecología';
-
-  @override
-  String get specialtyDentistry => 'Odontología';
-
-  @override
-  String get specialtyOphthalmology => 'Oftalmología';
-
-  @override
-  String get specialtyOtolaryngology => 'Otorrinolaringología';
-
-  @override
-  String get specialtyNeurology => 'Neurología';
-
-  @override
-  String get specialtyNeuropsychology => 'Neuropsicología';
-
-  @override
-  String get specialtyPsychiatry => 'Psiquiatría';
-
-  @override
-  String get specialtyOrthopedics => 'Traumatología';
-
-  @override
-  String get specialtyUrology => 'Urología';
-
-  @override
-  String get specialtyGastroenterology => 'Gastroenterología';
-
-  @override
-  String get specialtyNutrition => 'Nutrición';
-
-  @override
-  String get specialtyPediatrics => 'Pediatría';
-
-  @override
-  String get specialtyPhysiotherapy => 'Fisioterapia';
-
-  @override
-  String get specialtyClinicalLaboratory => 'Laboratorio clínico';
 
   @override
   String get medDashApptsSoon => 'Próximamente';
@@ -2694,6 +2648,63 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appointmentFieldSpecialtyHint => 'Ej. Endocrinología';
+
+  @override
+  String get specialtyNone => 'Sin especialidad';
+
+  @override
+  String get specialtyGeneralMedicine => 'Medicina general';
+
+  @override
+  String get specialtyCardiology => 'Cardiología';
+
+  @override
+  String get specialtyEndocrinology => 'Endocrinología';
+
+  @override
+  String get specialtyDermatology => 'Dermatología';
+
+  @override
+  String get specialtyGynecology => 'Ginecología';
+
+  @override
+  String get specialtyDentistry => 'Odontología';
+
+  @override
+  String get specialtyOphthalmology => 'Oftalmología';
+
+  @override
+  String get specialtyOtolaryngology => 'Otorrinolaringología';
+
+  @override
+  String get specialtyNeurology => 'Neurología';
+
+  @override
+  String get specialtyNeuropsychology => 'Neuropsicología';
+
+  @override
+  String get specialtyPsychiatry => 'Psiquiatría';
+
+  @override
+  String get specialtyOrthopedics => 'Traumatología';
+
+  @override
+  String get specialtyUrology => 'Urología';
+
+  @override
+  String get specialtyGastroenterology => 'Gastroenterología';
+
+  @override
+  String get specialtyNutrition => 'Nutrición';
+
+  @override
+  String get specialtyPediatrics => 'Pediatría';
+
+  @override
+  String get specialtyPhysiotherapy => 'Fisioterapia';
+
+  @override
+  String get specialtyClinicalLaboratory => 'Laboratorio clínico';
 
   @override
   String get appointmentFieldDate => 'Fecha';
@@ -2819,4 +2830,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String appointmentRecurringEvery(int count) {
     return 'Cada $count m';
   }
+
+  @override
+  String accessCodeCallHint(String identifier) {
+    return 'Llama a la clínica: verificarán tu identidad y te dictarán un código para traer tus datos asociados a\n$identifier.';
+  }
+
+  @override
+  String get accessCodeAccountHint =>
+      'Llama a la clínica: verificarán tu identidad y te dictarán un código de seis dígitos. Caduca a los 15 minutos y solo sirve una vez.';
+
+  @override
+  String get accessCodeDocumentLabel => 'Número de documento';
+
+  @override
+  String get accessCodeDocumentHint => 'Tu documento';
+
+  @override
+  String get accessCodeLabel => 'Código que te dictaron';
+
+  @override
+  String get accessCodeHelp =>
+      'Caduca a los 15 minutos y solo se puede usar una vez. Si fallas varias veces habrá que pedir uno nuevo.';
+
+  @override
+  String get accessCodeMissingDocument => 'Ingresa tu número de documento.';
+
+  @override
+  String get accessCodeSixDigits => 'El código son seis dígitos.';
 }

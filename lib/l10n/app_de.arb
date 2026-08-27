@@ -922,5 +922,14 @@
   "appointmentNextActionUpcoming": "{title} · {date}",
   "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
   "appointmentRecurringEvery": "Alle {count} Mon.",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } }
+  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } },
+  "accessCodeCallHint": "Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein Code genannt, um Ihre Daten zu\n{identifier} zu laden.",
+  "@accessCodeCallHint": { "placeholders": { "identifier": { "type": "String" } } },
+  "accessCodeAccountHint": "Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein sechsstelliger Code genannt. Er verfällt nach 15 Minuten und gilt nur einmal.",
+  "accessCodeDocumentLabel": "Ausweisnummer",
+  "accessCodeDocumentHint": "Ihre Ausweisnummer",
+  "accessCodeLabel": "Der genannte Code",
+  "accessCodeHelp": "Er verfällt nach 15 Minuten und gilt nur einmal. Nach mehreren Fehlversuchen müssen Sie einen neuen anfordern.",
+  "accessCodeMissingDocument": "Geben Sie Ihre Ausweisnummer ein.",
+  "accessCodeSixDigits": "Der Code besteht aus sechs Ziffern."
 }
