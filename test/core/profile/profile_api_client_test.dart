@@ -34,16 +34,19 @@ void main() {
 
   setUp(() => enviado = {});
 
-  const perfilCompleto = '''
-{"identity":{"publicId":"5744d2aa-2473-4d3b-8707-6ca5bfe6b183",
-             "email":"maria@example.com","documentMasked":"••••••6789",
-             "source":"LEGACY","migrated":true,"termsVersion":null},
- "personal":{"firstName":"MARÍA","lastName":"GÓMEZ","birthDate":"1985-03-14",
-             "sex":"F","phone":"3001234567","countryCode":"CO",
-             "activityLevel":"very_active"},
- "preferences":{"locale":"es","unitSystem":"METRIC"},
- "goals":{"enabled":true,"targetWeightKg":68.5,"targetBodyFatPct":null,
-          "targetMusclePct":null,"targetVisceralLevel":8}}''';
+  /// **Este JSON no está inventado**: es la respuesta literal de la HealthTracker-Api
+  /// para María Gómez —la paciente migrada del juego de datos de nutryapp-acl— tras
+  /// editar su perfil desde la app. Si el contrato cambia, este test se entera; si lo
+  /// escribiéramos a mano, comprobaría nuestra idea del contrato y no el contrato.
+  const perfilCompleto =
+      '{"identity":{"publicId":"5744d2aa-2473-4d3b-8707-6ca5bfe6b183",'
+      '"email":"maria@example.com","documentMasked":"••••••6789",'
+      '"source":"LEGACY","migrated":true,"termsVersion":null},'
+      '"personal":{"firstName":"María","lastName":"Gómez","birthDate":"1990-04-12",'
+      '"sex":"F","phone":"3001234567","countryCode":"CO","activityLevel":"very_active"},'
+      '"preferences":{"locale":"en","unitSystem":"METRIC"},'
+      '"goals":{"enabled":true,"targetWeightKg":62.00,"targetBodyFatPct":null,'
+      '"targetMusclePct":null,"targetVisceralLevel":7}}';
 
   group('leer el perfil', () {
     test('trae la ficha completa y la deja presentable', () async {
@@ -62,14 +65,40 @@ void main() {
       // El documento se muestra, no se edita: es la clave contra la que se contrasta
       // el legacy y solo viajan las últimas cifras.
       expect(profile.documentMasked, '••••••6789');
-      // El legacy guarda los nombres EN MAYÚSCULAS.
+      // La migración ya dejó el nombre presentable en la base; el paso a Title Case
+      // del cliente cubre el caso contrario, cuando llega EN MAYÚSCULAS del legacy.
       expect(profile.fullName, 'María Gómez');
-      expect(profile.birthDate, DateTime(1985, 3, 14));
+      expect(profile.birthDate, DateTime(1990, 4, 12));
       expect(profile.genderForApp, 'female');
       expect(profile.activityLevel, 'very_active');
       expect(profile.unit, MeasurementUnit.metric);
-      expect(profile.goals?.targetWeightKg, 68.5);
-      expect(profile.goals?.targetVisceralLevel, 8);
+      // El idioma que la persona eligió, que es el que decide en qué idioma
+      // se le escribe: el correo del código sale de aquí.
+      expect(profile.locale, 'en');
+      expect(profile.goals?.targetWeightKg, 62.0);
+      expect(profile.goals?.targetVisceralLevel, 7);
+    });
+
+    test('un nombre EN MAYÚSCULAS del legacy llega presentable', () async {
+      // La migración normaliza, pero no todo paciente pasa por ella: el cliente tiene
+      // que dejarlo presentable igual, como ya hace el del canje del código.
+      final profile = await ProfileApiClient(
+        httpClient: MockClient(
+          (_) async => http.Response(
+            jsonEncode({
+              'identity': {},
+              'personal': {
+                'firstName': 'MARÍA JOSÉ',
+                'lastName': 'GÓMEZ ARIAS',
+              },
+            }),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          ),
+        ),
+      ).fetchMine();
+
+      expect(profile.fullName, 'María José Gómez Arias');
     });
 
     test('sin metas el bloque llega nulo, que no es tenerlas vacías', () async {
