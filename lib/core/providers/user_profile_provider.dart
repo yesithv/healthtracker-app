@@ -21,6 +21,11 @@ class UserProfileProvider extends ChangeNotifier {
   String _userEmail = '';
   String _userGender = '';
   String _userActivityLevel = 'sedentary';
+  // 'sedentary' es lo que se MUESTRA mientras no haya dicho nada, no lo que ha
+  // dicho. La diferencia importa fuera del móvil: el servidor guarda NULL cuando
+  // no lo ha declarado, y asumirle un nivel de actividad cambia cómo se leen sus
+  // medidas.
+  bool _activityLevelSet = false;
   // Teléfono local (sin prefijo) y país ISO 3166-1 alpha-2 ('CO'). El prefijo
   // telefónico se deriva del país vía el catálogo Countries.
   String _userPhone = '';
@@ -57,6 +62,9 @@ class UserProfileProvider extends ChangeNotifier {
   String get userEmail => _userEmail;
   String get userGender => _userGender;
   String get userActivityLevel => _userActivityLevel;
+
+  /// Si la persona ha elegido su nivel de actividad alguna vez. Ver [_activityLevelSet].
+  bool get activityLevelSet => _activityLevelSet;
   String get userPhone => _userPhone;
   String get userCountryCode => _userCountryCode;
   bool get isBiometricEnabled => _isBiometricEnabled;
@@ -82,6 +90,7 @@ class UserProfileProvider extends ChangeNotifier {
     _userEmail = '';
     _userGender = '';
     _userActivityLevel = 'sedentary';
+    _activityLevelSet = false;
     _userPhone = '';
     _userCountryCode = '';
     _defaultDeviceName = '';
@@ -165,6 +174,7 @@ class UserProfileProvider extends ChangeNotifier {
     _userEmail = email;
     _userGender = gender;
     _userActivityLevel = activityLevel;
+    _activityLevelSet = true;
     if (phone != null) _userPhone = phone;
     if (countryCode != null) _userCountryCode = countryCode;
     notifyListeners();
@@ -188,11 +198,18 @@ class UserProfileProvider extends ChangeNotifier {
   /// empty fields are populated. Lets the dashboard/profile show the patient's
   /// name, birth date, email and gender right after login without sending them
   /// through the onboarding wizard.
+  ///
+  /// Esa regla —solo huecos— es la que hace seguro llamar a esto en cada arranque
+  /// con sesión: el servidor manda al entrar, el teléfono manda al editar, y aquí
+  /// nunca se pierde una edición local por traer datos del servidor.
   Future<void> hydrateIdentity({
     String? name,
     String? email,
     DateTime? birthDate,
     String? gender,
+    String? phone,
+    String? countryCode,
+    String? activityLevel,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     var changed = false;
@@ -217,6 +234,28 @@ class UserProfileProvider extends ChangeNotifier {
         gender.trim().isNotEmpty) {
       _userGender = gender.trim();
       await prefs.setString(_genderKey, _userGender);
+      changed = true;
+    }
+    if (_userPhone.trim().isEmpty && phone != null && phone.trim().isNotEmpty) {
+      _userPhone = phone.trim();
+      await prefs.setString(_phoneKey, _userPhone);
+      changed = true;
+    }
+    if (_userCountryCode.trim().isEmpty &&
+        countryCode != null &&
+        countryCode.trim().isNotEmpty) {
+      _userCountryCode = countryCode.trim();
+      await prefs.setString(_countryKey, _userCountryCode);
+      changed = true;
+    }
+    // Aquí la condición NO es «está vacío» sino «no lo ha dicho»: el valor en
+    // memoria ya es 'sedentary' aunque nadie lo haya elegido.
+    if (!_activityLevelSet &&
+        activityLevel != null &&
+        activityLevel.trim().isNotEmpty) {
+      _userActivityLevel = activityLevel.trim();
+      _activityLevelSet = true;
+      await prefs.setString(_activityLevelKey, _userActivityLevel);
       changed = true;
     }
     if (changed) notifyListeners();
@@ -278,7 +317,9 @@ class UserProfileProvider extends ChangeNotifier {
     }
     _userEmail = prefs.getString(_emailKey) ?? '';
     _userGender = prefs.getString(_genderKey) ?? '';
-    _userActivityLevel = prefs.getString(_activityLevelKey) ?? 'sedentary';
+    final storedActivityLevel = prefs.getString(_activityLevelKey);
+    _activityLevelSet = storedActivityLevel != null;
+    _userActivityLevel = storedActivityLevel ?? 'sedentary';
     _userPhone = prefs.getString(_phoneKey) ?? '';
     _userCountryCode = prefs.getString(_countryKey) ?? '';
     _defaultDeviceName = prefs.getString(_defaultDeviceKey) ?? '';

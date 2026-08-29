@@ -7,6 +7,7 @@ import 'package:myvitals_healthtracker_app/core/auth/local_data_reset.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/constants/measurement_unit.dart';
 import 'package:myvitals_healthtracker_app/core/providers/locale_units_provider.dart';
+import 'package:myvitals_healthtracker_app/core/profile/profile_sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 
@@ -30,6 +31,7 @@ Future<void> completeLoginAndEnter(
   final profile = context.read<UserProfileProvider>();
   final onboarding = context.read<OnboardingProvider>();
   final localeUnits = context.read<LocaleUnitsProvider>();
+  final profileSync = context.read<ProfileSyncService>();
   final router = GoRouter.of(context);
 
   // Aislamiento entre pacientes: si en el dispositivo quedaron datos de OTRO
@@ -73,6 +75,12 @@ Future<void> completeLoginAndEnter(
     );
     await profile.setDefaultDeviceIfUnset('Omron');
   }
+
+  // Y lo que la ficha del login no trae: teléfono, país, nivel de actividad,
+  // metas, idioma y unidades. Se espera aquí —no se deja en segundo plano— para
+  // que quien reinstala la app entre con su perfil completo y no lo vea aparecer
+  // a trozos. Si falla, no rompe la entrada: se reintenta al arrancar.
+  await profileSync.hydrateFromServer();
 
   await onboarding.setComplete();
   await setDataOwner(account.publicId);

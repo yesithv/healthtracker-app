@@ -76,6 +76,36 @@ class HealthGoalsProvider extends ChangeNotifier {
     }
   }
 
+  /// Trae las metas del servidor SIN pisar las que la persona ya tenga en este
+  /// teléfono: solo se aplican si aquí no hay ninguna.
+  ///
+  /// Es la mitad que hacía falta para que cambiar de móvil no cueste las metas.
+  /// La regla —solo si no hay nada— es la que permite llamarla en cada arranque
+  /// con sesión sin arriesgar una edición local que aún no se haya subido.
+  Future<void> hydrate({
+    required bool enabled,
+    double? weight,
+    double? bodyFat,
+    double? muscleMass,
+    int? visceralFat,
+  }) async {
+    final hasLocalGoals =
+        _medicalGoalsEnabled ||
+        _targetWeight != null ||
+        _targetBodyFat != null ||
+        _targetMuscleMass != null ||
+        _targetVisceralFat != null;
+    if (hasLocalGoals) return;
+
+    await updateHealthGoals(
+      enabled: enabled,
+      weight: weight,
+      bodyFat: bodyFat,
+      muscleMass: muscleMass,
+      visceralFat: visceralFat,
+    );
+  }
+
   /// Re-reads goals from storage (e.g. after a restored backup).
   Future<void> reload() => _load();
 
