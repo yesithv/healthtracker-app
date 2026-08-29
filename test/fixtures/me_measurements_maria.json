@@ -1,0 +1,226 @@
+[
+  {
+    "indicatorCode": "ARM",
+    "indicatorName": "Brazo",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 30.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BMI",
+    "indicatorName": "IMC",
+    "unit": "kg/m2",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 26.7,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BODY_AGE",
+    "indicatorName": "Edad corporal",
+    "unit": "años",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 35.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BODY_FAT",
+    "indicatorName": "Grasa corporal",
+    "unit": "%",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 32.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "CHEST_BUST",
+    "indicatorName": "Pecho/Busto",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 92.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "HEIGHT",
+    "indicatorName": "Talla",
+    "unit": "m",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 1.62,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "HIP",
+    "indicatorName": "Cadera",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 99.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "KCAL",
+    "indicatorName": "Calorías (bio)",
+    "unit": "kcal",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 1850.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "LEG",
+    "indicatorName": "Pierna",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 55.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "LOWER_ABDOMEN",
+    "indicatorName": "Abdomen bajo",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 78.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "MUSCLE_PCT",
+    "indicatorName": "Músculo",
+    "unit": "%",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 27.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "VISCERAL_FAT_LEVEL",
+    "indicatorName": "Grasa visceral (nivel)",
+    "unit": "nivel",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 7.5,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "WAIST",
+    "indicatorName": "Cintura",
+    "unit": "cm",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 86.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "WEIGHT",
+    "indicatorName": "Peso",
+    "unit": "kg",
+    "measuredAt": "2026-03-09T15:20:00Z",
+    "value": 70.1,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "ARM",
+    "indicatorName": "Brazo",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 29.5,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BMI",
+    "indicatorName": "IMC",
+    "unit": "kg/m2",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 26.1,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BODY_AGE",
+    "indicatorName": "Edad corporal",
+    "unit": "años",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 34.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "BODY_FAT",
+    "indicatorName": "Grasa corporal",
+    "unit": "%",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 31.2,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "CHEST_BUST",
+    "indicatorName": "Pecho/Busto",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 91.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "HEIGHT",
+    "indicatorName": "Talla",
+    "unit": "m",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 1.62,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "HIP",
+    "indicatorName": "Cadera",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 98.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "KCAL",
+    "indicatorName": "Calorías (bio)",
+    "unit": "kcal",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 1820.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "LEG",
+    "indicatorName": "Pierna",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 54.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "LOWER_ABDOMEN",
+    "indicatorName": "Abdomen bajo",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 77.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "MUSCLE_PCT",
+    "indicatorName": "Músculo",
+    "unit": "%",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 27.5,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "VISCERAL_FAT_LEVEL",
+    "indicatorName": "Grasa visceral (nivel)",
+    "unit": "nivel",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 7.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "WAIST",
+    "indicatorName": "Cintura",
+    "unit": "cm",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 84.0,
+    "source": "LEGACY"
+  },
+  {
+    "indicatorCode": "WEIGHT",
+    "indicatorName": "Peso",
+    "unit": "kg",
+    "measuredAt": "2026-06-09T15:30:00Z",
+    "value": 68.4,
+    "source": "LEGACY"
+  }
+]
