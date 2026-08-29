@@ -687,29 +687,24 @@
   "medicationRefillNotifBody": "Dein Vorrat geht zur Neige.",
   "medicationUnitsLeft": "Noch {count} Einheiten",
   "medicationOutOfStock": "Nicht vorrätig",
-
   "medFormNameCapsule": "Kapsel",
   "medFormNameTablet": "Tablette",
   "medFormNameLiquid": "Flüssigkeit",
   "medFormNameInjection": "Injektion",
   "medFormNameDrops": "Tropfen",
   "medFormNameOther": "Einheit",
-
   "medUnitCapsule": "{count, plural, one{Kapsel} other{Kapseln}}",
   "medUnitTablet": "{count, plural, one{Tablette} other{Tabletten}}",
   "medUnitLiquid": "{count, plural, one{ml} other{ml}}",
   "medUnitInjection": "{count, plural, one{Injektion} other{Injektionen}}",
   "medUnitDrops": "{count, plural, one{Tropfen} other{Tropfen}}",
   "medUnitOther": "{count, plural, one{Einheit} other{Einheiten}}",
-
   "medScheduleDaily": "Jeden Tag",
   "medScheduleEveryNDays": "{count, plural, one{Jeden Tag} other{Alle {count} Tage}}",
-
   "medMenuDescription": "Verwalte deine Einnahmen, deinen Bestand und deine Adhärenz an einem Ort.",
   "medMenuTodaySubtitle": "{count, plural, =0{Keine Einnahmen offen} one{1 Einnahme offen} other{{count} Einnahmen offen}}",
   "medMenuInventorySubtitle": "{count, plural, =0{Alles vorrätig} one{1 geht zur Neige} other{{count} gehen zur Neige}}",
   "medMenuAdherenceSubtitle": "{pct}% diesen Monat · {streak} Tage in Folge",
-
   "medTodayTitle": "Heute",
   "medTodayDescription": "Erfasse die heutigen Einnahmen und prüfe das Erledigte.",
   "medSectionToTakeToday": "HEUTE EINZUNEHMEN",
@@ -717,14 +712,12 @@
   "medSectionYourMeds": "DEINE MEDIKAMENTE",
   "medDosesProgress": "{done} von {total}",
   "medNoPendingToday": "Keine Einnahmen mehr für heute.",
-
   "medInventoryTitle": "Bestand",
   "medInventoryDescription": "Wie viele Einheiten übrig sind und wann nachzufüllen ist.",
   "medSectionInventory": "BESTAND",
   "medStockLeftUnits": "{count, plural, one{1 Einheit übrig} other{{count} Einheiten übrig}}",
   "medRunsOutOn": "leer am {date}",
   "medStockDonutOf": "von {total}",
-
   "medAdherenceTitle": "Adhärenz",
   "medAdherenceDescription": "Deine Beständigkeit bei der Behandlung im Monatsverlauf.",
   "medComplianceMonth": "Adhärenz · {month}",
@@ -732,7 +725,6 @@
   "medLegendTaken": "Eingenommen",
   "medLegendSkipped": "Verpasst",
   "medLegendNoData": "Keine Daten",
-
   "medSectionSchedule": "PLAN",
   "medSectionAdherence": "ADHÄRENZ",
   "medSectionInformation": "INFORMATION",
@@ -749,22 +741,18 @@
   "medDeleteBody": "Das Medikament und sein gesamter Verlauf werden gelöscht. Dies kann nicht rückgängig gemacht werden.",
   "medInfoSoon": "Bald",
   "medInfoSoonBody": "Wechselwirkungen, Schwangerschaft und Stillzeit.",
-
   "medRegisterDose": "Einnahme erfassen",
   "medDoseAtTime": "{amount} um {time}",
   "medSkip": "Überspringen",
-
   "medMultipleTitle": "{count} Einnahmen um {time}",
   "medMultipleSubtitle": "Markiere einzeln oder erfasse alle auf einmal.",
   "medSkipRest": "Rest überspringen",
   "medRegisterNSelected": "{count, plural, =0{Einnahmen erfassen} one{1 Einnahme erfassen} other{{count} Einnahmen erfassen}}",
-
   "medNotifTitle": "Erinnerungen aktivieren",
   "medNotifBody": "Wir erinnern dich zu jeder Einnahmezeit und wenn dein Bestand zur Neige geht. Du kannst das jederzeit ändern.",
   "medNotifWebWarning": "Benachrichtigungen sind in der Web-Version nicht verfügbar. Nutze die App für iOS oder Android.",
   "medAllowNotifications": "Benachrichtigungen erlauben",
   "medNotNow": "Jetzt nicht",
-
   "medWizardStepOf": "SCHRITT {step} VON {total}",
   "medBack": "Zurück",
   "medStepIdentity": "Identität",
@@ -810,7 +798,6 @@
   "medErrorAddTime": "Füge mindestens eine Zeit hinzu",
   "medErrorSaveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
   "medUnitsSuffix": "Einh.",
-
   "medRefillTitle": "Bestand nachfüllen",
   "medRunsOutInDays": "Leer in ~{days, plural, one{1 Tag} other{{days} Tagen}}",
   "medAddABox": "Eine Packung hinzufügen",
@@ -818,16 +805,13 @@
   "medWillRemain": "{units} Einheiten übrig · reicht ~{days} Tage",
   "medRemindOneDay": "In 1 Tag erinnern",
   "medBought": "Ich habe es gekauft",
-
   "medEmptyTitle": "Noch keine Medikamente",
   "medEmptyBody": "Füge dein erstes Medikament hinzu und wir erinnern dich an jede Einnahme und warnen dich, bevor es ausgeht.",
-
   "medDashTodayLabel": "HEUTIGE EINNAHMEN",
   "medDashSeeModule": "Modul ansehen ›",
   "medDashNextDose": "Nächste Einnahme",
   "medDashNoDoses": "Keine anstehenden Einnahmen",
   "medLowStockBannerTitle": "{name} hat noch {count} Einheiten",
-
   "medDashMedsTitle": "Medikamente",
   "medDashApptsTitle": "Arzttermine",
   "medDashApptsSoon": "Demnächst",
@@ -909,7 +893,13 @@
   "appointmentRecurringHint": "Wenn du bestätigst, dass du da warst, erinnern wir dich automatisch an den nächsten Termin.",
   "appointmentFrequencyLabel": "Wie oft",
   "appointmentEveryNMonths": "Alle {count} Monate",
-  "@appointmentEveryNMonths": { "placeholders": { "count": { "type": "int" } } },
+  "@appointmentEveryNMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appointmentEditTitle": "Termin bearbeiten",
   "appointmentActionEdit": "Bearbeiten",
   "appointmentNextSpawned": "Wir haben die nächste Kontrolle zum Buchen vorgemerkt.",
@@ -918,18 +908,59 @@
   "appointmentComplianceGreenTitle": "Alles aktuell",
   "appointmentComplianceGreenBody": "Keine ausstehenden oder überfälligen Termine.",
   "appointmentNextActionOverdue": "{title} · überfällig",
-  "@appointmentNextActionOverdue": { "placeholders": { "title": { "type": "String" } } },
+  "@appointmentNextActionOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentNextActionUpcoming": "{title} · {date}",
-  "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
+  "@appointmentNextActionUpcoming": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentRecurringEvery": "Alle {count} Mon.",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } },
-  "accessCodeCallHint": "Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein Code genannt, um Ihre Daten zu\n{identifier} zu laden.",
-  "@accessCodeCallHint": { "placeholders": { "identifier": { "type": "String" } } },
+  "@appointmentRecurringEvery": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "accessCodeAccountHint": "Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein sechsstelliger Code genannt. Er verfällt nach 15 Minuten und gilt nur einmal.",
   "accessCodeDocumentLabel": "Ausweisnummer",
   "accessCodeDocumentHint": "Ihre Ausweisnummer",
   "accessCodeLabel": "Der genannte Code",
   "accessCodeHelp": "Er verfällt nach 15 Minuten und gilt nur einmal. Nach mehreren Fehlversuchen müssen Sie einen neuen anfordern.",
   "accessCodeMissingDocument": "Geben Sie Ihre Ausweisnummer ein.",
-  "accessCodeSixDigits": "Der Code besteht aus sechs Ziffern."
+  "accessCodeSixDigits": "Der Code besteht aus sechs Ziffern.",
+  "accessDoorTitle": "Mit deiner E-Mail anmelden",
+  "accessDoorSubtitle": "Wir senden dir einen sechsstelligen Code. Hast du noch kein Konto, wird es damit erstellt.",
+  "accessDoorEmailLabel": "E-Mail",
+  "accessDoorEmailHint": "name@mail.com",
+  "accessDoorContinue": "Weiter",
+  "accessDoorInvalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
+  "accessCodeSentTitle": "Sieh in dein Postfach",
+  "accessCodeSentSubtitle": "Wenn diese Adresse hinein darf, liegt dein Code dort. Er läuft in fünfzehn Minuten ab.",
+  "accessClinicCodeLink": "Ich habe schon einen Code der Klinik",
+  "signupTitle": "Konto fertig einrichten",
+  "signupSubtitle": "Mit diesen Angaben werden deine Werte mit den passenden Bereichen verglichen.",
+  "signupNameLabel": "Vorname",
+  "signupDocumentLabel": "Ausweisnummer",
+  "signupDocumentHelp": "Damit erkennen wir dich, falls du schon Patient der Klinik bist.",
+  "signupTermsAccept": "Ich akzeptiere die Bedingungen und die Datenschutzerklärung",
+  "signupSubmit": "Konto erstellen",
+  "signupMissingTerms": "Ohne Zustimmung zu den Bedingungen kann kein Konto entstehen.",
+  "callClinicTitle": "Ruf die Klinik an",
+  "callClinicBody": "Dieser Ausweis ist bereits registriert. Eine Krankengeschichte geben wir nicht ohne Prüfung heraus; das erledigt eine Person am Telefon.",
+  "callClinicBack": "Zurück",
+  "accessCodeClinicHint": "Ruf die Klinik an: Dort wird deine Identität geprüft und dir der Code genannt, mit dem wir deine Daten holen.",
+  "verifyBringingHistory": "Deine Historie wird geholt…"
 }

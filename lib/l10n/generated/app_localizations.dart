@@ -5132,12 +5132,6 @@ abstract class AppLocalizations {
   /// **'Every {count} mo'**
   String appointmentRecurringEvery(int count);
 
-  /// No description provided for @accessCodeCallHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Call the clinic: they will verify your identity and read you a code to bring in the data linked to\n{identifier}.'**
-  String accessCodeCallHint(String identifier);
-
   /// No description provided for @accessCodeAccountHint.
   ///
   /// In en, this message translates to:
@@ -5179,6 +5173,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The code is six digits.'**
   String get accessCodeSixDigits;
+
+  /// No description provided for @accessDoorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your email'**
+  String get accessDoorTitle;
+
+  /// No description provided for @accessDoorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We will email you a six-digit code. If you do not have an account yet, that same code creates it.'**
+  String get accessDoorSubtitle;
+
+  /// No description provided for @accessDoorEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get accessDoorEmailLabel;
+
+  /// No description provided for @accessDoorEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name@email.com'**
+  String get accessDoorEmailHint;
+
+  /// No description provided for @accessDoorContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get accessDoorContinue;
+
+  /// No description provided for @accessDoorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get accessDoorInvalidEmail;
+
+  /// No description provided for @accessCodeSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get accessCodeSentTitle;
+
+  /// No description provided for @accessCodeSentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If that address can get in, your code is waiting there. It expires in fifteen minutes.'**
+  String get accessCodeSentSubtitle;
+
+  /// No description provided for @accessClinicCodeLink.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a code from the clinic'**
+  String get accessClinicCodeLink;
+
+  /// No description provided for @signupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish creating your account'**
+  String get signupTitle;
+
+  /// No description provided for @signupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'With these details your measurements are compared against the ranges that apply to you.'**
+  String get signupSubtitle;
+
+  /// No description provided for @signupNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get signupNameLabel;
+
+  /// No description provided for @signupDocumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get signupDocumentLabel;
+
+  /// No description provided for @signupDocumentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It is how we recognise you if you are already a patient of the clinic.'**
+  String get signupDocumentHelp;
+
+  /// No description provided for @signupTermsAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the terms and the privacy policy'**
+  String get signupTermsAccept;
+
+  /// No description provided for @signupSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my account'**
+  String get signupSubmit;
+
+  /// No description provided for @signupMissingTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to accept the terms to create the account.'**
+  String get signupMissingTerms;
+
+  /// No description provided for @callClinicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic'**
+  String get callClinicTitle;
+
+  /// No description provided for @callClinicBody.
+  ///
+  /// In en, this message translates to:
+  /// **'That ID is already registered. We do not hand over a clinical history without verifying who you are, so a person activates it over the phone.'**
+  String get callClinicBody;
+
+  /// No description provided for @callClinicBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get callClinicBack;
+
+  /// No description provided for @accessCodeClinicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic: they will verify your identity and read you the code we use to bring your data in.'**
+  String get accessCodeClinicHint;
+
+  /// No description provided for @verifyBringingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing in your history…'**
+  String get verifyBringingHistory;
 }
 
 class _AppLocalizationsDelegate

@@ -23,33 +23,16 @@ class PendingAccountBanner extends StatefulWidget {
 }
 
 class _PendingAccountBannerState extends State<PendingAccountBanner> {
-  bool _busy = false;
-  String? _notice;
+  static const bool _busy = false;
+  static const String? _notice = null;
 
-  Future<void> _createNow() async {
-    if (_busy) return;
-    final l10n = AppLocalizations.of(context)!;
+  /// Lleva a la puerta con el correo ya escrito.
+  ///
+  /// Antes este botón creaba la cuenta desde aquí. Ya no puede: una cuenta nace cuando alguien
+  /// demuestra que ese buzón es suyo, y eso ocurre en la puerta. Lo que queda es acompañar.
+  void _createNow() {
     final profile = Provider.of<UserProfileProvider>(context, listen: false);
-
-    setState(() {
-      _busy = true;
-      _notice = null;
-    });
-
-    final result = await flushPendingAccount(AccountDraft.fromProfile(profile));
-    if (!mounted) return;
-
-    setState(() {
-      _busy = false;
-      _notice = switch (result.outcome) {
-        PendingAccountOutcome.created => l10n.pendingAccountCreated,
-        PendingAccountOutcome.stillOffline => l10n.pendingAccountStillOffline,
-        // Cuando el servidor rechaza el dato, su mensaje es más útil que
-        // cualquier texto genérico nuestro.
-        PendingAccountOutcome.rejected => result.message,
-        PendingAccountOutcome.nothingToDo => null,
-      };
-    });
+    goToAccessDoor(context, email: profile.userEmail.trim());
   }
 
   @override

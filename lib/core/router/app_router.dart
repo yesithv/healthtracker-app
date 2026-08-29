@@ -34,6 +34,9 @@ import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_verify_screen.dart';
+import '../../features/auth/presentation/screens/signup_screen.dart';
+import '../../features/auth/presentation/screens/call_clinic_screen.dart';
+import '../auth/access_target.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/medications/presentation/screens/medications_menu_screen.dart';
 import '../../features/medications/presentation/screens/medications_today_screen.dart';
@@ -81,12 +84,28 @@ class AppRouter {
       GoRoute(
         path: '/verify-otp',
         builder: (context, state) {
-          // Entrada con el código que dicta la clínica; sin identificador, volver a login.
-          final id = state.extra as String?;
-          return (id == null || id.isEmpty)
+          // El paso del código sirve a los dos caminos: el que llegó al correo y el que dicta
+          // la clínica. Sin saber cuál, se vuelve a la puerta.
+          final target = state.extra as AccessTarget?;
+          return target == null
               ? const LoginScreen()
-              : OtpVerifyScreen(identifier: id);
+              : OtpVerifyScreen(target: target);
         },
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) {
+          // Solo se llega con la sesión que abrió el código del correo: sin ella no hay alta
+          // que completar, y volver a la puerta es lo único sensato.
+          final token = state.extra as String?;
+          return (token == null || token.isEmpty)
+              ? const LoginScreen()
+              : SignupScreen(sessionToken: token);
+        },
+      ),
+      GoRoute(
+        path: '/call-clinic',
+        builder: (context, state) => const CallClinicScreen(),
       ),
       GoRoute(
         path: '/onboarding',

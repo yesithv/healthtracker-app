@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:myvitals_healthtracker_app/core/auth/access_target.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_entry.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
-/// Entrada del paciente con el código que le dictó la clínica.
+/// El paso del código, que sirve a los dos caminos de entrada.
 ///
-/// No hay SMS ni proveedor de identidad: quien verificó que esta persona es quien dice ser
-/// fue un agente, por teléfono, contrastando su documento y su correo. Este código es la
-/// prueba de que esa llamada ocurrió, y al canjearlo el servidor abre la sesión, TRAE su
-/// historial (persona + atenciones + indicadores) y la app entra al dashboard con los
-/// datos ya visibles.
+/// **Por correo** (lo normal): se acaba de escribir una dirección en la puerta y ahí ha
+/// llegado un código. Al canjearlo, o se entra —si esa cuenta ya tiene ficha— o se va al alta,
+/// que es donde se piden el documento y los términos.
 ///
-/// El canje exige el documento además del código. Si el identificador con el que llegó
-/// aquí ya es un documento, se usa ese; si entró con su correo, se le pide, porque sin él
-/// el servidor tendría que buscar el código entre todos los pacientes a la vez.
+/// **Con el código de la clínica**: a un paciente de NutryApp un agente le dictó seis dígitos
+/// por teléfono después de verificar quién es. Ese canje pide además el documento, porque el
+/// código viajó fuera del sistema; sin el documento, probar seis dígitos al azar acertaría el
+/// de alguien. Al canjearlo, el servidor trae su historial y la app entra con sus datos.
 class OtpVerifyScreen extends StatefulWidget {
-  /// Documento o email confirmado en el paso de identificación.
-  final String identifier;
+  /// Cómo se llegó aquí: con un correo al que se mandó el código, o con el de la clínica.
+  final AccessTarget target;
 
-  const OtpVerifyScreen({super.key, required this.identifier});
+  const OtpVerifyScreen({super.key, required this.target});
 
   @override
   State<OtpVerifyScreen> createState() => _OtpVerifyScreenState();
@@ -34,10 +34,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   final _codeController = TextEditingController();
   late final TextEditingController _documentController;
 
-  /// ¿Con qué llegó aquí? Si es solo dígitos lo damos por su documento; si entró con el
-  /// correo hay que pedírselo, porque es lo que acota el canje a su cuenta.
-  bool get _identifierIsDocument =>
-      RegExp(r'^\d+$').hasMatch(widget.identifier.trim());
+  bool get _isClinicCode => widget.target.isClinicCode;
 
   bool _busy = false;
   String? _status;
@@ -46,9 +43,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   @override
   void initState() {
     super.initState();
-    _documentController = TextEditingController(
-      text: _identifierIsDocument ? widget.identifier.trim() : '',
-    );
+    _documentController = TextEditingController();
   }
 
   @override
@@ -64,7 +59,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
     final document = _documentController.text.trim();
     final code = _codeController.text.trim();
     final l10n = AppLocalizations.of(context)!;
-    if (document.isEmpty) {
+    if (_isClinicCode && document.isEmpty) {
       setState(() => _error = l10n.accessCodeMissingDocument);
       return;
     }
@@ -77,22 +72,44 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       _error = null;
     });
 
+    final router = GoRouter.of(context);
     try {
-      // El canje abre la sesión y de paso trae el historial del legacy, así que puede
-      // tardar: el aviso es para que no parezca que se ha quedado colgada.
-      setState(() => _status = 'Trayendo tu historial…');
-      final session = await _auth.redeemAccessCode(
-        documentNumber: document,
+      if (_isClinicCode) {
+        // El canje abre la sesión y de paso trae el historial del legacy, así que puede
+        // tardar: el aviso es para que no parezca que se ha quedado colgada.
+        setState(() => _status = l10n.verifyBringingHistory);
+        final session = await _auth.redeemAccessCode(
+          documentNumber: document,
+          code: code,
+        );
+        if (!mounted) return;
+        await completeLoginAndEnter(
+          context,
+          session.account,
+          sessionToken: session.token,
+          sessionExpiresAt: session.expiresAt,
+          identifier: document,
+        );
+        return;
+      }
+
+      final session = await _auth.verifyEmailCode(
+        email: widget.target.email!,
         code: code,
       );
-
       if (!mounted) return;
+      if (session.needsSignup) {
+        // Correo verificado y todavía sin ficha: falta el alta, que es donde se piden el
+        // documento y los términos.
+        router.go('/signup', extra: session.token);
+        return;
+      }
       await completeLoginAndEnter(
         context,
-        session.account,
+        session.account!,
         sessionToken: session.token,
         sessionExpiresAt: session.expiresAt,
-        identifier: widget.identifier,
+        identifier: widget.target.email,
       );
     } on AuthException catch (e) {
       setState(() => _error = e.message);
@@ -130,12 +147,20 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              const Icon(Icons.folder_shared_outlined, size: 56, color: _blue),
+              Icon(
+                _isClinicCode
+                    ? Icons.folder_shared_outlined
+                    : Icons.mark_email_read_outlined,
+                size: 56,
+                color: _blue,
+              ),
               const SizedBox(height: 16),
-              const Text(
-                'Encontramos tu historial',
+              Text(
+                _isClinicCode
+                    ? l10n.verifyAppBarTitle
+                    : l10n.accessCodeSentTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1E293B),
@@ -143,12 +168,14 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                l10n.accessCodeCallHint(widget.identifier),
+                _isClinicCode
+                    ? l10n.accessCodeClinicHint
+                    : l10n.accessCodeSentSubtitle,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 28),
-              if (!_identifierIsDocument) ...[
+              if (_isClinicCode) ...[
                 _label(l10n.accessCodeDocumentLabel),
                 TextField(
                   controller: _documentController,

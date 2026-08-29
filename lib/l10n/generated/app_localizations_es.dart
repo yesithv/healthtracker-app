@@ -2832,11 +2832,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String accessCodeCallHint(String identifier) {
-    return 'Llama a la clínica: verificarán tu identidad y te dictarán un código para traer tus datos asociados a\n$identifier.';
-  }
-
-  @override
   String get accessCodeAccountHint =>
       'Llama a la clínica: verificarán tu identidad y te dictarán un código de seis dígitos. Caduca a los 15 minutos y solo sirve una vez.';
 
@@ -2858,4 +2853,78 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessCodeSixDigits => 'El código son seis dígitos.';
+
+  @override
+  String get accessDoorTitle => 'Entra con tu correo';
+
+  @override
+  String get accessDoorSubtitle =>
+      'Te enviamos un código de seis dígitos. Si todavía no tienes cuenta, con ese mismo código la creas.';
+
+  @override
+  String get accessDoorEmailLabel => 'Correo electrónico';
+
+  @override
+  String get accessDoorEmailHint => 'nombre@correo.com';
+
+  @override
+  String get accessDoorContinue => 'Continuar';
+
+  @override
+  String get accessDoorInvalidEmail => 'Escribe un correo válido.';
+
+  @override
+  String get accessCodeSentTitle => 'Revisa tu correo';
+
+  @override
+  String get accessCodeSentSubtitle =>
+      'Si esa dirección puede entrar, ahí tienes tu código. Caduca a los quince minutos.';
+
+  @override
+  String get accessClinicCodeLink => 'Ya tengo un código de la clínica';
+
+  @override
+  String get signupTitle => 'Termina de crear tu cuenta';
+
+  @override
+  String get signupSubtitle =>
+      'Con estos datos tus medidas se comparan con los rangos que te corresponden.';
+
+  @override
+  String get signupNameLabel => 'Nombre';
+
+  @override
+  String get signupDocumentLabel => 'Número de documento';
+
+  @override
+  String get signupDocumentHelp =>
+      'Sirve para reconocerte si ya eres paciente de la clínica.';
+
+  @override
+  String get signupTermsAccept =>
+      'Acepto los términos y la política de privacidad';
+
+  @override
+  String get signupSubmit => 'Crear mi cuenta';
+
+  @override
+  String get signupMissingTerms =>
+      'Hay que aceptar los términos para crear la cuenta.';
+
+  @override
+  String get callClinicTitle => 'Llama a la clínica';
+
+  @override
+  String get callClinicBody =>
+      'Ese documento ya está registrado. Tu historia clínica no se entrega sin verificar quién eres, así que la activa una persona por teléfono.';
+
+  @override
+  String get callClinicBack => 'Volver';
+
+  @override
+  String get accessCodeClinicHint =>
+      'Llama a la clínica: verificarán tu identidad y te dictarán el código con el que traemos tus datos.';
+
+  @override
+  String get verifyBringingHistory => 'Trayendo tu historial…';
 }

@@ -2840,11 +2840,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String accessCodeCallHint(String identifier) {
-    return 'Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein Code genannt, um Ihre Daten zu\n$identifier zu laden.';
-  }
-
-  @override
   String get accessCodeAccountHint =>
       'Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein sechsstelliger Code genannt. Er verfällt nach 15 Minuten und gilt nur einmal.';
 
@@ -2866,4 +2861,78 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get accessCodeSixDigits => 'Der Code besteht aus sechs Ziffern.';
+
+  @override
+  String get accessDoorTitle => 'Mit deiner E-Mail anmelden';
+
+  @override
+  String get accessDoorSubtitle =>
+      'Wir senden dir einen sechsstelligen Code. Hast du noch kein Konto, wird es damit erstellt.';
+
+  @override
+  String get accessDoorEmailLabel => 'E-Mail';
+
+  @override
+  String get accessDoorEmailHint => 'name@mail.com';
+
+  @override
+  String get accessDoorContinue => 'Weiter';
+
+  @override
+  String get accessDoorInvalidEmail => 'Gib eine gültige E-Mail-Adresse ein.';
+
+  @override
+  String get accessCodeSentTitle => 'Sieh in dein Postfach';
+
+  @override
+  String get accessCodeSentSubtitle =>
+      'Wenn diese Adresse hinein darf, liegt dein Code dort. Er läuft in fünfzehn Minuten ab.';
+
+  @override
+  String get accessClinicCodeLink => 'Ich habe schon einen Code der Klinik';
+
+  @override
+  String get signupTitle => 'Konto fertig einrichten';
+
+  @override
+  String get signupSubtitle =>
+      'Mit diesen Angaben werden deine Werte mit den passenden Bereichen verglichen.';
+
+  @override
+  String get signupNameLabel => 'Vorname';
+
+  @override
+  String get signupDocumentLabel => 'Ausweisnummer';
+
+  @override
+  String get signupDocumentHelp =>
+      'Damit erkennen wir dich, falls du schon Patient der Klinik bist.';
+
+  @override
+  String get signupTermsAccept =>
+      'Ich akzeptiere die Bedingungen und die Datenschutzerklärung';
+
+  @override
+  String get signupSubmit => 'Konto erstellen';
+
+  @override
+  String get signupMissingTerms =>
+      'Ohne Zustimmung zu den Bedingungen kann kein Konto entstehen.';
+
+  @override
+  String get callClinicTitle => 'Ruf die Klinik an';
+
+  @override
+  String get callClinicBody =>
+      'Dieser Ausweis ist bereits registriert. Eine Krankengeschichte geben wir nicht ohne Prüfung heraus; das erledigt eine Person am Telefon.';
+
+  @override
+  String get callClinicBack => 'Zurück';
+
+  @override
+  String get accessCodeClinicHint =>
+      'Ruf die Klinik an: Dort wird deine Identität geprüft und dir der Code genannt, mit dem wir deine Daten holen.';
+
+  @override
+  String get verifyBringingHistory => 'Deine Historie wird geholt…';
 }

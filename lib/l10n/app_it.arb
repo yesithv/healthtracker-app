@@ -704,29 +704,24 @@
   "medicationRefillNotifBody": "Le tue scorte stanno per esaurirsi.",
   "medicationUnitsLeft": "{count} unità rimaste",
   "medicationOutOfStock": "Esaurito",
-
   "medFormNameCapsule": "Capsula",
   "medFormNameTablet": "Compressa",
   "medFormNameLiquid": "Liquido",
   "medFormNameInjection": "Iniezione",
   "medFormNameDrops": "Gocce",
   "medFormNameOther": "Unità",
-
   "medUnitCapsule": "{count, plural, one{capsula} other{capsule}}",
   "medUnitTablet": "{count, plural, one{compressa} other{compresse}}",
   "medUnitLiquid": "{count, plural, one{ml} other{ml}}",
   "medUnitInjection": "{count, plural, one{iniezione} other{iniezioni}}",
   "medUnitDrops": "{count, plural, one{goccia} other{gocce}}",
   "medUnitOther": "{count, plural, one{unità} other{unità}}",
-
   "medScheduleDaily": "Tutti i giorni",
   "medScheduleEveryNDays": "{count, plural, one{Ogni giorno} other{Ogni {count} giorni}}",
-
   "medMenuDescription": "Gestisci le tue dosi, il tuo inventario e la tua aderenza in un unico posto.",
   "medMenuTodaySubtitle": "{count, plural, =0{Nessuna dose in sospeso} one{1 dose in sospeso} other{{count} dosi in sospeso}}",
   "medMenuInventorySubtitle": "{count, plural, =0{Tutto in scorta} one{1 in esaurimento} other{{count} in esaurimento}}",
   "medMenuAdherenceSubtitle": "{pct}% questo mese · {streak} giorni di fila",
-
   "medTodayTitle": "Oggi",
   "medTodayDescription": "Registra le dosi di oggi e rivedi ciò che è fatto.",
   "medSectionToTakeToday": "DA PRENDERE OGGI",
@@ -734,14 +729,12 @@
   "medSectionYourMeds": "I TUOI FARMACI",
   "medDosesProgress": "{done} di {total}",
   "medNoPendingToday": "Nessuna dose rimasta per oggi.",
-
   "medInventoryTitle": "Inventario",
   "medInventoryDescription": "Quante unità ti restano e quando conviene rifornire.",
   "medSectionInventory": "INVENTARIO",
   "medStockLeftUnits": "{count, plural, one{1 unità rimasta} other{{count} unità rimaste}}",
   "medRunsOutOn": "finisce il {date}",
   "medStockDonutOf": "di {total}",
-
   "medAdherenceTitle": "Aderenza",
   "medAdherenceDescription": "La tua costanza con la terapia durante il mese.",
   "medComplianceMonth": "aderenza · {month}",
@@ -749,7 +742,6 @@
   "medLegendTaken": "Presa",
   "medLegendSkipped": "Saltata",
   "medLegendNoData": "Nessun dato",
-
   "medSectionSchedule": "SCHEMA",
   "medSectionAdherence": "ADERENZA",
   "medSectionInformation": "INFORMAZIONI",
@@ -766,22 +758,18 @@
   "medDeleteBody": "Verranno eliminati il farmaco e tutta la sua cronologia. L'azione non può essere annullata.",
   "medInfoSoon": "Presto",
   "medInfoSoonBody": "Interazioni, gravidanza e allattamento.",
-
   "medRegisterDose": "Registra dose",
   "medDoseAtTime": "{amount} alle {time}",
   "medSkip": "Salta",
-
   "medMultipleTitle": "{count} dosi alle {time}",
   "medMultipleSubtitle": "Segna ciascuna o registrale tutte insieme.",
   "medSkipRest": "Salta il resto",
   "medRegisterNSelected": "{count, plural, =0{Registra dosi} one{Registra 1 dose} other{Registra {count} dosi}}",
-
   "medNotifTitle": "Attiva i promemoria",
   "medNotifBody": "Ti avvisiamo all'ora di ogni dose e quando le scorte stanno per finire. Puoi cambiarlo quando vuoi.",
   "medNotifWebWarning": "Le notifiche non sono disponibili nella versione web. Usa l'app per iOS o Android.",
   "medAllowNotifications": "Consenti le notifiche",
   "medNotNow": "Non ora",
-
   "medWizardStepOf": "PASSO {step} DI {total}",
   "medBack": "Indietro",
   "medStepIdentity": "Identità",
@@ -827,7 +815,6 @@
   "medErrorAddTime": "Aggiungi almeno un orario",
   "medErrorSaveFailed": "Impossibile salvare. Riprova.",
   "medUnitsSuffix": "unità",
-
   "medRefillTitle": "Rifornisci l'inventario",
   "medRunsOutInDays": "Finisce tra ~{days, plural, one{1 giorno} other{{days} giorni}}",
   "medAddABox": "Aggiungi una confezione",
@@ -835,16 +822,13 @@
   "medWillRemain": "Resteranno {units} unità · durano ~{days} giorni",
   "medRemindOneDay": "Ricordamelo tra 1 giorno",
   "medBought": "L'ho comprato",
-
   "medEmptyTitle": "Ancora nessun farmaco",
   "medEmptyBody": "Aggiungi il tuo primo farmaco e ti ricorderemo ogni dose e ti avviseremo prima che finisca.",
-
   "medDashTodayLabel": "DOSI DI OGGI",
   "medDashSeeModule": "Vedi modulo ›",
   "medDashNextDose": "Prossima dose",
   "medDashNoDoses": "Nessuna dose in arrivo",
   "medLowStockBannerTitle": "A {name} restano {count} unità",
-
   "medDashMedsTitle": "Farmaci",
   "medDashApptsTitle": "Visite",
   "medDashApptsSoon": "In arrivo",
@@ -926,7 +910,13 @@
   "appointmentRecurringHint": "Quando confermi di aver partecipato, ti ricorderemo di prenotare la prossima automaticamente.",
   "appointmentFrequencyLabel": "Ogni quanto",
   "appointmentEveryNMonths": "Ogni {count} mesi",
-  "@appointmentEveryNMonths": { "placeholders": { "count": { "type": "int" } } },
+  "@appointmentEveryNMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appointmentEditTitle": "Modifica appuntamento",
   "appointmentActionEdit": "Modifica",
   "appointmentNextSpawned": "Abbiamo annotato il prossimo controllo da prenotare.",
@@ -935,18 +925,59 @@
   "appointmentComplianceGreenTitle": "Tutto in regola",
   "appointmentComplianceGreenBody": "Nessun appuntamento in sospeso o scaduto.",
   "appointmentNextActionOverdue": "{title} · scaduto",
-  "@appointmentNextActionOverdue": { "placeholders": { "title": { "type": "String" } } },
+  "@appointmentNextActionOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentNextActionUpcoming": "{title} · {date}",
-  "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
+  "@appointmentNextActionUpcoming": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentRecurringEvery": "Ogni {count} m",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } },
-  "accessCodeCallHint": "Chiama la clinica: verificheranno la tua identità e ti detteranno un codice per recuperare i dati associati a\n{identifier}.",
-  "@accessCodeCallHint": { "placeholders": { "identifier": { "type": "String" } } },
+  "@appointmentRecurringEvery": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "accessCodeAccountHint": "Chiama la clinica: verificheranno la tua identità e ti detteranno un codice di sei cifre. Scade dopo 15 minuti e vale una sola volta.",
   "accessCodeDocumentLabel": "Numero di documento",
   "accessCodeDocumentHint": "Il tuo documento",
   "accessCodeLabel": "Il codice che ti hanno dettato",
   "accessCodeHelp": "Scade dopo 15 minuti e si può usare una sola volta. Se sbagli più volte dovrai chiederne uno nuovo.",
   "accessCodeMissingDocument": "Inserisci il tuo numero di documento.",
-  "accessCodeSixDigits": "Il codice è di sei cifre."
+  "accessCodeSixDigits": "Il codice è di sei cifre.",
+  "accessDoorTitle": "Entra con la tua email",
+  "accessDoorSubtitle": "Ti inviamo un codice di sei cifre. Se non hai ancora un account, con quel codice lo crei.",
+  "accessDoorEmailLabel": "Email",
+  "accessDoorEmailHint": "nome@email.com",
+  "accessDoorContinue": "Continua",
+  "accessDoorInvalidEmail": "Inserisci un'email valida.",
+  "accessCodeSentTitle": "Controlla la tua email",
+  "accessCodeSentSubtitle": "Se quell'indirizzo può entrare, lì trovi il tuo codice. Scade dopo quindici minuti.",
+  "accessClinicCodeLink": "Ho già un codice della clinica",
+  "signupTitle": "Completa il tuo account",
+  "signupSubtitle": "Con questi dati le tue misure si confrontano con gli intervalli che ti corrispondono.",
+  "signupNameLabel": "Nome",
+  "signupDocumentLabel": "Numero del documento",
+  "signupDocumentHelp": "Serve a riconoscerti se sei già paziente della clinica.",
+  "signupTermsAccept": "Accetto i termini e l'informativa sulla privacy",
+  "signupSubmit": "Crea il mio account",
+  "signupMissingTerms": "Devi accettare i termini per creare l'account.",
+  "callClinicTitle": "Chiama la clinica",
+  "callClinicBody": "Quel documento è già registrato. Non consegniamo una cartella clinica senza verificare chi sei: la attiva una persona al telefono.",
+  "callClinicBack": "Indietro",
+  "accessCodeClinicHint": "Chiama la clinica: verificheranno la tua identità e ti detteranno il codice con cui portiamo i tuoi dati.",
+  "verifyBringingHistory": "Sto portando la tua storia…"
 }

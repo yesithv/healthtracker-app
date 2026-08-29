@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/countries.dart';
 import '../providers/user_profile_provider.dart';
-import 'auth_api_client.dart';
-import 'patient_session.dart';
 
 /// Los datos que hacen falta para crear la cuenta, ya resueltos.
 ///
@@ -134,85 +133,13 @@ class PendingAccountStore extends ChangeNotifier {
 }
 
 /// Cómo terminó un intento de crear la cuenta diferida.
-enum PendingAccountOutcome {
-  /// No había nada pendiente.
-  nothingToDo,
 
-  /// Cuenta creada y sesión guardada.
-  created,
-
-  /// Sigue sin poder salir (sin red, servidor caído). Reintentar más tarde.
-  stillOffline,
-
-  /// El servidor rechazó los datos (correo duplicado, dato inválido). Reintentar
-  /// no ayuda: el usuario tiene que corregir algo.
-  rejected,
-}
-
-@immutable
-class PendingAccountResult {
-  const PendingAccountResult(this.outcome, [this.message]);
-
-  final PendingAccountOutcome outcome;
-  final String? message;
-
-  bool get created => outcome == PendingAccountOutcome.created;
-}
-
-/// Intenta crear la cuenta que quedó pendiente, con los datos que se le pasen.
+/// Lleva a la persona a la puerta con su correo ya escrito.
 ///
-/// Vive fuera del store para que éste no dependa de la red, y recibe un
-/// [AccountDraft] en vez de buscar los datos: así se puede llamar desde el
-/// arranque, desde el botón de sincronizar o desde una prueba, sin acoplarlo a
-/// ningún widget ni a ningún canal de plataforma.
-Future<PendingAccountResult> flushPendingAccount(
-  AccountDraft draft, {
-  AuthApiClient? client,
-}) async {
-  final store = PendingAccountStore.instance;
-  if (!store.isPending) {
-    return const PendingAccountResult(PendingAccountOutcome.nothingToDo);
-  }
-
-  final email = draft.email.trim();
-  if (email.isEmpty) {
-    // Sin identificador no hay registro posible; queda pendiente y el usuario
-    // tiene que completar su correo en Perfil.
-    const msg = 'Falta el correo para crear la cuenta.';
-    await store.noteFailure(msg);
-    return const PendingAccountResult(PendingAccountOutcome.rejected, msg);
-  }
-
-  final auth = client ?? AuthApiClient();
-  try {
-    final account = await auth.register(
-      firstName: draft.firstName,
-      email: email,
-      birthDate: draft.birthDate,
-      sex: draft.sex,
-      phone: draft.phone,
-      country: draft.countryIso,
-    );
-    await PatientSession.instance.save(
-      publicId: account.publicId,
-      firstName: account.firstName,
-      source: account.source,
-    );
-    // Al guardarse la sesión, SyncService despierta y sube los registros que el
-    // usuario haya ido creando mientras estaba sin cuenta.
-    await store.clear();
-    return const PendingAccountResult(PendingAccountOutcome.created);
-  } on AuthNetworkException catch (e) {
-    await store.noteFailure(e.message);
-    return PendingAccountResult(PendingAccountOutcome.stillOffline, e.message);
-  } on AuthException catch (e) {
-    await store.noteFailure(e.message);
-    return PendingAccountResult(PendingAccountOutcome.rejected, e.message);
-  } catch (e) {
-    debugPrint('Alta diferida falló de forma inesperada: $e');
-    await store.noteFailure('$e');
-    return PendingAccountResult(PendingAccountOutcome.stillOffline, '$e');
-  } finally {
-    if (client == null) auth.close();
-  }
+/// Antes aquí había un alta diferida: si al terminar el onboarding no había red, la cuenta se
+/// creaba sola en cuanto la hubiera. Con la puerta por correo eso ya no es posible ni deseable
+/// —una cuenta nace cuando alguien demuestra que ese buzón es suyo—, así que lo que queda es
+/// llevarle a terminar el paso que falta.
+void goToAccessDoor(BuildContext context, {String? email}) {
+  GoRouter.of(context).go('/login', extra: email);
 }
