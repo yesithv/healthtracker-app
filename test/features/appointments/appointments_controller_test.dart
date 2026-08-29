@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:myvitals_healthtracker_app/features/appointments/data/models/appointment.dart';
@@ -24,6 +25,9 @@ class _NoopScheduler extends AppointmentScheduler {
 void main() {
   setUpAll(() {
     // La base real corre sobre sqflite ffi en el test.
+    // Base propia para este fichero: `flutter test` corre los ficheros en paralelo
+    // y compartir el archivo los bloquea entre sí («database is locked»).
+    DatabaseService.useDatabaseFile('test-appointments-controller.db');
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   });

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:myvitals_healthtracker_app/core/theme/theme_catalog.dart';
@@ -44,6 +45,9 @@ Widget _host(AppointmentsController controller, {Appointment? existing}) {
 
 void main() {
   setUpAll(() {
+    // Base propia para este fichero: `flutter test` corre los ficheros en paralelo
+    // y compartir el archivo los bloquea entre sí («database is locked»).
+    DatabaseService.useDatabaseFile('test-appointment-add-sheet.db');
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   });

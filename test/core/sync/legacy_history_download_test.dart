@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:myvitals_healthtracker_app/core/sync/legacy_import_mapper.dart';
+import 'package:myvitals_healthtracker_app/core/sync/server_import_mapper.dart';
 import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_api_client.dart';
 
@@ -46,7 +46,7 @@ void main() {
       ),
     );
 
-    final imported = LegacyImportMapper.fromServer(await client.fetchMine());
+    final imported = ServerImportMapper.fromServer(await client.fetchMine());
 
     expect(imported.anthropometric, hasLength(2));
     expect(imported.bodyComposition, hasLength(2));

@@ -24,8 +24,25 @@ class DatabaseService {
   /// tenga la app instalada en el mismo dispositivo.
   static bool _useDemo = false;
 
+  /// Nombre de archivo forzado, solo para pruebas. Ver [useDatabaseFile].
+  static String? _fileNameOverride;
+
   static String get _fileName =>
-      _useDemo ? 'my-vitals-demo.db' : 'my-vitals-db.db';
+      _fileNameOverride ?? (_useDemo ? 'my-vitals-demo.db' : 'my-vitals-db.db');
+
+  /// Apunta la base a un archivo propio. **Es una costura para las pruebas**, y no
+  /// un capricho: `flutter test` corre los ficheros de prueba en PARALELO, así que
+  /// todos los que tocaban la base competían por el mismo archivo y se bloqueaban
+  /// entre sí («database is locked»). De ahí venía el fallo intermitente de una
+  /// prueba por corrida completa que pasaba en aislado.
+  ///
+  /// Cada fichero de prueba que use la base debe llamar a esto con un nombre suyo,
+  /// antes de tocarla.
+  @visibleForTesting
+  static void useDatabaseFile(String fileName) {
+    _fileNameOverride = fileName;
+    _database = null;
+  }
 
   /// Elige a qué archivo apunta la PRÓXIMA apertura. Lo gobierna `DemoSession`
   /// al entrar y al salir de la demo; cambiarlo con una conexión ya abierta no
