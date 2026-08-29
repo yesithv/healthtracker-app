@@ -378,6 +378,26 @@
   "backupExportTitle": "Exportar mis datos",
   "backupExportSubtitle": "Genera un archivo seguro con todo tu historial y configuración",
   "backupExportButton": "Exportar Backup",
+  "serverExportTitle": "Descargar todos mis datos",
+  "@serverExportTitle": {
+    "description": "Título de la tarjeta que descarga del servidor todo lo que guarda sobre el paciente (habeas data)."
+  },
+  "serverExportSubtitle": "Todo lo que la clínica guarda sobre ti, incluida tu historia anterior, en un archivo",
+  "@serverExportSubtitle": {
+    "description": "Subtítulo de esa tarjeta. Menciona la historia anterior porque es lo que NO está en el teléfono."
+  },
+  "serverExportButton": "Descargar",
+  "@serverExportButton": {
+    "description": "Botón de la tarjeta de descarga de datos."
+  },
+  "serverExportSuccess": "Tus datos se descargaron.",
+  "@serverExportSuccess": {
+    "description": "Confirmación tras descargar el volcado de datos."
+  },
+  "serverExportNeedsSession": "Entra en tu cuenta para descargar tus datos.",
+  "@serverExportNeedsSession": {
+    "description": "Aviso cuando se pide la descarga sin sesión abierta."
+  },
   "backupImportTitle": "Restaurar mis datos",
   "backupImportSubtitle": "Importa un backup previo de My Vitals",
   "backupImportButton": "Importar Backup",

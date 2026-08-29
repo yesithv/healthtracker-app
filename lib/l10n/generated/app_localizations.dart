@@ -2084,6 +2084,36 @@ abstract class AppLocalizations {
   /// **'Export Backup'**
   String get backupExportButton;
 
+  /// No description provided for @serverExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download all my data'**
+  String get serverExportTitle;
+
+  /// No description provided for @serverExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything the clinic holds about you, including your earlier history, in one file'**
+  String get serverExportSubtitle;
+
+  /// No description provided for @serverExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get serverExportButton;
+
+  /// No description provided for @serverExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data was downloaded.'**
+  String get serverExportSuccess;
+
+  /// No description provided for @serverExportNeedsSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to download your data.'**
+  String get serverExportNeedsSession;
+
   /// No description provided for @backupImportTitle.
   ///
   /// In en, this message translates to:

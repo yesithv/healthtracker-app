@@ -1061,6 +1061,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get backupExportButton => 'Exportar Backup';
 
   @override
+  String get serverExportTitle => 'Baixar todos os meus dados';
+
+  @override
+  String get serverExportSubtitle =>
+      'Tudo o que a clínica guarda sobre você, incluindo seu histórico anterior, num arquivo';
+
+  @override
+  String get serverExportButton => 'Baixar';
+
+  @override
+  String get serverExportSuccess => 'Seus dados foram baixados.';
+
+  @override
+  String get serverExportNeedsSession =>
+      'Entre na sua conta para baixar seus dados.';
+
+  @override
   String get backupImportTitle => 'Restaurar meus dados';
 
   @override

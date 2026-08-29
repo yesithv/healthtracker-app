@@ -1061,6 +1061,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupExportButton => 'Export Backup';
 
   @override
+  String get serverExportTitle => 'Download all my data';
+
+  @override
+  String get serverExportSubtitle =>
+      'Everything the clinic holds about you, including your earlier history, in one file';
+
+  @override
+  String get serverExportButton => 'Download';
+
+  @override
+  String get serverExportSuccess => 'Your data was downloaded.';
+
+  @override
+  String get serverExportNeedsSession => 'Sign in to download your data.';
+
+  @override
   String get backupImportTitle => 'Restore my data';
 
   @override

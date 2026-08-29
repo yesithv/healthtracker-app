@@ -6,6 +6,8 @@ import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart
 import 'package:myvitals_healthtracker_app/core/widgets/secondary_app_bar.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dart';
 import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
+import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
+import 'package:myvitals_healthtracker_app/core/export/data_export_service.dart';
 import 'package:myvitals_healthtracker_app/core/services/backup_service.dart';
 import 'package:myvitals_healthtracker_app/core/services/share_feedback.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
@@ -46,6 +48,42 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
         successMessage: AppLocalizations.of(context)!.backupSuccess,
       );
     }
+  }
+
+  /// Descarga del servidor todo lo que guarda sobre el paciente.
+  ///
+  /// No es la copia de seguridad de al lado: aquella es local y se puede reimportar;
+  /// esta trae lo que hay en la base de la clínica —**incluida la historia anterior, que
+  /// nunca estuvo en este teléfono**— y es la que responde al derecho de acceso.
+  Future<void> _downloadServerData() async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final theme = Theme.of(context);
+
+    if (!PatientSession.instance.isAuthenticated) {
+      // Sin sesión el servidor respondería 401; se dice antes y en su idioma.
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.serverExportNeedsSession)),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    final userName = Provider.of<UserProfileProvider>(
+      context,
+      listen: false,
+    ).userName;
+    final outcome = await DataExportService().downloadAndShare(userName);
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+    showShareFeedback(
+      messenger,
+      theme,
+      l10n,
+      outcome,
+      successMessage: l10n.serverExportSuccess,
+    );
   }
 
   Future<void> _importBackup() async {
@@ -277,6 +315,19 @@ class _DataBackupScreenState extends State<DataBackupScreen> {
                       buttonText: l10n.backupImportButton,
                       buttonIcon: Icons.restore,
                       onTap: _importBackup,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // SERVER EXPORT CARD (habeas data)
+                    _buildActionCard(
+                      icon: Icons.download_for_offline_outlined,
+                      iconColor: surfaces.brand,
+                      title: l10n.serverExportTitle,
+                      subtitle: l10n.serverExportSubtitle,
+                      buttonText: l10n.serverExportButton,
+                      buttonIcon: Icons.cloud_download_outlined,
+                      onTap: _downloadServerData,
                     ),
 
                     const SizedBox(height: 32),
