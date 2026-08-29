@@ -1,5 +1,8 @@
 # My Vitals — HealthTracker App
 
+> **Cómo encaja esto en el ecosistema:** el estado de los cinco repositorios, los dos caminos de
+> entrada del paciente y el plan por fases están en `healthtracker-localdev/ESTADO-Y-PLAN.md`.
+
 Aplicación móvil (Flutter) para que un paciente registre y siga sus propios
 indicadores de salud: signos vitales, antropometría, perfil lipídico y
 composición corporal. Funciona **local-first** —todo se guarda en SQLite en el
