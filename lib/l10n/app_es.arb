@@ -647,6 +647,10 @@
     "description": "verifySubmit"
   },
   "unexpectedError": "Error inesperado: {details}",
+  "profileUnavailable": "No pudimos abrir tu perfil. Inténtalo de nuevo en un momento.",
+  "@profileUnavailable": {
+    "description": "Aviso cuando la sesión se abre pero el servidor no devuelve la ficha del paciente. Antes la app reventaba aquí."
+  },
   "@unexpectedError": {
     "description": "unexpectedError",
     "placeholders": {

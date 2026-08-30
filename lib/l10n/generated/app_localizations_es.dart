@@ -1659,6 +1659,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get profileUnavailable =>
+      'No pudimos abrir tu perfil. Inténtalo de nuevo en un momento.';
+
+  @override
   String get accountSyncTitle => 'Cuenta y sincronización';
 
   @override

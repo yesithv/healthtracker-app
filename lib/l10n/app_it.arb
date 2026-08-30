@@ -565,6 +565,7 @@
   "verifyTestNotice": "Fase di test: la password è 1234. (In produzione qui ci sarà il codice OTP.)",
   "verifySubmit": "Accedi",
   "unexpectedError": "Errore imprevisto: {details}",
+  "profileUnavailable": "Non siamo riusciti ad aprire il tuo profilo. Riprova tra poco.",
   "@unexpectedError": {
     "placeholders": {
       "details": {

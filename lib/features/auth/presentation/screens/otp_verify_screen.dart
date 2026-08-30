@@ -104,9 +104,18 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
         router.go('/signup', extra: session.token);
         return;
       }
+      final account = session.account;
+      if (account == null) {
+        // El servidor dice que hay ficha y no la manda. Antes esto era `session.account!`
+        // y la app reventaba en el peor momento posible: al entrar, con la sesión ya
+        // abierta. Un mensaje y volver a intentarlo deja a la persona donde puede hacer
+        // algo, y el fallo del servidor se arregla en el servidor.
+        setState(() => _error = l10n.profileUnavailable);
+        return;
+      }
       await completeLoginAndEnter(
         context,
-        session.account!,
+        account,
         sessionToken: session.token,
         sessionExpiresAt: session.expiresAt,
         identifier: widget.target.email,

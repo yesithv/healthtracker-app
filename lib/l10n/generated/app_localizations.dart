@@ -3170,6 +3170,12 @@ abstract class AppLocalizations {
   /// **'Unexpected error: {details}'**
   String unexpectedError(String details);
 
+  /// No description provided for @profileUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open your profile. Please try again in a moment.'**
+  String get profileUnavailable;
+
   /// No description provided for @accountSyncTitle.
   ///
   /// In en, this message translates to:

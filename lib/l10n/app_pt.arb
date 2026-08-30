@@ -548,6 +548,7 @@
   "verifyTestNotice": "Fase de testes: a palavra-passe é 1234. (Em produção ficará aqui o código OTP.)",
   "verifySubmit": "Entrar",
   "unexpectedError": "Erro inesperado: {details}",
+  "profileUnavailable": "Não conseguimos abrir seu perfil. Tente novamente em instantes.",
   "@unexpectedError": {
     "placeholders": {
       "details": {

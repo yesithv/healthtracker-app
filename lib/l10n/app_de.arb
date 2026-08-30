@@ -548,6 +548,7 @@
   "verifyTestNotice": "Testphase: Das Passwort lautet 1234. (In der Produktion steht hier der OTP-Code.)",
   "verifySubmit": "Anmelden",
   "unexpectedError": "Unerwarteter Fehler: {details}",
+  "profileUnavailable": "Dein Profil konnte nicht geöffnet werden. Versuche es gleich noch einmal.",
   "@unexpectedError": {
     "placeholders": {
       "details": {

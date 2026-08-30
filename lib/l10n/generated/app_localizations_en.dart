@@ -1657,6 +1657,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get profileUnavailable =>
+      'We couldn\'t open your profile. Please try again in a moment.';
+
+  @override
   String get accountSyncTitle => 'Account and sync';
 
   @override

@@ -618,6 +618,7 @@
   "verifyTestNotice": "Test phase: the password is 1234. (An OTP code will go here in production.)",
   "verifySubmit": "Sign in",
   "unexpectedError": "Unexpected error: {details}",
+  "profileUnavailable": "We couldn't open your profile. Please try again in a moment.",
   "@unexpectedError": {
     "placeholders": {
       "details": {

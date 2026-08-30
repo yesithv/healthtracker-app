@@ -1662,6 +1662,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get profileUnavailable =>
+      'Dein Profil konnte nicht geöffnet werden. Versuche es gleich noch einmal.';
+
+  @override
   String get accountSyncTitle => 'Konto und Synchronisierung';
 
   @override
