@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_entry.dart';
+import 'package:myvitals_healthtracker_app/core/legal/legal_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
@@ -166,6 +167,22 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
+              // La casilla pedía aceptar dos documentos que no enlazaban a
+              // ninguna parte. Los textos los sirve la API y se leen sin cuenta,
+              // que es justo lo que hace falta aquí: todavía no la hay.
+              Wrap(
+                spacing: 4,
+                children: [
+                  _documentLink(
+                    l10n.legalReadTerms,
+                    '/legal/${LegalApiClient.terms}',
+                  ),
+                  _documentLink(
+                    l10n.legalReadPrivacy,
+                    '/legal/${LegalApiClient.privacy}',
+                  ),
+                ],
+              ),
               if (_error != null) ...[
                 const SizedBox(height: 8),
                 Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C))),
@@ -200,6 +217,25 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
+
+  /// Un enlace a uno de los documentos, en modo lectura. Se abre encima del
+  /// alta (`push`) para volver aquí con lo ya escrito intacto.
+  Widget _documentLink(String label, String route) => TextButton(
+    onPressed: () => context.push(route),
+    style: TextButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      minimumSize: Size.zero,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(
+        fontSize: 12,
+        color: _blue,
+        decoration: TextDecoration.underline,
+      ),
+    ),
+  );
 
   InputDecoration _decoration(String label, IconData icon) => InputDecoration(
     labelText: label,

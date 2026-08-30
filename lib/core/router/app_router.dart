@@ -36,6 +36,8 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_verify_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/auth/presentation/screens/call_clinic_screen.dart';
+import '../../features/legal/presentation/screens/legal_documents_screen.dart';
+import '../legal/legal_api_client.dart';
 import '../auth/access_target.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/medications/presentation/screens/medications_menu_screen.dart';
@@ -102,6 +104,23 @@ class AppRouter {
               ? const LoginScreen()
               : SignupScreen(sessionToken: token);
         },
+      ),
+      // La puerta legal. Se llega desde `completeLoginAndEnter` cuando el
+      // servidor dice que faltan términos por aceptar, y NO se sale de ella sin
+      // aceptar (ver LegalDocumentsScreen).
+      GoRoute(
+        path: '/terminos',
+        builder: (context, state) =>
+            const LegalDocumentsScreen(mustAccept: true),
+      ),
+      // Los mismos textos en modo lectura: desde la casilla del alta y desde
+      // Ajustes → Legal.
+      GoRoute(
+        path: '/legal/:document',
+        builder: (context, state) => LegalDocumentsScreen(
+          initialDocument:
+              state.pathParameters['document'] ?? LegalApiClient.terms,
+        ),
       ),
       GoRoute(
         path: '/call-clinic',

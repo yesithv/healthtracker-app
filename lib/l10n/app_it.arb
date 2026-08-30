@@ -299,7 +299,7 @@
   "helpGlossaryTitle": "Glossario Medico",
   "helpGlossaryDescription": "Comprendi ogni indicatore di salute.",
   "helpLegalTitle": "Avviso Legale",
-  "helpLegalDescription": "Termini di utilizzo e privacy dei dati.",
+  "helpLegalDescription": "Un riassunto di come funziona l'app. I termini e l'informativa completi li serve il server, e sono quelli che fanno fede.",
   "helpContactTitle": "Contatto e Feedback",
   "helpContactDescription": "Scrivici, miglioriamo insieme.",
   "helpSearchHint": "Cerca...",
@@ -311,7 +311,7 @@
   "helpFaqQ1": "Cos'è My Vitals?",
   "helpFaqA1": "My Vitals è un'app di monitoraggio personale della salute che ti permette di registrare e monitorare i tuoi indicatori di benessere: misure antropometriche, segni vitali, profilo lipidico e composizione corporea.",
   "helpFaqQ2": "I miei dati vengono salvati nel cloud?",
-  "helpFaqA2": "No. Tutti i tuoi dati vengono archiviati esclusivamente sul tuo dispositivo. My Vitals non invia alcuna informazione a server esterni, garantendo la massima privacy.",
+  "helpFaqA2": "Sì. Le tue misurazioni restano sul telefono e vengono copiate sul nostro server quando c'è connessione. È ciò che ti permette di non perdere lo storico cambiando telefono, e ciò che consente al personale della clinica nutrizionale associata di seguire il tuo andamento, se sei loro paziente. Puoi scaricare tutto o eliminare il tuo account dalle Impostazioni.",
   "helpFaqQ3": "Posso usare l'app senza internet?",
   "helpFaqA3": "Sì. My Vitals funziona completamente offline. Hai bisogno di connettività solo per gli aggiornamenti dell'app.",
   "helpFaqQ4": "Come attivo il blocco biometrico?",
@@ -331,15 +331,15 @@
   "helpGlossaryGroupBody": "Composizione Corporea",
   "helpGlossaryNormalRange": "Intervallo normale",
   "helpLegalPurposeTitle": "Scopo dell'applicazione",
-  "helpLegalPurposeBody": "My Vitals è un'applicazione di monitoraggio personale della salute progettata per aiutare gli utenti a registrare e visualizzare i propri indicatori di benessere. Non è un dispositivo medico certificato.",
+  "helpLegalPurposeBody": "My Vitals HealthTracker è un'applicazione per registrare e seguire i tuoi indicatori di salute. Se sei paziente della clinica nutrizionale associata, puoi anche consultare lì la tua cartella. Non è un dispositivo medico certificato.",
   "helpLegalNotMedicalTitle": "Non è un dispositivo medico",
   "helpLegalNotMedicalBody": "Le informazioni visualizzate in questa applicazione sono solo a scopo di riferimento. Non sostituisce la diagnosi, il consiglio o il trattamento di un professionista sanitario. Consulta il tuo medico per qualsiasi sintomo.",
   "helpLegalResponsibilityTitle": "Responsabilità dell'utente",
   "helpLegalResponsibilityBody": "L'utente è responsabile dell'accuratezza dei dati inseriti. My Vitals non è responsabile delle decisioni sanitarie prese sulla base delle informazioni registrate nell'app.",
-  "helpLegalPrivacyTitle": "Privacy e dati",
-  "helpLegalPrivacyBody": "Tutti i dati vengono archiviati localmente sul dispositivo dell'utente. My Vitals non raccoglie, trasmette o condivide informazioni personali con terze parti. Non esistono account utente o server di dati.",
+  "helpLegalPrivacyTitle": "I tuoi dati e dove si trovano",
+  "helpLegalPrivacyBody": "Le tue misurazioni restano sul telefono e vengono copiate sul nostro server quando c'è connessione: è ciò che ti permette di non perdere lo storico cambiando telefono. Hai un account, identificato dalla tua email. Puoi scaricare tutto ciò che abbiamo su di te da la sezione «Backup» delle Impostazioni, ed eliminare il tuo account da la sezione «Account».",
   "helpLegalContactTitle": "Contatto sviluppatore",
-  "helpLegalContactBody": "Per richieste legali o sulla privacy, puoi contattare lo sviluppatore all'indirizzo: yesithvalencia@gmail.com",
+  "helpLegalContactBody": "Per questioni legali o di privacy, scrivi a: yesithvalencia@gmail.com",
   "helpContactReportBug": "Segnala un errore",
   "helpContactReportBugDesc": "Hai trovato qualcosa che non funziona bene? Dimmelo.",
   "helpContactSuggest": "Invia un suggerimento",
@@ -355,7 +355,7 @@
   "backupTitle": "Backup e Ripristino",
   "backupDescription": "Esporta o ripristina tutti i tuoi dati e le tue preferenze.",
   "backupPrivacyTitle": "I tuoi dati sono tuoi. E solo tuoi.",
-  "backupPrivacyBody": "Tutte le nostre funzionalità per la salute sono sviluppate con la privacy al centro e sono progettate per mantenere i tuoi dati al sicuro.\n\nI tuoi dati sanitari sono crittografati sul tuo dispositivo e sono accessibili solo tramite passcode, Touch ID o Face ID. Non utilizziamo server cloud e non condividiamo mai i tuoi dati con terze parti.",
+  "backupPrivacyBody": "I tuoi dati sanitari vivono in due posti: sul telefono, perché l'app funzioni anche senza connessione, e sul nostro server, perché tu non li perda cambiando telefono.\n\nPuoi bloccare l'app con l'impronta o il volto da Impostazioni, sezione «Privacy». Non vendiamo i tuoi dati né li cediamo a fini commerciali. Li vede il personale autorizzato della clinica nutrizionale associata, se sei loro paziente, e nessun altro.",
   "backupPrivacyHighlight": "I tuoi dati sanitari sono crittografati a livello locale e nemmeno noi possiamo accedere alle tue informazioni.",
   "backupExportTitle": "Esporta i miei dati",
   "backupExportSubtitle": "Genera un file sicuro con tutta la tua cronologia e le tue impostazioni",
@@ -985,5 +985,76 @@
   "callClinicBody": "Quel documento è già registrato. Non consegniamo una cartella clinica senza verificare chi sei: la attiva una persona al telefono.",
   "callClinicBack": "Indietro",
   "accessCodeClinicHint": "Chiama la clinica: verificheranno la tua identità e ti detteranno il codice con cui portiamo i tuoi dati.",
-  "verifyBringingHistory": "Sto portando la tua storia…"
+  "verifyBringingHistory": "Sto portando la tua storia…",
+  "legalTitle": "Termini e privacy",
+  "@legalTitle": {
+    "description": "legalTitle"
+  },
+  "legalTermsTab": "Termini d'uso",
+  "@legalTermsTab": {
+    "description": "legalTermsTab"
+  },
+  "legalPrivacyTab": "Privacy",
+  "@legalPrivacyTab": {
+    "description": "legalPrivacyTab"
+  },
+  "legalAcceptButton": "Accetto",
+  "@legalAcceptButton": {
+    "description": "legalAcceptButton"
+  },
+  "legalDecline": "Non accetto ed esco",
+  "@legalDecline": {
+    "description": "legalDecline"
+  },
+  "legalNotTranslated": "Questo documento non è ancora tradotto nella tua lingua. Viene mostrato in spagnolo, che è la versione che fa fede.",
+  "@legalNotTranslated": {
+    "description": "legalNotTranslated"
+  },
+  "legalLoadFailed": "Non è stato possibile caricare il documento. Controlla la connessione.",
+  "@legalLoadFailed": {
+    "description": "legalLoadFailed"
+  },
+  "legalAcceptFailed": "Non è stato possibile registrare la tua accettazione. Riprova.",
+  "@legalAcceptFailed": {
+    "description": "legalAcceptFailed"
+  },
+  "legalRetry": "Riprova",
+  "@legalRetry": {
+    "description": "legalRetry"
+  },
+  "legalGateTitle": "Prima di entrare",
+  "@legalGateTitle": {
+    "description": "legalGateTitle"
+  },
+  "legalReadTerms": "Leggi i termini d'uso",
+  "@legalReadTerms": {
+    "description": "legalReadTerms"
+  },
+  "legalReadPrivacy": "Leggi l'informativa sulla privacy",
+  "@legalReadPrivacy": {
+    "description": "legalReadPrivacy"
+  },
+  "@helpLegalDescription": {
+    "description": "helpLegalDescription"
+  },
+  "@helpLegalPurposeBody": {
+    "description": "helpLegalPurposeBody"
+  },
+  "@helpLegalPrivacyTitle": {
+    "description": "helpLegalPrivacyTitle"
+  },
+  "@helpLegalPrivacyBody": {
+    "description": "helpLegalPrivacyBody"
+  },
+  "helpLegalWhoSeesTitle": "Chi può vedere la tua cartella",
+  "@helpLegalWhoSeesTitle": {
+    "description": "helpLegalWhoSeesTitle"
+  },
+  "helpLegalWhoSeesBody": "Tu, sempre. E il personale autorizzato della clinica nutrizionale associata, se sei loro paziente: sono chi ti segue e avevano già la tua cartella prima di questa app. Non vendiamo i tuoi dati né li cediamo a fini commerciali.",
+  "@helpLegalWhoSeesBody": {
+    "description": "helpLegalWhoSeesBody"
+  },
+  "@helpLegalContactBody": {
+    "description": "helpLegalContactBody"
+  }
 }

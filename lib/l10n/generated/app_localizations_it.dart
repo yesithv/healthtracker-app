@@ -857,7 +857,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get helpLegalTitle => 'Avviso Legale';
 
   @override
-  String get helpLegalDescription => 'Termini di utilizzo e privacy dei dati.';
+  String get helpLegalDescription =>
+      'Un riassunto di come funziona l\'app. I termini e l\'informativa completi li serve il server, e sono quelli che fanno fede.';
 
   @override
   String get helpContactTitle => 'Contatto e Feedback';
@@ -895,7 +896,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get helpFaqA2 =>
-      'No. Tutti i tuoi dati vengono archiviati esclusivamente sul tuo dispositivo. My Vitals non invia alcuna informazione a server esterni, garantendo la massima privacy.';
+      'Sì. Le tue misurazioni restano sul telefono e vengono copiate sul nostro server quando c\'è connessione. È ciò che ti permette di non perdere lo storico cambiando telefono, e ciò che consente al personale della clinica nutrizionale associata di seguire il tuo andamento, se sei loro paziente. Puoi scaricare tutto o eliminare il tuo account dalle Impostazioni.';
 
   @override
   String get helpFaqQ3 => 'Posso usare l\'app senza internet?';
@@ -962,7 +963,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get helpLegalPurposeBody =>
-      'My Vitals è un\'applicazione di monitoraggio personale della salute progettata per aiutare gli utenti a registrare e visualizzare i propri indicatori di benessere. Non è un dispositivo medico certificato.';
+      'My Vitals HealthTracker è un\'applicazione per registrare e seguire i tuoi indicatori di salute. Se sei paziente della clinica nutrizionale associata, puoi anche consultare lì la tua cartella. Non è un dispositivo medico certificato.';
 
   @override
   String get helpLegalNotMedicalTitle => 'Non è un dispositivo medico';
@@ -979,18 +980,18 @@ class AppLocalizationsIt extends AppLocalizations {
       'L\'utente è responsabile dell\'accuratezza dei dati inseriti. My Vitals non è responsabile delle decisioni sanitarie prese sulla base delle informazioni registrate nell\'app.';
 
   @override
-  String get helpLegalPrivacyTitle => 'Privacy e dati';
+  String get helpLegalPrivacyTitle => 'I tuoi dati e dove si trovano';
 
   @override
   String get helpLegalPrivacyBody =>
-      'Tutti i dati vengono archiviati localmente sul dispositivo dell\'utente. My Vitals non raccoglie, trasmette o condivide informazioni personali con terze parti. Non esistono account utente o server di dati.';
+      'Le tue misurazioni restano sul telefono e vengono copiate sul nostro server quando c\'è connessione: è ciò che ti permette di non perdere lo storico cambiando telefono. Hai un account, identificato dalla tua email. Puoi scaricare tutto ciò che abbiamo su di te da la sezione «Backup» delle Impostazioni, ed eliminare il tuo account da la sezione «Account».';
 
   @override
   String get helpLegalContactTitle => 'Contatto sviluppatore';
 
   @override
   String get helpLegalContactBody =>
-      'Per richieste legali o sulla privacy, puoi contattare lo sviluppatore all\'indirizzo: yesithvalencia@gmail.com';
+      'Per questioni legali o di privacy, scrivi a: yesithvalencia@gmail.com';
 
   @override
   String get helpContactReportBug => 'Segnala un errore';
@@ -1044,7 +1045,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupPrivacyBody =>
-      'Tutte le nostre funzionalità per la salute sono sviluppate con la privacy al centro e sono progettate per mantenere i tuoi dati al sicuro.\n\nI tuoi dati sanitari sono crittografati sul tuo dispositivo e sono accessibili solo tramite passcode, Touch ID o Face ID. Non utilizziamo server cloud e non condividiamo mai i tuoi dati con terze parti.';
+      'I tuoi dati sanitari vivono in due posti: sul telefono, perché l\'app funzioni anche senza connessione, e sul nostro server, perché tu non li perda cambiando telefono.\n\nPuoi bloccare l\'app con l\'impronta o il volto da Impostazioni, sezione «Privacy». Non vendiamo i tuoi dati né li cediamo a fini commerciali. Li vede il personale autorizzato della clinica nutrizionale associata, se sei loro paziente, e nessun altro.';
 
   @override
   String get backupPrivacyHighlight =>
@@ -2950,4 +2951,50 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get verifyBringingHistory => 'Sto portando la tua storia…';
+
+  @override
+  String get legalTitle => 'Termini e privacy';
+
+  @override
+  String get legalTermsTab => 'Termini d\'uso';
+
+  @override
+  String get legalPrivacyTab => 'Privacy';
+
+  @override
+  String get legalAcceptButton => 'Accetto';
+
+  @override
+  String get legalDecline => 'Non accetto ed esco';
+
+  @override
+  String get legalNotTranslated =>
+      'Questo documento non è ancora tradotto nella tua lingua. Viene mostrato in spagnolo, che è la versione che fa fede.';
+
+  @override
+  String get legalLoadFailed =>
+      'Non è stato possibile caricare il documento. Controlla la connessione.';
+
+  @override
+  String get legalAcceptFailed =>
+      'Non è stato possibile registrare la tua accettazione. Riprova.';
+
+  @override
+  String get legalRetry => 'Riprova';
+
+  @override
+  String get legalGateTitle => 'Prima di entrare';
+
+  @override
+  String get legalReadTerms => 'Leggi i termini d\'uso';
+
+  @override
+  String get legalReadPrivacy => 'Leggi l\'informativa sulla privacy';
+
+  @override
+  String get helpLegalWhoSeesTitle => 'Chi può vedere la tua cartella';
+
+  @override
+  String get helpLegalWhoSeesBody =>
+      'Tu, sempre. E il personale autorizzato della clinica nutrizionale associata, se sei loro paziente: sono chi ti segue e avevano già la tua cartella prima di questa app. Non vendiamo i tuoi dati né li cediamo a fini commerciali.';
 }

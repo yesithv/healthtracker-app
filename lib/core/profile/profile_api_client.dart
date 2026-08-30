@@ -34,6 +34,15 @@ class ServerProfile {
   final String? locale;
   final MeasurementUnit? unit;
 
+  /// La versión de los términos que esta persona aceptó, o `null` si no aceptó
+  /// ninguna. Los pacientes migrados llegan con `null`: aceptaron los de la
+  /// clínica de nutrición, que es otra empresa.
+  final String? termsVersion;
+
+  /// La versión vigente, la que sirve el servidor hoy. Viene en el mismo `GET
+  /// /me` para poder comparar sin una segunda llamada.
+  final String? currentTermsVersion;
+
   /// `null` si el paciente nunca se puso metas, que no es lo mismo que metas vacías.
   final ServerGoals? goals;
 
@@ -50,6 +59,8 @@ class ServerProfile {
     this.activityLevel,
     this.locale,
     this.unit,
+    this.termsVersion,
+    this.currentTermsVersion,
     this.goals,
   });
 
@@ -77,9 +88,22 @@ class ServerProfile {
       activityLevel: personal['activityLevel'] as String?,
       locale: preferences['locale'] as String?,
       unit: _unitFromJson(preferences['unitSystem'] as String?),
+      termsVersion: identity['termsVersion'] as String?,
+      currentTermsVersion: identity['currentTermsVersion'] as String?,
       goals: goals == null ? null : ServerGoals.fromJson(goals),
     );
   }
+
+  /// Si hay que pedirle que acepte antes de dejarle entrar.
+  ///
+  /// Es `true` tanto para quien no aceptó nunca —el caso de los migrados— como
+  /// para quien aceptó una versión anterior: los términos cambiaron y lo que
+  /// firmó ya no es lo que rige.
+  ///
+  /// Un servidor que no diga cuál es la vigente no bloquea a nadie: sería
+  /// dejar a la gente fuera de sus propios datos por un despliegue a medias.
+  bool get termsPending =>
+      currentTermsVersion != null && termsVersion != currentTermsVersion;
 
   /// El nombre completo, o cadena vacía si el servidor no sabe ninguno.
   String get fullName => [

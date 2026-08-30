@@ -80,10 +80,20 @@ Future<void> completeLoginAndEnter(
   // metas, idioma y unidades. Se espera aquí —no se deja en segundo plano— para
   // que quien reinstala la app entre con su perfil completo y no lo vea aparecer
   // a trozos. Si falla, no rompe la entrada: se reintenta al arrancar.
-  await profileSync.hydrateFromServer();
+  final serverProfile = await profileSync.hydrateFromServer();
 
   await onboarding.setComplete();
   await setDataOwner(account.publicId);
 
-  router.go('/dashboard');
+  // La puerta legal. Este es el ÚNICO sitio por el que se entra, así que es el
+  // único sitio donde hay que mirarlo.
+  //
+  // Los pacientes migrados llegaban sin haber aceptado nada: habían aceptado los
+  // términos de la clínica de nutrición, que es otra empresa. Y cuando el texto
+  // cambia, lo que firmaron ya no es lo que rige.
+  //
+  // Si el perfil no se pudo leer —sin red, servidor caído— se entra igual. Dejar
+  // a alguien fuera de sus propios datos por un problema nuestro sería peor que
+  // pedirle la aceptación en el siguiente arranque.
+  router.go(serverProfile?.termsPending == true ? '/terminos' : '/dashboard');
 }

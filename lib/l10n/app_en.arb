@@ -338,7 +338,7 @@
   "helpGlossaryTitle": "Medical Glossary",
   "helpGlossaryDescription": "Understand every health indicator.",
   "helpLegalTitle": "Legal Notice",
-  "helpLegalDescription": "Terms of use and data privacy.",
+  "helpLegalDescription": "A summary of how the app works. The full terms and policy are served by the server, and those are the ones that govern.",
   "helpContactTitle": "Contact & Feedback",
   "helpContactDescription": "Write to us, we improve together.",
   "helpSearchHint": "Search...",
@@ -350,7 +350,7 @@
   "helpFaqQ1": "What is My Vitals?",
   "helpFaqA1": "My Vitals is a personal health tracking app that lets you record and monitor your wellness indicators: anthropometric measurements, vital signs, lipid profile, and body composition.",
   "helpFaqQ2": "Is my data saved to the cloud?",
-  "helpFaqA2": "No. All your data is stored exclusively on your device. My Vitals does not send any information to external servers, ensuring complete privacy.",
+  "helpFaqA2": "Yes. Your measurements are stored on your phone and copied to our server whenever you have a connection. That is what keeps your history when you change phones, and what lets staff at the associated nutrition clinic follow your progress if you are their patient. You can download everything or delete your account from Settings.",
   "helpFaqQ3": "Can I use the app without internet?",
   "helpFaqA3": "Yes. My Vitals works completely offline. You only need connectivity for app updates.",
   "helpFaqQ4": "How do I enable biometric lock?",
@@ -370,15 +370,15 @@
   "helpGlossaryGroupBody": "Body Composition",
   "helpGlossaryNormalRange": "Normal range",
   "helpLegalPurposeTitle": "Purpose of the application",
-  "helpLegalPurposeBody": "My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.",
+  "helpLegalPurposeBody": "My Vitals HealthTracker is an application for recording and tracking your health indicators. If you are a patient of the associated nutrition clinic, you can also consult your record there. It is not a certified medical device.",
   "helpLegalNotMedicalTitle": "Not a medical device",
   "helpLegalNotMedicalBody": "The information displayed in this application is for reference purposes only. It does not replace the diagnosis, advice, or treatment of a health professional. If you have any medical symptoms or concerns, consult your doctor.",
   "helpLegalResponsibilityTitle": "User responsibility",
   "helpLegalResponsibilityBody": "The user is responsible for the accuracy of the data entered. My Vitals is not responsible for health decisions made based on information recorded in the app.",
-  "helpLegalPrivacyTitle": "Privacy and data",
-  "helpLegalPrivacyBody": "All data is stored locally on the user's device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.",
+  "helpLegalPrivacyTitle": "Your data and where it lives",
+  "helpLegalPrivacyBody": "Your measurements are stored on your phone and copied to our server when you have a connection: that is what keeps your history when you change phones. You have an account, identified by your email. You can download everything we hold about you from the “Backup” section of Settings, and delete your account from the “Account” section.",
   "helpLegalContactTitle": "Developer contact",
-  "helpLegalContactBody": "For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com",
+  "helpLegalContactBody": "For legal or privacy enquiries, write to: yesithvalencia@gmail.com",
   "helpContactReportBug": "Report a bug",
   "helpContactReportBugDesc": "Found something that's not working? Tell us.",
   "helpContactSuggest": "Send a suggestion",
@@ -394,7 +394,7 @@
   "backupTitle": "Backup & Restore",
   "backupDescription": "Export or restore all your data and preferences.",
   "backupPrivacyTitle": "Your data is yours. And yours only.",
-  "backupPrivacyBody": "All of our health features are built with privacy at the core. Your data never leaves your device — My Vitals does not use cloud servers, external accounts, or third-party services. Everything is stored locally in an encrypted database, accessible only to you.",
+  "backupPrivacyBody": "Your health data lives in two places: on your phone, so the app works offline, and on our server, so you do not lose it when you change phones.\n\nYou can lock the app with your fingerprint or face from Settings, under “Privacy”. We do not sell your data or hand it over for commercial purposes. Authorised staff at the associated nutrition clinic can see it if you are their patient, and nobody else.",
   "backupPrivacyHighlight": "If you enable biometric lock, your health data is further protected by your fingerprint or Face ID — no one else can access your information, not even us.",
   "backupExportTitle": "Export my data",
   "backupExportSubtitle": "Generate a secure file with all your history and settings",
@@ -1337,5 +1337,76 @@
   "callClinicBody": "That ID is already registered. We do not hand over a clinical history without verifying who you are, so a person activates it over the phone.",
   "callClinicBack": "Go back",
   "accessCodeClinicHint": "Call the clinic: they will verify your identity and read you the code we use to bring your data in.",
-  "verifyBringingHistory": "Bringing in your history…"
+  "verifyBringingHistory": "Bringing in your history…",
+  "legalTitle": "Terms and privacy",
+  "@legalTitle": {
+    "description": "legalTitle"
+  },
+  "legalTermsTab": "Terms of use",
+  "@legalTermsTab": {
+    "description": "legalTermsTab"
+  },
+  "legalPrivacyTab": "Privacy",
+  "@legalPrivacyTab": {
+    "description": "legalPrivacyTab"
+  },
+  "legalAcceptButton": "I accept",
+  "@legalAcceptButton": {
+    "description": "legalAcceptButton"
+  },
+  "legalDecline": "I don't accept and I'm leaving",
+  "@legalDecline": {
+    "description": "legalDecline"
+  },
+  "legalNotTranslated": "This document has not been translated into your language yet. It is shown in Spanish, which is the governing version.",
+  "@legalNotTranslated": {
+    "description": "legalNotTranslated"
+  },
+  "legalLoadFailed": "The document could not be loaded. Check your connection.",
+  "@legalLoadFailed": {
+    "description": "legalLoadFailed"
+  },
+  "legalAcceptFailed": "Your acceptance could not be recorded. Please try again.",
+  "@legalAcceptFailed": {
+    "description": "legalAcceptFailed"
+  },
+  "legalRetry": "Try again",
+  "@legalRetry": {
+    "description": "legalRetry"
+  },
+  "legalGateTitle": "Before you go in",
+  "@legalGateTitle": {
+    "description": "legalGateTitle"
+  },
+  "legalReadTerms": "Read the terms of use",
+  "@legalReadTerms": {
+    "description": "legalReadTerms"
+  },
+  "legalReadPrivacy": "Read the privacy policy",
+  "@legalReadPrivacy": {
+    "description": "legalReadPrivacy"
+  },
+  "@helpLegalDescription": {
+    "description": "helpLegalDescription"
+  },
+  "@helpLegalPurposeBody": {
+    "description": "helpLegalPurposeBody"
+  },
+  "@helpLegalPrivacyTitle": {
+    "description": "helpLegalPrivacyTitle"
+  },
+  "@helpLegalPrivacyBody": {
+    "description": "helpLegalPrivacyBody"
+  },
+  "helpLegalWhoSeesTitle": "Who can see your record",
+  "@helpLegalWhoSeesTitle": {
+    "description": "helpLegalWhoSeesTitle"
+  },
+  "helpLegalWhoSeesBody": "You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.",
+  "@helpLegalWhoSeesBody": {
+    "description": "helpLegalWhoSeesBody"
+  },
+  "@helpLegalContactBody": {
+    "description": "helpLegalContactBody"
+  }
 }

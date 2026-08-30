@@ -1718,10 +1718,10 @@ abstract class AppLocalizations {
   /// **'Legal Notice'**
   String get helpLegalTitle;
 
-  /// No description provided for @helpLegalDescription.
+  /// helpLegalDescription
   ///
   /// In en, this message translates to:
-  /// **'Terms of use and data privacy.'**
+  /// **'A summary of how the app works. The full terms and policy are served by the server, and those are the ones that govern.'**
   String get helpLegalDescription;
 
   /// No description provided for @helpContactTitle.
@@ -1793,7 +1793,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA2.
   ///
   /// In en, this message translates to:
-  /// **'No. All your data is stored exclusively on your device. My Vitals does not send any information to external servers, ensuring complete privacy.'**
+  /// **'Yes. Your measurements are stored on your phone and copied to our server whenever you have a connection. That is what keeps your history when you change phones, and what lets staff at the associated nutrition clinic follow your progress if you are their patient. You can download everything or delete your account from Settings.'**
   String get helpFaqA2;
 
   /// No description provided for @helpFaqQ3.
@@ -1910,10 +1910,10 @@ abstract class AppLocalizations {
   /// **'Purpose of the application'**
   String get helpLegalPurposeTitle;
 
-  /// No description provided for @helpLegalPurposeBody.
+  /// helpLegalPurposeBody
   ///
   /// In en, this message translates to:
-  /// **'My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.'**
+  /// **'My Vitals HealthTracker is an application for recording and tracking your health indicators. If you are a patient of the associated nutrition clinic, you can also consult your record there. It is not a certified medical device.'**
   String get helpLegalPurposeBody;
 
   /// No description provided for @helpLegalNotMedicalTitle.
@@ -1940,16 +1940,16 @@ abstract class AppLocalizations {
   /// **'The user is responsible for the accuracy of the data entered. My Vitals is not responsible for health decisions made based on information recorded in the app.'**
   String get helpLegalResponsibilityBody;
 
-  /// No description provided for @helpLegalPrivacyTitle.
+  /// helpLegalPrivacyTitle
   ///
   /// In en, this message translates to:
-  /// **'Privacy and data'**
+  /// **'Your data and where it lives'**
   String get helpLegalPrivacyTitle;
 
-  /// No description provided for @helpLegalPrivacyBody.
+  /// helpLegalPrivacyBody
   ///
   /// In en, this message translates to:
-  /// **'All data is stored locally on the user\'s device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.'**
+  /// **'Your measurements are stored on your phone and copied to our server when you have a connection: that is what keeps your history when you change phones. You have an account, identified by your email. You can download everything we hold about you from the “Backup” section of Settings, and delete your account from the “Account” section.'**
   String get helpLegalPrivacyBody;
 
   /// No description provided for @helpLegalContactTitle.
@@ -1958,10 +1958,10 @@ abstract class AppLocalizations {
   /// **'Developer contact'**
   String get helpLegalContactTitle;
 
-  /// No description provided for @helpLegalContactBody.
+  /// helpLegalContactBody
   ///
   /// In en, this message translates to:
-  /// **'For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com'**
+  /// **'For legal or privacy enquiries, write to: yesithvalencia@gmail.com'**
   String get helpLegalContactBody;
 
   /// No description provided for @helpContactReportBug.
@@ -2057,7 +2057,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupPrivacyBody.
   ///
   /// In en, this message translates to:
-  /// **'All of our health features are built with privacy at the core. Your data never leaves your device — My Vitals does not use cloud servers, external accounts, or third-party services. Everything is stored locally in an encrypted database, accessible only to you.'**
+  /// **'Your health data lives in two places: on your phone, so the app works offline, and on our server, so you do not lose it when you change phones.\n\nYou can lock the app with your fingerprint or face from Settings, under “Privacy”. We do not sell your data or hand it over for commercial purposes. Authorised staff at the associated nutrition clinic can see it if you are their patient, and nobody else.'**
   String get backupPrivacyBody;
 
   /// No description provided for @backupPrivacyHighlight.
@@ -5341,6 +5341,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bringing in your history…'**
   String get verifyBringingHistory;
+
+  /// legalTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and privacy'**
+  String get legalTitle;
+
+  /// legalTermsTab
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use'**
+  String get legalTermsTab;
+
+  /// legalPrivacyTab
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get legalPrivacyTab;
+
+  /// legalAcceptButton
+  ///
+  /// In en, this message translates to:
+  /// **'I accept'**
+  String get legalAcceptButton;
+
+  /// legalDecline
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t accept and I\'m leaving'**
+  String get legalDecline;
+
+  /// legalNotTranslated
+  ///
+  /// In en, this message translates to:
+  /// **'This document has not been translated into your language yet. It is shown in Spanish, which is the governing version.'**
+  String get legalNotTranslated;
+
+  /// legalLoadFailed
+  ///
+  /// In en, this message translates to:
+  /// **'The document could not be loaded. Check your connection.'**
+  String get legalLoadFailed;
+
+  /// legalAcceptFailed
+  ///
+  /// In en, this message translates to:
+  /// **'Your acceptance could not be recorded. Please try again.'**
+  String get legalAcceptFailed;
+
+  /// legalRetry
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get legalRetry;
+
+  /// legalGateTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Before you go in'**
+  String get legalGateTitle;
+
+  /// legalReadTerms
+  ///
+  /// In en, this message translates to:
+  /// **'Read the terms of use'**
+  String get legalReadTerms;
+
+  /// legalReadPrivacy
+  ///
+  /// In en, this message translates to:
+  /// **'Read the privacy policy'**
+  String get legalReadPrivacy;
+
+  /// helpLegalWhoSeesTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see your record'**
+  String get helpLegalWhoSeesTitle;
+
+  /// helpLegalWhoSeesBody
+  ///
+  /// In en, this message translates to:
+  /// **'You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.'**
+  String get helpLegalWhoSeesBody;
 }
 
 class _AppLocalizationsDelegate

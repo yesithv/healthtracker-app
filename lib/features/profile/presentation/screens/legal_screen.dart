@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myvitals_healthtracker_app/core/legal/legal_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/content_palette.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
@@ -7,6 +9,23 @@ import '../../../../core/widgets/secondary_app_bar.dart';
 
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 
+/// El resumen legal de Ajustes.
+///
+/// <h3>Lo que decía antes</h3>
+///
+/// «Todos los datos se almacenan localmente en el dispositivo. My Vitals no
+/// recopila, transmite ni comparte información personal con terceros. **No
+/// existen cuentas de usuario ni servidores de datos**.» Era cierto cuando la
+/// app era local; hoy hay cuenta, sesión, servidor, subida de todas las
+/// mediciones y el staff de la clínica viendo la historia desde el panel. Cada
+/// fase lo fue haciendo menos cierto y nadie tocó el texto.
+///
+/// <h3>Qué es esta pantalla ahora</h3>
+///
+/// Un **resumen** de lo que el sistema hace de verdad, con enlace a los
+/// documentos completos —que sirve la API y son los que rigen—. El resumen vive
+/// en la app porque tiene que poder leerse sin conexión; los documentos no,
+/// porque cambiarlos no puede exigir publicar en las tiendas.
 class LegalScreen extends StatelessWidget {
   const LegalScreen({super.key});
 
@@ -41,6 +60,12 @@ class LegalScreen extends StatelessWidget {
         title: l10n.helpLegalPrivacyTitle,
         body: l10n.helpLegalPrivacyBody,
         color: clinical.optimal.accent,
+      ),
+      _LegalSection(
+        icon: Icons.groups_outlined,
+        title: l10n.helpLegalWhoSeesTitle,
+        body: l10n.helpLegalWhoSeesBody,
+        color: surfaces.brand,
       ),
       _LegalSection(
         icon: Icons.mail_outline_rounded,
@@ -101,11 +126,55 @@ class LegalScreen extends StatelessWidget {
 
                 // Legal sections
                 ...sections.map((s) => _buildLegalTile(context, s)),
+                const SizedBox(height: 8),
+
+                // Los documentos completos. El resumen de arriba no los
+                // sustituye: lo que rige es lo que sirve el servidor, con su
+                // número de versión.
+                _documentLink(
+                  context,
+                  icon: Icons.description_outlined,
+                  label: l10n.legalReadTerms,
+                  document: LegalApiClient.terms,
+                ),
+                _documentLink(
+                  context,
+                  icon: Icons.privacy_tip_outlined,
+                  label: l10n.legalReadPrivacy,
+                  document: LegalApiClient.privacy,
+                ),
                 const SizedBox(height: 32),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _documentLink(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String document,
+  }) {
+    final surfaces = Theme.of(context).surfaces;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: OutlinedButton.icon(
+        onPressed: () => context.push('/legal/$document'),
+        icon: Icon(icon, size: 18),
+        label: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(label, style: const TextStyle(fontSize: 13)),
+        ),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: surfaces.ink,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
       ),
     );
   }
