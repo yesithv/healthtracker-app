@@ -20,6 +20,7 @@ class UserProfileProvider extends ChangeNotifier {
   DateTime? _birthDate;
   String _userEmail = '';
   String _userGender = '';
+  DateTime? _clinicDataSyncedAt;
   String _userActivityLevel = 'sedentary';
   // 'sedentary' es lo que se MUESTRA mientras no haya dicho nada, no lo que ha
   // dicho. La diferencia importa fuera del móvil: el servidor guarda NULL cuando
@@ -47,6 +48,12 @@ class UserProfileProvider extends ChangeNotifier {
   static const String _countryKey = 'user_country';
   static const String _biometricKey = 'user_biometric_enabled';
   static const String _defaultDeviceKey = 'default_device_name';
+
+  /// Hasta cuándo llega la historia que la clínica trajo de su sistema.
+  ///
+  /// Se guarda en el teléfono para que la fecha de corte se siga viendo sin conexión: es
+  /// justamente cuando más importa saber que lo que se está mirando puede no ser lo último.
+  static const String _clinicSyncedAtKey = 'clinic_data_synced_at';
 
   /// Báscula/bioimpedancia habitual del usuario ('' = ninguna configurada).
   String _defaultDeviceName = '';
@@ -95,6 +102,7 @@ class UserProfileProvider extends ChangeNotifier {
     _userCountryCode = '';
     _defaultDeviceName = '';
     _isBiometricEnabled = false;
+    _clinicDataSyncedAt = null;
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
@@ -109,6 +117,7 @@ class UserProfileProvider extends ChangeNotifier {
       _defaultDeviceKey,
       _biometricKey,
       _imageKey,
+      _clinicSyncedAtKey,
     ]) {
       await prefs.remove(key);
     }
@@ -202,6 +211,35 @@ class UserProfileProvider extends ChangeNotifier {
   /// Esa regla —solo huecos— es la que hace seguro llamar a esto en cada arranque
   /// con sesión: el servidor manda al entrar, el teléfono manda al editar, y aquí
   /// nunca se pierde una edición local por traer datos del servidor.
+  /// Hasta cuándo llega la historia clínica que vino de la clínica, o `null` si esta persona no
+  /// viene de allí (o si el servidor todavía no lo ha dicho).
+  DateTime? get clinicDataSyncedAt => _clinicDataSyncedAt;
+
+  /// Cuántos días lleva sin actualizarse.
+  int? get clinicDataAgeDays => _clinicDataSyncedAt == null
+      ? null
+      : DateTime.now().difference(_clinicDataSyncedAt!).inDays;
+
+  /// Guarda la fecha de corte que dice el servidor.
+  ///
+  /// <b>Sobrescribe siempre</b>, al revés que [hydrateIdentity], que solo rellena huecos. La
+  /// diferencia no es un descuido: aquello son datos de la persona, que ella edita y manda; esto
+  /// es un hecho sobre el servidor, y una copia vieja guardada en el teléfono diría que la
+  /// historia está más al día de lo que está.
+  Future<void> setClinicDataSyncedAt(DateTime? value) async {
+    if (_clinicDataSyncedAt == value) {
+      return;
+    }
+    _clinicDataSyncedAt = value;
+    final prefs = await SharedPreferences.getInstance();
+    if (value == null) {
+      await prefs.remove(_clinicSyncedAtKey);
+    } else {
+      await prefs.setString(_clinicSyncedAtKey, value.toIso8601String());
+    }
+    notifyListeners();
+  }
+
   Future<void> hydrateIdentity({
     String? name,
     String? email,
@@ -323,6 +361,11 @@ class UserProfileProvider extends ChangeNotifier {
     _userPhone = prefs.getString(_phoneKey) ?? '';
     _userCountryCode = prefs.getString(_countryKey) ?? '';
     _defaultDeviceName = prefs.getString(_defaultDeviceKey) ?? '';
+
+    final clinicSyncedAt = prefs.getString(_clinicSyncedAtKey);
+    _clinicDataSyncedAt = clinicSyncedAt == null
+        ? null
+        : DateTime.tryParse(clinicSyncedAt);
 
     _isBiometricEnabled = prefs.getBool(_biometricKey) ?? false;
 

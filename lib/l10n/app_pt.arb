@@ -1067,5 +1067,26 @@
   "consentsSaveFailed": "Não foi possível guardar a alteração. Tente novamente.",
   "@consentsSaveFailed": {
     "description": "consentsSaveFailed"
+  },
+  "clinicDataUpToDate": "Os dados da sua clínica estão atualizados a {date}.",
+  "@clinicDataUpToDate": {
+    "description": "clinicDataUpToDate",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "clinicDataStale": "Os dados da sua clínica estão atualizados a {date}: há {days} dias que não chega nada de novo.",
+  "@clinicDataStale": {
+    "description": "clinicDataStale",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
   }
 }

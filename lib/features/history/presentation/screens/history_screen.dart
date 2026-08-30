@@ -5,6 +5,7 @@ import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:myvitals_healthtracker_app/core/theme/tokens/metric_palette.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/icon_badge.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/main_app_bar.dart';
+import 'package:myvitals_healthtracker_app/features/history/presentation/widgets/clinic_data_freshness.dart';
 import 'package:myvitals_healthtracker_app/features/history/presentation/widgets/consolidated_export_button.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -29,6 +30,9 @@ class HistoryScreen extends StatelessWidget {
                 // sobre la lista de módulos (cada uno con su propio export).
                 const ConsolidatedExportButton(),
                 const SizedBox(height: 20),
+                // Hasta cuándo llega lo que vino de la clínica. Solo aparece para quien viene de
+                // allí; para el resto no hay nada que fechar.
+                const ClinicDataFreshness(),
                 // Menu items matching Profile _MenuTile style
                 _HistoryMenuTile(
                   icon: Icons.straighten,

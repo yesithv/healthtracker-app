@@ -43,6 +43,13 @@ class ServerProfile {
   /// /me` para poder comparar sin una segunda llamada.
   final String? currentTermsVersion;
 
+  /// Hasta cuándo llega la historia que la clínica trajo de su sistema, o `null` si esta
+  /// persona no viene de allí.
+  ///
+  /// La app lo enseña: una historia clínica migrada tiene una fecha de corte, y si el
+  /// sincronizador lleva días parado, callarlo es enseñar datos viejos como si fueran de hoy.
+  final DateTime? clinicDataSyncedAt;
+
   /// Por qué canales acepta que se le contacte.
   final ServerConsents consents;
 
@@ -64,6 +71,7 @@ class ServerProfile {
     this.unit,
     this.termsVersion,
     this.currentTermsVersion,
+    this.clinicDataSyncedAt,
     this.consents = const ServerConsents(),
     this.goals,
   });
@@ -94,6 +102,11 @@ class ServerProfile {
       unit: _unitFromJson(preferences['unitSystem'] as String?),
       termsVersion: identity['termsVersion'] as String?,
       currentTermsVersion: identity['currentTermsVersion'] as String?,
+      clinicDataSyncedAt: identity['clinicDataSyncedAt'] == null
+          ? null
+          : DateTime.tryParse(
+              identity['clinicDataSyncedAt'] as String,
+            )?.toLocal(),
       consents: ServerConsents.fromJson(
         json['consents'] as Map<String, dynamic>? ?? const {},
       ),
@@ -111,6 +124,13 @@ class ServerProfile {
   /// dejar a la gente fuera de sus propios datos por un despliegue a medias.
   bool get termsPending =>
       currentTermsVersion != null && termsVersion != currentTermsVersion;
+
+  /// Cuántos días lleva sin actualizarse la historia que vino de la clínica.
+  ///
+  /// `null` cuando esta persona no viene de allí y no hay nada que fechar.
+  int? get clinicDataAgeDays => clinicDataSyncedAt == null
+      ? null
+      : DateTime.now().difference(clinicDataSyncedAt!).inDays;
 
   /// El nombre completo, o cadena vacía si el servidor no sabe ninguno.
   String get fullName => [

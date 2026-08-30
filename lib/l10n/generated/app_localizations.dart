@@ -5467,6 +5467,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The change could not be saved. Please try again.'**
   String get consentsSaveFailed;
+
+  /// clinicDataUpToDate
+  ///
+  /// In en, this message translates to:
+  /// **'Your clinic data is up to date as of {date}.'**
+  String clinicDataUpToDate(String date);
+
+  /// clinicDataStale
+  ///
+  /// In en, this message translates to:
+  /// **'Your clinic data is up to date as of {date}: nothing new has arrived for {days} days.'**
+  String clinicDataStale(String date, int days);
 }
 
 class _AppLocalizationsDelegate

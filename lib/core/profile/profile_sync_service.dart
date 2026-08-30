@@ -98,6 +98,10 @@ class ProfileSyncService {
         languageCode: profile.locale,
         unit: profile.unit,
       );
+      // Se escribe SIEMPRE, también cuando llega null: si esta persona deja de venir del legacy
+      // —o el servidor deja de saberlo— una fecha vieja guardada en el teléfono seguiría
+      // afirmando que su historia está más al día de lo que está.
+      await _profile.setClinicDataSyncedAt(profile.clinicDataSyncedAt);
       final goals = profile.goals;
       if (goals != null) {
         await _goals.hydrate(

@@ -3020,4 +3020,14 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get consentsSaveFailed =>
       'Não foi possível guardar a alteração. Tente novamente.';
+
+  @override
+  String clinicDataUpToDate(String date) {
+    return 'Os dados da sua clínica estão atualizados a $date.';
+  }
+
+  @override
+  String clinicDataStale(String date, int days) {
+    return 'Os dados da sua clínica estão atualizados a $date: há $days dias que não chega nada de novo.';
+  }
 }

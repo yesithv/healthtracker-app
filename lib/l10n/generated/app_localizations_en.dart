@@ -3014,4 +3014,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get consentsSaveFailed =>
       'The change could not be saved. Please try again.';
+
+  @override
+  String clinicDataUpToDate(String date) {
+    return 'Your clinic data is up to date as of $date.';
+  }
+
+  @override
+  String clinicDataStale(String date, int days) {
+    return 'Your clinic data is up to date as of $date: nothing new has arrived for $days days.';
+  }
 }
