@@ -5425,6 +5425,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.'**
   String get helpLegalWhoSeesBody;
+
+  /// consentsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'How you want us to contact you'**
+  String get consentsTitle;
+
+  /// consentsDescription
+  ///
+  /// In en, this message translates to:
+  /// **'You decide which channels the clinic may write to or call you on.'**
+  String get consentsDescription;
+
+  /// consentsPhone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone calls'**
+  String get consentsPhone;
+
+  /// consentsMessages
+  ///
+  /// In en, this message translates to:
+  /// **'Messages (SMS or WhatsApp)'**
+  String get consentsMessages;
+
+  /// consentsEmail
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get consentsEmail;
+
+  /// consentsUnset
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t answered this yet'**
+  String get consentsUnset;
+
+  /// consentsSaveFailed
+  ///
+  /// In en, this message translates to:
+  /// **'The change could not be saved. Please try again.'**
+  String get consentsSaveFailed;
 }
 
 class _AppLocalizationsDelegate

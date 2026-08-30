@@ -43,6 +43,9 @@ class ServerProfile {
   /// /me` para poder comparar sin una segunda llamada.
   final String? currentTermsVersion;
 
+  /// Por qué canales acepta que se le contacte.
+  final ServerConsents consents;
+
   /// `null` si el paciente nunca se puso metas, que no es lo mismo que metas vacías.
   final ServerGoals? goals;
 
@@ -61,6 +64,7 @@ class ServerProfile {
     this.unit,
     this.termsVersion,
     this.currentTermsVersion,
+    this.consents = const ServerConsents(),
     this.goals,
   });
 
@@ -90,6 +94,9 @@ class ServerProfile {
       unit: _unitFromJson(preferences['unitSystem'] as String?),
       termsVersion: identity['termsVersion'] as String?,
       currentTermsVersion: identity['currentTermsVersion'] as String?,
+      consents: ServerConsents.fromJson(
+        json['consents'] as Map<String, dynamic>? ?? const {},
+      ),
       goals: goals == null ? null : ServerGoals.fromJson(goals),
     );
   }
@@ -129,6 +136,37 @@ class ServerProfile {
     final t = toTitleCase(v);
     return t.isEmpty ? null : t;
   }
+}
+
+/// Por qué canales acepta el paciente que se le contacte.
+///
+/// Cada canal tiene **tres** estados y los tres significan algo distinto:
+/// `true` concede, `false` **revoca** —que es de lo que va todo esto— y `null`
+/// es «nunca lo ha dicho». Lo último no es un «no»: quien no respondió no ha
+/// revocado nada, y la app tiene que poder preguntárselo en vez de dar por
+/// hecha una respuesta que nadie dio.
+class ServerConsents {
+  final bool? phone;
+  final bool? messages;
+  final bool? email;
+
+  const ServerConsents({this.phone, this.messages, this.email});
+
+  factory ServerConsents.fromJson(Map<String, dynamic> json) => ServerConsents(
+    phone: json['phone'] as bool?,
+    messages: json['messages'] as bool?,
+    email: json['email'] as bool?,
+  );
+
+  /// Solo los canales que hay algo que decir sobre ellos: mandar un `null` como
+  /// `false` revocaría en silencio lo que la persona no ha tocado.
+  Map<String, dynamic> toJson() => {
+    if (phone != null) 'phone': phone,
+    if (messages != null) 'messages': messages,
+    if (email != null) 'email': email,
+  };
+
+  bool get isEmpty => phone == null && messages == null && email == null;
 }
 
 /// Las metas del paciente en el servidor. Se leen y se escriben enteras.
@@ -219,6 +257,7 @@ class ProfileApiClient {
     String? activityLevel,
     String? locale,
     MeasurementUnit? unit,
+    ServerConsents? consents,
     ServerGoals? goals,
   }) async {
     final body = <String, dynamic>{
@@ -231,6 +270,7 @@ class ProfileApiClient {
       if (_has(activityLevel)) 'activityLevel': activityLevel,
       if (_has(locale)) 'locale': locale,
       if (unit != null) 'unitSystem': unit.name.toUpperCase(),
+      if (consents != null && !consents.isEmpty) 'consents': consents.toJson(),
       if (goals != null && !goals.isEmpty) 'goals': goals.toJson(),
     };
 

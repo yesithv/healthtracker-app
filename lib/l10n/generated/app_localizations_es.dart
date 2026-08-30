@@ -2995,4 +2995,27 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get helpLegalWhoSeesBody =>
       'Tú, siempre. Y el personal autorizado de la clínica de nutrición asociada, si eres su paciente: es quien te atiende y ya tenía tu historia antes de esta app. No vendemos tus datos ni los cedemos con fines comerciales.';
+
+  @override
+  String get consentsTitle => 'Cómo quieres que te contactemos';
+
+  @override
+  String get consentsDescription =>
+      'Decides tú por qué canales te puede escribir o llamar la clínica.';
+
+  @override
+  String get consentsPhone => 'Llamadas de teléfono';
+
+  @override
+  String get consentsMessages => 'Mensajes (SMS o WhatsApp)';
+
+  @override
+  String get consentsEmail => 'Correo electrónico';
+
+  @override
+  String get consentsUnset => 'Todavía no lo has respondido';
+
+  @override
+  String get consentsSaveFailed =>
+      'No se pudo guardar el cambio. Inténtalo de nuevo.';
 }

@@ -2991,4 +2991,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get helpLegalWhoSeesBody =>
       'You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.';
+
+  @override
+  String get consentsTitle => 'How you want us to contact you';
+
+  @override
+  String get consentsDescription =>
+      'You decide which channels the clinic may write to or call you on.';
+
+  @override
+  String get consentsPhone => 'Phone calls';
+
+  @override
+  String get consentsMessages => 'Messages (SMS or WhatsApp)';
+
+  @override
+  String get consentsEmail => 'Email';
+
+  @override
+  String get consentsUnset => 'You haven\'t answered this yet';
+
+  @override
+  String get consentsSaveFailed =>
+      'The change could not be saved. Please try again.';
 }

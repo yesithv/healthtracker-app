@@ -1039,5 +1039,33 @@
   },
   "@helpLegalContactBody": {
     "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "Wie wir dich kontaktieren dürfen",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "Du entscheidest, über welche Kanäle die Klinik dir schreiben oder dich anrufen darf.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Telefonanrufe",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Nachrichten (SMS oder WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "E-Mail",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "Das hast du noch nicht beantwortet",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "Die Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
   }
 }

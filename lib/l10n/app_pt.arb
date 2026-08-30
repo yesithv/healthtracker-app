@@ -1039,5 +1039,33 @@
   },
   "@helpLegalContactBody": {
     "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "Como quer que o contactemos",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "É você quem decide por que canais a clínica lhe pode escrever ou ligar.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Chamadas telefónicas",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Mensagens (SMS ou WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "E-mail",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "Ainda não respondeu a isto",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "Não foi possível guardar a alteração. Tente novamente.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
   }
 }

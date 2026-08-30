@@ -1408,5 +1408,33 @@
   },
   "@helpLegalContactBody": {
     "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "How you want us to contact you",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "You decide which channels the clinic may write to or call you on.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Phone calls",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Messages (SMS or WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "Email",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "You haven't answered this yet",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "The change could not be saved. Please try again.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
   }
 }

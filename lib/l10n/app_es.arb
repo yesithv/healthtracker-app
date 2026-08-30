@@ -1343,5 +1343,33 @@
   },
   "@helpLegalContactBody": {
     "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "Cómo quieres que te contactemos",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "Decides tú por qué canales te puede escribir o llamar la clínica.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Llamadas de teléfono",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Mensajes (SMS o WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "Correo electrónico",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "Todavía no lo has respondido",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "No se pudo guardar el cambio. Inténtalo de nuevo.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
   }
 }

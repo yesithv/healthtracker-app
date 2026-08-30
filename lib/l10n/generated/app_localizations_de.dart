@@ -3003,4 +3003,27 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get helpLegalWhoSeesBody =>
       'Du, immer. Und das berechtigte Personal der angeschlossenen Ernährungsklinik, wenn du dort Patient bist: Sie behandeln dich und hatten deine Akte schon vor dieser App. Wir verkaufen deine Daten nicht und geben sie nicht zu kommerziellen Zwecken weiter.';
+
+  @override
+  String get consentsTitle => 'Wie wir dich kontaktieren dürfen';
+
+  @override
+  String get consentsDescription =>
+      'Du entscheidest, über welche Kanäle die Klinik dir schreiben oder dich anrufen darf.';
+
+  @override
+  String get consentsPhone => 'Telefonanrufe';
+
+  @override
+  String get consentsMessages => 'Nachrichten (SMS oder WhatsApp)';
+
+  @override
+  String get consentsEmail => 'E-Mail';
+
+  @override
+  String get consentsUnset => 'Das hast du noch nicht beantwortet';
+
+  @override
+  String get consentsSaveFailed =>
+      'Die Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.';
 }
