@@ -355,7 +355,7 @@
   "helpLegalResponsibilityTitle": "Responsabilidad del usuario",
   "helpLegalResponsibilityBody": "El usuario es responsable de la exactitud de los datos ingresados. My Vitals no se hace responsable de decisiones de salud tomadas con base en la información registrada en la app.",
   "helpLegalPrivacyTitle": "Tus datos y dónde están",
-  "helpLegalPrivacyBody": "Tus mediciones se guardan en el teléfono y se copian a nuestro servidor cuando hay conexión: es lo que hace que no pierdas el historial al cambiar de móvil. Tienes cuenta, identificada por tu correo. Puedes descargar todo lo que tenemos sobre ti desde el apartado «Copia de seguridad» de Ajustes, y borrar tu cuenta desde el apartado «Cuenta».",
+  "helpLegalPrivacyBody": "Tus mediciones se guardan en el teléfono y se copian a nuestro servidor cuando hay conexión: es lo que hace que no pierdas el historial al cambiar de móvil. Tienes cuenta, identificada por tu correo. Puedes descargar tus datos —perfil, consentimientos, metas y todas tus mediciones, aunque no las notas que escribe el personal— desde el apartado «Copia de seguridad» de Ajustes, y borrar tu cuenta desde el apartado «Cuenta».",
   "helpLegalContactTitle": "Contacto del desarrollador",
   "helpLegalContactBody": "Para consultas legales o de privacidad, escribe a: yesithvalencia@gmail.com",
   "helpContactReportBug": "Reportar un error",
@@ -382,7 +382,7 @@
   "@serverExportTitle": {
     "description": "Título de la tarjeta que descarga del servidor todo lo que guarda sobre el paciente (habeas data)."
   },
-  "serverExportSubtitle": "Todo lo que la clínica guarda sobre ti, incluida tu historia anterior, en un archivo",
+  "serverExportSubtitle": "Tu perfil, tus consentimientos, tus metas y todas tus mediciones —las tuyas y las de la clínica— en un archivo",
   "@serverExportSubtitle": {
     "description": "Subtítulo de esa tarjeta. Menciona la historia anterior porque es lo que NO está en el teléfono."
   },

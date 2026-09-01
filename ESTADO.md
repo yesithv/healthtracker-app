@@ -1,6 +1,6 @@
 # Estado de este repositorio
 
-> Actualizado el **31-ago-2026**. El README describe cómo es la app; esto describe **cómo está**, y
+> Actualizado el **01-sep-2026**. El README describe cómo es la app; esto describe **cómo está**, y
 > cambia mucho más a menudo.
 >
 > El estado del ecosistema entero vive en `healthtracker-localdev/ESTADO-Y-PLAN.md`.
@@ -29,19 +29,19 @@ para que funcione sin cobertura, que es la mitad del tiempo en una consulta.
 | Histórico y gráficas, con lo migrado del legacy y lo propio | Funciona | Reinstalar ya no cuesta el historial (Fase 5) |
 | Perfil en el servidor: datos, metas, idioma y unidades | Funciona | Fase 4 |
 | Rangos de referencia, laboratorios, báscula, Descubre | Contra la API real | |
-| Exportación: PDF de historia, copia local reimportable, volcado del habeas data | Tres caminos que no se solapan | Fase 5 |
+| Exportación: PDF de historia, copia local reimportable, volcado del habeas data | Tres caminos que no se solapan | Fase 5. En la Fase 12 el volcado del servidor pasó a traer también términos, consentimientos y metas, y el texto del botón dejó de prometer «todo» |
 | Términos y privacidad en cinco idiomas, con gate para quien no haya aceptado la vigente | Funciona | Fase 7 |
 | Canales de contacto editables por el paciente, anotados como decisión suya | Funciona | Fase 7 |
 | **Frescura de la historia clínica**: dice hasta cuándo llegan los datos de la clínica y avisa a los dos días | Funciona | Fase 9. Solo para pacientes migrados |
 | Borrar la cuenta | Funciona | Anonimiza sin tocar el legacy; desde la Fase 11 también borra el correo |
 
-**653 pruebas** en verde. Cinco idiomas: es, en, pt, it, de.
+**658 pruebas** en verde. Cinco idiomas: es, en, pt, it, de.
 
 ## Qué falta
 
 | Qué | A quién bloquea |
 |---|---|
-| **Nada de la publicación está hecho**: `applicationId`, firma de release, pipeline móvil ni ficha de tienda. Es la Fase 12 | A poner esto en manos de nadie |
+| **Nada de la publicación está hecho**: `applicationId`, firma de release, pipeline móvil ni ficha de tienda. Es la Fase 13 | A poner esto en manos de nadie |
 | **Los textos legales son borradores pendientes de abogado.** Describen con precisión lo que el sistema hace, pero llevan marcados los puntos que exigen una decisión jurídica: responsable del tratamiento, plazos de conservación, encargados, canal de PQR y ley aplicable. **No deben publicarse así** | A la publicación |
 | La foto de perfil se pierde al reinstalar: es lo único del perfil que no está en el servidor | Al paciente que reinstala |
 | Cambiar el correo de la cuenta no existe | A quien cambie de dirección |
@@ -85,3 +85,10 @@ ficha clínica sola.
 **Los cinco ARB tienen que decir lo mismo.** `legal_claims_test.dart` comprueba que ninguno afirme
 cosas que el sistema no hace; ya cazó dos afirmaciones falsas sobre privacidad que llevaban meses
 traducidas a cinco idiomas.
+
+**Y no basta con no mentir: tampoco se puede prometer de más.** El botón «Descargar todos mis
+datos» decía «todo lo que la clínica guarda sobre ti», y el volcado del servidor no lleva las notas
+que el personal escribe sobre el paciente, ni el relato clínico de sus consultas anteriores —de
+esas salen las mediciones curadas—, ni el rastro de auditoría, que contiene accesos de otras
+personas. Son exclusiones deliberadas y la política las nombra una a una; `legal_claims_test.dart`
+rechaza desde la Fase 12 el «todo» en `serverExportSubtitle`, en los cinco idiomas.

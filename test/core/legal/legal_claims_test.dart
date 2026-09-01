@@ -97,6 +97,48 @@ void main() {
       });
     }
 
+    /// La misma clase de fallo, en la promesa de la exportación.
+    ///
+    /// El botón «Descargar todos mis datos» decía, en los cinco idiomas, «todo
+    /// lo que la clínica guarda sobre ti». No era cierto: el volcado no lleva
+    /// las notas que el personal escribe sobre el paciente ni el relato clínico
+    /// de sus consultas anteriores —de esas salen las mediciones curadas, no la
+    /// valoración del profesional—, y tampoco el registro de auditoría, porque
+    /// contiene accesos de otras personas. Son exclusiones deliberadas, y la
+    /// política las nombra una a una desde la Fase 12.
+    ///
+    /// Prometer «todo» y entregar menos es peor que prometer menos: por eso
+    /// aquí se rechaza el «todo» en el texto que acompaña al botón.
+    const totalizing = <String, String>{
+      'es': r'todo (?:lo que|cuanto)',
+      'en': r'everything',
+      'pt': r'tudo o que',
+      'it': r'tutto ci[oò] che',
+      'de': r'alles, was',
+    };
+
+    for (final entry in totalizing.entries) {
+      final language = entry.key;
+      final pattern = RegExp(entry.value, caseSensitive: false);
+
+      test('app_$language.arb no promete «todo» en la exportación', () {
+        final catalogue =
+            jsonDecode(File('lib/l10n/app_$language.arb').readAsStringSync())
+                as Map<String, dynamic>;
+        final subtitle = catalogue['serverExportSubtitle'] as String;
+
+        expect(
+          pattern.hasMatch(subtitle),
+          isFalse,
+          reason:
+              'El volcado NO lleva las notas del personal, ni el relato clínico '
+              'de las consultas anteriores, ni el registro de auditoría. Decir '
+              '«todo» aquí es la promesa que la Fase 12 estrechó en la política:\n'
+              'serverExportSubtitle → «$subtitle»',
+        );
+      });
+    }
+
     test('el catálogo dice quién puede ver la historia clínica', () {
       // La otra mitad de lo mismo: no basta con quitar la mentira, hay que
       // decir lo que pasa. Si alguien borra este apartado, esta prueba lo dice.
