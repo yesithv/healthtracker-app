@@ -110,8 +110,15 @@ class AppRouter {
       // aceptar (ver LegalDocumentsScreen).
       GoRoute(
         path: '/terminos',
-        builder: (context, state) =>
-            const LegalDocumentsScreen(mustAccept: true),
+        // `extra` dice a dónde seguir tras aceptar: al dashboard, o al paso de la
+        // báscula si esa persona todavía no ha dicho cuál usa. Sin esto, aceptar
+        // los términos se saltaba la segunda puerta.
+        builder: (context, state) => LegalDocumentsScreen(
+          mustAccept: true,
+          destination: state.extra is String
+              ? state.extra! as String
+              : '/dashboard',
+        ),
       ),
       // Los mismos textos en modo lectura: desde la casilla del alta y desde
       // Ajustes → Legal.
@@ -152,6 +159,16 @@ class AppRouter {
       GoRoute(
         path: '/profile/device',
         builder: (context, state) => const MeasuringDeviceScreen(),
+      ),
+      // La MISMA pantalla, como paso del alta. Sin báscula no hay rangos de
+      // grasa, músculo ni visceral —están en la base por dispositivo—, y hasta la
+      // Fase 12 solo se llegaba a ella entrando a mano en Perfil: el resultado
+      // medido fue el 100 % de los pacientes sin elegir. Se llega desde
+      // `completeLoginAndEnter`, después de la puerta legal.
+      GoRoute(
+        path: '/bienvenida/bascula',
+        builder: (context, state) =>
+            const MeasuringDeviceScreen(onboardingDestination: '/dashboard'),
       ),
       GoRoute(
         path: '/profile/account',

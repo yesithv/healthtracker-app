@@ -494,6 +494,8 @@ pw.Widget _executiveSummary(
       ? null
       : summary.bodyComposition.last;
   if (body != null && body.bodyFatPercent != null) {
+    // Sin rangos aplicables no se escribe veredicto en un documento que el
+    // paciente le lleva a un médico: va el número y un guion donde iría la lectura.
     final fat = FatCategory.of(body.bodyFatPercent!);
     rows.add(
       _SummaryRow(
@@ -501,8 +503,8 @@ pw.Widget _executiveSummary(
         '${_fmt1(body.bodyFatPercent!)} %',
         dateFmt.format(body.date),
         _Ref.none,
-        fat.label(l10n),
-        fat.status,
+        fat == null ? _Ref.none : fat.label(l10n),
+        fat?.status ?? ClinicalStatus.neutral,
       ),
     );
   }

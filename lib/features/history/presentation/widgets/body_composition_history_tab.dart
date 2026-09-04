@@ -513,8 +513,9 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
   ) {
     final theme = _theme;
     final double defaultFat = record.bodyFatPercent ?? 0.0;
-    final FatCategory fatCat = FatCategory.of(defaultFat);
-    final String statusLabel = fatCat.label(l10n);
+    // `null` = sin rangos aplicables para este paciente. La fila sale igual, con
+    // su número; lo que no sale es una insignia clínica que nadie ha respaldado.
+    final FatCategory? fatCat = FatCategory.of(defaultFat);
 
     return MeasurementHistoryCard(
       date: record.date,
@@ -535,10 +536,10 @@ class _BodyCompositionHistoryTabState extends State<BodyCompositionHistoryTab> {
       detail: _secondaryLine(record, l10n),
       // StatusChip pide el ESTADO y deja que el tema resuelva el acabado: sólido
       // en «Pulso Clínico», suave en «Consulta Serena».
-      trailing: record.bodyFatPercent != null
+      trailing: record.bodyFatPercent != null && fatCat != null
           ? StatusChip(
               status: fatCat.status,
-              label: statusLabel,
+              label: fatCat.label(l10n),
               icon: iconForStatus(fatCat.status),
             )
           : null,

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
+import 'package:myvitals_healthtracker_app/core/demo/demo_reference_ranges.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
 /// Una banda de referencia resuelta para ESTE paciente (GET /me/reference-ranges):
@@ -57,11 +58,31 @@ class ReferenceRangesStore {
 
   /// Carga el caché y engancha el refresco a la sesión. Llamar una vez en main().
   Future<void> init() async {
-    await _loadCache();
+    if (DemoSession.instance.isActive) {
+      seedDemo();
+    } else {
+      await _loadCache();
+    }
     PatientSession.instance.addListener(_onSessionChanged);
     if (PatientSession.instance.isAuthenticated) {
       unawaited(refresh());
     }
+  }
+
+  /// Carga los rangos congelados de la persona de la demostración.
+  ///
+  /// La demo no tiene servidor al que pedirlos ni cuenta con la que pedirlos, y sin
+  /// ellos pasaban dos cosas: las gráficas salían **sin ninguna franja de color**
+  /// —`bandRangeAnnotations` no inventa zonas cuando no hay bandas, y hace bien— y
+  /// los clasificadores caían a cortes genéricos que **contradicen a la clínica**
+  /// para esta persona: su 26 % de grasa salía en ámbar como «elevada» cuando su
+  /// banda normal llega hasta 32.9.
+  ///
+  /// Entra por el MISMO `_apply` que la respuesta del servidor, a propósito: si la
+  /// demo tuviera su propio camino de carga, podría dejar de parecerse al real sin
+  /// que nada avisara.
+  void seedDemo() {
+    _apply(const {'indicators': kDemoReferenceRangeIndicators});
   }
 
   void _onSessionChanged() {
@@ -72,10 +93,13 @@ class ReferenceRangesStore {
 
   /// Baja los rangos del servidor (best-effort: sin red se queda el caché).
   Future<void> refresh({http.Client? httpClient}) async {
-    // La demo corre sin servidor: los clasificadores usan sus cortes de fábrica
-    // y no se emite ni una petición. Evita además llenar la consola de errores
-    // de conexión mientras se graba la pantalla.
-    if (DemoSession.instance.isActive) return;
+    // La demo corre sin servidor: sus rangos son los congelados de la persona, y
+    // no se emite ni una petición. Evita además llenar la consola de errores de
+    // conexión mientras se graba la pantalla.
+    if (DemoSession.instance.isActive) {
+      seedDemo();
+      return;
+    }
     if (!ApiConfig.isConfigured) return;
     // Sin sesión no hay a quién pedirle rangos: la API respondería 401.
     final auth = PatientSession.instance.authHeaders;

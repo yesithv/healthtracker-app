@@ -1,6 +1,6 @@
 # Estado de este repositorio
 
-> Actualizado el **01-sep-2026**. El README describe cómo es la app; esto describe **cómo está**, y
+> Actualizado el **04-sep-2026**. El README describe cómo es la app; esto describe **cómo está**, y
 > cambia mucho más a menudo.
 >
 > El estado del ecosistema entero vive en `healthtracker-localdev/ESTADO-Y-PLAN.md`.
@@ -28,14 +28,14 @@ para que funcione sin cobertura, que es la mitad del tiempo en una consulta.
 | Registrar las cuatro familias: antropometría, signos vitales, lípidos, composición corporal | Local + subida | Prueba de guardado extremo a extremo por pantalla (Fase 5) |
 | Histórico y gráficas, con lo migrado del legacy y lo propio | Funciona | Reinstalar ya no cuesta el historial (Fase 5) |
 | Perfil en el servidor: datos, metas, idioma y unidades | Funciona | Fase 4 |
-| Rangos de referencia, laboratorios, báscula, Descubre | Contra la API real | |
+| Rangos de referencia, laboratorios, báscula, Descubre | Contra la API real | Fase 12: los umbrales salen **solo** de la base; sin bandas del servidor la grasa se enseña sin veredicto, y la báscula se pregunta al entrar |
 | Exportación: PDF de historia, copia local reimportable, volcado del habeas data | Tres caminos que no se solapan | Fase 5. En la Fase 12 el volcado del servidor pasó a traer también términos, consentimientos y metas, y el texto del botón dejó de prometer «todo» |
 | Términos y privacidad en cinco idiomas, con gate para quien no haya aceptado la vigente | Funciona | Fase 7 |
 | Canales de contacto editables por el paciente, anotados como decisión suya | Funciona | Fase 7 |
 | **Frescura de la historia clínica**: dice hasta cuándo llegan los datos de la clínica y avisa a los dos días | Funciona | Fase 9. Solo para pacientes migrados |
 | Borrar la cuenta | Funciona | Anonimiza sin tocar el legacy; desde la Fase 11 también borra el correo |
 
-**658 pruebas** en verde. Cinco idiomas: es, en, pt, it, de.
+**668 pruebas** en verde. Cinco idiomas: es, en, pt, it, de.
 
 ## Qué falta
 
@@ -92,3 +92,27 @@ que el personal escribe sobre el paciente, ni el relato clínico de sus consulta
 esas salen las mediciones curadas—, ni el rastro de auditoría, que contiene accesos de otras
 personas. Son exclusiones deliberadas y la política las nombra una a una; `legal_claims_test.dart`
 rechaza desde la Fase 12 el «todo» en `serverExportSubtitle`, en los cinco idiomas.
+
+**Los umbrales clínicos no se escriben aquí.** Viven en la base, se administran desde el backoffice
+y llegan resueltos por `GET /me/reference-ranges` —el servidor ya eligió báscula, sexo y edad—. La
+app solo pinta. Quedaban unos cortes de fábrica «por si acaso» en `health_classifiers.dart`, y el de
+**grasa corporal** era ciego a los tres: para una mujer de 36 decía «elevada» en un 26 % que su
+clínica considera **normal** (su banda llega a 32.9). Desde la Fase 12 ese indicador **no clasifica
+sin bandas del servidor**: se enseña el número sin color. Un ámbar equivocado engaña; un número no.
+
+Los que **sí** conservan respaldo son los que no dependen de nadie: IMC (OMS), WHtR (Ashwell), WHR
+(OMS) y grasa visceral (escala de la báscula, idéntica a la base). Si añades otro respaldo, la
+pregunta es esa: ¿depende de sexo, edad o instrumento? Si sí, no lo pongas.
+
+**La báscula es la que decide qué rangos recibes.** `MeasuringDeviceProvider.shouldPrompt` llevaba
+desde siempre documentado como «debe preguntarse en el onboarding» y **no lo leía ninguna pantalla**:
+solo se llegaba a esa pantalla entrando a mano en Perfil. El resultado, medido en el banco, era **42
+pacientes de 42 sin elegir** y sin rangos de grasa, músculo ni visceral. Ahora `completeLoginAndEnter`
+—la única puerta de entrada— pregunta después de los términos, y la pantalla legal recibe a dónde
+seguir para que aceptar no se salte el paso.
+
+**Los rangos de la demo son una copia, y las copias se separan.** `demo_reference_ranges.dart` lleva
+las cifras congeladas de la persona de la demostración porque la demo corre sin servidor. No se
+escriben a mano: salen del fixture, y `check-demo-ranges.sh` en `healthtracker-localdev` los compara
+contra la base. Ojo con la edad: esa persona nació en 1990, así que **en 2030 cruza al tramo 40-59**
+y sus cifras dejarían de ser suyas; la prueba falla ese día y lo dice.
