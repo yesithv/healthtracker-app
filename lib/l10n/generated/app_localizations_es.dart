@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -859,7 +858,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get helpLegalTitle => 'Aviso Legal';
 
   @override
-  String get helpLegalDescription => 'Términos de uso y privacidad de datos.';
+  String get helpLegalDescription =>
+      'Un resumen de cómo funciona la app. Los términos y la política completos los sirve el servidor, y son los que rigen.';
 
   @override
   String get helpContactTitle => 'Contacto y Feedback';
@@ -897,7 +897,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get helpFaqA2 =>
-      'No. Todos tus datos se almacenan exclusivamente en tu dispositivo. My Vitals no envía ninguna información a servidores externos, garantizando total privacidad.';
+      'Sí. Tus mediciones se guardan en tu teléfono y se copian a nuestro servidor cuando hay conexión. Es lo que hace que no pierdas el historial al cambiar de móvil, y lo que permite que el personal de la clínica de nutrición asociada vea tu evolución si eres su paciente. Puedes descargarlo todo o borrar tu cuenta desde Ajustes.';
 
   @override
   String get helpFaqQ3 => '¿Puedo usar la app sin internet?';
@@ -964,7 +964,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get helpLegalPurposeBody =>
-      'My Vitals es una aplicación de seguimiento personal de salud diseñada para ayudar a los usuarios a registrar y visualizar sus indicadores de bienestar. No es un dispositivo médico certificado.';
+      'My Vitals HealthTracker es una aplicación para registrar y seguir tus indicadores de salud. Si eres paciente de la clínica de nutrición asociada, además puedes consultar tu historia allí. No es un dispositivo médico certificado.';
 
   @override
   String get helpLegalNotMedicalTitle => 'No es un dispositivo médico';
@@ -981,18 +981,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'El usuario es responsable de la exactitud de los datos ingresados. My Vitals no se hace responsable de decisiones de salud tomadas con base en la información registrada en la app.';
 
   @override
-  String get helpLegalPrivacyTitle => 'Privacidad y datos';
+  String get helpLegalPrivacyTitle => 'Tus datos y dónde están';
 
   @override
   String get helpLegalPrivacyBody =>
-      'Todos los datos se almacenan localmente en el dispositivo del usuario. My Vitals no recopila, transmite ni comparte información personal con terceros. No existen cuentas de usuario ni servidores de datos.';
+      'Tus mediciones se guardan en el teléfono y se copian a nuestro servidor cuando hay conexión: es lo que hace que no pierdas el historial al cambiar de móvil. Tienes cuenta, identificada por tu correo. Puedes descargar todo lo que tenemos sobre ti desde el apartado «Copia de seguridad» de Ajustes, y borrar tu cuenta desde el apartado «Cuenta».';
 
   @override
   String get helpLegalContactTitle => 'Contacto del desarrollador';
 
   @override
   String get helpLegalContactBody =>
-      'Para consultas legales o de privacidad, puede contactar al desarrollador en: yesithvalencia@gmail.com';
+      'Para consultas legales o de privacidad, escribe a: yesithvalencia@gmail.com';
 
   @override
   String get helpContactReportBug => 'Reportar un error';
@@ -1046,7 +1046,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupPrivacyBody =>
-      'Todas nuestras funciones de salud están diseñadas con la privacidad como núcleo y para mantener tus datos seguros.\n\nTus datos de salud están encriptados en tu dispositivo y solo son accesibles con tu código, Touch ID o Face ID. No usamos servidores en la nube y nunca compartimos tus datos con terceros.';
+      'Tus datos de salud viven en dos sitios: en tu teléfono, para que la app funcione sin conexión, y en nuestro servidor, para que no los pierdas al cambiar de móvil.\n\nPuedes bloquear la app con tu huella o tu cara desde Ajustes, apartado «Privacidad». No vendemos tus datos ni los cedemos con fines comerciales. Los ve el personal autorizado de la clínica de nutrición asociada si eres su paciente, y nadie más.';
 
   @override
   String get backupPrivacyHighlight =>
@@ -1061,6 +1061,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupExportButton => 'Exportar Backup';
+
+  @override
+  String get serverExportTitle => 'Descargar todos mis datos';
+
+  @override
+  String get serverExportSubtitle =>
+      'Todo lo que la clínica guarda sobre ti, incluida tu historia anterior, en un archivo';
+
+  @override
+  String get serverExportButton => 'Descargar';
+
+  @override
+  String get serverExportSuccess => 'Tus datos se descargaron.';
+
+  @override
+  String get serverExportNeedsSession =>
+      'Entra en tu cuenta para descargar tus datos.';
 
   @override
   String get backupImportTitle => 'Restaurar mis datos';
@@ -1641,6 +1658,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String unexpectedError(String details) {
     return 'Error inesperado: $details';
   }
+
+  @override
+  String get profileUnavailable =>
+      'No pudimos abrir tu perfil. Inténtalo de nuevo en un momento.';
 
   @override
   String get accountSyncTitle => 'Cuenta y sincronización';
@@ -2265,6 +2286,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get medDelete => 'Eliminar';
 
   @override
+  String get medPause => 'Pausar';
+
+  @override
+  String get medResume => 'Reanudar';
+
+  @override
+  String get medPausedBadge => 'En pausa';
+
+  @override
   String get medDeleteTitle => '¿Eliminar medicamento?';
 
   @override
@@ -2461,6 +2491,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get medErrorAddTime => 'Añade al menos una hora';
 
   @override
+  String get medErrorSaveFailed => 'No se pudo guardar. Inténtalo de nuevo.';
+
+  @override
   String get medUnitsSuffix => 'uds';
 
   @override
@@ -2523,63 +2556,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get medDashApptsTitle => 'Citas';
-
-  @override
-  String get specialtyNone => 'Sin especialidad';
-
-  @override
-  String get specialtyGeneralMedicine => 'Medicina general';
-
-  @override
-  String get specialtyCardiology => 'Cardiología';
-
-  @override
-  String get specialtyEndocrinology => 'Endocrinología';
-
-  @override
-  String get specialtyDermatology => 'Dermatología';
-
-  @override
-  String get specialtyGynecology => 'Ginecología';
-
-  @override
-  String get specialtyDentistry => 'Odontología';
-
-  @override
-  String get specialtyOphthalmology => 'Oftalmología';
-
-  @override
-  String get specialtyOtolaryngology => 'Otorrinolaringología';
-
-  @override
-  String get specialtyNeurology => 'Neurología';
-
-  @override
-  String get specialtyNeuropsychology => 'Neuropsicología';
-
-  @override
-  String get specialtyPsychiatry => 'Psiquiatría';
-
-  @override
-  String get specialtyOrthopedics => 'Traumatología';
-
-  @override
-  String get specialtyUrology => 'Urología';
-
-  @override
-  String get specialtyGastroenterology => 'Gastroenterología';
-
-  @override
-  String get specialtyNutrition => 'Nutrición';
-
-  @override
-  String get specialtyPediatrics => 'Pediatría';
-
-  @override
-  String get specialtyPhysiotherapy => 'Fisioterapia';
-
-  @override
-  String get specialtyClinicalLaboratory => 'Laboratorio clínico';
 
   @override
   String get medDashApptsSoon => 'Próximamente';
@@ -2694,6 +2670,63 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appointmentFieldSpecialtyHint => 'Ej. Endocrinología';
+
+  @override
+  String get specialtyNone => 'Sin especialidad';
+
+  @override
+  String get specialtyGeneralMedicine => 'Medicina general';
+
+  @override
+  String get specialtyCardiology => 'Cardiología';
+
+  @override
+  String get specialtyEndocrinology => 'Endocrinología';
+
+  @override
+  String get specialtyDermatology => 'Dermatología';
+
+  @override
+  String get specialtyGynecology => 'Ginecología';
+
+  @override
+  String get specialtyDentistry => 'Odontología';
+
+  @override
+  String get specialtyOphthalmology => 'Oftalmología';
+
+  @override
+  String get specialtyOtolaryngology => 'Otorrinolaringología';
+
+  @override
+  String get specialtyNeurology => 'Neurología';
+
+  @override
+  String get specialtyNeuropsychology => 'Neuropsicología';
+
+  @override
+  String get specialtyPsychiatry => 'Psiquiatría';
+
+  @override
+  String get specialtyOrthopedics => 'Traumatología';
+
+  @override
+  String get specialtyUrology => 'Urología';
+
+  @override
+  String get specialtyGastroenterology => 'Gastroenterología';
+
+  @override
+  String get specialtyNutrition => 'Nutrición';
+
+  @override
+  String get specialtyPediatrics => 'Pediatría';
+
+  @override
+  String get specialtyPhysiotherapy => 'Fisioterapia';
+
+  @override
+  String get specialtyClinicalLaboratory => 'Laboratorio clínico';
 
   @override
   String get appointmentFieldDate => 'Fecha';
@@ -2818,5 +2851,181 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String appointmentRecurringEvery(int count) {
     return 'Cada $count m';
+  }
+
+  @override
+  String get accessCodeAccountHint =>
+      'Llama a la clínica: verificarán tu identidad y te dictarán un código de seis dígitos. Caduca a los 15 minutos y solo sirve una vez.';
+
+  @override
+  String get accessCodeDocumentLabel => 'Número de documento';
+
+  @override
+  String get accessCodeDocumentHint => 'Tu documento';
+
+  @override
+  String get accessCodeLabel => 'Código que te dictaron';
+
+  @override
+  String get accessCodeHelp =>
+      'Caduca a los 15 minutos y solo se puede usar una vez. Si fallas varias veces habrá que pedir uno nuevo.';
+
+  @override
+  String get accessCodeMissingDocument => 'Ingresa tu número de documento.';
+
+  @override
+  String get accessCodeSixDigits => 'El código son seis dígitos.';
+
+  @override
+  String get accessDoorTitle => 'Entra con tu correo';
+
+  @override
+  String get accessDoorSubtitle =>
+      'Te enviamos un código de seis dígitos. Si todavía no tienes cuenta, con ese mismo código la creas.';
+
+  @override
+  String get accessDoorEmailLabel => 'Correo electrónico';
+
+  @override
+  String get accessDoorEmailHint => 'nombre@correo.com';
+
+  @override
+  String get accessDoorContinue => 'Continuar';
+
+  @override
+  String get accessDoorInvalidEmail => 'Escribe un correo válido.';
+
+  @override
+  String get accessCodeSentTitle => 'Revisa tu correo';
+
+  @override
+  String get accessCodeSentSubtitle =>
+      'Si esa dirección puede entrar, ahí tienes tu código. Caduca a los quince minutos.';
+
+  @override
+  String get accessClinicCodeLink => 'Ya tengo un código de la clínica';
+
+  @override
+  String get signupTitle => 'Termina de crear tu cuenta';
+
+  @override
+  String get signupSubtitle =>
+      'Con estos datos tus medidas se comparan con los rangos que te corresponden.';
+
+  @override
+  String get signupNameLabel => 'Nombre';
+
+  @override
+  String get signupDocumentLabel => 'Número de documento';
+
+  @override
+  String get signupDocumentHelp =>
+      'Sirve para reconocerte si ya eres paciente de la clínica.';
+
+  @override
+  String get signupTermsAccept =>
+      'Acepto los términos y la política de privacidad';
+
+  @override
+  String get signupSubmit => 'Crear mi cuenta';
+
+  @override
+  String get signupMissingTerms =>
+      'Hay que aceptar los términos para crear la cuenta.';
+
+  @override
+  String get callClinicTitle => 'Llama a la clínica';
+
+  @override
+  String get callClinicBody =>
+      'Ese documento ya está registrado. Tu historia clínica no se entrega sin verificar quién eres, así que la activa una persona por teléfono.';
+
+  @override
+  String get callClinicBack => 'Volver';
+
+  @override
+  String get accessCodeClinicHint =>
+      'Llama a la clínica: verificarán tu identidad y te dictarán el código con el que traemos tus datos.';
+
+  @override
+  String get verifyBringingHistory => 'Trayendo tu historial…';
+
+  @override
+  String get legalTitle => 'Términos y privacidad';
+
+  @override
+  String get legalTermsTab => 'Términos de uso';
+
+  @override
+  String get legalPrivacyTab => 'Privacidad';
+
+  @override
+  String get legalAcceptButton => 'Acepto';
+
+  @override
+  String get legalDecline => 'No acepto y salgo';
+
+  @override
+  String get legalNotTranslated =>
+      'Todavía no hay traducción de este documento a tu idioma. Se muestra en español, que es la versión que rige.';
+
+  @override
+  String get legalLoadFailed =>
+      'No se pudo cargar el documento. Comprueba tu conexión.';
+
+  @override
+  String get legalAcceptFailed =>
+      'No se pudo registrar tu aceptación. Inténtalo de nuevo.';
+
+  @override
+  String get legalRetry => 'Reintentar';
+
+  @override
+  String get legalGateTitle => 'Antes de entrar';
+
+  @override
+  String get legalReadTerms => 'Leer los términos de uso';
+
+  @override
+  String get legalReadPrivacy => 'Leer la política de privacidad';
+
+  @override
+  String get helpLegalWhoSeesTitle => 'Quién puede ver tu historia';
+
+  @override
+  String get helpLegalWhoSeesBody =>
+      'Tú, siempre. Y el personal autorizado de la clínica de nutrición asociada, si eres su paciente: es quien te atiende y ya tenía tu historia antes de esta app. No vendemos tus datos ni los cedemos con fines comerciales.';
+
+  @override
+  String get consentsTitle => 'Cómo quieres que te contactemos';
+
+  @override
+  String get consentsDescription =>
+      'Decides tú por qué canales te puede escribir o llamar la clínica.';
+
+  @override
+  String get consentsPhone => 'Llamadas de teléfono';
+
+  @override
+  String get consentsMessages => 'Mensajes (SMS o WhatsApp)';
+
+  @override
+  String get consentsEmail => 'Correo electrónico';
+
+  @override
+  String get consentsUnset => 'Todavía no lo has respondido';
+
+  @override
+  String get consentsSaveFailed =>
+      'No se pudo guardar el cambio. Inténtalo de nuevo.';
+
+  @override
+  String clinicDataUpToDate(String date) {
+    return 'Los datos de tu clínica están actualizados al $date.';
+  }
+
+  @override
+  String clinicDataStale(String date, int days) {
+    return 'Los datos de tu clínica están actualizados al $date: hace $days días que no llega nada nuevo.';
   }
 }

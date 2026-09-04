@@ -1,0 +1,142 @@
+{
+  "deviceId": 1,
+  "indicators": [
+    {
+      "indicatorCode": "BMI",
+      "indicatorName": "IMC",
+      "unit": "kg/m2",
+      "scope": "BASELINE",
+      "bands": [
+        {
+          "bandCode": "UNDERWEIGHT",
+          "bandLabel": "Bajo peso",
+          "minValue": 0.0,
+          "maxValue": 18.4,
+          "sortOrder": 1
+        },
+        {
+          "bandCode": "NORMAL",
+          "bandLabel": "Normal",
+          "minValue": 18.5,
+          "maxValue": 24.9,
+          "sortOrder": 2
+        },
+        {
+          "bandCode": "OVERWEIGHT",
+          "bandLabel": "Sobrepeso",
+          "minValue": 25.0,
+          "maxValue": 29.9,
+          "sortOrder": 3
+        },
+        {
+          "bandCode": "OBESE",
+          "bandLabel": "Obesidad",
+          "minValue": 30.0,
+          "maxValue": 100.0,
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "indicatorCode": "BODY_FAT",
+      "indicatorName": "Grasa corporal",
+      "unit": "%",
+      "scope": "DEVICE",
+      "bands": [
+        {
+          "bandCode": "LOW",
+          "bandLabel": "Bajo",
+          "minValue": 5.0,
+          "maxValue": 20.9,
+          "sortOrder": 1
+        },
+        {
+          "bandCode": "NORMAL",
+          "bandLabel": "Normal",
+          "minValue": 21.0,
+          "maxValue": 32.9,
+          "sortOrder": 2
+        },
+        {
+          "bandCode": "HIGH",
+          "bandLabel": "Alto",
+          "minValue": 33.0,
+          "maxValue": 38.9,
+          "sortOrder": 3
+        },
+        {
+          "bandCode": "VERY_HIGH",
+          "bandLabel": "Muy alto",
+          "minValue": 39.0,
+          "maxValue": 60.0,
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "indicatorCode": "VISCERAL_FAT_LEVEL",
+      "indicatorName": "Grasa visceral (nivel)",
+      "unit": "nivel",
+      "scope": "DEVICE",
+      "bands": [
+        {
+          "bandCode": "NORMAL",
+          "bandLabel": "Normal",
+          "minValue": 1.0,
+          "maxValue": 9.0,
+          "sortOrder": 2
+        },
+        {
+          "bandCode": "HIGH",
+          "bandLabel": "Alto",
+          "minValue": 10.0,
+          "maxValue": 14.0,
+          "sortOrder": 3
+        },
+        {
+          "bandCode": "VERY_HIGH",
+          "bandLabel": "Muy alto",
+          "minValue": 15.0,
+          "maxValue": 30.0,
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "indicatorCode": "MUSCLE_PCT",
+      "indicatorName": "Músculo",
+      "unit": "%",
+      "scope": "DEVICE",
+      "bands": [
+        {
+          "bandCode": "LOW",
+          "bandLabel": "Bajo",
+          "minValue": 5.0,
+          "maxValue": 24.2,
+          "sortOrder": 1
+        },
+        {
+          "bandCode": "NORMAL",
+          "bandLabel": "Normal",
+          "minValue": 24.3,
+          "maxValue": 30.3,
+          "sortOrder": 2
+        },
+        {
+          "bandCode": "HIGH",
+          "bandLabel": "Alto",
+          "minValue": 30.4,
+          "maxValue": 35.3,
+          "sortOrder": 3
+        },
+        {
+          "bandCode": "VERY_HIGH",
+          "bandLabel": "Muy alto",
+          "minValue": 35.4,
+          "maxValue": 60.0,
+          "sortOrder": 4
+        }
+      ]
+    }
+  ]
+}

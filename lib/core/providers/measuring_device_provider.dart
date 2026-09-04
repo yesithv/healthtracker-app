@@ -3,7 +3,6 @@ import 'package:myvitals_healthtracker_app/core/diagnostics/debug_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
-import 'package:myvitals_healthtracker_app/core/config/api_config.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 import 'package:myvitals_healthtracker_app/core/sync/device_api_client.dart';
 
@@ -66,8 +65,7 @@ class MeasuringDeviceProvider extends ChangeNotifier {
   /// dispositivo saldría en la captura con el aviso de «no se pudo cargar». Sin
   /// red, el catálogo de respaldo ya trae la báscula que la demo usa.
   bool get _canSync =>
-      !DemoSession.instance.isActive &&
-      (PatientSession.instance.isAuthenticated || ApiConfig.isSyncConfigured);
+      !DemoSession.instance.isActive && PatientSession.instance.isAuthenticated;
 
   /// Carga la elección local y refresca catálogo/selección desde la API (best-effort).
   Future<void> load() async {

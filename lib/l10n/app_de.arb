@@ -282,7 +282,7 @@
   "helpGlossaryTitle": "Medizinisches Glossar",
   "helpGlossaryDescription": "Verstehe jeden Gesundheitsindikator.",
   "helpLegalTitle": "Rechtlicher Hinweis",
-  "helpLegalDescription": "Nutzungsbedingungen und Datenschutz.",
+  "helpLegalDescription": "Eine Zusammenfassung, wie die App funktioniert. Die vollständigen Bedingungen und die Datenschutzerklärung liefert der Server – sie sind maßgeblich.",
   "helpContactTitle": "Kontakt & Feedback",
   "helpContactDescription": "Schreib uns, wir verbessern uns gemeinsam.",
   "helpSearchHint": "Suche...",
@@ -294,7 +294,7 @@
   "helpFaqQ1": "Was ist My Vitals?",
   "helpFaqA1": "My Vitals ist eine persönliche Gesundheits-Tracking-App, mit der du deine Wohlbefindensindikatoren aufzeichnen und überwachen kannst: anthropometrische Messungen, Vitalzeichen, Lipidprofil und Körperzusammensetzung.",
   "helpFaqQ2": "Werden meine Daten in der Cloud gespeichert?",
-  "helpFaqA2": "Nein. Alle deine Daten werden ausschließlich auf deinem Gerät gespeichert. My Vitals sendet keine Informationen an externe Server und gewährleistet so vollständige Privatsphäre.",
+  "helpFaqA2": "Ja. Deine Messwerte werden auf dem Telefon gespeichert und bei bestehender Verbindung auf unseren Server kopiert. Genau deshalb geht dein Verlauf beim Gerätewechsel nicht verloren, und deshalb kann das Personal der angeschlossenen Ernährungsklinik deinen Verlauf sehen, wenn du dort Patient bist. Unter Einstellungen kannst du alles herunterladen oder dein Konto löschen.",
   "helpFaqQ3": "Kann ich die App ohne Internet nutzen?",
   "helpFaqA3": "Ja. My Vitals funktioniert vollständig offline. Du brauchst nur für App-Updates eine Verbindung.",
   "helpFaqQ4": "Wie aktiviere ich die biometrische Sperre?",
@@ -314,15 +314,15 @@
   "helpGlossaryGroupBody": "Körperzusammensetzung",
   "helpGlossaryNormalRange": "Normaler Bereich",
   "helpLegalPurposeTitle": "Zweck der Anwendung",
-  "helpLegalPurposeBody": "My Vitals ist eine persönliche Gesundheits-Tracking-Anwendung, die Nutzern hilft, ihre Wohlbefindensindikatoren aufzuzeichnen und zu visualisieren. Es ist kein zertifiziertes Medizinprodukt.",
+  "helpLegalPurposeBody": "My Vitals HealthTracker ist eine App, um deine Gesundheitswerte zu erfassen und zu verfolgen. Wenn du Patient der angeschlossenen Ernährungsklinik bist, kannst du dort außerdem deine Akte einsehen. Es ist kein zertifiziertes Medizinprodukt.",
   "helpLegalNotMedicalTitle": "Kein Medizinprodukt",
   "helpLegalNotMedicalBody": "Die in dieser Anwendung angezeigten Informationen dienen nur als Referenz. Sie ersetzen nicht die Diagnose, den Rat oder die Behandlung eines Gesundheitsfachmanns. Konsultiere bei medizinischen Symptomen deinen Arzt.",
   "helpLegalResponsibilityTitle": "Verantwortung des Nutzers",
   "helpLegalResponsibilityBody": "Der Nutzer ist für die Richtigkeit der eingegebenen Daten verantwortlich. My Vitals haftet nicht für Gesundheitsentscheidungen, die auf der Grundlage von in der App aufgezeichneten Informationen getroffen wurden.",
-  "helpLegalPrivacyTitle": "Datenschutz und Daten",
-  "helpLegalPrivacyBody": "Alle Daten werden lokal auf dem Gerät des Nutzers gespeichert. My Vitals erfasst, übermittelt oder teilt keine persönlichen Informationen mit Dritten. Es gibt keine Benutzerkonten oder Datenserver.",
+  "helpLegalPrivacyTitle": "Deine Daten und wo sie liegen",
+  "helpLegalPrivacyBody": "Deine Messwerte werden auf dem Telefon gespeichert und bei bestehender Verbindung auf unseren Server kopiert: Genau deshalb geht dein Verlauf beim Gerätewechsel nicht verloren. Du hast ein Konto, das über deine E-Mail-Adresse identifiziert wird. Unter im Bereich „Sicherung“ der Einstellungen kannst du deine Daten herunterladen – Profil, Einwilligungen, Ziele und alle deine Messwerte, nicht aber die Notizen des Personals –, und unter im Bereich „Konto“ dein Konto löschen.",
   "helpLegalContactTitle": "Entwicklerkontakt",
-  "helpLegalContactBody": "Für rechtliche Anfragen oder Datenschutzfragen können Sie den Entwickler kontaktieren unter: yesithvalencia@gmail.com",
+  "helpLegalContactBody": "Bei rechtlichen Fragen oder Datenschutzanliegen schreibe an: yesithvalencia@gmail.com",
   "helpContactReportBug": "Fehler melden",
   "helpContactReportBugDesc": "Etwas funktioniert nicht richtig? Sag es uns.",
   "helpContactSuggest": "Vorschlag senden",
@@ -338,11 +338,16 @@
   "backupTitle": "Sicherung & Wiederherstellung",
   "backupDescription": "Exportieren oder stellen Sie alle Ihre Daten und Einstellungen wieder her.",
   "backupPrivacyTitle": "Ihre Daten gehören Ihnen. Und nur Ihnen.",
-  "backupPrivacyBody": "Alle unsere Gesundheitsfunktionen wurden mit dem Schwerpunkt auf Datenschutz entwickelt, um Ihre Daten sicher aufzubewahren.\n\nIhre Gesundheitsdaten sind auf Ihrem Gerät verschlüsselt und nur mit Ihrem Code, Touch ID oder Face ID zugänglich. Wir nutzen keine Cloud-Server und teilen Ihre Daten niemals mit Dritten.",
+  "backupPrivacyBody": "Deine Gesundheitsdaten liegen an zwei Orten: auf deinem Telefon, damit die App offline funktioniert, und auf unserem Server, damit sie beim Gerätewechsel nicht verloren gehen.\n\nUnter in den Einstellungen unter „Datenschutz“ kannst du die App per Fingerabdruck oder Gesicht sperren. Wir verkaufen deine Daten nicht und geben sie nicht zu kommerziellen Zwecken weiter. Sehen können sie berechtigte Mitarbeitende der angeschlossenen Ernährungsklinik, wenn du dort Patient bist – sonst niemand.",
   "backupPrivacyHighlight": "Ihre Gesundheitsdaten werden lokal verschlüsselt und nicht einmal wir können auf Ihre Informationen zugreifen.",
   "backupExportTitle": "Meine Daten exportieren",
   "backupExportSubtitle": "Generieren Sie eine sichere Datei mit Ihrem gesamten Verlauf und Ihren Einstellungen",
   "backupExportButton": "Sicherung exportieren",
+  "serverExportTitle": "Alle meine Daten herunterladen",
+  "serverExportSubtitle": "Dein Profil, deine Einwilligungen, deine Ziele und alle deine Messwerte – deine und die der Klinik – in einer Datei",
+  "serverExportButton": "Herunterladen",
+  "serverExportSuccess": "Deine Daten wurden heruntergeladen.",
+  "serverExportNeedsSession": "Melde dich an, um deine Daten herunterzuladen.",
   "backupImportTitle": "Meine Daten wiederherstellen",
   "backupImportSubtitle": "Importieren Sie eine vorherige My Vitals-Sicherung",
   "backupImportButton": "Sicherung importieren",
@@ -543,6 +548,7 @@
   "verifyTestNotice": "Testphase: Das Passwort lautet 1234. (In der Produktion steht hier der OTP-Code.)",
   "verifySubmit": "Anmelden",
   "unexpectedError": "Unerwarteter Fehler: {details}",
+  "profileUnavailable": "Dein Profil konnte nicht geöffnet werden. Versuche es gleich noch einmal.",
   "@unexpectedError": {
     "placeholders": {
       "details": {
@@ -687,29 +693,24 @@
   "medicationRefillNotifBody": "Dein Vorrat geht zur Neige.",
   "medicationUnitsLeft": "Noch {count} Einheiten",
   "medicationOutOfStock": "Nicht vorrätig",
-
   "medFormNameCapsule": "Kapsel",
   "medFormNameTablet": "Tablette",
   "medFormNameLiquid": "Flüssigkeit",
   "medFormNameInjection": "Injektion",
   "medFormNameDrops": "Tropfen",
   "medFormNameOther": "Einheit",
-
   "medUnitCapsule": "{count, plural, one{Kapsel} other{Kapseln}}",
   "medUnitTablet": "{count, plural, one{Tablette} other{Tabletten}}",
   "medUnitLiquid": "{count, plural, one{ml} other{ml}}",
   "medUnitInjection": "{count, plural, one{Injektion} other{Injektionen}}",
   "medUnitDrops": "{count, plural, one{Tropfen} other{Tropfen}}",
   "medUnitOther": "{count, plural, one{Einheit} other{Einheiten}}",
-
   "medScheduleDaily": "Jeden Tag",
   "medScheduleEveryNDays": "{count, plural, one{Jeden Tag} other{Alle {count} Tage}}",
-
   "medMenuDescription": "Verwalte deine Einnahmen, deinen Bestand und deine Adhärenz an einem Ort.",
   "medMenuTodaySubtitle": "{count, plural, =0{Keine Einnahmen offen} one{1 Einnahme offen} other{{count} Einnahmen offen}}",
   "medMenuInventorySubtitle": "{count, plural, =0{Alles vorrätig} one{1 geht zur Neige} other{{count} gehen zur Neige}}",
   "medMenuAdherenceSubtitle": "{pct}% diesen Monat · {streak} Tage in Folge",
-
   "medTodayTitle": "Heute",
   "medTodayDescription": "Erfasse die heutigen Einnahmen und prüfe das Erledigte.",
   "medSectionToTakeToday": "HEUTE EINZUNEHMEN",
@@ -717,14 +718,12 @@
   "medSectionYourMeds": "DEINE MEDIKAMENTE",
   "medDosesProgress": "{done} von {total}",
   "medNoPendingToday": "Keine Einnahmen mehr für heute.",
-
   "medInventoryTitle": "Bestand",
   "medInventoryDescription": "Wie viele Einheiten übrig sind und wann nachzufüllen ist.",
   "medSectionInventory": "BESTAND",
   "medStockLeftUnits": "{count, plural, one{1 Einheit übrig} other{{count} Einheiten übrig}}",
   "medRunsOutOn": "leer am {date}",
   "medStockDonutOf": "von {total}",
-
   "medAdherenceTitle": "Adhärenz",
   "medAdherenceDescription": "Deine Beständigkeit bei der Behandlung im Monatsverlauf.",
   "medComplianceMonth": "Adhärenz · {month}",
@@ -732,7 +731,6 @@
   "medLegendTaken": "Eingenommen",
   "medLegendSkipped": "Verpasst",
   "medLegendNoData": "Keine Daten",
-
   "medSectionSchedule": "PLAN",
   "medSectionAdherence": "ADHÄRENZ",
   "medSectionInformation": "INFORMATION",
@@ -749,22 +747,18 @@
   "medDeleteBody": "Das Medikament und sein gesamter Verlauf werden gelöscht. Dies kann nicht rückgängig gemacht werden.",
   "medInfoSoon": "Bald",
   "medInfoSoonBody": "Wechselwirkungen, Schwangerschaft und Stillzeit.",
-
   "medRegisterDose": "Einnahme erfassen",
   "medDoseAtTime": "{amount} um {time}",
   "medSkip": "Überspringen",
-
   "medMultipleTitle": "{count} Einnahmen um {time}",
   "medMultipleSubtitle": "Markiere einzeln oder erfasse alle auf einmal.",
   "medSkipRest": "Rest überspringen",
   "medRegisterNSelected": "{count, plural, =0{Einnahmen erfassen} one{1 Einnahme erfassen} other{{count} Einnahmen erfassen}}",
-
   "medNotifTitle": "Erinnerungen aktivieren",
   "medNotifBody": "Wir erinnern dich zu jeder Einnahmezeit und wenn dein Bestand zur Neige geht. Du kannst das jederzeit ändern.",
   "medNotifWebWarning": "Benachrichtigungen sind in der Web-Version nicht verfügbar. Nutze die App für iOS oder Android.",
   "medAllowNotifications": "Benachrichtigungen erlauben",
   "medNotNow": "Jetzt nicht",
-
   "medWizardStepOf": "SCHRITT {step} VON {total}",
   "medBack": "Zurück",
   "medStepIdentity": "Identität",
@@ -810,7 +804,6 @@
   "medErrorAddTime": "Füge mindestens eine Zeit hinzu",
   "medErrorSaveFailed": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
   "medUnitsSuffix": "Einh.",
-
   "medRefillTitle": "Bestand nachfüllen",
   "medRunsOutInDays": "Leer in ~{days, plural, one{1 Tag} other{{days} Tagen}}",
   "medAddABox": "Eine Packung hinzufügen",
@@ -818,16 +811,13 @@
   "medWillRemain": "{units} Einheiten übrig · reicht ~{days} Tage",
   "medRemindOneDay": "In 1 Tag erinnern",
   "medBought": "Ich habe es gekauft",
-
   "medEmptyTitle": "Noch keine Medikamente",
   "medEmptyBody": "Füge dein erstes Medikament hinzu und wir erinnern dich an jede Einnahme und warnen dich, bevor es ausgeht.",
-
   "medDashTodayLabel": "HEUTIGE EINNAHMEN",
   "medDashSeeModule": "Modul ansehen ›",
   "medDashNextDose": "Nächste Einnahme",
   "medDashNoDoses": "Keine anstehenden Einnahmen",
   "medLowStockBannerTitle": "{name} hat noch {count} Einheiten",
-
   "medDashMedsTitle": "Medikamente",
   "medDashApptsTitle": "Arzttermine",
   "medDashApptsSoon": "Demnächst",
@@ -909,7 +899,13 @@
   "appointmentRecurringHint": "Wenn du bestätigst, dass du da warst, erinnern wir dich automatisch an den nächsten Termin.",
   "appointmentFrequencyLabel": "Wie oft",
   "appointmentEveryNMonths": "Alle {count} Monate",
-  "@appointmentEveryNMonths": { "placeholders": { "count": { "type": "int" } } },
+  "@appointmentEveryNMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appointmentEditTitle": "Termin bearbeiten",
   "appointmentActionEdit": "Bearbeiten",
   "appointmentNextSpawned": "Wir haben die nächste Kontrolle zum Buchen vorgemerkt.",
@@ -918,9 +914,179 @@
   "appointmentComplianceGreenTitle": "Alles aktuell",
   "appointmentComplianceGreenBody": "Keine ausstehenden oder überfälligen Termine.",
   "appointmentNextActionOverdue": "{title} · überfällig",
-  "@appointmentNextActionOverdue": { "placeholders": { "title": { "type": "String" } } },
+  "@appointmentNextActionOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentNextActionUpcoming": "{title} · {date}",
-  "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
+  "@appointmentNextActionUpcoming": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentRecurringEvery": "Alle {count} Mon.",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } }
+  "@appointmentRecurringEvery": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accessCodeAccountHint": "Rufen Sie die Klinik an: Dort wird Ihre Identität überprüft und Ihnen ein sechsstelliger Code genannt. Er verfällt nach 15 Minuten und gilt nur einmal.",
+  "accessCodeDocumentLabel": "Ausweisnummer",
+  "accessCodeDocumentHint": "Ihre Ausweisnummer",
+  "accessCodeLabel": "Der genannte Code",
+  "accessCodeHelp": "Er verfällt nach 15 Minuten und gilt nur einmal. Nach mehreren Fehlversuchen müssen Sie einen neuen anfordern.",
+  "accessCodeMissingDocument": "Geben Sie Ihre Ausweisnummer ein.",
+  "accessCodeSixDigits": "Der Code besteht aus sechs Ziffern.",
+  "accessDoorTitle": "Mit deiner E-Mail anmelden",
+  "accessDoorSubtitle": "Wir senden dir einen sechsstelligen Code. Hast du noch kein Konto, wird es damit erstellt.",
+  "accessDoorEmailLabel": "E-Mail",
+  "accessDoorEmailHint": "name@mail.com",
+  "accessDoorContinue": "Weiter",
+  "accessDoorInvalidEmail": "Gib eine gültige E-Mail-Adresse ein.",
+  "accessCodeSentTitle": "Sieh in dein Postfach",
+  "accessCodeSentSubtitle": "Wenn diese Adresse hinein darf, liegt dein Code dort. Er läuft in fünfzehn Minuten ab.",
+  "accessClinicCodeLink": "Ich habe schon einen Code der Klinik",
+  "signupTitle": "Konto fertig einrichten",
+  "signupSubtitle": "Mit diesen Angaben werden deine Werte mit den passenden Bereichen verglichen.",
+  "signupNameLabel": "Vorname",
+  "signupDocumentLabel": "Ausweisnummer",
+  "signupDocumentHelp": "Damit erkennen wir dich, falls du schon Patient der Klinik bist.",
+  "signupTermsAccept": "Ich akzeptiere die Bedingungen und die Datenschutzerklärung",
+  "signupSubmit": "Konto erstellen",
+  "signupMissingTerms": "Ohne Zustimmung zu den Bedingungen kann kein Konto entstehen.",
+  "callClinicTitle": "Ruf die Klinik an",
+  "callClinicBody": "Dieser Ausweis ist bereits registriert. Eine Krankengeschichte geben wir nicht ohne Prüfung heraus; das erledigt eine Person am Telefon.",
+  "callClinicBack": "Zurück",
+  "accessCodeClinicHint": "Ruf die Klinik an: Dort wird deine Identität geprüft und dir der Code genannt, mit dem wir deine Daten holen.",
+  "verifyBringingHistory": "Deine Historie wird geholt…",
+  "legalTitle": "Nutzungsbedingungen und Datenschutz",
+  "@legalTitle": {
+    "description": "legalTitle"
+  },
+  "legalTermsTab": "Nutzungsbedingungen",
+  "@legalTermsTab": {
+    "description": "legalTermsTab"
+  },
+  "legalPrivacyTab": "Datenschutz",
+  "@legalPrivacyTab": {
+    "description": "legalPrivacyTab"
+  },
+  "legalAcceptButton": "Ich stimme zu",
+  "@legalAcceptButton": {
+    "description": "legalAcceptButton"
+  },
+  "legalDecline": "Ich stimme nicht zu und verlasse die App",
+  "@legalDecline": {
+    "description": "legalDecline"
+  },
+  "legalNotTranslated": "Dieses Dokument liegt noch nicht in deiner Sprache vor. Es wird auf Spanisch angezeigt; diese Fassung ist maßgeblich.",
+  "@legalNotTranslated": {
+    "description": "legalNotTranslated"
+  },
+  "legalLoadFailed": "Das Dokument konnte nicht geladen werden. Prüfe deine Verbindung.",
+  "@legalLoadFailed": {
+    "description": "legalLoadFailed"
+  },
+  "legalAcceptFailed": "Deine Zustimmung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+  "@legalAcceptFailed": {
+    "description": "legalAcceptFailed"
+  },
+  "legalRetry": "Erneut versuchen",
+  "@legalRetry": {
+    "description": "legalRetry"
+  },
+  "legalGateTitle": "Bevor es losgeht",
+  "@legalGateTitle": {
+    "description": "legalGateTitle"
+  },
+  "legalReadTerms": "Nutzungsbedingungen lesen",
+  "@legalReadTerms": {
+    "description": "legalReadTerms"
+  },
+  "legalReadPrivacy": "Datenschutzerklärung lesen",
+  "@legalReadPrivacy": {
+    "description": "legalReadPrivacy"
+  },
+  "@helpLegalDescription": {
+    "description": "helpLegalDescription"
+  },
+  "@helpLegalPurposeBody": {
+    "description": "helpLegalPurposeBody"
+  },
+  "@helpLegalPrivacyTitle": {
+    "description": "helpLegalPrivacyTitle"
+  },
+  "@helpLegalPrivacyBody": {
+    "description": "helpLegalPrivacyBody"
+  },
+  "helpLegalWhoSeesTitle": "Wer deine Akte sehen kann",
+  "@helpLegalWhoSeesTitle": {
+    "description": "helpLegalWhoSeesTitle"
+  },
+  "helpLegalWhoSeesBody": "Du, immer. Und das berechtigte Personal der angeschlossenen Ernährungsklinik, wenn du dort Patient bist: Sie behandeln dich und hatten deine Akte schon vor dieser App. Wir verkaufen deine Daten nicht und geben sie nicht zu kommerziellen Zwecken weiter.",
+  "@helpLegalWhoSeesBody": {
+    "description": "helpLegalWhoSeesBody"
+  },
+  "@helpLegalContactBody": {
+    "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "Wie wir dich kontaktieren dürfen",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "Du entscheidest, über welche Kanäle die Klinik dir schreiben oder dich anrufen darf.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Telefonanrufe",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Nachrichten (SMS oder WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "E-Mail",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "Das hast du noch nicht beantwortet",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "Die Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
+  },
+  "clinicDataUpToDate": "Die Daten deiner Klinik sind auf dem Stand vom {date}.",
+  "@clinicDataUpToDate": {
+    "description": "clinicDataUpToDate",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "clinicDataStale": "Die Daten deiner Klinik sind auf dem Stand vom {date}: seit {days} Tagen ist nichts Neues eingegangen.",
+  "@clinicDataStale": {
+    "description": "clinicDataStale",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

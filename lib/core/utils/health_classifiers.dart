@@ -31,7 +31,12 @@ const Color _red = Color(0xFFEF4444); // high / out-of-range
 
 /// Clasifica [value] contra las bandas del servidor y las traduce al enum del
 /// clasificador vía [byBandCode]. Devuelve null si no hay banda aplicable o el
-/// código no está mapeado (el llamador usa su fallback de fábrica).
+/// código no está mapeado.
+///
+/// Qué hace el llamador con ese null **depende del indicador**: los que tienen un
+/// corte universal —IMC (OMS), WHtR (Ashwell), WHR (OMS), grasa visceral (escala
+/// de la báscula)— caen a su respaldo de fábrica; la **grasa corporal** no, porque
+/// el suyo dependía de sexo, edad y báscula y acababa contradiciendo a la clínica.
 T? _serverCategory<T>(
   String indicatorCode,
   num value,
@@ -292,9 +297,27 @@ enum FatCategory {
   elevated,
   high;
 
-  static FatCategory of(double bodyFatPercent) {
-    // Servidor primero: bandas por sexo/edad del paciente (tabla OMRON del backoffice).
-    final s = _serverCategory('BODY_FAT', bodyFatPercent, const {
+  /// La categoría del paciente, o **`null` si no hay banda aplicable**.
+  ///
+  /// ## Por qué esto no tiene respaldo de fábrica, y el IMC sí
+  ///
+  /// El porcentaje de grasa no se interpreta igual para todo el mundo: depende de
+  /// **sexo, edad y báscula**. Un mismo 26 % es normal en una mujer de 36 y otra
+  /// cosa en un hombre de 60, y una Omron y una Tanita ni siquiera miden igual a la
+  /// misma persona — por eso los rangos viven en la base con `device_id`.
+  ///
+  /// Aquí había cortes genéricos —«menos de 25 normal, menos de 30 elevada»— ciegos
+  /// a los tres. Para la mujer de 36 de la demostración, cuya banda normal llega a
+  /// **32.9**, un 26 % salía en ámbar como «grasa elevada». La clínica dice normal.
+  ///
+  /// Un respaldo que contradice a la clínica es peor que no tener respaldo: el
+  /// número sin veredicto no engaña a nadie, y un ámbar equivocado sí. Así que sin
+  /// banda del servidor esto devuelve `null` y quien llama enseña el valor a secas.
+  ///
+  /// El IMC, el WHtR, el WHR y la grasa visceral **sí** conservan el suyo: los tres
+  /// primeros son universales por definición y el cuarto coincide con la base.
+  static FatCategory? of(double bodyFatPercent) {
+    return _serverCategory('BODY_FAT', bodyFatPercent, const {
       'VERY_LOW': FatCategory.veryLow,
       'LOW': FatCategory.low,
       'NORMAL': FatCategory.normal,
@@ -302,13 +325,6 @@ enum FatCategory {
       'HIGH': FatCategory.elevated,
       'VERY_HIGH': FatCategory.high,
     });
-    if (s != null) return s;
-    // Fallback offline.
-    if (bodyFatPercent < 5) return FatCategory.veryLow;
-    if (bodyFatPercent < 10) return FatCategory.low;
-    if (bodyFatPercent < 25) return FatCategory.normal;
-    if (bodyFatPercent < 30) return FatCategory.elevated;
-    return FatCategory.high;
   }
 
   Color get color => switch (this) {

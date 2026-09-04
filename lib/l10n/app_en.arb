@@ -148,14 +148,20 @@
   "@historyTrendOf": {
     "description": "History chart card title, per the selected metric",
     "placeholders": {
-      "metric": { "type": "String", "example": "BMI" }
+      "metric": {
+        "type": "String",
+        "example": "BMI"
+      }
     }
   },
   "historyMetricNeedsData": "Log {measure} to see this indicator.",
   "@historyMetricNeedsData": {
     "description": "Empty state when the derived metric lacks enough data",
     "placeholders": {
-      "measure": { "type": "String", "example": "your waist" }
+      "measure": {
+        "type": "String",
+        "example": "your waist"
+      }
     }
   },
   "whtrName": "Waist-to-height",
@@ -332,7 +338,7 @@
   "helpGlossaryTitle": "Medical Glossary",
   "helpGlossaryDescription": "Understand every health indicator.",
   "helpLegalTitle": "Legal Notice",
-  "helpLegalDescription": "Terms of use and data privacy.",
+  "helpLegalDescription": "A summary of how the app works. The full terms and policy are served by the server, and those are the ones that govern.",
   "helpContactTitle": "Contact & Feedback",
   "helpContactDescription": "Write to us, we improve together.",
   "helpSearchHint": "Search...",
@@ -344,7 +350,7 @@
   "helpFaqQ1": "What is My Vitals?",
   "helpFaqA1": "My Vitals is a personal health tracking app that lets you record and monitor your wellness indicators: anthropometric measurements, vital signs, lipid profile, and body composition.",
   "helpFaqQ2": "Is my data saved to the cloud?",
-  "helpFaqA2": "No. All your data is stored exclusively on your device. My Vitals does not send any information to external servers, ensuring complete privacy.",
+  "helpFaqA2": "Yes. Your measurements are stored on your phone and copied to our server whenever you have a connection. That is what keeps your history when you change phones, and what lets staff at the associated nutrition clinic follow your progress if you are their patient. You can download everything or delete your account from Settings.",
   "helpFaqQ3": "Can I use the app without internet?",
   "helpFaqA3": "Yes. My Vitals works completely offline. You only need connectivity for app updates.",
   "helpFaqQ4": "How do I enable biometric lock?",
@@ -364,15 +370,15 @@
   "helpGlossaryGroupBody": "Body Composition",
   "helpGlossaryNormalRange": "Normal range",
   "helpLegalPurposeTitle": "Purpose of the application",
-  "helpLegalPurposeBody": "My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.",
+  "helpLegalPurposeBody": "My Vitals HealthTracker is an application for recording and tracking your health indicators. If you are a patient of the associated nutrition clinic, you can also consult your record there. It is not a certified medical device.",
   "helpLegalNotMedicalTitle": "Not a medical device",
   "helpLegalNotMedicalBody": "The information displayed in this application is for reference purposes only. It does not replace the diagnosis, advice, or treatment of a health professional. If you have any medical symptoms or concerns, consult your doctor.",
   "helpLegalResponsibilityTitle": "User responsibility",
   "helpLegalResponsibilityBody": "The user is responsible for the accuracy of the data entered. My Vitals is not responsible for health decisions made based on information recorded in the app.",
-  "helpLegalPrivacyTitle": "Privacy and data",
-  "helpLegalPrivacyBody": "All data is stored locally on the user's device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.",
+  "helpLegalPrivacyTitle": "Your data and where it lives",
+  "helpLegalPrivacyBody": "Your measurements are stored on your phone and copied to our server when you have a connection: that is what keeps your history when you change phones. You have an account, identified by your email. You can download your data — profile, consents, goals and all your measurements, though not the notes staff write — from the “Backup” section of Settings, and delete your account from the “Account” section.",
   "helpLegalContactTitle": "Developer contact",
-  "helpLegalContactBody": "For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com",
+  "helpLegalContactBody": "For legal or privacy enquiries, write to: yesithvalencia@gmail.com",
   "helpContactReportBug": "Report a bug",
   "helpContactReportBugDesc": "Found something that's not working? Tell us.",
   "helpContactSuggest": "Send a suggestion",
@@ -388,11 +394,16 @@
   "backupTitle": "Backup & Restore",
   "backupDescription": "Export or restore all your data and preferences.",
   "backupPrivacyTitle": "Your data is yours. And yours only.",
-  "backupPrivacyBody": "All of our health features are built with privacy at the core. Your data never leaves your device — My Vitals does not use cloud servers, external accounts, or third-party services. Everything is stored locally in an encrypted database, accessible only to you.",
+  "backupPrivacyBody": "Your health data lives in two places: on your phone, so the app works offline, and on our server, so you do not lose it when you change phones.\n\nYou can lock the app with your fingerprint or face from Settings, under “Privacy”. We do not sell your data or hand it over for commercial purposes. Authorised staff at the associated nutrition clinic can see it if you are their patient, and nobody else.",
   "backupPrivacyHighlight": "If you enable biometric lock, your health data is further protected by your fingerprint or Face ID — no one else can access your information, not even us.",
   "backupExportTitle": "Export my data",
   "backupExportSubtitle": "Generate a secure file with all your history and settings",
   "backupExportButton": "Export Backup",
+  "serverExportTitle": "Download all my data",
+  "serverExportSubtitle": "Your profile, your consents, your goals and all your measurements — yours and the clinic’s — in one file",
+  "serverExportButton": "Download",
+  "serverExportSuccess": "Your data was downloaded.",
+  "serverExportNeedsSession": "Sign in to download your data.",
   "backupImportTitle": "Restore my data",
   "backupImportSubtitle": "Import a previous My Vitals backup",
   "backupImportButton": "Import Backup",
@@ -607,6 +618,7 @@
   "verifyTestNotice": "Test phase: the password is 1234. (An OTP code will go here in production.)",
   "verifySubmit": "Sign in",
   "unexpectedError": "Unexpected error: {details}",
+  "profileUnavailable": "We couldn't open your profile. Please try again in a moment.",
   "@unexpectedError": {
     "placeholders": {
       "details": {
@@ -741,13 +753,19 @@
   "mhxPageOf": "Page {current} of {total}",
   "@mhxAgeYears": {
     "placeholders": {
-      "years": { "type": "int" }
+      "years": {
+        "type": "int"
+      }
     }
   },
   "@mhxPageOf": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "medicationsTitle": "Medications",
@@ -759,94 +777,209 @@
   "medicationDoseNotifTitle": "Time for {name}",
   "@medicationDoseNotifTitle": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "medicationDoseNotifBody": "It's time to take your medication.",
   "medicationRefillNotifTitle": "Refill {name}",
   "@medicationRefillNotifTitle": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "medicationRefillNotifBody": "Your stock is running low.",
   "medicationUnitsLeft": "{count} units left",
   "@medicationUnitsLeft": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "medicationOutOfStock": "Out of stock",
-
   "medFormNameCapsule": "Capsule",
   "medFormNameTablet": "Tablet",
   "medFormNameLiquid": "Liquid",
   "medFormNameInjection": "Injection",
   "medFormNameDrops": "Drops",
   "medFormNameOther": "Unit",
-
   "medUnitCapsule": "{count, plural, one{capsule} other{capsules}}",
-  "@medUnitCapsule": { "placeholders": { "count": { "type": "int" } } },
+  "@medUnitCapsule": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medUnitTablet": "{count, plural, one{tablet} other{tablets}}",
-  "@medUnitTablet": { "placeholders": { "count": { "type": "int" } } },
+  "@medUnitTablet": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medUnitLiquid": "{count, plural, one{ml} other{ml}}",
-  "@medUnitLiquid": { "placeholders": { "count": { "type": "int" } } },
+  "@medUnitLiquid": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medUnitInjection": "{count, plural, one{injection} other{injections}}",
-  "@medUnitInjection": { "placeholders": { "count": { "type": "int" } } },
+  "@medUnitInjection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medUnitDrops": "{count, plural, one{drop} other{drops}}",
-  "@medUnitDrops": { "placeholders": { "count": { "type": "int" } } },
+  "@medUnitDrops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medUnitOther": "{count, plural, one{unit} other{units}}",
-  "@medUnitOther": { "placeholders": { "count": { "type": "int" } } },
-
+  "@medUnitOther": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medScheduleDaily": "Every day",
   "medScheduleEveryNDays": "{count, plural, one{Every day} other{Every {count} days}}",
-  "@medScheduleEveryNDays": { "placeholders": { "count": { "type": "int" } } },
-
+  "@medScheduleEveryNDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medMenuDescription": "Manage your doses, your inventory and your adherence in one place.",
   "medMenuTodaySubtitle": "{count, plural, =0{No doses pending} one{1 dose pending} other{{count} doses pending}}",
-  "@medMenuTodaySubtitle": { "placeholders": { "count": { "type": "int" } } },
+  "@medMenuTodaySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medMenuInventorySubtitle": "{count, plural, =0{All stocked up} one{1 running low} other{{count} running low}}",
-  "@medMenuInventorySubtitle": { "placeholders": { "count": { "type": "int" } } },
+  "@medMenuInventorySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medMenuAdherenceSubtitle": "{pct}% this month · {streak} day streak",
-  "@medMenuAdherenceSubtitle": { "placeholders": { "pct": { "type": "int" }, "streak": { "type": "int" } } },
-
+  "@medMenuAdherenceSubtitle": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "streak": {
+        "type": "int"
+      }
+    }
+  },
   "medTodayTitle": "Today",
   "medTodayDescription": "Log today's doses and review what's done.",
   "medSectionToTakeToday": "TO TAKE TODAY",
   "medSectionLogged": "LOGGED",
   "medSectionYourMeds": "YOUR MEDICATIONS",
   "medDosesProgress": "{done} of {total}",
-  "@medDosesProgress": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "@medDosesProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "medNoPendingToday": "No doses left for today.",
-
   "medInventoryTitle": "Inventory",
   "medInventoryDescription": "How many units you have left and when to refill.",
   "medSectionInventory": "INVENTORY",
   "medStockLeftUnits": "{count, plural, one{1 unit left} other{{count} units left}}",
-  "@medStockLeftUnits": { "placeholders": { "count": { "type": "int" } } },
+  "@medStockLeftUnits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medRunsOutOn": "runs out {date}",
-  "@medRunsOutOn": { "placeholders": { "date": { "type": "String" } } },
+  "@medRunsOutOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "medStockDonutOf": "of {total}",
-  "@medStockDonutOf": { "placeholders": { "total": { "type": "int" } } },
-
+  "@medStockDonutOf": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "medAdherenceTitle": "Adherence",
   "medAdherenceDescription": "Your consistency with the treatment over the month.",
   "medComplianceMonth": "adherence · {month}",
-  "@medComplianceMonth": { "placeholders": { "month": { "type": "String" } } },
+  "@medComplianceMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "medStreakDays": "day streak",
   "medLegendTaken": "Taken",
   "medLegendSkipped": "Missed",
   "medLegendNoData": "No data",
-
   "medSectionSchedule": "SCHEDULE",
   "medSectionAdherence": "ADHERENCE",
   "medSectionInformation": "INFORMATION",
   "medRemainingUnits": "{count} units",
-  "@medRemainingUnits": { "placeholders": { "count": { "type": "int" } } },
+  "@medRemainingUnits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medBuyBefore": "Buy before {date}",
-  "@medBuyBefore": { "placeholders": { "date": { "type": "String" } } },
+  "@medBuyBefore": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "medPackAndThreshold": "Box of {pack} · alert at: {threshold}",
-  "@medPackAndThreshold": { "placeholders": { "pack": { "type": "int" }, "threshold": { "type": "int" } } },
+  "@medPackAndThreshold": {
+    "placeholders": {
+      "pack": {
+        "type": "int"
+      },
+      "threshold": {
+        "type": "int"
+      }
+    }
+  },
   "medThisMonth": "this month",
   "medEdit": "Edit",
   "medDelete": "Delete",
@@ -857,27 +990,56 @@
   "medDeleteBody": "This deletes the medication and all its history. This can't be undone.",
   "medInfoSoon": "Soon",
   "medInfoSoonBody": "Interactions, pregnancy and breastfeeding.",
-
   "medRegisterDose": "Log dose",
   "medDoseAtTime": "{amount} at {time}",
-  "@medDoseAtTime": { "placeholders": { "amount": { "type": "String" }, "time": { "type": "String" } } },
+  "@medDoseAtTime": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "medSkip": "Skip",
-
   "medMultipleTitle": "{count} doses at {time}",
-  "@medMultipleTitle": { "placeholders": { "count": { "type": "int" }, "time": { "type": "String" } } },
+  "@medMultipleTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "medMultipleSubtitle": "Check each one or log them all at once.",
   "medSkipRest": "Skip rest",
   "medRegisterNSelected": "{count, plural, =0{Log doses} one{Log 1 dose} other{Log {count} doses}}",
-  "@medRegisterNSelected": { "placeholders": { "count": { "type": "int" } } },
-
+  "@medRegisterNSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medNotifTitle": "Turn on reminders",
   "medNotifBody": "We'll remind you at each dose time and when your stock is running low. You can change this anytime.",
   "medNotifWebWarning": "Notifications aren't available on the web version. Use the iOS or Android app.",
   "medAllowNotifications": "Allow notifications",
   "medNotNow": "Not now",
-
   "medWizardStepOf": "STEP {step} OF {total}",
-  "@medWizardStepOf": { "placeholders": { "step": { "type": "int" }, "total": { "type": "int" } } },
+  "@medWizardStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "medBack": "Back",
   "medStepIdentity": "Identity",
   "medStepDose": "Dose",
@@ -922,38 +1084,79 @@
   "medErrorAddTime": "Add at least one time",
   "medErrorSaveFailed": "Couldn't save. Please try again.",
   "medUnitsSuffix": "units",
-
   "medRefillTitle": "Refill inventory",
   "medRunsOutInDays": "Runs out in ~{days, plural, one{1 day} other{{days} days}}",
-  "@medRunsOutInDays": { "placeholders": { "days": { "type": "int" } } },
+  "@medRunsOutInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "medAddABox": "Add a box",
   "medAddABoxSub": "Adds to the current stock",
   "medWillRemain": "{units} units left · lasts ~{days} days",
-  "@medWillRemain": { "placeholders": { "units": { "type": "int" }, "days": { "type": "int" } } },
+  "@medWillRemain": {
+    "placeholders": {
+      "units": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "medRemindOneDay": "Remind me in 1 day",
   "medBought": "I bought it",
-
   "medEmptyTitle": "No medications yet",
   "medEmptyBody": "Add your first medication and we'll remind you of every dose and warn you before it runs out.",
-
   "medDashTodayLabel": "TODAY'S DOSES",
   "medDashSeeModule": "See module ›",
   "medDashNextDose": "Next dose",
   "medDashNoDoses": "No upcoming doses",
   "medLowStockBannerTitle": "{name} has {count} units left",
-  "@medLowStockBannerTitle": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
-
+  "@medLowStockBannerTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medDashMedsTitle": "Medications",
   "medDashApptsTitle": "Appointments",
   "medDashApptsSoon": "Coming soon",
   "medDashTodayProgress": "{done}/{total} today",
-  "@medDashTodayProgress": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "@medDashTodayProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "medDashStreakShort": "{days} d",
-  "@medDashStreakShort": { "placeholders": { "days": { "type": "int" } } },
+  "@medDashStreakShort": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "medDashAllDone": "All caught up",
   "medDashAddMed": "Add",
   "medDashLowShort": "{count} left",
-  "@medDashLowShort": { "placeholders": { "count": { "type": "int" } } },
+  "@medDashLowShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appointmentsTitle": "My appointments",
   "appointmentsDescription": "Keep track of the appointments you have and the ones you still need to book.",
   "appointmentsAddCta": "Add appointment",
@@ -964,10 +1167,25 @@
   "appointmentsEmptyBody": "Add the appointments you need to book or have already scheduled.",
   "appointmentsOverdueChip": "Overdue",
   "appointmentDueOn": "Book before {date}",
-  "@appointmentDueOn": { "placeholders": { "date": { "type": "String" } } },
+  "@appointmentDueOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentNoDate": "No date",
   "appointmentScheduledOn": "{date} at {time}",
-  "@appointmentScheduledOn": { "placeholders": { "date": { "type": "String" }, "time": { "type": "String" } } },
+  "@appointmentScheduledOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentStatusAttended": "Attended",
   "appointmentStatusMissed": "Missed",
   "appointmentStatusCancelled": "Cancelled",
@@ -1018,13 +1236,31 @@
   "apptDashOverdue": "Overdue",
   "apptDashAllClear": "All up to date",
   "apptScheduledNotifTitle": "Appointment: {title}",
-  "@apptScheduledNotifTitle": { "placeholders": { "title": { "type": "String" } } },
+  "@apptScheduledNotifTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "apptScheduledNotifBody": "You have an upcoming appointment.",
   "apptToBookNotifTitle": "Time to book: {title}",
-  "@apptToBookNotifTitle": { "placeholders": { "title": { "type": "String" } } },
+  "@apptToBookNotifTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "apptToBookNotifBody": "Time to book this appointment.",
   "apptOverdueNotifTitle": "Pending appointment: {title}",
-  "@apptOverdueNotifTitle": { "placeholders": { "title": { "type": "String" } } },
+  "@apptOverdueNotifTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "apptOverdueNotifBody": "You have an overdue appointment.",
   "appointmentFieldLocation": "Location",
   "appointmentFieldLocationHint": "e.g. Clinic address",
@@ -1032,7 +1268,13 @@
   "appointmentRecurringHint": "When you confirm you attended, we'll remind you to book the next one automatically.",
   "appointmentFrequencyLabel": "How often",
   "appointmentEveryNMonths": "Every {count} months",
-  "@appointmentEveryNMonths": { "placeholders": { "count": { "type": "int" } } },
+  "@appointmentEveryNMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appointmentEditTitle": "Edit appointment",
   "appointmentActionEdit": "Edit",
   "appointmentNextSpawned": "We noted the next check-up to book.",
@@ -1041,9 +1283,179 @@
   "appointmentComplianceGreenTitle": "All up to date",
   "appointmentComplianceGreenBody": "No pending or overdue appointments.",
   "appointmentNextActionOverdue": "{title} · overdue",
-  "@appointmentNextActionOverdue": { "placeholders": { "title": { "type": "String" } } },
+  "@appointmentNextActionOverdue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentNextActionUpcoming": "{title} · {date}",
-  "@appointmentNextActionUpcoming": { "placeholders": { "title": { "type": "String" }, "date": { "type": "String" } } },
+  "@appointmentNextActionUpcoming": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "appointmentRecurringEvery": "Every {count} mo",
-  "@appointmentRecurringEvery": { "placeholders": { "count": { "type": "int" } } }
+  "@appointmentRecurringEvery": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accessCodeAccountHint": "Call the clinic: they will verify your identity and read you a six-digit code. It expires in 15 minutes and works only once.",
+  "accessCodeDocumentLabel": "ID number",
+  "accessCodeDocumentHint": "Your ID",
+  "accessCodeLabel": "The code they read you",
+  "accessCodeHelp": "It expires after 15 minutes and works only once. If you get it wrong several times you will have to ask for a new one.",
+  "accessCodeMissingDocument": "Enter your ID number.",
+  "accessCodeSixDigits": "The code is six digits.",
+  "accessDoorTitle": "Sign in with your email",
+  "accessDoorSubtitle": "We will email you a six-digit code. If you do not have an account yet, that same code creates it.",
+  "accessDoorEmailLabel": "Email",
+  "accessDoorEmailHint": "name@email.com",
+  "accessDoorContinue": "Continue",
+  "accessDoorInvalidEmail": "Enter a valid email address.",
+  "accessCodeSentTitle": "Check your email",
+  "accessCodeSentSubtitle": "If that address can get in, your code is waiting there. It expires in fifteen minutes.",
+  "accessClinicCodeLink": "I already have a code from the clinic",
+  "signupTitle": "Finish creating your account",
+  "signupSubtitle": "With these details your measurements are compared against the ranges that apply to you.",
+  "signupNameLabel": "First name",
+  "signupDocumentLabel": "ID number",
+  "signupDocumentHelp": "It is how we recognise you if you are already a patient of the clinic.",
+  "signupTermsAccept": "I accept the terms and the privacy policy",
+  "signupSubmit": "Create my account",
+  "signupMissingTerms": "You need to accept the terms to create the account.",
+  "callClinicTitle": "Call the clinic",
+  "callClinicBody": "That ID is already registered. We do not hand over a clinical history without verifying who you are, so a person activates it over the phone.",
+  "callClinicBack": "Go back",
+  "accessCodeClinicHint": "Call the clinic: they will verify your identity and read you the code we use to bring your data in.",
+  "verifyBringingHistory": "Bringing in your history…",
+  "legalTitle": "Terms and privacy",
+  "@legalTitle": {
+    "description": "legalTitle"
+  },
+  "legalTermsTab": "Terms of use",
+  "@legalTermsTab": {
+    "description": "legalTermsTab"
+  },
+  "legalPrivacyTab": "Privacy",
+  "@legalPrivacyTab": {
+    "description": "legalPrivacyTab"
+  },
+  "legalAcceptButton": "I accept",
+  "@legalAcceptButton": {
+    "description": "legalAcceptButton"
+  },
+  "legalDecline": "I don't accept and I'm leaving",
+  "@legalDecline": {
+    "description": "legalDecline"
+  },
+  "legalNotTranslated": "This document has not been translated into your language yet. It is shown in Spanish, which is the governing version.",
+  "@legalNotTranslated": {
+    "description": "legalNotTranslated"
+  },
+  "legalLoadFailed": "The document could not be loaded. Check your connection.",
+  "@legalLoadFailed": {
+    "description": "legalLoadFailed"
+  },
+  "legalAcceptFailed": "Your acceptance could not be recorded. Please try again.",
+  "@legalAcceptFailed": {
+    "description": "legalAcceptFailed"
+  },
+  "legalRetry": "Try again",
+  "@legalRetry": {
+    "description": "legalRetry"
+  },
+  "legalGateTitle": "Before you go in",
+  "@legalGateTitle": {
+    "description": "legalGateTitle"
+  },
+  "legalReadTerms": "Read the terms of use",
+  "@legalReadTerms": {
+    "description": "legalReadTerms"
+  },
+  "legalReadPrivacy": "Read the privacy policy",
+  "@legalReadPrivacy": {
+    "description": "legalReadPrivacy"
+  },
+  "@helpLegalDescription": {
+    "description": "helpLegalDescription"
+  },
+  "@helpLegalPurposeBody": {
+    "description": "helpLegalPurposeBody"
+  },
+  "@helpLegalPrivacyTitle": {
+    "description": "helpLegalPrivacyTitle"
+  },
+  "@helpLegalPrivacyBody": {
+    "description": "helpLegalPrivacyBody"
+  },
+  "helpLegalWhoSeesTitle": "Who can see your record",
+  "@helpLegalWhoSeesTitle": {
+    "description": "helpLegalWhoSeesTitle"
+  },
+  "helpLegalWhoSeesBody": "You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.",
+  "@helpLegalWhoSeesBody": {
+    "description": "helpLegalWhoSeesBody"
+  },
+  "@helpLegalContactBody": {
+    "description": "helpLegalContactBody"
+  },
+  "consentsTitle": "How you want us to contact you",
+  "@consentsTitle": {
+    "description": "consentsTitle"
+  },
+  "consentsDescription": "You decide which channels the clinic may write to or call you on.",
+  "@consentsDescription": {
+    "description": "consentsDescription"
+  },
+  "consentsPhone": "Phone calls",
+  "@consentsPhone": {
+    "description": "consentsPhone"
+  },
+  "consentsMessages": "Messages (SMS or WhatsApp)",
+  "@consentsMessages": {
+    "description": "consentsMessages"
+  },
+  "consentsEmail": "Email",
+  "@consentsEmail": {
+    "description": "consentsEmail"
+  },
+  "consentsUnset": "You haven't answered this yet",
+  "@consentsUnset": {
+    "description": "consentsUnset"
+  },
+  "consentsSaveFailed": "The change could not be saved. Please try again.",
+  "@consentsSaveFailed": {
+    "description": "consentsSaveFailed"
+  },
+  "clinicDataUpToDate": "Your clinic data is up to date as of {date}.",
+  "@clinicDataUpToDate": {
+    "description": "clinicDataUpToDate",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "clinicDataStale": "Your clinic data is up to date as of {date}: nothing new has arrived for {days} days.",
+  "@clinicDataStale": {
+    "description": "clinicDataStale",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

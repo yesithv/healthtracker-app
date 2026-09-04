@@ -57,7 +57,7 @@ void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     // _canSync exige paciente autenticado; simúlalo.
-    await PatientSession.instance.save(publicId: 'p1');
+    await PatientSession.instance.save(publicId: 'p1', token: 'tok-p1');
   });
 
   test(

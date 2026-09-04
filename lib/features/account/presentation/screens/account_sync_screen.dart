@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,6 @@ import 'package:myvitals_healthtracker_app/core/auth/local_data_reset.dart';
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/widgets/pending_account_banner.dart';
-import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/sync/measurement_read_client.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
@@ -17,12 +17,18 @@ import 'package:myvitals_healthtracker_app/core/widgets/settings_page_header.dar
 import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 
-/// Pantalla de cuenta y sincronización (andamio de Fase 0). Reúne los dos flujos:
-///  - Paciente MIGRADO: inicia sesión con su documento + clave (1234) y ve la data
-///    que se trajo del legacy.
-///  - Paciente NUEVO: se registra por la app (queda en la BD y el backoffice lo ve).
+/// Pantalla de cuenta y sincronización. Reúne los dos flujos:
+///  - Paciente de la CLÍNICA: entra con su documento y el código que un agente le dictó
+///    por teléfono tras verificar su identidad, y ve la data que se trajo del legacy.
+///  - Paciente NUEVO: se registra por la app.
+///
 /// Con sesión activa, permite sincronizar los registros locales y leer la serie del
 /// servidor.
+///
+/// <b>Pendiente:</b> el alta de paciente nuevo sigue llamando a `/api/v1/auth/register`,
+/// que solo existe mientras el servidor corre en modo andamio. El autorregistro con
+/// verificación propia está por diseñar; hasta entonces, quien no es paciente todavía
+/// tiene que pasar por la clínica.
 class AccountSyncScreen extends StatefulWidget {
   const AccountSyncScreen({super.key});
 
@@ -45,17 +51,22 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     super.dispose();
   }
 
-  Future<void> _run(Future<PatientAccount> Function() action) async {
+  /// Canjea el código y abre la sesión, con el mismo aislamiento entre pacientes que el
+  /// resto de entradas: si el dispositivo traía datos de otro paciente, se borran ANTES de
+  /// guardar la sesión.
+  Future<void> _redeem(String document, String code) async {
     setState(() {
       _busy = true;
       _error = null;
     });
     final profile = context.read<UserProfileProvider>();
     try {
-      final account = await action();
+      final session = await _auth.redeemAccessCode(
+        documentNumber: document,
+        code: code,
+      );
+      final account = session.account;
 
-      // Aislamiento entre pacientes: si el dispositivo tenía datos de OTRO paciente,
-      // se borran antes de guardar la sesión (mismo criterio que en el login normal).
       final owner = await currentDataOwner();
       if (owner != null && owner != account.publicId && mounted) {
         await wipeLocalUserData(context);
@@ -63,12 +74,14 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
 
       await PatientSession.instance.save(
         publicId: account.publicId,
+        token: session.token,
+        expiresAt: session.expiresAt,
         firstName: account.firstName,
         lastName: account.lastName,
         source: account.source,
       );
       await setDataOwner(account.publicId);
-      // Igual que en /verify: el perfil local se llena con lo que el servidor sabe.
+
       final fullName = [
         account.firstName,
         account.lastName,
@@ -82,9 +95,11 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
-      setState(
-        () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
-      );
+      if (mounted) {
+        setState(
+          () => _error = AppLocalizations.of(context)!.unexpectedError('$e'),
+        );
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -99,15 +114,10 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
     final sync = context.read<SyncService>();
 
     if (PendingAccountStore.instance.isPending) {
-      final result = await flushPendingAccount(
-        AccountDraft.fromProfile(profile),
-      );
-      if (!mounted) return;
-      if (!result.created) {
-        setState(() => _error = result.message);
-        return;
-      }
-      setState(() => _error = null);
+      // Sin cuenta no hay nada que subir, y la cuenta ya no se crea desde aquí: nace en la
+      // puerta, cuando alguien demuestra que ese correo es suyo.
+      goToAccessDoor(context, email: profile.userEmail.trim());
+      return;
     }
     await sync.syncNow();
   }
@@ -168,30 +178,11 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
           const PendingAccountBanner(),
           const SizedBox(height: 4),
         ],
-        _LoginCard(
-          busy: _busy,
-          onSubmit: (id, pass) =>
-              _run(() => _auth.login(identifier: id, password: pass)),
-        ),
+        _AccessCodeCard(busy: _busy, onSubmit: _redeem),
         const SizedBox(height: 16),
-        _RegisterCard(
-          busy: _busy,
-          onSubmit: (first, email, doc) => _run(
-            () => _auth.register(
-              firstName: first,
-              email: email,
-              documentNumber: doc,
-              // País del perfil (picker de prefijo) o del locale: captura
-              // silenciosa; el backend descarta códigos fuera de catálogo.
-              country:
-                  (Countries.byIso(
-                            context.read<UserProfileProvider>().userCountryCode,
-                          ) ??
-                          Countries.deviceDefault())
-                      .iso,
-            ),
-          ),
-        ),
+        // Aquí había un formulario que creaba la cuenta con solo escribir un correo. Ya no:
+        // una cuenta nace en la puerta, después de demostrar que ese buzón es tuyo.
+        _GoToDoorCard(onTap: () => goToAccessDoor(context)),
       ],
     );
   }
@@ -327,25 +318,32 @@ class _AccountSyncScreenState extends State<AccountSyncScreen> {
   }
 }
 
-class _LoginCard extends StatefulWidget {
+/// Entrada del paciente que ya es de la clínica: documento + el código que le dictaron.
+///
+/// Pide los dos datos, y no por trámite: el documento acota el intento a una sola cuenta,
+/// que es lo que hace que seis dígitos no sean adivinables.
+class _AccessCodeCard extends StatefulWidget {
   final bool busy;
-  final void Function(String identifier, String password) onSubmit;
-  const _LoginCard({required this.busy, required this.onSubmit});
+  final void Function(String documentNumber, String code) onSubmit;
+  const _AccessCodeCard({required this.busy, required this.onSubmit});
 
   @override
-  State<_LoginCard> createState() => _LoginCardState();
+  State<_AccessCodeCard> createState() => _AccessCodeCardState();
 }
 
-class _LoginCardState extends State<_LoginCard> {
+class _AccessCodeCardState extends State<_AccessCodeCard> {
   final _id = TextEditingController();
-  final _pass = TextEditingController(text: '1234');
+  final _code = TextEditingController();
 
   @override
   void dispose() {
     _id.dispose();
-    _pass.dispose();
+    _code.dispose();
     super.dispose();
   }
+
+  bool get _ready =>
+      _id.text.trim().isNotEmpty && _code.text.trim().length == 6;
 
   @override
   Widget build(BuildContext context) {
@@ -353,26 +351,38 @@ class _LoginCardState extends State<_LoginCard> {
     return _Section(
       title: l10n.accountHaveAccount,
       children: [
+        Text(
+          l10n.accessCodeAccountHint,
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).surfaces.inkSecondary,
+          ),
+        ),
+        const SizedBox(height: 12),
         TextField(
           controller: _id,
-          // Mismo caso que en el alta: sin `onChanged` el botón se quedaba
-          // deshabilitado para siempre.
+          // Sin `onChanged` el botón se quedaba deshabilitado para siempre.
           onChanged: (_) => setState(() {}),
           inputFormatters: InputRules.documentId(),
           decoration: InputDecoration(labelText: l10n.identifyFieldLabel),
         ),
         const SizedBox(height: 12),
         TextField(
-          controller: _pass,
-          obscureText: true,
+          controller: _code,
+          keyboardType: TextInputType.number,
+          maxLength: 6,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(labelText: l10n.verifyPasswordLabel),
+          decoration: InputDecoration(
+            labelText: l10n.accessCodeLabel,
+            counterText: '',
+          ),
         ),
         const SizedBox(height: 12),
         FilledButton(
-          onPressed: widget.busy || _id.text.trim().isEmpty
+          onPressed: widget.busy || !_ready
               ? null
-              : () => widget.onSubmit(_id.text.trim(), _pass.text),
+              : () => widget.onSubmit(_id.text.trim(), _code.text.trim()),
           child: Text(AppLocalizations.of(context)!.introSignIn),
         ),
       ],
@@ -380,90 +390,38 @@ class _LoginCardState extends State<_LoginCard> {
   }
 }
 
-class _RegisterCard extends StatefulWidget {
-  final bool busy;
-  final void Function(String firstName, String email, String? documentNumber)
-  onSubmit;
-  const _RegisterCard({required this.busy, required this.onSubmit});
+/// Invita a crear la cuenta por la puerta, que es el único sitio donde se crean.
+class _GoToDoorCard extends StatelessWidget {
+  final VoidCallback onTap;
 
-  @override
-  State<_RegisterCard> createState() => _RegisterCardState();
-}
-
-class _RegisterCardState extends State<_RegisterCard> {
-  final _name = TextEditingController();
-  final _email = TextEditingController();
-  final _doc = TextEditingController();
-
-  @override
-  void dispose() {
-    _name.dispose();
-    _email.dispose();
-    _doc.dispose();
-    super.dispose();
-  }
+  const _GoToDoorCard({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final email = _email.text.trim();
-    // El correo mal escrito se avisa mientras se escribe, pero sólo cuando ya
-    // hay algo: nadie quiere que le griten por un campo que aún no ha tocado.
-    final emailMalformed = email.isNotEmpty && !InputRules.isEmail(email);
-    final canSubmit =
-        !widget.busy &&
-        _name.text.trim().isNotEmpty &&
-        InputRules.isEmail(email);
-
-    return _Section(
-      title: l10n.accountNewHere,
-      children: [
-        TextField(
-          controller: _name,
-          // Sin esto el botón nunca se habilitaba: su estado se calcula al
-          // construir, y escribir en un `TextEditingController` no reconstruye
-          // nada por sí solo. El formulario estaba muerto.
-          onChanged: (_) => setState(() {}),
-          textCapitalization: TextCapitalization.words,
-          // Sin dígitos ni signos: un nombre son letras (con tildes y ñ),
-          // espacios y a lo sumo guion o apóstrofo.
-          inputFormatters: InputRules.name(),
-          decoration: InputDecoration(labelText: l10n.fullName),
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _email,
-          onChanged: (_) => setState(() {}),
-          keyboardType: TextInputType.emailAddress,
-          autocorrect: false,
-          textCapitalization: TextCapitalization.none,
-          // El espacio del autocorrector o de un pegado no entra; la forma la
-          // valida InputRules.isEmail (emailMalformed) más abajo.
-          inputFormatters: InputRules.email(),
-          decoration: InputDecoration(
-            labelText: l10n.emailLabel,
-            errorText: emailMalformed ? l10n.validationEmailFormat : null,
+    final surfaces = Theme.of(context).surfaces;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(surfaces.radiusCard),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.accessDoorTitle,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _doc,
-          onChanged: (_) => setState(() {}),
-          inputFormatters: InputRules.documentId(),
-          decoration: InputDecoration(labelText: l10n.accountDocumentOptional),
-        ),
-        const SizedBox(height: 12),
-        FilledButton(
-          onPressed: canSubmit
-              ? () => widget.onSubmit(
-                  _name.text.trim(),
-                  email,
-                  _doc.text.trim().isEmpty ? null : _doc.text.trim(),
-                )
-              : null,
-          child: Text(l10n.accountCreateAccount),
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            l10n.accessDoorSubtitle,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 12),
+          FilledButton(onPressed: onTap, child: Text(l10n.accessDoorContinue)),
+        ],
+      ),
     );
   }
 }

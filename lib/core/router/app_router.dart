@@ -33,8 +33,12 @@ import '../../features/onboarding/presentation/screens/onboarding_shell.dart';
 import '../../features/account/presentation/screens/account_sync_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../features/auth/presentation/screens/verify_screen.dart';
 import '../../features/auth/presentation/screens/otp_verify_screen.dart';
+import '../../features/auth/presentation/screens/signup_screen.dart';
+import '../../features/auth/presentation/screens/call_clinic_screen.dart';
+import '../../features/legal/presentation/screens/legal_documents_screen.dart';
+import '../legal/legal_api_client.dart';
+import '../auth/access_target.dart';
 import '../../features/theming/presentation/screens/theme_picker_screen.dart';
 import '../../features/medications/presentation/screens/medications_menu_screen.dart';
 import '../../features/medications/presentation/screens/medications_today_screen.dart';
@@ -77,27 +81,57 @@ class AppRouter {
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: '/verify',
-        builder: (context, state) {
-          // El identificador llega del paso de login; sin él, volver a iniciar sesión.
-          final id = state.extra as String?;
-          return (id == null || id.isEmpty)
-              ? const LoginScreen()
-              : VerifyScreen(identifier: id);
-        },
-      ),
       // Alta de paciente nuevo. Ya no admite parámetro `mode`: el asistente
       // siempre crea la cuenta, porque el modo local se ha eliminado.
       GoRoute(
         path: '/verify-otp',
         builder: (context, state) {
-          // Verificación OTP del paciente legacy; sin identificador, volver a login.
-          final id = state.extra as String?;
-          return (id == null || id.isEmpty)
+          // El paso del código sirve a los dos caminos: el que llegó al correo y el que dicta
+          // la clínica. Sin saber cuál, se vuelve a la puerta.
+          final target = state.extra as AccessTarget?;
+          return target == null
               ? const LoginScreen()
-              : OtpVerifyScreen(identifier: id);
+              : OtpVerifyScreen(target: target);
         },
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) {
+          // Solo se llega con la sesión que abrió el código del correo: sin ella no hay alta
+          // que completar, y volver a la puerta es lo único sensato.
+          final token = state.extra as String?;
+          return (token == null || token.isEmpty)
+              ? const LoginScreen()
+              : SignupScreen(sessionToken: token);
+        },
+      ),
+      // La puerta legal. Se llega desde `completeLoginAndEnter` cuando el
+      // servidor dice que faltan términos por aceptar, y NO se sale de ella sin
+      // aceptar (ver LegalDocumentsScreen).
+      GoRoute(
+        path: '/terminos',
+        // `extra` dice a dónde seguir tras aceptar: al dashboard, o al paso de la
+        // báscula si esa persona todavía no ha dicho cuál usa. Sin esto, aceptar
+        // los términos se saltaba la segunda puerta.
+        builder: (context, state) => LegalDocumentsScreen(
+          mustAccept: true,
+          destination: state.extra is String
+              ? state.extra! as String
+              : '/dashboard',
+        ),
+      ),
+      // Los mismos textos en modo lectura: desde la casilla del alta y desde
+      // Ajustes → Legal.
+      GoRoute(
+        path: '/legal/:document',
+        builder: (context, state) => LegalDocumentsScreen(
+          initialDocument:
+              state.pathParameters['document'] ?? LegalApiClient.terms,
+        ),
+      ),
+      GoRoute(
+        path: '/call-clinic',
+        builder: (context, state) => const CallClinicScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -125,6 +159,16 @@ class AppRouter {
       GoRoute(
         path: '/profile/device',
         builder: (context, state) => const MeasuringDeviceScreen(),
+      ),
+      // La MISMA pantalla, como paso del alta. Sin báscula no hay rangos de
+      // grasa, músculo ni visceral —están en la base por dispositivo—, y hasta la
+      // Fase 12 solo se llegaba a ella entrando a mano en Perfil: el resultado
+      // medido fue el 100 % de los pacientes sin elegir. Se llega desde
+      // `completeLoginAndEnter`, después de la puerta legal.
+      GoRoute(
+        path: '/bienvenida/bascula',
+        builder: (context, state) =>
+            const MeasuringDeviceScreen(onboardingDestination: '/dashboard'),
       ),
       GoRoute(
         path: '/profile/account',

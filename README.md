@@ -1,5 +1,12 @@
 # My Vitals — HealthTracker App
 
+> **Cómo encaja esto en el ecosistema:** el estado de los cinco repositorios, los dos caminos de
+> entrada del paciente y el plan por fases están en `healthtracker-localdev/ESTADO-Y-PLAN.md`.
+
+> **Cómo está hoy** —qué funciona, qué falta y las trampas de este repositorio— en
+> [`ESTADO.md`](ESTADO.md). Este README describe cómo es el proyecto; aquel, cómo está.
+
+
 Aplicación móvil (Flutter) para que un paciente registre y siga sus propios
 indicadores de salud: signos vitales, antropometría, perfil lipídico y
 composición corporal. Funciona **local-first** —todo se guarda en SQLite en el
@@ -41,13 +48,12 @@ de la Fase 0 por sus piezas definitivas.
 
 Están marcados en el código como «Fase 0» y con su hueco de reemplazo escrito:
 
-- **Verificación de identidad**: la pantalla `/verify` acepta una contraseña de
-  desarrollo (`1234`). En Fase 1 entra ahí el OTP de Firebase (SMS/email): mismo
-  paso del flujo y misma UI, distinto mecanismo
-  (`features/auth/presentation/screens/verify_screen.dart`).
-- **Identidad hacia la API**: se envía la cabecera `X-Patient-Public-Id` porque
-  todavía no hay IdP/JWT. En Fase 1 el paciente sale del token y
-  `ApiConfig.patientPublicId` desaparece.
+- **Autorregistro de pacientes nuevos**: el asistente de alta y la tarjeta de
+  registro llaman a `POST /api/v1/auth/register`, que en el servidor **solo
+  existe mientras corre en modo andamio**. Con el servidor en modo `session`, un
+  paciente que no venga del legacy se queda con su ficha creada y **sin sesión**,
+  así que no sincroniza. Es el alcance que se decidió —solo pacientes del legacy,
+  por ahora— y hace falta diseñar una verificación propia para levantarlo.
 - **Pantalla de arranque**: la ruta `/` es hoy el **selector de tema**, no el
   splash, para poder recorrer el flujo entero con cualquiera de los dos temas.
   Al reubicar el selector dentro de Perfil basta devolver `/` a `SplashScreen`
@@ -138,11 +144,13 @@ del tema **antes de `runApp`**. Todo envuelto en `runZonedGuarded`.
 ### Integración con la API
 
 `ApiConfig` se inyecta en compilación con `--dart-define`; no se versionan
-entornos. Identidad temporal por cabecera `X-Patient-Public-Id`.
+entornos. La identidad va en `Authorization: Bearer <token de sesión>` (ver
+[Cómo entra el paciente](#cómo-entra-el-paciente)).
 
 | Endpoint | Uso |
 |---|---|
-| `POST /api/v1/auth/register` · `login` · `lookup` · `activate` | Alta, entrada y comprobación de identidad |
+| `POST /api/v1/auth/otp/redeem` | Canje del código de la clínica → token de sesión |
+| `POST /api/v1/auth/lookup` · `activate` · `register` | Comprobación de identidad y alta (ver deuda conocida) |
 | `POST /api/v1/me/measurements` | Subida de registros pendientes (upsert idempotente) |
 | `GET  /api/v1/me/measurements` | Bajada del historial del paciente |
 | `GET  /api/v1/me/reference-ranges` | Bandas clínicas ya resueltas por dispositivo/sexo/edad |
@@ -254,11 +262,35 @@ Pages **solo desde la rama**, nunca desde un pull request.
 
 ## 3. Funcionalidades
 
+### Cómo entra el paciente
+
+No hay OTP por SMS ni proveedor de identidad. **Quien verifica que el paciente es
+quien dice ser es una persona del staff, por teléfono**: contrasta su documento y
+su correo contra la ficha desde el backoffice y autoriza. El servidor genera
+entonces un código de seis dígitos que el agente le dicta.
+
+La app canjea ese código en `POST /api/v1/auth/otp/redeem`, mandando **documento
+y código**: el documento no es un trámite, acota el intento a una sola cuenta, y
+es parte de lo que hace que seis dígitos no sean adivinables (el resto —caducidad
+a los 15 minutos, un solo uso, y quemarse a los cinco fallos— lo pone el
+servidor).
+
+A cambio recibe un **token de sesión opaco**, que se guarda en
+`PatientSession` y viaja en `Authorization: Bearer` en todas las llamadas a
+`/api/v1/me/**`. Dura 90 días y es renovable: renovarlo exige otra llamada del
+staff, así que una sesión corta convertiría el flujo en una carga para la
+clínica. Perder el teléfono también la exige — es el precio de no tener un
+segundo factor propio.
+
+Quien ya tenía cuenta y perdió la sesión pide otro código igual que quien entra
+por primera vez: **no hay contraseña que recordar**.
+
 ### Acceso y cuenta
 
 - **La cuenta es obligatoria** (ya no existe el modo local «explorar sin
   cuenta»), con dos caminos desde la portada: *ya tengo cuenta* → identificación
-  por documento o email → verificación; o *soy nuevo* → asistente de alta.
+  por documento o email → código de la clínica; o *soy nuevo* → asistente de alta
+  (ver la deuda conocida: el alta necesita el servidor en modo andamio).
 - **Alta diferida**: si el servidor no responde durante el registro, el usuario
   entra igual y la cuenta se crea en el primer arranque con red. Un aviso
   persistente indica que el alta sigue pendiente.
@@ -354,9 +386,7 @@ flutter --version
 flutter pub get
 
 # Ejecutar apuntando a la HealthTracker-Api
-flutter run \
-  --dart-define=API_BASE_URL=http://localhost:8081 \
-  --dart-define=PATIENT_PUBLIC_ID=UUID-DEL-PACIENTE
+flutter run --dart-define=API_BASE_URL=http://localhost:8081
 ```
 
 Notas:
@@ -364,9 +394,10 @@ Notas:
 - Puertos del entorno: **8081** = HealthTracker-Api · 8080 = ACL · 8082 =
   BackOffice-Api.
 - En el emulador de Android, el `localhost` del anfitrión es `10.0.2.2`.
-- Sin `PATIENT_PUBLIC_ID` la sincronización queda deshabilitada; el resto de la
-  app funciona igual (local-first).
-- En `/verify`, la contraseña de desarrollo de la Fase 0 es `1234`.
+- Sin sesión la sincronización queda deshabilitada; el resto de la app funciona
+  igual (local-first). Para abrir sesión hace falta un código emitido desde el
+  BackOffice-Api (`POST /api/v1/admin/patients/{id}/app-access/otp`), que es lo
+  que en producción dicta por teléfono una persona del staff.
 
 ### Comandos habituales
 

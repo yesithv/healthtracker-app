@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:myvitals_healthtracker_app/core/auth/access_target.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
-import 'package:myvitals_healthtracker_app/core/auth/local_data_reset.dart';
-import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
-import 'package:myvitals_healthtracker_app/core/constants/countries.dart';
 import 'package:myvitals_healthtracker_app/core/providers/onboarding_provider.dart';
 import 'package:myvitals_healthtracker_app/core/providers/user_profile_provider.dart';
 import 'package:myvitals_healthtracker_app/core/theme/theme_context.dart';
@@ -147,60 +145,39 @@ class _OnboardingShellState extends State<OnboardingShell> {
   }
 
   /// Crea la cuenta del paciente nuevo (source=APP) con el perfil recogido.
+  /// Cierra el onboarding llevando a la puerta con el correo ya escrito.
+  ///
+  /// Antes esto creaba la cuenta aquí mismo, y si no había red la dejaba pendiente para
+  /// crearla sola más tarde. Ya no: una cuenta nace cuando alguien demuestra que ese buzón es
+  /// suyo, así que lo que hace el onboarding es recoger el perfil y dejar a la persona en el
+  /// paso del código. Lo que ya escribió no se pierde: viaja al alta prellenada.
   Future<_RegisterOutcome> _register() async {
     final l10n = AppLocalizations.of(context)!;
     final profile = Provider.of<UserProfileProvider>(context, listen: false);
     final email = profile.userEmail.trim();
     if (email.isEmpty) {
-      // Red de seguridad: el paso 1 ya exige el correo, pero si llegara vacío
-      // no hay identificador con el que crear la cuenta.
+      // Red de seguridad: el paso 1 ya exige el correo.
       setState(() => _registerError = l10n.validationEnterEmail);
       return _RegisterOutcome.rejected;
     }
 
-    // País: el elegido en el picker de prefijo o, si nunca lo tocó, el del
-    // locale del dispositivo (captura silenciosa; el backend valida el código).
-    final country =
-        Countries.byIso(profile.userCountryCode) ?? Countries.deviceDefault();
-    // Teléfono en formato internacional (prefijo + número): listo para WhatsApp.
-    final localPhone = profile.userPhone.replaceAll(RegExp(r'[^0-9]'), '');
-
+    final router = GoRouter.of(context);
     final auth = AuthApiClient();
     try {
-      final account = await auth.register(
-        firstName: profile.userName.trim().isEmpty
-            ? 'Paciente'
-            : profile.userName.trim(),
-        email: email,
-        birthDate: profile.birthDate,
-        sex: profile.userGender.isEmpty ? null : profile.userGender,
-        phone: localPhone.isEmpty ? null : '${country.dialCode}$localPhone',
-        country: country.iso,
-      );
-      await PatientSession.instance.save(
-        publicId: account.publicId,
-        firstName: account.firstName,
-        source: account.source,
-      );
-      // El paciente recién creado es el dueño de los datos locales de este device.
-      await setDataOwner(account.publicId);
-      // Cuenta creada: nada queda pendiente.
-      await PendingAccountStore.instance.clear();
+      await auth.startAccess(email);
+      // Todavía no hay cuenta: queda marcada como pendiente hasta que se complete el alta.
+      await PendingAccountStore.instance.markPending(reason: null);
+      router.go('/verify-otp', extra: AccessTarget.email(email));
       return _RegisterOutcome.created;
     } on AuthNetworkException catch (e) {
-      // Sin red o servidor caído: los datos ya están guardados en el perfil
-      // local, así que basta con recordar que el alta sigue pendiente.
+      // Sin red no se puede empezar: el perfil ya está guardado en local y la puerta espera.
       await PendingAccountStore.instance.markPending(reason: e.message);
       return _RegisterOutcome.deferred;
     } on AuthException catch (e) {
-      // El servidor rechaza el dato (correo duplicado, formato inválido…):
-      // reintentar no arregla nada, hay que decírselo al usuario.
       if (mounted) setState(() => _registerError = e.message);
       return _RegisterOutcome.rejected;
     } catch (e) {
-      debugPrint('Registro al terminar onboarding falló: $e');
-      // Causa desconocida: se trata como diferible en lugar de dejar al usuario
-      // fuera con sus datos ya escritos.
+      debugPrint('No se pudo empezar el alta al terminar el onboarding: $e');
       await PendingAccountStore.instance.markPending(
         reason: l10n.commonRegisterFailed,
       );

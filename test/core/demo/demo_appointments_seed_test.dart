@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:myvitals_healthtracker_app/core/database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:myvitals_healthtracker_app/core/demo/demo_appointments_seed.dart';
@@ -10,6 +11,9 @@ import 'package:myvitals_healthtracker_app/features/appointments/domain/appointm
 /// enseñe todos los estados, y ser idempotente (no duplicar si ya hay datos).
 void main() {
   setUpAll(() {
+    // Base propia para este fichero: `flutter test` corre los ficheros en paralelo
+    // y compartir el archivo los bloquea entre sí («database is locked»).
+    DatabaseService.useDatabaseFile('test-demo-appointments-seed.db');
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   });

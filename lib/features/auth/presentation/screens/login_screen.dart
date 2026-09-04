@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:myvitals_healthtracker_app/core/auth/access_target.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
-/// Paso 1 de "Iniciar sesión". El usuario que YA es paciente ingresa un solo dato
-/// (documento del paciente migrado, o email de la cuenta) y el backend decide el camino:
-///   - existe cuenta   → verificación por contraseña (`/verify`) → entra.
-///   - existe en legacy → verificación por OTP (`/verify-otp`) → trae su historial y entra.
-///   - no existe        → es alguien nuevo: se le envía al onboarding de registro.
+/// La puerta: se escribe el correo y llega un código.
 ///
-/// Los usuarios nuevos NO pasan por aquí: entran por "Comenzar" (onboarding directo). Este
-/// es el punto de reciclaje de los dos flujos de retorno en una sola pantalla de acceso.
+/// Es la MISMA para quien ya tiene cuenta y para quien no. La respuesta del servidor es
+/// idéntica en los dos casos —y en el de un paciente de la clínica que aún no ha activado su
+/// cuenta—, así que esta pantalla siempre hace lo mismo: mandar al paso del código. Lo que
+/// cambia va en el correo, no aquí.
+///
+/// Antes esta pantalla preguntaba «documento o email» y el servidor respondía si esa persona
+/// tenía historial en la clínica. Eso convertía la pantalla en una forma de averiguar quién es
+/// paciente de una consulta de nutrición: un dato de salud a cambio de teclear un número.
+///
+/// El paciente al que un agente le dictó un código por teléfono entra por el enlace de abajo,
+/// que pide documento y código.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -29,6 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    final prefilled = GoRouterState.of(context).extra;
+    if (prefilled is String) _idController.text = prefilled;
+  }
+
+  @override
   void dispose() {
     _auth.close();
     _idController.dispose();
@@ -36,8 +49,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _continue() async {
-    final identifier = _idController.text.trim();
-    if (identifier.isEmpty || _busy) return;
+    final email = _idController.text.trim();
+    if (_busy) return;
+    final l10n = AppLocalizations.of(context)!;
+    if (!_looksLikeEmail(email)) {
+      setState(() => _error = l10n.accessDoorInvalidEmail);
+      return;
+    }
 
     setState(() {
       _busy = true;
@@ -46,18 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final router = GoRouter.of(context);
     try {
-      final result = await _auth.lookup(identifier);
+      await _auth.startAccess(email);
       if (!mounted) return;
-      if (result.exists) {
-        // Cuenta activa → verificación por contraseña.
-        router.go('/verify', extra: identifier);
-      } else if (result.inLegacy) {
-        // Historial en el legacy → verificación por OTP + migración.
-        router.go('/verify-otp', extra: identifier);
-      } else {
-        // No es paciente todavía: lo tratamos como nuevo (registro).
-        router.go('/onboarding?mode=account');
-      }
+      // Siempre al mismo sitio: aquí no se sabe —ni se puede saber— si esa dirección tenía
+      // cuenta. Preguntarlo sería la fuga que este diseño evita.
+      router.go('/verify-otp', extra: AccessTarget.email(email));
     } on AuthException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
@@ -66,6 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) setState(() => _busy = false);
     }
   }
+
+  /// Comprobación mínima: el servidor valida de verdad, esto solo evita el viaje.
+  static bool _looksLikeEmail(String value) =>
+      RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value);
 
   @override
   Widget build(BuildContext context) {
@@ -89,37 +104,39 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              const Icon(Icons.badge_outlined, size: 56, color: _blue),
+              const Icon(
+                Icons.mark_email_read_outlined,
+                size: 56,
+                color: _blue,
+              ),
               const SizedBox(height: 16),
-              const Text(
-                'Bienvenido de vuelta',
+              Text(
+                l10n.accessDoorTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1E293B),
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Ingresa tu documento o email. Reconocemos tu cuenta y te pedimos '
-                'la verificación que corresponda.',
+              Text(
+                l10n.accessDoorSubtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF64748B)),
+                style: const TextStyle(color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 28),
               TextField(
                 controller: _idController,
                 autofocus: true,
                 textInputAction: TextInputAction.go,
-                // Sirve para documento O correo, así que no se restringe a un
-                // tipo; pero ninguno de los dos lleva espacios, y el tope corta
-                // pegados absurdos.
+                keyboardType: TextInputType.emailAddress,
+                autofillHints: const [AutofillHints.email],
                 inputFormatters: InputRules.identifier(),
                 decoration: InputDecoration(
-                  labelText: l10n.identifyFieldLabel,
-                  hintText: l10n.identifyFieldHint,
-                  prefixIcon: const Icon(Icons.person_outline, color: _blue),
+                  labelText: l10n.accessDoorEmailLabel,
+                  hintText: l10n.accessDoorEmailHint,
+                  prefixIcon: const Icon(Icons.alternate_email, color: _blue),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -164,13 +181,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text(
-                        'Siguiente',
-                        style: TextStyle(
+                    : Text(
+                        l10n.accessDoorContinue,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+              ),
+              const SizedBox(height: 16),
+              // El paciente al que la clínica le dictó un código entra por aquí: ese canje pide
+              // documento y código, porque el código viajó por teléfono y no por su buzón.
+              TextButton(
+                onPressed: _busy
+                    ? null
+                    : () => context.go(
+                        '/verify-otp',
+                        extra: const AccessTarget.clinicCode(),
+                      ),
+                child: Text(l10n.accessClinicCodeLink),
               ),
             ],
           ),

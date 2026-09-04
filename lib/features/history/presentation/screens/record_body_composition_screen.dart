@@ -380,13 +380,15 @@ class _RecordBodyCompositionScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // `null` = este paciente no tiene rangos de grasa (no eligió báscula). Se
+    // enseña el número sin veredicto: un ámbar inventado sería peor que nada.
     final fatCat = FatCategory.of(bodyFat);
     final visceralCat = VisceralCategory.of(visceralFat);
     final theme = _theme;
     final surfaces = theme.surfaces;
     final family = _family;
     // El clasificador da el ESTADO; el tema resuelve el color.
-    final fatTone = theme.clinical.tone(fatCat.status);
+    final fatTone = theme.clinical.tone(fatCat?.status ?? ClinicalStatus.neutral);
     final visceralTone = theme.clinical.tone(visceralCat.status);
 
     return Scaffold(
@@ -450,10 +452,12 @@ class _RecordBodyCompositionScreenState
                   _SectionCard(
                     icon: Icons.pie_chart_outline,
                     title: l10n.compositionBodyFat,
-                    badge: StatusChip(
-                      status: fatCat.status,
-                      label: fatCat.label(l10n),
-                    ),
+                    badge: fatCat == null
+                        ? null
+                        : StatusChip(
+                            status: fatCat.status,
+                            label: fatCat.label(l10n),
+                          ),
                     child: _buildSliderField(
                       value: bodyFat,
                       unit: '%',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
 import 'package:myvitals_healthtracker_app/core/utils/health_classifiers.dart';
 import 'package:myvitals_healthtracker_app/features/history/data/models/lipid_record.dart';
 
@@ -126,15 +127,61 @@ void main() {
   });
 
   group('FatCategory.of', () {
-    test('boundaries', () {
-      expect(FatCategory.of(4.9), FatCategory.veryLow);
-      expect(FatCategory.of(5), FatCategory.low);
-      expect(FatCategory.of(9.9), FatCategory.low);
-      expect(FatCategory.of(10), FatCategory.normal);
-      expect(FatCategory.of(24.9), FatCategory.normal);
-      expect(FatCategory.of(25), FatCategory.elevated);
-      expect(FatCategory.of(29.9), FatCategory.elevated);
-      expect(FatCategory.of(30), FatCategory.high);
+    // Aquí había una prueba de «límites» que fijaba unos cortes de fábrica
+    // —«menos de 25 normal, menos de 30 elevada»— ciegos a sexo, edad y báscula.
+    // Estaba en verde y sujetaba el fallo: para una mujer de 36 la banda normal
+    // llega a 32.9, así que su 26 % salía en ámbar como «grasa elevada» y esa
+    // prueba lo daba por bueno. Lo que se comprueba ahora es lo contrario: que sin
+    // rangos del servidor NO se clasifica, y que con ellos se clasifica por ellos.
+    tearDown(() => ReferenceRangesStore.instance.setForTesting(const {}));
+
+    test('sin bandas del servidor no clasifica: el número va sin veredicto', () {
+      ReferenceRangesStore.instance.setForTesting(const {});
+
+      expect(FatCategory.of(26), isNull);
+      expect(FatCategory.of(36), isNull);
+    });
+
+    test('con las bandas del paciente clasifica por ellas', () {
+      // Las de una mujer de 36 en la Omron HBF-514C, tal y como las sirve la API.
+      ReferenceRangesStore.instance.setForTesting(const {
+        'BODY_FAT': [
+          ServerBand(
+            bandCode: 'LOW',
+            bandLabel: 'Bajo',
+            minValue: 5,
+            maxValue: 20.9,
+            sortOrder: 1,
+          ),
+          ServerBand(
+            bandCode: 'NORMAL',
+            bandLabel: 'Normal',
+            minValue: 21,
+            maxValue: 32.9,
+            sortOrder: 2,
+          ),
+          ServerBand(
+            bandCode: 'HIGH',
+            bandLabel: 'Alto',
+            minValue: 33,
+            maxValue: 38.9,
+            sortOrder: 3,
+          ),
+          ServerBand(
+            bandCode: 'VERY_HIGH',
+            bandLabel: 'Muy alto',
+            minValue: 39,
+            maxValue: 60,
+            sortOrder: 4,
+          ),
+        ],
+      });
+
+      // EL caso: 26 % es normal para ella. Los cortes viejos decían «elevada».
+      expect(FatCategory.of(26), FatCategory.normal);
+      expect(FatCategory.of(20), FatCategory.low);
+      expect(FatCategory.of(36), FatCategory.elevated);
+      expect(FatCategory.of(45), FatCategory.high);
     });
 
     test('veryLow and low share the blue color', () {

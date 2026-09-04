@@ -29,6 +29,7 @@ import 'package:myvitals_healthtracker_app/core/services/notification_service.da
 import 'package:myvitals_healthtracker_app/core/auth/patient_session.dart';
 import 'package:myvitals_healthtracker_app/core/auth/pending_account.dart';
 import 'package:myvitals_healthtracker_app/core/ranges/reference_ranges_store.dart';
+import 'package:myvitals_healthtracker_app/core/profile/profile_sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/sync/sync_service.dart';
 import 'package:myvitals_healthtracker_app/core/demo/demo_session.dart';
 
@@ -202,6 +203,19 @@ void main() {
                 lipid: LipidRepository.instance,
                 body: BodyCompositionRepository.instance,
               ),
+            ),
+            // El perfil (datos personales, metas, idioma y unidades) contra el
+            // servidor. `lazy: false` por la misma razón que el de arriba: escucha
+            // los providers para enviar lo que cambie, y perezoso no existiría
+            // hasta abrir Ajustes —justo la pantalla donde ya se ha guardado—.
+            Provider<ProfileSyncService>(
+              lazy: false,
+              create: (context) => ProfileSyncService(
+                profile: context.read<UserProfileProvider>(),
+                localeUnits: context.read<LocaleUnitsProvider>(),
+                goals: context.read<HealthGoalsProvider>(),
+              ),
+              dispose: (_, service) => service.dispose(),
             ),
           ],
           child: const MyVitalsApp(),

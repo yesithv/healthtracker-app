@@ -54,8 +54,12 @@ class BodyCompositionCard extends StatelessWidget {
 
     // Solo grasa y grasa visceral tienen lectura clínica; músculo y TMB son
     // informativos (sin barra de zona), pintados con el color de la familia.
+    //
+    // Y la grasa solo la tiene **si el servidor mandó bandas para este paciente**:
+    // sin báscula elegida no hay rango aplicable, y entonces se pinta como el
+    // músculo —el número, sin veredicto— en vez de inventar un color.
     ClinicalStatus? statusOf(_BodyField f, double v) => switch (f) {
-      _BodyField.fat => FatCategory.of(v).status,
+      _BodyField.fat => FatCategory.of(v)?.status,
       _BodyField.visceral => VisceralCategory.of(v.toInt()).status,
       _BodyField.muscle => null,
       _BodyField.bmr => null,

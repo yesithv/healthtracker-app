@@ -2,23 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:myvitals_healthtracker_app/core/auth/access_target.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_api_client.dart';
 import 'package:myvitals_healthtracker_app/core/auth/auth_entry.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
-/// Verificación por OTP para un paciente que existe en el LEGACY (el lookup marcó
-/// `inLegacy`). Valida la identidad con un código y, al confirmar, TRAE su historial
-/// (persona + atenciones + indicadores) y entra al dashboard con los datos ya visibles.
+/// El paso del código, que sirve a los dos caminos de entrada.
 ///
-/// <b>Fase 0:</b> no hay OTP real todavía; el código es un placeholder y por dentro se
-/// recicla el `activate` (migración) + `login` con la clave dev para obtener la sesión.
-/// Este es el HUECO donde en Fase 1 entra el OTP de Firebase (SMS/email): mismo paso del
-/// flujo, distinto mecanismo — la UI no cambia.
+/// **Por correo** (lo normal): se acaba de escribir una dirección en la puerta y ahí ha
+/// llegado un código. Al canjearlo, o se entra —si esa cuenta ya tiene ficha— o se va al alta,
+/// que es donde se piden el documento y los términos.
+///
+/// **Con el código de la clínica**: a un paciente de NutryApp un agente le dictó seis dígitos
+/// por teléfono después de verificar quién es. Ese canje pide además el documento, porque el
+/// código viajó fuera del sistema; sin el documento, probar seis dígitos al azar acertaría el
+/// de alguien. Al canjearlo, el servidor trae su historial y la app entra con sus datos.
 class OtpVerifyScreen extends StatefulWidget {
-  /// Documento o email confirmado en el paso de identificación.
-  final String identifier;
+  /// Cómo se llegó aquí: con un correo al que se mandó el código, o con el de la clínica.
+  final AccessTarget target;
 
-  const OtpVerifyScreen({super.key, required this.identifier});
+  const OtpVerifyScreen({super.key, required this.target});
 
   @override
   State<OtpVerifyScreen> createState() => _OtpVerifyScreenState();
@@ -29,22 +32,39 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
 
   final _auth = AuthApiClient();
   final _codeController = TextEditingController();
+  late final TextEditingController _documentController;
+
+  bool get _isClinicCode => widget.target.isClinicCode;
 
   bool _busy = false;
   String? _status;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _documentController = TextEditingController();
+  }
+
+  @override
   void dispose() {
     _auth.close();
     _codeController.dispose();
+    _documentController.dispose();
     super.dispose();
   }
 
   Future<void> _verify() async {
     if (_busy) return;
-    if (_codeController.text.trim().isEmpty) {
-      setState(() => _error = 'Ingresa el código para continuar.');
+    final document = _documentController.text.trim();
+    final code = _codeController.text.trim();
+    final l10n = AppLocalizations.of(context)!;
+    if (_isClinicCode && document.isEmpty) {
+      setState(() => _error = l10n.accessCodeMissingDocument);
+      return;
+    }
+    if (code.length != 6) {
+      setState(() => _error = l10n.accessCodeSixDigits);
       return;
     }
     setState(() {
@@ -52,20 +72,53 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       _error = null;
     });
 
+    final router = GoRouter.of(context);
     try {
-      // El OTP (placeholder) solo valida identidad; luego migramos y entramos.
-      setState(() => _status = 'Trayendo tu historial…');
-      await _auth.activate(widget.identifier);
-      final account = await _auth.login(
-        identifier: widget.identifier,
-        password: '1234',
-      );
+      if (_isClinicCode) {
+        // El canje abre la sesión y de paso trae el historial del legacy, así que puede
+        // tardar: el aviso es para que no parezca que se ha quedado colgada.
+        setState(() => _status = l10n.verifyBringingHistory);
+        final session = await _auth.redeemAccessCode(
+          documentNumber: document,
+          code: code,
+        );
+        if (!mounted) return;
+        await completeLoginAndEnter(
+          context,
+          session.account,
+          sessionToken: session.token,
+          sessionExpiresAt: session.expiresAt,
+          identifier: document,
+        );
+        return;
+      }
 
+      final session = await _auth.verifyEmailCode(
+        email: widget.target.email!,
+        code: code,
+      );
       if (!mounted) return;
+      if (session.needsSignup) {
+        // Correo verificado y todavía sin ficha: falta el alta, que es donde se piden el
+        // documento y los términos.
+        router.go('/signup', extra: session.token);
+        return;
+      }
+      final account = session.account;
+      if (account == null) {
+        // El servidor dice que hay ficha y no la manda. Antes esto era `session.account!`
+        // y la app reventaba en el peor momento posible: al entrar, con la sesión ya
+        // abierta. Un mensaje y volver a intentarlo deja a la persona donde puede hacer
+        // algo, y el fallo del servidor se arregla en el servidor.
+        setState(() => _error = l10n.profileUnavailable);
+        return;
+      }
       await completeLoginAndEnter(
         context,
         account,
-        identifier: widget.identifier,
+        sessionToken: session.token,
+        sessionExpiresAt: session.expiresAt,
+        identifier: widget.target.email,
       );
     } on AuthException catch (e) {
       setState(() => _error = e.message);
@@ -103,12 +156,20 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              const Icon(Icons.folder_shared_outlined, size: 56, color: _blue),
+              Icon(
+                _isClinicCode
+                    ? Icons.folder_shared_outlined
+                    : Icons.mark_email_read_outlined,
+                size: 56,
+                color: _blue,
+              ),
               const SizedBox(height: 16),
-              const Text(
-                'Encontramos tu historial',
+              Text(
+                _isClinicCode
+                    ? l10n.verifyAppBarTitle
+                    : l10n.accessCodeSentTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1E293B),
@@ -116,12 +177,27 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Verifica tu identidad para traer tus datos asociados a\n${widget.identifier}.',
+                _isClinicCode
+                    ? l10n.accessCodeClinicHint
+                    : l10n.accessCodeSentSubtitle,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 28),
-              _label('Código de verificación'),
+              if (_isClinicCode) ...[
+                _label(l10n.accessCodeDocumentLabel),
+                TextField(
+                  controller: _documentController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: _decoration(
+                    l10n.accessCodeDocumentHint,
+                    Icons.badge_outlined,
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              _label(l10n.accessCodeLabel),
               TextField(
                 controller: _codeController,
                 autofocus: true,
@@ -137,10 +213,9 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                 decoration: _decoration('••••••', Icons.password_outlined),
                 onSubmitted: (_) => _verify(),
               ),
-              const Text(
-                'Fase de pruebas: ingresa cualquier código (p. ej. 123456). '
-                'Aquí irá el OTP por SMS/email en producción.',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+              Text(
+                l10n.accessCodeHelp,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
               ),
               if (_status != null) ...[
                 const SizedBox(height: 16),

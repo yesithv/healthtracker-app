@@ -59,11 +59,73 @@ class PatientAccount {
   }
 }
 
-/// Resultado del lookup de identificación (solo booleanos; sin PII antes de verificar).
-class LookupResult {
-  final bool exists;
-  final bool inLegacy;
-  const LookupResult({required this.exists, required this.inLegacy});
+/// Sesión recién abierta al canjear el código que el staff dictó por teléfono.
+///
+/// Trae la ficha ya resuelta ([account]) para que la app entre sabiendo a quién ha dejado
+/// entrar, sin una segunda vuelta contra el servidor.
+class RedeemedSession {
+  /// Token opaco de sesión. Se manda luego en `Authorization: Bearer`.
+  final String token;
+
+  /// Cuándo caduca en el servidor.
+  final DateTime? expiresAt;
+
+  final PatientAccount account;
+
+  const RedeemedSession({
+    required this.token,
+    required this.account,
+    this.expiresAt,
+  });
+
+  factory RedeemedSession.fromJson(Map<String, dynamic> json) =>
+      RedeemedSession(
+        token: json['sessionToken'] as String,
+        expiresAt: json['expiresAt'] == null
+            ? null
+            : DateTime.tryParse(json['expiresAt'] as String),
+        account: PatientAccount.fromJson(
+          json['account'] as Map<String, dynamic>,
+        ),
+      );
+}
+
+/// Sesión abierta con el código que llegó al correo.
+///
+/// [needsSignup] distingue las dos salidas de la puerta: quien ya tiene ficha entra, y quien
+/// acaba de verificar su correo todavía tiene que completar el alta. Esa sesión no da acceso a
+/// datos: todo `/me/**` resuelve al paciente por su ficha, y aún no hay ninguna.
+class AccessSession {
+  final String token;
+  final DateTime? expiresAt;
+  final bool needsSignup;
+  final PatientAccount? account;
+
+  const AccessSession({
+    required this.token,
+    required this.needsSignup,
+    this.expiresAt,
+    this.account,
+  });
+
+  factory AccessSession.fromJson(Map<String, dynamic> json) => AccessSession(
+    token: json['sessionToken'] as String,
+    expiresAt: json['expiresAt'] == null
+        ? null
+        : DateTime.tryParse(json['expiresAt'] as String),
+    needsSignup: json['next'] == 'SIGNUP',
+    account: json['account'] == null
+        ? null
+        : PatientAccount.fromJson(json['account'] as Map<String, dynamic>),
+  );
+}
+
+/// El documento del alta ya existe: hay que llamar a la clínica.
+///
+/// Es una excepción aparte para que la pantalla pueda llevar a quien la recibe al sitio
+/// correcto sin leer el mensaje.
+class CallClinicException extends AuthException {
+  const CallClinicException(super.message);
 }
 
 /// Error de autenticación con un mensaje presentable al usuario.
@@ -94,60 +156,71 @@ class AuthApiClient {
     this.timeout = const Duration(seconds: 20),
   }) : _http = httpClient ?? http.Client();
 
-  /// Registra un paciente nuevo (source=APP). [sex] en formato de la app ('male'/'female').
-  /// [country] es ISO 3166-1 alpha-2 ('CO', 'MX'...); el backend lo valida contra su
-  /// catálogo y lo descarta si no lo reconoce (nunca falla el registro por esto).
-  Future<PatientAccount> register({
+  /// Primer paso de la puerta: pide el código para ese correo.
+  ///
+  /// La API responde SIEMPRE lo mismo, exista o no la cuenta: quien escribe una dirección no
+  /// puede averiguar si pertenece a un paciente de la clínica. Lo que cambia es el correo que
+  /// llega al buzón, y eso la app no lo ve ni tiene por qué.
+  Future<void> startAccess(String email) async {
+    await _postRaw('/api/v1/access/start', {'email': email.trim()});
+  }
+
+  /// Segundo paso: el código que llegó al correo. Abre sesión.
+  ///
+  /// [AccessSession.needsSignup] dice si esa cuenta todavía no tiene ficha; en ese caso la
+  /// sesión solo sirve para completar el alta.
+  Future<AccessSession> verifyEmailCode({
+    required String email,
+    required String code,
+  }) async {
+    final map = await _postRaw('/api/v1/access/verify', {
+      'email': email.trim(),
+      'code': code,
+    });
+    return AccessSession.fromJson(map);
+  }
+
+  /// Tercer paso: el alta. Necesita el token que devolvió [verifyEmailCode].
+  ///
+  /// Lanza [CallClinicException] si el documento ya existe —en la clínica o en otra cuenta—:
+  /// esa persona tiene que pasar por un agente, porque su historia clínica no se entrega por
+  /// teclear un número.
+  Future<PatientAccount> signup({
+    required String sessionToken,
     required String firstName,
     String? lastName,
     DateTime? birthDate,
     String? sex,
-    required String email,
     String? phone,
-    String? city,
     String? country,
     String? documentType,
-    String? documentNumber,
+    required String documentNumber,
+    required bool termsAccepted,
   }) async {
     final body = {
       'firstName': firstName,
       'lastName': ?lastName,
-      if (birthDate != null) 'birthDate': _dateOnly(birthDate),
+      'birthDate': ?(birthDate == null ? null : _dateOnly(birthDate)),
       'sex': ?sex,
-      'email': email,
       'phone': ?phone,
-      'city': ?city,
       'country': ?country,
       'documentType': ?documentType,
-      'documentNumber': ?documentNumber,
+      'documentNumber': documentNumber,
+      'termsAccepted': termsAccepted,
     };
-    return _post('/api/v1/auth/register', body);
-  }
-
-  /// Resultado del lookup: [exists] = ya hay cuenta (→ verificar); [inLegacy] = no hay
-  /// cuenta pero SÍ historial en el legacy (→ ofrecer alta self-service).
-  Future<LookupResult> lookup(String identifier) async {
-    final map = await _postRaw('/api/v1/auth/lookup', {
-      'identifier': identifier,
-    });
-    return LookupResult(
-      exists: map['exists'] as bool? ?? false,
-      inLegacy: map['inLegacy'] as bool? ?? false,
+    final map = await _postRaw(
+      '/api/v1/access/signup',
+      body,
+      authorization: 'Bearer $sessionToken',
     );
-  }
-
-  /// Alta self-service: trae el historial del legacy (persona + atenciones + indicadores)
-  /// y deja la cuenta lista para verificar. Timeout largo: incluye el backfill completo.
-  Future<void> activate(String identifier) async {
-    await _postRaw('/api/v1/auth/activate', {
-      'identifier': identifier,
-    }, timeoutOverride: const Duration(seconds: 90));
+    return PatientAccount.fromJson(map);
   }
 
   Future<Map<String, dynamic>> _postRaw(
     String path,
     Map<String, dynamic> body, {
     Duration? timeoutOverride,
+    String? authorization,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}$path');
     final http.Response resp;
@@ -155,7 +228,10 @@ class AuthApiClient {
       resp = await _http
           .post(
             uri,
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': ?authorization,
+            },
             body: jsonEncode(body),
           )
           .timeout(timeoutOverride ?? timeout);
@@ -163,46 +239,49 @@ class AuthApiClient {
       throw AuthNetworkException('No se pudo conectar con el servidor: $e');
     }
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
+      // 202 sin cuerpo (la puerta) es una respuesta válida y no hay nada que leer.
+      if (resp.body.isEmpty) return const {};
       return jsonDecode(resp.body) as Map<String, dynamic>;
     }
     // 5xx = el servidor está caído o falló por su cuenta: reintentable.
     if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
+    // El alta responde 409 con una marca cuando el documento ya existe. Se distingue por la
+    // marca y no por el texto: comparar frases traducibles se rompe al mejorar una de ellas.
+    if (resp.statusCode == 409 && _reasonOf(resp) == 'CALL_CLINIC') {
+      throw CallClinicException(_messageFrom(resp));
+    }
     throw AuthException(_messageFrom(resp));
   }
 
-  /// Inicia sesión por documento (migrado) o email (APP) + contraseña.
-  Future<PatientAccount> login({
-    required String identifier,
-    required String password,
-  }) {
-    return _post('/api/v1/auth/login', {
-      'identifier': identifier,
-      'password': password,
-    });
+  /// Canjea el código de seis dígitos que un agente de la clínica le dictó al paciente
+  /// por teléfono, después de verificar su identidad en esa llamada.
+  ///
+  /// Exige el documento ADEMÁS del código, y no es un trámite: acota el intento a una sola
+  /// cuenta. Si bastara el código, probar seis dígitos al azar acertaría el de alguien.
+  ///
+  /// El servidor responde lo mismo para «no hay código», «caducó», «ya se usó» y «no es
+  /// ese documento», así que la app no puede —ni debe— decir cuál de los cuatro fue.
+  ///
+  /// Timeout largo: el canje trae de paso el historial del legacy.
+  Future<RedeemedSession> redeemAccessCode({
+    required String documentNumber,
+    required String code,
+  }) async {
+    final map = await _postRaw('/api/v1/auth/otp/redeem', {
+      'documentNumber': documentNumber,
+      'code': code,
+    }, timeoutOverride: const Duration(seconds: 90));
+    return RedeemedSession.fromJson(map);
   }
 
-  Future<PatientAccount> _post(String path, Map<String, dynamic> body) async {
-    final uri = Uri.parse('${ApiConfig.baseUrl}$path');
-    final http.Response resp;
+  /// La marca de la respuesta de error (`reason`), si la trae.
+  String? _reasonOf(http.Response resp) {
     try {
-      resp = await _http
-          .post(
-            uri,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
-          )
-          .timeout(timeout);
-    } catch (e) {
-      throw AuthNetworkException('No se pudo conectar con el servidor: $e');
+      final map = jsonDecode(resp.body) as Map<String, dynamic>;
+      return map['reason'] as String?;
+    } catch (_) {
+      return null;
     }
-
-    if (resp.statusCode >= 200 && resp.statusCode < 300) {
-      return PatientAccount.fromJson(
-        jsonDecode(resp.body) as Map<String, dynamic>,
-      );
-    }
-    if (resp.statusCode >= 500) throw AuthNetworkException(_messageFrom(resp));
-    throw AuthException(_messageFrom(resp));
   }
 
   /// Extrae el `detail` del ProblemDetail (RFC 7807) que devuelve la API, con un fallback.

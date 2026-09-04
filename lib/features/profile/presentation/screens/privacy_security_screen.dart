@@ -9,6 +9,8 @@ import 'package:myvitals_healthtracker_app/core/widgets/settings_page_layout.dar
 import 'package:myvitals_healthtracker_app/core/theme/settings_accent.dart';
 import 'package:myvitals_healthtracker_app/l10n/generated/app_localizations.dart';
 
+import '../widgets/contact_consents_card.dart';
+
 class PrivacySecurityScreen extends StatefulWidget {
   const PrivacySecurityScreen({super.key});
 
@@ -160,6 +162,11 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 24),
+              // Los canales por los que acepta que se le contacte. Hasta ahora
+              // los decidía el staff desde el panel y la persona a la que se
+              // llama no tenía dónde decir que no.
+              const ContactConsentsCard(),
               const SizedBox(height: 24),
               _buildInfoBanner(l10n.biometricReasoning),
             ],

@@ -95,10 +95,9 @@ class SyncService extends ChangeNotifier {
   void _onRecordsChanged() {
     if (_muteAutoSync) return;
 
-    final hasPatient =
-        PatientSession.instance.isAuthenticated ||
-        ApiConfig.patientPublicId.isNotEmpty;
-    if (ApiConfig.baseUrl.isEmpty || !hasPatient) return;
+    if (!ApiConfig.isConfigured || !PatientSession.instance.isAuthenticated) {
+      return;
+    }
 
     _debounce?.cancel();
     _debounce = Timer(autoSyncDebounce, syncNow);
@@ -118,13 +117,10 @@ class SyncService extends ChangeNotifier {
       return;
     }
 
-    final hasPatient =
-        PatientSession.instance.isAuthenticated ||
-        ApiConfig.patientPublicId.isNotEmpty;
-    if (ApiConfig.baseUrl.isEmpty || !hasPatient) {
+    if (!ApiConfig.isConfigured || !PatientSession.instance.isAuthenticated) {
       _set(
         SyncStatus.notConfigured,
-        'Inicia sesión para sincronizar (falta identidad del paciente).',
+        'Entra con el código que te dicte la clínica para sincronizar.',
       );
       return;
     }

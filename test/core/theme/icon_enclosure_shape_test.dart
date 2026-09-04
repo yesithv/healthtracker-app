@@ -67,6 +67,13 @@ const _legitimateCircles = <String, ({int count, String reason})>{
         'El halo decorativo de la esquina de la tarjeta. No hay icono dentro: '
         'es una mancha de color del fondo.',
   ),
+  'lib/features/legal/presentation/widgets/legal_markdown.dart': (
+    count: 1,
+    reason:
+        'La viñeta de una lista del documento legal. Es el punto que abre un '
+        'elemento de lista —lo que un navegador pinta con `list-style: disc`—, '
+        'no una caja que encierre un icono.',
+  ),
   'lib/features/history/presentation/widgets/vital_signs_history_tab.dart': (
     count: 1,
     reason:

@@ -1718,10 +1718,10 @@ abstract class AppLocalizations {
   /// **'Legal Notice'**
   String get helpLegalTitle;
 
-  /// No description provided for @helpLegalDescription.
+  /// helpLegalDescription
   ///
   /// In en, this message translates to:
-  /// **'Terms of use and data privacy.'**
+  /// **'A summary of how the app works. The full terms and policy are served by the server, and those are the ones that govern.'**
   String get helpLegalDescription;
 
   /// No description provided for @helpContactTitle.
@@ -1793,7 +1793,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaqA2.
   ///
   /// In en, this message translates to:
-  /// **'No. All your data is stored exclusively on your device. My Vitals does not send any information to external servers, ensuring complete privacy.'**
+  /// **'Yes. Your measurements are stored on your phone and copied to our server whenever you have a connection. That is what keeps your history when you change phones, and what lets staff at the associated nutrition clinic follow your progress if you are their patient. You can download everything or delete your account from Settings.'**
   String get helpFaqA2;
 
   /// No description provided for @helpFaqQ3.
@@ -1910,10 +1910,10 @@ abstract class AppLocalizations {
   /// **'Purpose of the application'**
   String get helpLegalPurposeTitle;
 
-  /// No description provided for @helpLegalPurposeBody.
+  /// helpLegalPurposeBody
   ///
   /// In en, this message translates to:
-  /// **'My Vitals is a personal health tracking application designed to help users record and visualize their wellness indicators. It is not a certified medical device.'**
+  /// **'My Vitals HealthTracker is an application for recording and tracking your health indicators. If you are a patient of the associated nutrition clinic, you can also consult your record there. It is not a certified medical device.'**
   String get helpLegalPurposeBody;
 
   /// No description provided for @helpLegalNotMedicalTitle.
@@ -1940,16 +1940,16 @@ abstract class AppLocalizations {
   /// **'The user is responsible for the accuracy of the data entered. My Vitals is not responsible for health decisions made based on information recorded in the app.'**
   String get helpLegalResponsibilityBody;
 
-  /// No description provided for @helpLegalPrivacyTitle.
+  /// helpLegalPrivacyTitle
   ///
   /// In en, this message translates to:
-  /// **'Privacy and data'**
+  /// **'Your data and where it lives'**
   String get helpLegalPrivacyTitle;
 
-  /// No description provided for @helpLegalPrivacyBody.
+  /// helpLegalPrivacyBody
   ///
   /// In en, this message translates to:
-  /// **'All data is stored locally on the user\'s device. My Vitals does not collect, transmit, or share personal information with third parties. There are no user accounts or data servers.'**
+  /// **'Your measurements are stored on your phone and copied to our server when you have a connection: that is what keeps your history when you change phones. You have an account, identified by your email. You can download everything we hold about you from the “Backup” section of Settings, and delete your account from the “Account” section.'**
   String get helpLegalPrivacyBody;
 
   /// No description provided for @helpLegalContactTitle.
@@ -1958,10 +1958,10 @@ abstract class AppLocalizations {
   /// **'Developer contact'**
   String get helpLegalContactTitle;
 
-  /// No description provided for @helpLegalContactBody.
+  /// helpLegalContactBody
   ///
   /// In en, this message translates to:
-  /// **'For legal or privacy inquiries, you can contact the developer at: yesithvalencia@gmail.com'**
+  /// **'For legal or privacy enquiries, write to: yesithvalencia@gmail.com'**
   String get helpLegalContactBody;
 
   /// No description provided for @helpContactReportBug.
@@ -2057,7 +2057,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupPrivacyBody.
   ///
   /// In en, this message translates to:
-  /// **'All of our health features are built with privacy at the core. Your data never leaves your device — My Vitals does not use cloud servers, external accounts, or third-party services. Everything is stored locally in an encrypted database, accessible only to you.'**
+  /// **'Your health data lives in two places: on your phone, so the app works offline, and on our server, so you do not lose it when you change phones.\n\nYou can lock the app with your fingerprint or face from Settings, under “Privacy”. We do not sell your data or hand it over for commercial purposes. Authorised staff at the associated nutrition clinic can see it if you are their patient, and nobody else.'**
   String get backupPrivacyBody;
 
   /// No description provided for @backupPrivacyHighlight.
@@ -2083,6 +2083,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export Backup'**
   String get backupExportButton;
+
+  /// No description provided for @serverExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download all my data'**
+  String get serverExportTitle;
+
+  /// No description provided for @serverExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything the clinic holds about you, including your earlier history, in one file'**
+  String get serverExportSubtitle;
+
+  /// No description provided for @serverExportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get serverExportButton;
+
+  /// No description provided for @serverExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data was downloaded.'**
+  String get serverExportSuccess;
+
+  /// No description provided for @serverExportNeedsSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to download your data.'**
+  String get serverExportNeedsSession;
 
   /// No description provided for @backupImportTitle.
   ///
@@ -3140,6 +3170,12 @@ abstract class AppLocalizations {
   /// **'Unexpected error: {details}'**
   String unexpectedError(String details);
 
+  /// No description provided for @profileUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t open your profile. Please try again in a moment.'**
+  String get profileUnavailable;
+
   /// No description provided for @accountSyncTitle.
   ///
   /// In en, this message translates to:
@@ -4118,6 +4154,24 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get medDelete;
 
+  /// No description provided for @medPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get medPause;
+
+  /// No description provided for @medResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get medResume;
+
+  /// No description provided for @medPausedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get medPausedBadge;
+
   /// No description provided for @medDeleteTitle.
   ///
   /// In en, this message translates to:
@@ -4472,6 +4526,12 @@ abstract class AppLocalizations {
   /// **'Add at least one time'**
   String get medErrorAddTime;
 
+  /// No description provided for @medErrorSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Please try again.'**
+  String get medErrorSaveFailed;
+
   /// No description provided for @medUnitsSuffix.
   ///
   /// In en, this message translates to:
@@ -4571,65 +4631,8 @@ abstract class AppLocalizations {
   /// No description provided for @medDashApptsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Medical appointments'**
+  /// **'Appointments'**
   String get medDashApptsTitle;
-
-  /// No description provided for @specialtyNone.
-  String get specialtyNone;
-
-  /// No description provided for @specialtyGeneralMedicine.
-  String get specialtyGeneralMedicine;
-
-  /// No description provided for @specialtyCardiology.
-  String get specialtyCardiology;
-
-  /// No description provided for @specialtyEndocrinology.
-  String get specialtyEndocrinology;
-
-  /// No description provided for @specialtyDermatology.
-  String get specialtyDermatology;
-
-  /// No description provided for @specialtyGynecology.
-  String get specialtyGynecology;
-
-  /// No description provided for @specialtyDentistry.
-  String get specialtyDentistry;
-
-  /// No description provided for @specialtyOphthalmology.
-  String get specialtyOphthalmology;
-
-  /// No description provided for @specialtyOtolaryngology.
-  String get specialtyOtolaryngology;
-
-  /// No description provided for @specialtyNeurology.
-  String get specialtyNeurology;
-
-  /// No description provided for @specialtyNeuropsychology.
-  String get specialtyNeuropsychology;
-
-  /// No description provided for @specialtyPsychiatry.
-  String get specialtyPsychiatry;
-
-  /// No description provided for @specialtyOrthopedics.
-  String get specialtyOrthopedics;
-
-  /// No description provided for @specialtyUrology.
-  String get specialtyUrology;
-
-  /// No description provided for @specialtyGastroenterology.
-  String get specialtyGastroenterology;
-
-  /// No description provided for @specialtyNutrition.
-  String get specialtyNutrition;
-
-  /// No description provided for @specialtyPediatrics.
-  String get specialtyPediatrics;
-
-  /// No description provided for @specialtyPhysiotherapy.
-  String get specialtyPhysiotherapy;
-
-  /// No description provided for @specialtyClinicalLaboratory.
-  String get specialtyClinicalLaboratory;
 
   /// No description provided for @medDashApptsSoon.
   ///
@@ -4835,6 +4838,120 @@ abstract class AppLocalizations {
   /// **'e.g. Endocrinology'**
   String get appointmentFieldSpecialtyHint;
 
+  /// No description provided for @specialtyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No specialty'**
+  String get specialtyNone;
+
+  /// No description provided for @specialtyGeneralMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'General medicine'**
+  String get specialtyGeneralMedicine;
+
+  /// No description provided for @specialtyCardiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardiology'**
+  String get specialtyCardiology;
+
+  /// No description provided for @specialtyEndocrinology.
+  ///
+  /// In en, this message translates to:
+  /// **'Endocrinology'**
+  String get specialtyEndocrinology;
+
+  /// No description provided for @specialtyDermatology.
+  ///
+  /// In en, this message translates to:
+  /// **'Dermatology'**
+  String get specialtyDermatology;
+
+  /// No description provided for @specialtyGynecology.
+  ///
+  /// In en, this message translates to:
+  /// **'Gynecology'**
+  String get specialtyGynecology;
+
+  /// No description provided for @specialtyDentistry.
+  ///
+  /// In en, this message translates to:
+  /// **'Dentistry'**
+  String get specialtyDentistry;
+
+  /// No description provided for @specialtyOphthalmology.
+  ///
+  /// In en, this message translates to:
+  /// **'Ophthalmology'**
+  String get specialtyOphthalmology;
+
+  /// No description provided for @specialtyOtolaryngology.
+  ///
+  /// In en, this message translates to:
+  /// **'Otolaryngology (ENT)'**
+  String get specialtyOtolaryngology;
+
+  /// No description provided for @specialtyNeurology.
+  ///
+  /// In en, this message translates to:
+  /// **'Neurology'**
+  String get specialtyNeurology;
+
+  /// No description provided for @specialtyNeuropsychology.
+  ///
+  /// In en, this message translates to:
+  /// **'Neuropsychology'**
+  String get specialtyNeuropsychology;
+
+  /// No description provided for @specialtyPsychiatry.
+  ///
+  /// In en, this message translates to:
+  /// **'Psychiatry'**
+  String get specialtyPsychiatry;
+
+  /// No description provided for @specialtyOrthopedics.
+  ///
+  /// In en, this message translates to:
+  /// **'Orthopedics'**
+  String get specialtyOrthopedics;
+
+  /// No description provided for @specialtyUrology.
+  ///
+  /// In en, this message translates to:
+  /// **'Urology'**
+  String get specialtyUrology;
+
+  /// No description provided for @specialtyGastroenterology.
+  ///
+  /// In en, this message translates to:
+  /// **'Gastroenterology'**
+  String get specialtyGastroenterology;
+
+  /// No description provided for @specialtyNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get specialtyNutrition;
+
+  /// No description provided for @specialtyPediatrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Pediatrics'**
+  String get specialtyPediatrics;
+
+  /// No description provided for @specialtyPhysiotherapy.
+  ///
+  /// In en, this message translates to:
+  /// **'Physiotherapy'**
+  String get specialtyPhysiotherapy;
+
+  /// No description provided for @specialtyClinicalLaboratory.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinical laboratory'**
+  String get specialtyClinicalLaboratory;
+
   /// No description provided for @appointmentFieldDate.
   ///
   /// In en, this message translates to:
@@ -4988,7 +5105,7 @@ abstract class AppLocalizations {
   /// No description provided for @appointmentEveryNMonths.
   ///
   /// In en, this message translates to:
-  /// **'Every $count months'**
+  /// **'Every {count} months'**
   String appointmentEveryNMonths(int count);
 
   /// No description provided for @appointmentEditTitle.
@@ -5036,20 +5153,332 @@ abstract class AppLocalizations {
   /// No description provided for @appointmentNextActionOverdue.
   ///
   /// In en, this message translates to:
-  /// **'$title · overdue'**
+  /// **'{title} · overdue'**
   String appointmentNextActionOverdue(String title);
 
   /// No description provided for @appointmentNextActionUpcoming.
   ///
   /// In en, this message translates to:
-  /// **'$title · $date'**
+  /// **'{title} · {date}'**
   String appointmentNextActionUpcoming(String title, String date);
 
   /// No description provided for @appointmentRecurringEvery.
   ///
   /// In en, this message translates to:
-  /// **'Every $count mo'**
+  /// **'Every {count} mo'**
   String appointmentRecurringEvery(int count);
+
+  /// No description provided for @accessCodeAccountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic: they will verify your identity and read you a six-digit code. It expires in 15 minutes and works only once.'**
+  String get accessCodeAccountHint;
+
+  /// No description provided for @accessCodeDocumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get accessCodeDocumentLabel;
+
+  /// No description provided for @accessCodeDocumentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ID'**
+  String get accessCodeDocumentHint;
+
+  /// No description provided for @accessCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The code they read you'**
+  String get accessCodeLabel;
+
+  /// No description provided for @accessCodeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It expires after 15 minutes and works only once. If you get it wrong several times you will have to ask for a new one.'**
+  String get accessCodeHelp;
+
+  /// No description provided for @accessCodeMissingDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your ID number.'**
+  String get accessCodeMissingDocument;
+
+  /// No description provided for @accessCodeSixDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'The code is six digits.'**
+  String get accessCodeSixDigits;
+
+  /// No description provided for @accessDoorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your email'**
+  String get accessDoorTitle;
+
+  /// No description provided for @accessDoorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We will email you a six-digit code. If you do not have an account yet, that same code creates it.'**
+  String get accessDoorSubtitle;
+
+  /// No description provided for @accessDoorEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get accessDoorEmailLabel;
+
+  /// No description provided for @accessDoorEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name@email.com'**
+  String get accessDoorEmailHint;
+
+  /// No description provided for @accessDoorContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get accessDoorContinue;
+
+  /// No description provided for @accessDoorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get accessDoorInvalidEmail;
+
+  /// No description provided for @accessCodeSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get accessCodeSentTitle;
+
+  /// No description provided for @accessCodeSentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If that address can get in, your code is waiting there. It expires in fifteen minutes.'**
+  String get accessCodeSentSubtitle;
+
+  /// No description provided for @accessClinicCodeLink.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a code from the clinic'**
+  String get accessClinicCodeLink;
+
+  /// No description provided for @signupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish creating your account'**
+  String get signupTitle;
+
+  /// No description provided for @signupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'With these details your measurements are compared against the ranges that apply to you.'**
+  String get signupSubtitle;
+
+  /// No description provided for @signupNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get signupNameLabel;
+
+  /// No description provided for @signupDocumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ID number'**
+  String get signupDocumentLabel;
+
+  /// No description provided for @signupDocumentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'It is how we recognise you if you are already a patient of the clinic.'**
+  String get signupDocumentHelp;
+
+  /// No description provided for @signupTermsAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the terms and the privacy policy'**
+  String get signupTermsAccept;
+
+  /// No description provided for @signupSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my account'**
+  String get signupSubmit;
+
+  /// No description provided for @signupMissingTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to accept the terms to create the account.'**
+  String get signupMissingTerms;
+
+  /// No description provided for @callClinicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic'**
+  String get callClinicTitle;
+
+  /// No description provided for @callClinicBody.
+  ///
+  /// In en, this message translates to:
+  /// **'That ID is already registered. We do not hand over a clinical history without verifying who you are, so a person activates it over the phone.'**
+  String get callClinicBody;
+
+  /// No description provided for @callClinicBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get callClinicBack;
+
+  /// No description provided for @accessCodeClinicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic: they will verify your identity and read you the code we use to bring your data in.'**
+  String get accessCodeClinicHint;
+
+  /// No description provided for @verifyBringingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing in your history…'**
+  String get verifyBringingHistory;
+
+  /// legalTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and privacy'**
+  String get legalTitle;
+
+  /// legalTermsTab
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use'**
+  String get legalTermsTab;
+
+  /// legalPrivacyTab
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get legalPrivacyTab;
+
+  /// legalAcceptButton
+  ///
+  /// In en, this message translates to:
+  /// **'I accept'**
+  String get legalAcceptButton;
+
+  /// legalDecline
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t accept and I\'m leaving'**
+  String get legalDecline;
+
+  /// legalNotTranslated
+  ///
+  /// In en, this message translates to:
+  /// **'This document has not been translated into your language yet. It is shown in Spanish, which is the governing version.'**
+  String get legalNotTranslated;
+
+  /// legalLoadFailed
+  ///
+  /// In en, this message translates to:
+  /// **'The document could not be loaded. Check your connection.'**
+  String get legalLoadFailed;
+
+  /// legalAcceptFailed
+  ///
+  /// In en, this message translates to:
+  /// **'Your acceptance could not be recorded. Please try again.'**
+  String get legalAcceptFailed;
+
+  /// legalRetry
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get legalRetry;
+
+  /// legalGateTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Before you go in'**
+  String get legalGateTitle;
+
+  /// legalReadTerms
+  ///
+  /// In en, this message translates to:
+  /// **'Read the terms of use'**
+  String get legalReadTerms;
+
+  /// legalReadPrivacy
+  ///
+  /// In en, this message translates to:
+  /// **'Read the privacy policy'**
+  String get legalReadPrivacy;
+
+  /// helpLegalWhoSeesTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see your record'**
+  String get helpLegalWhoSeesTitle;
+
+  /// helpLegalWhoSeesBody
+  ///
+  /// In en, this message translates to:
+  /// **'You, always. And authorised staff at the associated nutrition clinic, if you are their patient: they are the people who treat you and already held your record before this app existed. We do not sell your data or hand it over for commercial purposes.'**
+  String get helpLegalWhoSeesBody;
+
+  /// consentsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'How you want us to contact you'**
+  String get consentsTitle;
+
+  /// consentsDescription
+  ///
+  /// In en, this message translates to:
+  /// **'You decide which channels the clinic may write to or call you on.'**
+  String get consentsDescription;
+
+  /// consentsPhone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone calls'**
+  String get consentsPhone;
+
+  /// consentsMessages
+  ///
+  /// In en, this message translates to:
+  /// **'Messages (SMS or WhatsApp)'**
+  String get consentsMessages;
+
+  /// consentsEmail
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get consentsEmail;
+
+  /// consentsUnset
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t answered this yet'**
+  String get consentsUnset;
+
+  /// consentsSaveFailed
+  ///
+  /// In en, this message translates to:
+  /// **'The change could not be saved. Please try again.'**
+  String get consentsSaveFailed;
+
+  /// clinicDataUpToDate
+  ///
+  /// In en, this message translates to:
+  /// **'Your clinic data is up to date as of {date}.'**
+  String clinicDataUpToDate(String date);
+
+  /// clinicDataStale
+  ///
+  /// In en, this message translates to:
+  /// **'Your clinic data is up to date as of {date}: nothing new has arrived for {days} days.'**
+  String clinicDataStale(String date, int days);
 }
 
 class _AppLocalizationsDelegate

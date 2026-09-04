@@ -7,7 +7,17 @@ class SecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBack;
   final String? title;
 
-  const SecondaryAppBar({super.key, this.onBack, this.title});
+  /// Si hay flecha para volver. Se apaga en los pasos del alta, donde no se sale
+  /// hacia atrás sino decidiendo: una flecha que no lleva a ninguna parte —o que
+  /// echa de la app— es peor que ninguna.
+  final bool showBack;
+
+  const SecondaryAppBar({
+    super.key,
+    this.onBack,
+    this.title,
+    this.showBack = true,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(100); // 70 + SafeArea (approx)
@@ -36,17 +46,18 @@ class SecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Stack(
             children: [
               // Back Button on the left
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
-                    color: surfaces.onBrand,
-                    size: 20,
+              if (showBack)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: surfaces.onBrand,
+                      size: 20,
+                    ),
+                    onPressed: onBack ?? () => Navigator.of(context).pop(),
                   ),
-                  onPressed: onBack ?? () => Navigator.of(context).pop(),
                 ),
-              ),
               // App Brand Header or Custom Title centered
               Align(
                 alignment: Alignment.center,
