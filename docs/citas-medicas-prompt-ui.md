@@ -1,5 +1,7 @@
 # Prompt — Diseño de UI/UX del inventario de citas médicas (MyVitals)
 
+> **📌 Documento histórico (superado).** El módulo de Citas médicas **ya está implementado** en `lib/features/appointments/` (con pruebas en `test/features/appointments/`). Los documentos `citas-medicas-*` describen el análisis y el plan previos, y se conservan como referencia; para el estado actual, ver [`../ESTADO.md`](../ESTADO.md).
+
 > Prompt autocontenido, listo para pegar en una sesión nueva que diseñe o
 > construya la interfaz de la función de citas médicas. Contexto completo en
 > `docs/citas-medicas-analisis.md` y `docs/citas-medicas-plan-implementacion.md`.

@@ -46,11 +46,31 @@ para que funcione sin cobertura, que es la mitad del tiempo en una consulta.
 | La foto de perfil se pierde al reinstalar: es lo único del perfil que no está en el servidor | Al paciente que reinstala |
 | Cambiar el correo de la cuenta no existe | A quien cambie de dirección |
 
+## Camino a producción
+
+Checklist para publicar (Fase 13). El índice consolidado de los cinco repos vive en
+`healthtracker-localdev/ESTADO-Y-PLAN.md`.
+
+**Publicación (Fase 13) — bloqueante**
+- [ ] **`applicationId` propio** (hoy `com.example.*`).
+- [ ] **Firma de release** con una clave real (hoy se firma con la debug key).
+- [ ] **Pipeline móvil** (AAB para Android / IPA para iOS): el CI hoy solo construye y publica **web**.
+- [ ] **Ficha de tienda** + **URL de política de privacidad** publicada y enlazada.
+- [ ] **Textos legales aprobados por abogado**: hoy son borradores; faltan responsable del
+  tratamiento, plazos de conservación, encargados, canal PQR y ley aplicable. **No deben publicarse así.**
+
+**Funcionalidad conocida pendiente** (no bloqueante para probar, sí para cerrar)
+- [ ] Foto de perfil en el servidor (hoy se pierde al reinstalar).
+- [ ] Cambio de correo de la cuenta (no existe).
+
+**Contenido / i18n**
+- [ ] Traducir las ~15 cadenas pendientes en de/it/pt (`untranslated.json`).
+
 ## Cómo se levanta y cómo se prueba
 
 ```bash
 flutter pub get
-flutter test                    # 653 pruebas, sin servidor
+flutter test                    # 668 pruebas, sin servidor
 flutter run                     # contra la API que diga ApiConfig
 ```
 

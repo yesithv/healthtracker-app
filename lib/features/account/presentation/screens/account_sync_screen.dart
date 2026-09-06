@@ -25,10 +25,9 @@ import 'package:myvitals_healthtracker_app/core/validation/input_rules.dart';
 /// Con sesión activa, permite sincronizar los registros locales y leer la serie del
 /// servidor.
 ///
-/// <b>Pendiente:</b> el alta de paciente nuevo sigue llamando a `/api/v1/auth/register`,
-/// que solo existe mientras el servidor corre en modo andamio. El autorregistro con
-/// verificación propia está por diseñar; hasta entonces, quien no es paciente todavía
-/// tiene que pasar por la clínica.
+/// El alta de paciente nuevo se hace por correo: `/api/v1/access/start` →
+/// `/api/v1/access/verify` → `/api/v1/access/signup`. Quien viene del legacy entra con el
+/// código de seis dígitos que le dicta la clínica (`/api/v1/auth/otp/redeem`).
 class AccountSyncScreen extends StatefulWidget {
   const AccountSyncScreen({super.key});
 
