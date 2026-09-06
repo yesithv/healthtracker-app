@@ -67,7 +67,18 @@ jobs:
         # temas (familias de matiz y contraste AA), la cobertura de glifos y la
         # PARIDAD DE CLAVES l10n entre los cinco idiomas (`arb_key_parity_test`),
         # que impide que a un idioma se le quede una clave sin traducir.
-        run: flutter test
+        run: flutter test --coverage
+
+      # El informe se publica como artefacto: sin esto la cobertura se calcula y se tira, y
+      # nadie puede ver si un cambio la bajo. Todavia no hay umbral que rompa el build —
+      # primero conviene tener la serie de varias corridas y saber de que numero se parte—.
+      - name: Publicar cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-flutter
+          path: coverage/lcov.info
+          if-no-files-found: warn
 
   build:
     name: Build web
