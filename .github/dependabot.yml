@@ -1,0 +1,24 @@
+# Dependabot: abre PRs —que el CI valida— para mantener al dia las dependencias y las propias
+# GitHub Actions. Gratis tambien en repositorios privados. Las alertas y las actualizaciones de
+# seguridad se habilitan aparte, en Settings -> Code security.
+#
+# Los saltos MAYORES se ignoran a proposito: son proyectos de migracion con cambios rompientes, no
+# actualizaciones de rutina. Los menores y los parches dentro de la linea actual si llegan como PR,
+# incluidas las correcciones de seguridad, que es justo lo que hace falta que no se pierda.
+version: 2
+updates:
+
+  # Dependencias de Dart/Flutter (pubspec.yaml).
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Las GitHub Actions que usan los propios workflows. Se fijan por SHA, asi que sin esto no se
+  # actualizan nunca: un SHA no caduca ni avisa.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
