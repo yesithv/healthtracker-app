@@ -1,0 +1,50 @@
+# =====================================================================================
+# Vigilancia de dependencias.
+#
+# Corre de madrugada, no en cada push, porque lo que busca no lo provoca un cambio: una CVE
+# publicada hoy afecta a un pom que nadie ha tocado en meses. Es la unica clase de fallo que
+# aparece sola, y por eso hay que ir a buscarla.
+#
+# Dependabot ya propone las subidas de version; esto responde la otra pregunta, la de "que
+# tenemos ahora mismo que ya se sabe roto".
+# =====================================================================================
+name: Cadena de suministro
+
+on:
+  schedule:
+    # 04:17 UTC. La hora rara es a proposito: a las horas en punto se agolpan los cron de medio
+    # GitHub y las corridas se encolan.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - pubspec.yaml
+      - pubspec.lock
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencias:
+    name: CVE en dependencias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Falla solo con CRITICAL y HIGH que YA tienen arreglo publicado. Bloquear por algo que
+      # todavia no se puede corregir no protege de nada: solo ensena al equipo a saltarse el
+      # gate, y el dia que aparezca una que si importa nadie la va a mirar.
+      - name: Trivy sobre el arbol de dependencias
+        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2  # v0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
