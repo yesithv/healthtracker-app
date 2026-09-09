@@ -144,7 +144,9 @@ void main() {
     sync.dispose();
 
     if (find.text('TERMINOS').evaluate().isNotEmpty) return '/terminos';
-    if (find.text('BASCULA').evaluate().isNotEmpty) return '/bienvenida/bascula';
+    if (find.text('BASCULA').evaluate().isNotEmpty) {
+      return '/bienvenida/bascula';
+    }
     if (find.text('DASHBOARD').evaluate().isNotEmpty) return '/dashboard';
     return 'ninguna';
   }

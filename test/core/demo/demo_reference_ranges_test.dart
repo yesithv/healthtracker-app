@@ -60,7 +60,7 @@ void main() {
     test('la fecha de nacimiento es la misma que siembra el seeder', () {
       // Dos sitios la escriben; si se separan, los rangos serían de otra persona.
       final sembrada =
-          DemoSeeder.demoPreferences()['user_birth_date'] as String;
+          DemoSeeder.demoPreferences()['user_birth_date']! as String;
       expect(DateTime.parse(sembrada), equals(kDemoBirthDate));
     });
   });
