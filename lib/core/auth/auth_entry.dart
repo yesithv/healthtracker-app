@@ -101,7 +101,9 @@ Future<void> completeLoginAndEnter(
   // recién registrado hace. Medido en el banco: 42 pacientes de 42 sin elegir, y
   // una tabla de 51 rangos por dispositivo que no le llegaba a nadie.
   await devices.load();
-  final trasLoLegal = devices.shouldPrompt ? '/bienvenida/bascula' : '/dashboard';
+  final trasLoLegal = devices.shouldPrompt
+      ? '/bienvenida/bascula'
+      : '/dashboard';
 
   // 1ª — Los términos. Los pacientes migrados llegaban sin haber aceptado nada:
   // habían aceptado los de la clínica de nutrición, que es otra empresa. Y cuando

@@ -388,7 +388,9 @@ class _RecordBodyCompositionScreenState
     final surfaces = theme.surfaces;
     final family = _family;
     // El clasificador da el ESTADO; el tema resuelve el color.
-    final fatTone = theme.clinical.tone(fatCat?.status ?? ClinicalStatus.neutral);
+    final fatTone = theme.clinical.tone(
+      fatCat?.status ?? ClinicalStatus.neutral,
+    );
     final visceralTone = theme.clinical.tone(visceralCat.status);
 
     return Scaffold(
