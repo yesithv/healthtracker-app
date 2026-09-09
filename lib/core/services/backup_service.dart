@@ -143,7 +143,9 @@ class BackupService {
   /// Imports a backup from a selected JSON file
   Future<bool> importBackup() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
+      // file_picker 11 pasó `FilePicker` a métodos estáticos: ya no hay instancia
+      // `.platform` que resolver. Los parámetros con nombre son los mismos.
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json', 'myvitals'],
         withData: true,
