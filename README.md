@@ -16,57 +16,31 @@ rangos clínicos con los que se interpretan los valores.
 
 ---
 
-## 1. Estado actual del proyecto
+## 1. Qué incluye
 
-**Versión:** `0.1.0+1` · **Fase 0** (integración con la API con andamios de
-autenticación) · 22 commits, el último del 2026-07-29.
+App **funcionalmente completa de punta a punta**: alta del paciente (por código de la
+clínica o por correo), captura de las cuatro familias de indicadores, historiales con
+gráficas, clasificación clínica, sincronización bidireccional, contenidos, medicamentos,
+citas, ajustes, exportación, copia de seguridad y cinco idiomas.
 
-La app está **funcionalmente completa de punta a punta**: alta de paciente,
-captura de las cuatro familias de indicadores, historiales con gráficas,
-clasificación clínica, sincronización bidireccional, contenidos, ajustes, copia
-de seguridad y cinco idiomas. Lo que queda pendiente es sustituir los andamios
-de la Fase 0 por sus piezas definitivas.
-
-### Qué está terminado
+> **Estado, fase y qué falta para publicar** viven en [`ESTADO.md`](ESTADO.md) y en el plan
+> del ecosistema `healthtracker-localdev/ESTADO-Y-PLAN.md` (a día de hoy, **Fase 12**). Este
+> README describe cómo es la app; aquel, cómo está.
 
 | Área | Estado |
 |---|---|
-| Persistencia local (SQLite, migraciones aditivas hasta v5) | ✅ Estable |
+| Persistencia local (SQLite, esquema v5, migraciones aditivas) | ✅ Estable |
 | Captura y edición de los 4 tipos de registro | ✅ Estable |
 | Módulo de Medicamentos (inventario, tomas, avisos, adherencia) | ✅ Estable |
 | Módulo de Citas médicas (inventario, recurrencia, semáforo, avisos) | ✅ Estable |
 | Historiales con gráficas y exportación PDF/CSV | ✅ Estable |
 | Clasificación clínica con rangos del servidor + respaldo offline | ✅ Estable |
-| Sincronización de subida (app → API) y de bajada (API → app) | ✅ Funcionando |
-| Alta de cuenta, incluida el **alta diferida** sin red | ✅ Funcionando |
+| Sincronización de subida y de bajada (las **cuatro** familias) | ✅ Funcionando |
+| Alta de cuenta: por código de la clínica y **por correo**, incluida el alta diferida sin red | ✅ Funcionando |
 | Sistema de temas con contrato semántico verificado | ✅ Estable |
-| Internacionalización (es · en · pt · it · de) | ✅ ~528 claves por idioma |
+| Internacionalización (es · en · pt · it · de) | ✅ (paridad de claves verificada; ver §2) |
 | Copia de seguridad / restauración en JSON | ✅ Formato v1.0 |
-| Pruebas + CI (analyze, test, build web, despliegue a Pages) | ✅ 16 archivos de prueba |
-
-### Andamios y deuda conocida
-
-Están marcados en el código como «Fase 0» y con su hueco de reemplazo escrito:
-
-- **Autorregistro de pacientes nuevos**: el asistente de alta y la tarjeta de
-  registro llaman a `POST /api/v1/auth/register`, que en el servidor **solo
-  existe mientras corre en modo andamio**. Con el servidor en modo `session`, un
-  paciente que no venga del legacy se queda con su ficha creada y **sin sesión**,
-  así que no sincroniza. Es el alcance que se decidió —solo pacientes del legacy,
-  por ahora— y hace falta diseñar una verificación propia para levantarlo.
-- **Pantalla de arranque**: la ruta `/` es hoy el **selector de tema**, no el
-  splash, para poder recorrer el flujo entero con cualquiera de los dos temas.
-  Al reubicar el selector dentro de Perfil basta devolver `/` a `SplashScreen`
-  (`core/router/app_router.dart`).
-- **Feed de «Descubre»**: se sirve desde las semillas empaquetadas en
-  `assets/data/`. El cliente contra `GET /api/v1/discover/feed` ya existe;
-  conectarlo es cambiar un único método (`DiscoverRepository._readFreshSource`).
-- **Bajada parcial**: la importación desde el servidor materializa antropometría
-  y composición corporal; signos vitales y lípidos hoy solo suben.
-- **`core/theme/app_theme.dart`** es una fachada obsoleta que sigue viva para las
-  pantallas aún sin migrar al sistema de tokens.
-- El workflow de despliegue publica desde la rama `dev`, que ya no existe en el
-  remoto (se fusionó a `main`): habrá que reapuntarlo o recrearla.
+| Feed de «Descubre» conectado a la API (con semilla empaquetada de respaldo) | ✅ Funcionando |
 
 ---
 
@@ -92,20 +66,25 @@ Organización **feature-first** sobre un núcleo compartido:
 lib/
 ├── main.dart              Arranque por pasos + árbol de providers
 ├── core/                  Lo transversal
-│   ├── auth/              Sesión del paciente, cliente de auth, alta diferida
+│   ├── auth/              Sesión del paciente, cliente de auth (access/*, otp/redeem), alta diferida
 │   ├── config/            ApiConfig (inyectado con --dart-define)
 │   ├── database/          DatabaseService (esquema) + repositorios por entidad
 │   ├── sync/              Subida, bajada, mapeadores y clientes HTTP
-│   ├── ranges/            Rangos de referencia del servidor y de laboratorio
+│   ├── ranges/ · labs/    Rangos de referencia del servidor y catálogo de laboratorios
+│   ├── profile/ · legal/  Perfil en el servidor (/me) y textos/aceptación legales
+│   ├── export/            Volcado de habeas data
 │   ├── providers/         Estado de aplicación (ChangeNotifier)
 │   ├── theme/             Tokens, catálogo de temas y contrato semántico
 │   ├── router/            Rutas GoRouter
 │   ├── validation/        Formateadores y validadores de entrada
 │   ├── services/          Notificaciones, biometría, copia de seguridad, imagen
-│   ├── utils/             Clasificadores clínicos
+│   ├── utils/ · models/   Clasificadores clínicos y modelos compartidos
+│   ├── demo/ · diagnostics/  Modo demostración y diagnóstico interno
+│   ├── constants/ · charts/ · shell/  Catálogos, gráficas y andamiaje de UI
 │   └── widgets/           Componentes compartidos
-├── features/              dashboard · history · discover · profile · auth ·
-│                          onboarding · account · theming · welcome · splash
+├── features/              dashboard · history · discover · profile · account · auth ·
+│                          onboarding · welcome · splash · theming ·
+│                          medications · appointments · legal
 └── l10n/                  .arb por idioma + delegados generados
 ```
 
@@ -132,12 +111,14 @@ del tema **antes de `runApp`**. Todo envuelto en `runZonedGuarded`.
 
 - **SQLite** vía `sqflite` (móvil/escritorio) y `sqflite_common_ffi_web` +
   `sqlite3.wasm` (web), detrás de una única `DatabaseService`.
-- Base `my-vitals-db.db`, **esquema v3** con migraciones incrementales y
-  aditivas: v2 añadió `lab_code`; v3 añadió los seis perímetros corporales y
-  `muscle_pct`, y normalizó a centímetros las tallas importadas en metros.
-- Cuatro tablas: `anthropometric_records`, `vital_sign_records`,
-  `lipid_records`, `body_composition_records`. Todas con `id` (UUID),
-  `measurement_date`, `created_at`, `updated_at` e `is_synced`.
+- Base `my-vitals-db.db`, **esquema v5** con migraciones incrementales y
+  aditivas: v2 añadió `lab_code`; v3, los seis perímetros corporales y
+  `muscle_pct` (y normalizó a centímetros las tallas importadas en metros);
+  v4 creó las tablas de **medicamentos**; v5, la de **citas**.
+- Los cuatro tipos de registro —`anthropometric_records`, `vital_sign_records`,
+  `lipid_records`, `body_composition_records`— más las tablas de medicamentos y
+  citas. Los registros llevan `id` (UUID), `measurement_date`, `created_at`,
+  `updated_at` e `is_synced`.
 - **Preferencias** en `SharedPreferences`: perfil, idioma, unidades, metas,
   recordatorios, tema, sesión y cachés de rangos y de «Descubre».
 
@@ -149,14 +130,16 @@ entornos. La identidad va en `Authorization: Bearer <token de sesión>` (ver
 
 | Endpoint | Uso |
 |---|---|
+| `POST /api/v1/access/start` · `verify` · `signup` | Alta por correo del usuario nuevo |
 | `POST /api/v1/auth/otp/redeem` | Canje del código de la clínica → token de sesión |
-| `POST /api/v1/auth/lookup` · `activate` · `register` | Comprobación de identidad y alta (ver deuda conocida) |
-| `POST /api/v1/me/measurements` | Subida de registros pendientes (upsert idempotente) |
-| `GET  /api/v1/me/measurements` | Bajada del historial del paciente |
+| `GET · PUT /api/v1/me` | Perfil en el servidor (datos, metas, idioma, unidades) |
+| `GET /api/v1/legal/{document}` · `GET /api/v1/me/terms` | Textos legales y estado de aceptación |
+| `POST · GET /api/v1/me/measurements` | Subida (upsert idempotente) y bajada del historial |
 | `GET  /api/v1/me/reference-ranges` | Bandas clínicas ya resueltas por dispositivo/sexo/edad |
-| `GET  /api/v1/me/device` · `/api/v1/measuring-devices` | Dispositivo del paciente y catálogo |
+| `GET · PUT /api/v1/me/device` · `GET /api/v1/measuring-devices` | Dispositivo del paciente y catálogo |
 | `GET  /api/v1/labs` · `/api/v1/labs/{code}/ranges` | Catálogo de laboratorios y sus rangos |
-| `GET  /api/v1/discover/feed?lang=` | Contenidos (cliente listo, aún sin conectar) |
+| `GET  /api/v1/discover/feed?lang=` | Contenidos (conectado; con semilla empaquetada de respaldo) |
+| `GET  /api/v1/me/export` | Volcado de habeas data (JSON) |
 
 **Política de sincronización.** La subida reúne lo no sincronizado de las cuatro
 familias, lo aplana con `MeasurementMapper` y **solo marca como sincronizado si
@@ -206,9 +189,11 @@ exactamente las 47 banderas del catálogo de países: 159 KB en lugar de 10,8 MB
 ### Internacionalización
 
 Cinco idiomas —**español, inglés, portugués, italiano y alemán**— con archivos
-ARB y `flutter_localizations` (plantilla `app_en.arb`, ~528 claves por idioma,
-generación configurada en `l10n.yaml`). Aparte del idioma, las unidades son
-conmutables entre **métricas e imperiales**.
+ARB y `flutter_localizations` (plantilla `app_en.arb`, generación configurada en
+`l10n.yaml`). La **paridad de claves** entre idiomas la verifica
+`arb_key_parity_test.dart`; `untranslated.json` marca las cadenas aún sin traducir
+—hoy ~15 en de/it/pt (WHtR/WHR y algunas de historial)—. Aparte del idioma, las
+unidades son conmutables entre **métricas e imperiales**.
 
 ### Dependencias principales
 
@@ -229,8 +214,8 @@ conmutables entre **métricas e imperiales**.
 
 ### Pruebas y CI
 
-16 archivos en `test/`, escritos como **invariantes con su motivo documentado**:
-cada uno fija un defecto que ya ocurrió una vez.
+72 archivos en `test/` (**668 pruebas** en verde), escritos como **invariantes con su
+motivo documentado**: cada uno fija un defecto que ya ocurrió una vez.
 
 - `theme/semantic_contract_test.dart` — franja de matiz, saturación mínima,
   separación entre familias y contraste AA en todos los temas del catálogo.
@@ -253,10 +238,10 @@ cada uno fija un defecto que ya ocurrió una vez.
   `validation/input_rules_test.dart`, `health_classifiers_test.dart`,
   `providers/measuring_device_provider_test.dart`.
 
-**CI** (`.github/workflows/deploy-dev.yml`): en cada empujón a `dev` y en cada
+**CI** (`.github/workflows/deploy.yml`): en cada empujón a `main` y en cada
 pull request corre formato (solo avisa), `flutter analyze` y `flutter test`;
 después compila web con `--base-href` y CanvasKit embebido, y publica en GitHub
-Pages **solo desde la rama**, nunca desde un pull request.
+Pages **solo desde `main`**, nunca desde un pull request.
 
 ---
 
@@ -289,8 +274,8 @@ por primera vez: **no hay contraseña que recordar**.
 
 - **La cuenta es obligatoria** (ya no existe el modo local «explorar sin
   cuenta»), con dos caminos desde la portada: *ya tengo cuenta* → identificación
-  por documento o email → código de la clínica; o *soy nuevo* → asistente de alta
-  (ver la deuda conocida: el alta necesita el servidor en modo andamio).
+  por documento o email → código de la clínica; o *soy nuevo* → **alta por correo**
+  (`/access/start` → `verify` → `signup`).
 - **Alta diferida**: si el servidor no responde durante el registro, el usuario
   entra igual y la cuenta se crea en el primer arranque con red. Un aviso
   persistente indica que el alta sigue pendiente.

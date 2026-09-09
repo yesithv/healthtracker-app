@@ -1,0 +1,55 @@
+# =====================================================================================
+# Vigilancia de dependencias.
+#
+# Corre de madrugada, no en cada push, porque lo que busca no lo provoca un cambio: una CVE
+# publicada hoy afecta a un pom que nadie ha tocado en meses. Es la unica clase de fallo que
+# aparece sola, y por eso hay que ir a buscarla.
+#
+# Dependabot ya propone las subidas de version; esto responde la otra pregunta, la de "que
+# tenemos ahora mismo que ya se sabe roto".
+# =====================================================================================
+name: Cadena de suministro
+
+on:
+  schedule:
+    # 04:17 UTC. La hora rara es a proposito: a las horas en punto se agolpan los cron de medio
+    # GitHub y las corridas se encolan.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - pubspec.yaml
+      - pubspec.lock
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencias:
+    name: CVE en dependencias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Falla solo con CRITICAL y HIGH que YA tienen arreglo publicado. Bloquear por algo que
+      # todavia no se puede corregir no protege de nada: solo ensena al equipo a saltarse el
+      # gate, y el dia que aparezca una que si importa nadie la va a mirar.
+      - name: Trivy sobre el arbol de dependencias
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+        # Fijado a v0.36.0 y no a v0.28.0: aquella referia internamente a
+        # setup-trivy@v0.2.1, un tag que upstream borro despues, asi que el paso
+        # fallaba al resolver la accion antes de escanear nada. Fijar por SHA no
+        # basta si la accion fijada depende a su vez de un tag movil; v0.36.0 fija
+        # su setup-trivy por hash. Al subir de version, comprobar esa linea.
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true

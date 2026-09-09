@@ -1,5 +1,7 @@
 # Plan de implementación — Inventario de citas médicas (capa ligera)
 
+> **📌 Documento histórico (superado).** El módulo de Citas médicas **ya está implementado** en `lib/features/appointments/` (con pruebas en `test/features/appointments/`). Los documentos `citas-medicas-*` describen el análisis y el plan previos, y se conservan como referencia; para el estado actual, ver [`../ESTADO.md`](../ESTADO.md).
+
 > Paso de implementación de la **Fase 1 (MVP)** descrita en
 > `docs/citas-medicas-analisis.md`. El prompt para construir la UI está en
 > `docs/citas-medicas-prompt-ui.md`.

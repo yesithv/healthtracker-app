@@ -1,5 +1,7 @@
 # Citas médicas — Estado de implementación
 
+> **📌 Documento histórico (superado).** El módulo de Citas médicas **ya está implementado** en `lib/features/appointments/` (con pruebas en `test/features/appointments/`). Los documentos `citas-medicas-*` describen el análisis y el plan previos, y se conservan como referencia; para el estado actual, ver [`../ESTADO.md`](../ESTADO.md).
+
 > Registro de lo construido para el módulo ligero de Citas médicas y de lo que
 > queda pendiente. Complementa a `citas-medicas-analisis.md` (diseño),
 > `citas-medicas-plan-implementacion.md` (plan) y `citas-medicas-prompt-ui.md`

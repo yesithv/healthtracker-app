@@ -1,5 +1,7 @@
 # Citas médicas — Análisis y propuesta de diseño
 
+> **📌 Documento histórico (superado).** El módulo de Citas médicas **ya está implementado** en `lib/features/appointments/` (con pruebas en `test/features/appointments/`). Los documentos `citas-medicas-*` describen el análisis y el plan previos, y se conservan como referencia; para el estado actual, ver [`../ESTADO.md`](../ESTADO.md).
+
 > Documento de análisis previo a la implementación. Hermano del trabajo de
 > medicamentos (`claude/medication-reminder-planning-h7n7kl`), pero deliberadamente
 > **más ligero y discreto**: las citas no serán un módulo con destino propio en la
