@@ -135,12 +135,15 @@ void main() {
     // rangos del servidor NO se clasifica, y que con ellos se clasifica por ellos.
     tearDown(() => ReferenceRangesStore.instance.setForTesting(const {}));
 
-    test('sin bandas del servidor no clasifica: el número va sin veredicto', () {
-      ReferenceRangesStore.instance.setForTesting(const {});
+    test(
+      'sin bandas del servidor no clasifica: el número va sin veredicto',
+      () {
+        ReferenceRangesStore.instance.setForTesting(const {});
 
-      expect(FatCategory.of(26), isNull);
-      expect(FatCategory.of(36), isNull);
-    });
+        expect(FatCategory.of(26), isNull);
+        expect(FatCategory.of(36), isNull);
+      },
+    );
 
     test('con las bandas del paciente clasifica por ellas', () {
       // Las de una mujer de 36 en la Omron HBF-514C, tal y como las sirve la API.
