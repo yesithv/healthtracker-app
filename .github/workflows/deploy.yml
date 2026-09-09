@@ -116,7 +116,17 @@ jobs:
     name: Publicar
     needs: build
     # Sólo publica desde `main`, nunca desde un pull request.
-    if: github.event_name != 'pull_request'
+    #
+    # Las DOS condiciones hacen falta, y la de la rama es la que faltaba. Con sólo
+    # `!= 'pull_request'` el comentario de arriba prometía algo que la condición no daba:
+    # `workflow_dispatch` está entre los disparadores y se puede lanzar sobre CUALQUIER rama,
+    # así que bastaba con elegir otra en el desplegable para publicar esa rama en la demo
+    # pública. No hacía falta tocar nada ni saltarse ninguna revisión.
+    #
+    # En un evento `pull_request` github.ref no es `refs/heads/main` —es `refs/pull/N/merge`—,
+    # así que la segunda condición ya cubriría también ese caso. Se dejan las dos porque
+    # expresan dos reglas distintas: de dónde se publica y desde qué clase de evento.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
