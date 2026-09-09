@@ -33,7 +33,7 @@ jobs:
     name: CVE en dependencias
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Falla solo con CRITICAL y HIGH que YA tienen arreglo publicado. Bloquear por algo que
       # todavia no se puede corregir no protege de nada: solo ensena al equipo a saltarse el
