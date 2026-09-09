@@ -108,7 +108,7 @@ jobs:
       - name: Evitar que Pages procese el build con Jekyll
         run: touch build/web/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: build/web
 
