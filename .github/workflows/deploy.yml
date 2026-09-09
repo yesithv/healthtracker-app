@@ -74,7 +74,7 @@ jobs:
       # primero conviene tener la serie de varias corridas y saber de que numero se parte—.
       - name: Publicar cobertura
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cobertura-flutter
           path: coverage/lcov.info
