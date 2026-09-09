@@ -39,7 +39,12 @@ jobs:
       # todavia no se puede corregir no protege de nada: solo ensena al equipo a saltarse el
       # gate, y el dia que aparezca una que si importa nadie la va a mirar.
       - name: Trivy sobre el arbol de dependencias
-        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2  # v0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+        # Fijado a v0.36.0 y no a v0.28.0: aquella referia internamente a
+        # setup-trivy@v0.2.1, un tag que upstream borro despues, asi que el paso
+        # fallaba al resolver la accion antes de escanear nada. Fijar por SHA no
+        # basta si la accion fijada depende a su vez de un tag movil; v0.36.0 fija
+        # su setup-trivy por hash. Al subir de version, comprobar esa linea.
         with:
           scan-type: fs
           scan-ref: .
